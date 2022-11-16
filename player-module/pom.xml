@@ -19,7 +19,7 @@
         <release.version>17</release.version>
         <micronaut.version>3.7.3</micronaut.version>
         <micronaut.runtime>netty</micronaut.runtime>
-        <exec.mainClass>com.marowak.Application</exec.mainClass>
+        <exec.mainClass>marowak.dev.Application</exec.mainClass>
     </properties>
 
     <repositories>
@@ -80,6 +80,16 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.marowak</groupId>
+            <artifactId>player-module</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -93,10 +103,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <!-- Uncomment to enable incremental compilation -->
-                    <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
 
                     <annotationProcessorPaths combine.children="append">
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                        </path>
                         <path>
                             <groupId>io.micronaut</groupId>
                             <artifactId>micronaut-http-validation</artifactId>
@@ -104,7 +117,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-Amicronaut.processing.group=com.marowak</arg>
+                        <arg>-Amicronaut.processing.group=marowak.dev</arg>
                         <arg>-Amicronaut.processing.module=player-module</arg>
                     </compilerArgs>
                 </configuration>
