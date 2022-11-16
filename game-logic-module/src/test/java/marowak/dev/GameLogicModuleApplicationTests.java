@@ -1,4 +1,4 @@
-package marowak.dev.gamelogicmodule;
+package marowak.dev;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
