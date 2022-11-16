@@ -1,1 +1,4 @@
 /.idea
+/player-module/.mvn/wrapper
+/player-module/mvnw
+/player-module/mvnw.bat

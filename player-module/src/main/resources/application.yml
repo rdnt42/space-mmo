@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: playerModule
+netty:
+  default:
+    allocator:
+      max-order: 3
