@@ -47,5 +47,7 @@
     <orderEntry type="library" name="Maven: io.micronaut:micronaut-http:3.7.3" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut:micronaut-core-reactive:3.7.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.24" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: io.micronaut.sql:micronaut-jdbc-hikari:4.7.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.zaxxer:HikariCP:4.0.3" level="project" />
   </component>
 </module>

@@ -1,7 +1,26 @@
 micronaut:
   application:
     name: playerModule
+  server:
+    port: 8082
+
 netty:
   default:
     allocator:
       max-order: 3
+
+datasources:
+  default:
+    url: 'jdbc:postgresql://localhost:5432/space_mmo'
+    username: 'manager'
+    password: 'manager'
+    driverClassName: 'org.postgresql.Driver'
+jpa:
+  default:
+    properties:
+      hibernate:
+        show_sql: true
+flyway:
+  datasources:
+    default:
+      enabled: true
