@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  travel-storage-manager:
+    build: .
+    environment:
+      TRAVEL_DB_URL: ${TRAVEL_DB_URL}
+      TRAVEL_DB_USERNAME: ${TRAVEL_DB_USERNAME}
+      TRAVEL_DB_PASSWORD: ${TRAVEL_DB_PASSWORD}
+    ports:
+      - "8084:8084"
