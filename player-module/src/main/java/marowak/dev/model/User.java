@@ -4,10 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -28,12 +25,16 @@ public class User {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "is_activate", nullable = false)
     private boolean isActivate;
 
     @CreationTimestamp

@@ -1,6 +1,7 @@
 package marowak.dev.repository;
 
-import io.micronaut.data.jpa.repository.JpaRepository;
+import io.micronaut.data.annotation.Repository;
+import io.micronaut.data.repository.CrudRepository;
 import marowak.dev.model.User;
 
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.Optional;
  * Date: 22.11.2022
  * Time: 23:15
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+@Repository
+public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
 }
