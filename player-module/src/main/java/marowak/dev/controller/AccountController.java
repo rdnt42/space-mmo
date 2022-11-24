@@ -2,6 +2,7 @@ package marowak.dev.controller;
 
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import jakarta.inject.Inject;
 import marowak.dev.request.AccountRequest;
@@ -25,7 +26,7 @@ public class AccountController {
     }
 
     @Get("/{username}")
-    public AccountResponse get(String username) {
+    public AccountResponse get(@PathVariable String username) {
         return accountService.getAccount(username);
     }
 }
