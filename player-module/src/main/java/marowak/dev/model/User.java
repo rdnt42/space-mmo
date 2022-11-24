@@ -1,6 +1,9 @@
 package marowak.dev.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,12 +20,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Getter
-@Setter
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "username", nullable = false)
@@ -34,8 +37,8 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "is_activate", nullable = false)
-    private boolean isActivate;
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -45,5 +48,5 @@ public class User {
     private LocalDateTime updatedAt;
 
     @UpdateTimestamp
-    private LocalDateTime lastLoggedIn;
+    private LocalDateTime lastLoggedInAt;
 }
