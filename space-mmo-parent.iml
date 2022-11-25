@@ -24,7 +24,7 @@
     <orderEntry type="library" name="Maven: io.micronaut:micronaut-management:3.7.3" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut:micronaut-router:3.7.3" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut.sql:micronaut-jdbc:4.7.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: io.projectreactor:reactor-core:3.4.23" level="project" />
+    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.4.23" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.4" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut.data:micronaut-data-jdbc:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut.data:micronaut-data-runtime:3.8.1" level="project" />
@@ -71,5 +71,29 @@
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut.data:micronaut-data-hibernate-jpa:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: io.micronaut.data:micronaut-data-model:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut.reactor:micronaut-reactor:2.4.1" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut.reactor:micronaut-reactor-http-client:2.4.1" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-http-client:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-http-client-core:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-websocket:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-http-netty:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-buffer-netty:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-http:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-http2:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport-native-unix-common:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler-proxy:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-socks:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut.security:micronaut-security-jwt:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut:micronaut-http-server:3.7.3" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut.security:micronaut-security:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: io.micronaut.security:micronaut-security-annotations:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: com.nimbusds:nimbus-jose-jwt:9.25" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.jcip:jcip-annotations:1.0-1" level="project" />
   </component>
 </module>
