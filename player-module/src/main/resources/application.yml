@@ -3,7 +3,14 @@ micronaut:
     name: playerModule
   server:
     port: 8082
-
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_SECRET_SPACE_MMO}"'
 
 netty:
   default:
