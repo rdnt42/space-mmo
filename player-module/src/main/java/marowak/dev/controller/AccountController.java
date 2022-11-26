@@ -23,6 +23,7 @@ public class AccountController {
     @Inject
     private AccountService accountService;
 
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Post
     public AccountResponse create(AccountRequest request) {
         return accountService.createAccount(request);

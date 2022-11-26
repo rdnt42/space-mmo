@@ -6,6 +6,7 @@ import marowak.dev.model.User;
 import marowak.dev.repository.UserRepository;
 import marowak.dev.request.AccountRequest;
 import marowak.dev.response.AccountResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +19,9 @@ public class AccountServiceImpl implements AccountService {
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public AccountResponse getAccount(String username) {
         User user = userRepository.findByUsername(username)
@@ -28,9 +32,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRequest request) {
+        String encodePass = passwordEncoder.encode(request.password());
         User user = User.builder()
                 .username(request.username())
-                .password(request.password())
+                .password(encodePass)
                 .email(request.email())
                 .build();
 
