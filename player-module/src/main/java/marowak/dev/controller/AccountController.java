@@ -6,10 +6,13 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.micronaut.validation.Validated;
 import jakarta.inject.Inject;
 import marowak.dev.request.AccountRequest;
 import marowak.dev.response.AccountResponse;
 import marowak.dev.service.AccountService;
+
+import javax.validation.Valid;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +21,7 @@ import marowak.dev.service.AccountService;
  * Time: 23:33
  */
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@Validated
 @Controller("/accounts")
 public class AccountController {
     @Inject
@@ -25,7 +29,7 @@ public class AccountController {
 
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Post
-    public AccountResponse create(AccountRequest request) {
+    public AccountResponse create(@Valid AccountRequest request) {
         return accountService.createAccount(request);
     }
 

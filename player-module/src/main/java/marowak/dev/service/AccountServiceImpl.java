@@ -32,6 +32,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRequest request) {
+        if (userRepository.findByUsername(request.username()).isPresent()) {
+            throw new IllegalArgumentException("This username is already taken");
+        }
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new IllegalArgumentException("This email address is already taken");
+        }
+
         String encodePass = passwordEncoder.encode(request.password());
         User user = User.builder()
                 .username(request.username())
