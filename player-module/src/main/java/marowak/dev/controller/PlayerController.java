@@ -3,7 +3,7 @@ package marowak.dev.controller;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.PlayerMotion;
 import marowak.dev.dto.PlayerMotionList;
 import marowak.dev.service.PlayerMotionService;
@@ -14,10 +14,10 @@ import marowak.dev.service.PlayerMotionService;
  * Date: 16.11.2022
  * Time: 23:28
  */
+@RequiredArgsConstructor
 @Controller("/player")
 public class PlayerController {
-    @Inject
-    private PlayerMotionService playerMotionService;
+    private final PlayerMotionService playerMotionService;
 
     @Post("/motion")
     public PlayerMotionList update(@Body PlayerMotion request) {

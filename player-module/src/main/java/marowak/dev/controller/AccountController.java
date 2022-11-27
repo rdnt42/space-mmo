@@ -7,7 +7,7 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.validation.Validated;
-import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import marowak.dev.request.AccountRequest;
 import marowak.dev.response.AccountResponse;
 import marowak.dev.service.AccountService;
@@ -20,12 +20,12 @@ import javax.validation.Valid;
  * Date: 22.11.2022
  * Time: 23:33
  */
+@RequiredArgsConstructor
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Validated
 @Controller("/accounts")
 public class AccountController {
-    @Inject
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Post

@@ -1,7 +1,7 @@
 package marowak.dev.service;
 
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import marowak.dev.model.User;
 import marowak.dev.repository.UserRepository;
 import marowak.dev.request.AccountRequest;
@@ -14,13 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * Date: 21.11.2022
  * Time: 23:12
  */
+@RequiredArgsConstructor
 @Singleton
 public class AccountServiceImpl implements AccountService {
-    @Inject
-    private UserRepository userRepository;
-
-    @Inject
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AccountResponse getAccount(String username) {

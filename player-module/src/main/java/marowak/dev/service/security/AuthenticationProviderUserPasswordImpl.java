@@ -5,8 +5,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.AuthenticationProvider;
 import io.micronaut.security.authentication.AuthenticationRequest;
 import io.micronaut.security.authentication.AuthenticationResponse;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import marowak.dev.model.User;
 import marowak.dev.repository.UserRepository;
 import org.reactivestreams.Publisher;
@@ -20,13 +20,11 @@ import reactor.core.publisher.FluxSink;
  * Date: 25.11.2022
  * Time: 0:04
  */
+@RequiredArgsConstructor
 @Singleton
 public class AuthenticationProviderUserPasswordImpl implements AuthenticationProvider {
-    @Inject
-    private UserRepository userRepository;
-
-    @Inject
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Publisher<AuthenticationResponse> authenticate(@Nullable HttpRequest<?> httpRequest, AuthenticationRequest<?, ?> authenticationRequest) {
