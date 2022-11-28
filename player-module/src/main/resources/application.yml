@@ -64,7 +64,7 @@ datasources:
       validation-timeout: 50000
 
 mongodb:
-  uri: mongodb://manager:manager@localhost:27017/space_mmo_character
+  uri: mongodb://manager:manager@localhost:27017
   options:
     maxConnectionIdleTime: 10000
     readConcern: majority
@@ -73,6 +73,6 @@ mongodb:
   connectionPool:
     maxSize: 20
 
-player-character:
-  databaseName: "space_mmo_character"
-  collectionName: "characters"
+player-character-db:
+  name: "space_mmo_character"
+  collection: "characters"
