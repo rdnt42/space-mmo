@@ -62,3 +62,17 @@ datasources:
       leak-detection-threshold: 60000
       connection-test-query: "SELECT 1"
       validation-timeout: 50000
+
+mongodb:
+  uri: mongodb://manager:manager@localhost:27017/space_mmo_character
+  options:
+    maxConnectionIdleTime: 10000
+    readConcern: majority
+  cluster:
+    maxWaitQueueSize: 5
+  connectionPool:
+    maxSize: 20
+
+player-character:
+  databaseName: "space_mmo_character"
+  collectionName: "characters"
