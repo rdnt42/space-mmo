@@ -11,7 +11,6 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,14 +25,12 @@ public class MongoDbCharacterRepository implements CharacterRepository {
     private final MongoClient mongoClient;
 
     @Override
-    @NotNull
     public Publisher<Character> list() {
         return getCollection().find();
     }
 
     @Override
-    @NotNull
-    public Mono<Boolean> save(@NonNull @NotNull @Valid Character character) {
+    public Mono<Boolean> save(@NonNull @Valid Character character) {
         return Mono.from(getCollection().insertOne(character))
                 .map(insertOneResult -> true)
                 .onErrorReturn(false);

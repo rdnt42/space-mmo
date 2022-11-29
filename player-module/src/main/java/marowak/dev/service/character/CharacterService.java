@@ -15,5 +15,5 @@ import reactor.core.publisher.Mono;
 public interface CharacterService {
     Publisher<Character> getCharacters();
 
-    Mono<HttpStatus> createCharacter(CharacterRequest request);
+    Mono<HttpStatus> createCharacter(CharacterRequest request, String username);
 }

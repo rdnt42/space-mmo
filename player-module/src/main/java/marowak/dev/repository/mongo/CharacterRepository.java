@@ -6,7 +6,6 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +14,7 @@ import javax.validation.constraints.NotNull;
  * Time: 21:53
  */
 public interface CharacterRepository {
-    @NonNull
     Publisher<Character> list();
 
-    Mono<Boolean> save(@NonNull @NotNull @Valid Character character);
+    Mono<Boolean> save(@NonNull @Valid Character character);
 }

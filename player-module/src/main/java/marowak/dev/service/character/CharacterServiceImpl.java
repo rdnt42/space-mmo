@@ -26,8 +26,8 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Mono<HttpStatus> createCharacter(CharacterRequest request) {
-        Character character = new Character(request.characterName(), 0, request.username());
+    public Mono<HttpStatus> createCharacter(CharacterRequest request, String username) {
+        Character character = new Character(request.characterName(), 0, username);
 
         return characterRepository.save(character)
                 .map(added -> Boolean.TRUE.equals(added) ? HttpStatus.CREATED : HttpStatus.CONFLICT);
