@@ -21,8 +21,8 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharacterRepository characterRepository;
 
     @Override
-    public Publisher<Character> getCharacters() {
-        return characterRepository.list();
+    public Publisher<Character> getCharacters(String username) {
+        return characterRepository.getAll(username);
     }
 
     @Override

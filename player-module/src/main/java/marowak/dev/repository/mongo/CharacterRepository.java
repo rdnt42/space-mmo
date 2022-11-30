@@ -14,7 +14,7 @@ import javax.validation.Valid;
  * Time: 21:53
  */
 public interface CharacterRepository {
-    Publisher<Character> list();
+    Publisher<Character> getAll(String username);
 
     Mono<Boolean> save(@NonNull @Valid Character character);
 }

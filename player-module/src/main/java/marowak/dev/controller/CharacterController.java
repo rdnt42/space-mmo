@@ -31,8 +31,8 @@ public class CharacterController {
     private final CharacterService characterService;
 
     @Get
-    public Publisher<Character> getCharacters() {
-        return characterService.getCharacters();
+    public Publisher<Character> getCharacters(Principal principal) {
+        return characterService.getCharacters(principal.getName());
     }
 
     @Post

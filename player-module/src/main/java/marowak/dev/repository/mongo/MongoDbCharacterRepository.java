@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
+import static com.mongodb.client.model.Filters.eq;
+
 /**
  * Created with IntelliJ IDEA.
  * User: marowak
@@ -25,8 +27,9 @@ public class MongoDbCharacterRepository implements CharacterRepository {
     private final MongoClient mongoClient;
 
     @Override
-    public Publisher<Character> list() {
-        return getCollection().find();
+    public Publisher<Character> getAll(String username) {
+        return getCollection()
+                .find(eq("accountName", username));
     }
 
     @Override
