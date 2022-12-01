@@ -4,8 +4,8 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.dto.PlayerMotion;
-import marowak.dev.dto.PlayerMotionList;
+import marowak.dev.response.player.PlayerMotionListResponse;
+import marowak.dev.response.player.PlayerMotionResponse;
 import marowak.dev.service.PlayerMotionService;
 
 /**
@@ -20,7 +20,7 @@ public class PlayerController {
     private final PlayerMotionService playerMotionService;
 
     @Post("/motion")
-    public PlayerMotionList update(@Body PlayerMotion request) {
+    public PlayerMotionListResponse update(@Body PlayerMotionResponse request) {
         playerMotionService.updatePlayerMotion(request);
 
         return playerMotionService.getPlayersMotions();
