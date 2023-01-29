@@ -28,16 +28,6 @@ flyway:
     default:
       enabled: true
 
-jooq:
-  datasources:
-    default:
-      properties:
-        hibernate:
-          hbm2ddl:
-            auto: update
-          show_sql: true
-      sql-dialect: 'POSTGRES'
-
 datasources:
   default:
     url: 'jdbc:postgresql://localhost:5432/space_mmo'

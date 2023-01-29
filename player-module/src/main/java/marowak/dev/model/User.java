@@ -44,7 +44,6 @@ public class User {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-//    @CreationTimestamp
     private LocalDateTime updatedAt;
 
     @UpdateTimestamp

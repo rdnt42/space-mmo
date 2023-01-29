@@ -15,8 +15,8 @@ services:
   mongo_db:
     image: mongo
     environment:
-      -  MONGO_INITDB_ROOT_USERNAME=${SPACE_MMO_MONGO_DB_USER}
-      -  MONGO_INITDB_ROOT_PASSWORD=${SPACE_MMO_MONGO_DB_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${SPACE_MMO_MONGO_DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${SPACE_MMO_MONGO_DB_PASS}
     ports:
       - "27017:27017"
     volumes:
