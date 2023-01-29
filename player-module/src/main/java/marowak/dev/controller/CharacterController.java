@@ -24,7 +24,7 @@ import java.security.Principal;
  * Time: 22:03
  */
 @RequiredArgsConstructor
-@Secured(SecurityRule.IS_AUTHENTICATED)
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Validated
 @Controller("/characters")
 public class CharacterController {

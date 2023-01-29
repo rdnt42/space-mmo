@@ -21,7 +21,7 @@ import javax.validation.Valid;
  * Time: 23:33
  */
 @RequiredArgsConstructor
-@Secured(SecurityRule.IS_AUTHENTICATED)
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Validated
 @Controller("/accounts")
 public class AccountController {
