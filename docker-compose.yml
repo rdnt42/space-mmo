@@ -1,10 +1,27 @@
 version: "3.9"
 services:
-  travel-storage-manager:
-    build: .
+  mmo_server:
+    image: postgres:15.1
+    depends_on:
+      - "mongo_db"
     environment:
-      TRAVEL_DB_URL: ${TRAVEL_DB_URL}
-      TRAVEL_DB_USERNAME: ${TRAVEL_DB_USERNAME}
-      TRAVEL_DB_PASSWORD: ${TRAVEL_DB_PASSWORD}
+      - POSTGRES_DB=${SPACE_MMO_POSTGRES_DB_URL}
+      - POSTGRES_USER=${SPACE_MMO_POSTGRES_DB_USER}
+      - POSTGRES_PASSWORD=${SPACE_MMO_POSTGRES_DB_PASS}
+      - PGDATA=/var/lib/pgsql_docker/data
     ports:
-      - "8084:8084"
+      - "5432:5432"
+
+  mongo_db:
+    image: mongo
+    environment:
+      -  MONGO_INITDB_ROOT_USERNAME=${SPACE_MMO_MONGO_DB_USER}
+      -  MONGO_INITDB_ROOT_PASSWORD=${SPACE_MMO_MONGO_DB_PASS}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongodata:
