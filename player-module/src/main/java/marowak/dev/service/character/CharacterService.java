@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
  * Time: 21:55
  */
 public interface CharacterService {
-    Publisher<Character> getCharacters();
+    Publisher<Character> getCharacters(String username);
 
-    Mono<HttpStatus> createCharacter(CharacterRequest request);
+    Mono<HttpStatus> createCharacter(CharacterRequest request, String username);
 }

@@ -21,13 +21,13 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharacterRepository characterRepository;
 
     @Override
-    public Publisher<Character> getCharacters() {
-        return characterRepository.list();
+    public Publisher<Character> getCharacters(String username) {
+        return characterRepository.getAll(username);
     }
 
     @Override
-    public Mono<HttpStatus> createCharacter(CharacterRequest request) {
-        Character character = new Character(request.characterName(), 0, request.username());
+    public Mono<HttpStatus> createCharacter(CharacterRequest request, String username) {
+        Character character = new Character(request.characterName(), 0, username);
 
         return characterRepository.save(character)
                 .map(added -> Boolean.TRUE.equals(added) ? HttpStatus.CREATED : HttpStatus.CONFLICT);

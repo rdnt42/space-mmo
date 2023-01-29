@@ -11,7 +11,8 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,14 +27,13 @@ public class MongoDbCharacterRepository implements CharacterRepository {
     private final MongoClient mongoClient;
 
     @Override
-    @NotNull
-    public Publisher<Character> list() {
-        return getCollection().find();
+    public Publisher<Character> getAll(String username) {
+        return getCollection()
+                .find(eq("accountName", username));
     }
 
     @Override
-    @NotNull
-    public Mono<Boolean> save(@NonNull @NotNull @Valid Character character) {
+    public Mono<Boolean> save(@NonNull @Valid Character character) {
         return Mono.from(getCollection().insertOne(character))
                 .map(insertOneResult -> true)
                 .onErrorReturn(false);

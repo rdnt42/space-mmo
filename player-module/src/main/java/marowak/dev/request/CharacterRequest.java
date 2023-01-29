@@ -13,9 +13,6 @@ import javax.validation.constraints.NotBlank;
 @Introspected
 public record CharacterRequest(
         @NotBlank
-        String characterName,
-
-        @NotBlank
-        String username
+        String characterName
 ) {
 }
