@@ -1,5 +1,7 @@
 package marowak.dev.controller.motion;
 
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.OnClose;
@@ -17,6 +19,7 @@ import java.util.function.Predicate;
 
 @Slf4j
 @RequiredArgsConstructor
+@Secured(SecurityRule.IS_ANONYMOUS)
 @ServerWebSocket("/motion/{topic}/{playerName}")
 public class PlayerMotionSocket {
     private final WebSocketBroadcaster broadcaster;

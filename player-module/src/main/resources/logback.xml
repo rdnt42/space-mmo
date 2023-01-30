@@ -10,7 +10,10 @@
         </encoder>
     </appender>
 
+    <logger name="marowak.dev.controller" level="debug"/>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
+
 </configuration>
