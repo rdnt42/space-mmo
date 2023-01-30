@@ -1,6 +1,7 @@
 package marowak.dev.service;
 
-import marowak.dev.response.player.PlayerMotionListResponse;
+import marowak.dev.dto.motion.PlayerMotionRequest;
+import marowak.dev.dto.motion.PlayersMotionListResponse;
 import marowak.dev.response.player.PlayerMotionResponse;
 
 /**
@@ -10,7 +11,7 @@ import marowak.dev.response.player.PlayerMotionResponse;
  * Time: 0:21
  */
 public interface PlayerMotionService {
-    void updatePlayerMotion(PlayerMotionResponse request);
+    void updatePlayerMotion(String playerName, PlayerMotionRequest request);
 
-    PlayerMotionListResponse getPlayersMotions();
+    PlayersMotionListResponse getPlayersMotions(String playerName);
 }

@@ -1,7 +1,9 @@
 package marowak.dev.service;
 
 import jakarta.inject.Singleton;
-import marowak.dev.response.player.PlayerMotionListResponse;
+import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.dto.motion.PlayerMotionRequest;
+import marowak.dev.dto.motion.PlayersMotionListResponse;
 import marowak.dev.response.player.PlayerMotionResponse;
 
 import java.util.List;
@@ -16,19 +18,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Singleton
 public class PlayerMotionServiceImpl implements PlayerMotionService {
-    private final Map<String, PlayerMotionResponse> playerMotionMap = new ConcurrentHashMap<>();
+    private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
 
     @Override
-    public void updatePlayerMotion(PlayerMotionResponse request) {
-        playerMotionMap.put(request.playerName(), request);
+    public void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
+        PlayerMotion playerMotion = new PlayerMotion(playerName, request.motion());
+        playerMotionMap.put(playerName, playerMotion);
     }
 
     @Override
-    public PlayerMotionListResponse getPlayersMotions() {
-        List<PlayerMotionResponse> motions = playerMotionMap.values()
+    public PlayersMotionListResponse getPlayersMotions(String playerName) {
+//        PlayerMotion playerMotion = playerMotionMap.get(playerName);
+        List<PlayerMotion> motions = playerMotionMap.values()
                 .stream()
                 .toList();
 
-        return new PlayerMotionListResponse(motions);
+        return new PlayersMotionListResponse(motions);
     }
 }
