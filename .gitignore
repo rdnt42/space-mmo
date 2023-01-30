@@ -3,3 +3,5 @@
 /player-module/mvnw
 /player-module/mvnw.bat
 /.env
+/client-module/package-lock.json
+/client-module/node_modules/

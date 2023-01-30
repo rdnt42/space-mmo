@@ -1,0 +1,9 @@
+{
+  "name": "client-module",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "socket.io-client": "^4.5.4",
+    "ws": "^8.12.0"
+  }
+}
