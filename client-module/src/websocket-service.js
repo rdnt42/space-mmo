@@ -1,4 +1,5 @@
 import { WebSocket } from "ws"
+import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
 
 const webSocket = new WebSocket("ws://localhost:8082/motion/topic/pers2");
 
@@ -8,6 +9,8 @@ webSocket.onclose = function () { alert("WebSocket connection closed") };
 function sendMessage(message) {
     if (message !== "") {
         webSocket.send(message);
+        console.log("Send message: ", message);
         // id("message").value = "";
     }
 }
+

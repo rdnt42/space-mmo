@@ -1,24 +1,15 @@
 //Aliases
-const Application = PIXI.Application,
-    loader = PIXI.Loader.shared,
-    resources = PIXI.Loader.shared.resources,
-    Sprite = PIXI.Sprite;
+// import {sendMotion} from "./websocket-service.js";
+import {Sprite, Application} from 'pixi.js';
+
 
 //Create a Pixi Application
-const app = new PIXI.Application({width: 222, height: 222});
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
-app.renderer.autoDensity = true;
-app.resizeTo = window;
+const app = new Application({autoDensity: true, resizeTo: window});
 
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
-loader
-    .add("images/spaceship.png")
-    .load(setup);
-loader.onProgress
-    .add(loadProgressHandler);
+let spaceship = Sprite.from("../images/spaceship.png");
 
 function loadProgressHandler(loader, resource) {
 
@@ -33,7 +24,8 @@ function loadProgressHandler(loader, resource) {
     //console.log("loading: " + resource.name);
 }
 
-let spaceship, state;
+let state;
+
 function setup() {
     console.log("All files loaded");
     spaceshipInit();
@@ -48,9 +40,6 @@ function gameLoop(delta) {
 }
 
 function spaceshipInit() {
-    spaceship = new PIXI.Sprite(
-        PIXI.Loader.shared.resources["images/spaceship.png"].texture
-    );
 
     app.stage.addChild(spaceship);
 
@@ -128,6 +117,7 @@ function keyBoardInit() {
         spaceship.vx = -5;
         spaceship.vy = 0;
         spaceship.rotation = 4.712;
+        // sendMotion(spaceship.x, spaceship.y);
     };
 
     //Left arrow key `release` method
@@ -145,6 +135,7 @@ function keyBoardInit() {
         spaceship.vy = -5;
         spaceship.vx = 0;
         spaceship.rotation = 0;
+        // sendMotion(spaceship.x, spaceship.y);
     };
     up.release = () => {
         if (!down.isDown && spaceship.vx === 0) {
@@ -157,6 +148,7 @@ function keyBoardInit() {
         spaceship.vx = 5;
         spaceship.vy = 0;
         spaceship.rotation = 1.571;
+        // sendMotion(spaceship.x, spaceship.y);
     };
     right.release = () => {
         if (!left.isDown && spaceship.vy === 0) {
@@ -169,6 +161,7 @@ function keyBoardInit() {
         spaceship.vy = 5;
         spaceship.vx = 0;
         spaceship.rotation = 3.142;
+        // sendMotion(spaceship.x, spaceship.y);
     };
     down.release = () => {
         if (!up.isDown && spaceship.vx === 0) {
