@@ -1,30 +1,19 @@
 //Aliases
-// import {sendMotion} from "./websocket-service.js";
-import {Sprite, Application} from 'pixi.js';
+import * as socket from "./websocket-service.js";
+import * as pixi from './libs/pixi.min.js';
 
 
 //Create a Pixi Application
-const app = new Application({autoDensity: true, resizeTo: window});
+const app = new pixi.Application({autoDensity: true, resizeTo: window});
 
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
-let spaceship = Sprite.from("../images/spaceship.png");
-
-function loadProgressHandler(loader, resource) {
-
-    //Display the file `url` currently being loaded
-    console.log("loading: " + resource.url);
-
-    //Display the percentage of files currently loaded
-    console.log("progress: " + loader.progress + "%");
-
-    //If you gave your files names as the first argument
-    //of the `add` method, you can access them like this
-    //console.log("loading: " + resource.name);
-}
-
+let spaceship = pixi.Sprite.from("../images/spaceship.png");
 let state;
+
+setup();
+
 
 function setup() {
     console.log("All files loaded");
@@ -117,7 +106,7 @@ function keyBoardInit() {
         spaceship.vx = -5;
         spaceship.vy = 0;
         spaceship.rotation = 4.712;
-        // sendMotion(spaceship.x, spaceship.y);
+        socket.sendMotion(spaceship.x, spaceship.y);
     };
 
     //Left arrow key `release` method
@@ -135,7 +124,7 @@ function keyBoardInit() {
         spaceship.vy = -5;
         spaceship.vx = 0;
         spaceship.rotation = 0;
-        // sendMotion(spaceship.x, spaceship.y);
+        socket.sendMotion(spaceship.x, spaceship.y);
     };
     up.release = () => {
         if (!down.isDown && spaceship.vx === 0) {
@@ -148,7 +137,7 @@ function keyBoardInit() {
         spaceship.vx = 5;
         spaceship.vy = 0;
         spaceship.rotation = 1.571;
-        // sendMotion(spaceship.x, spaceship.y);
+        socket.sendMotion(spaceship.x, spaceship.y);
     };
     right.release = () => {
         if (!left.isDown && spaceship.vy === 0) {
@@ -161,7 +150,7 @@ function keyBoardInit() {
         spaceship.vy = 5;
         spaceship.vx = 0;
         spaceship.rotation = 3.142;
-        // sendMotion(spaceship.x, spaceship.y);
+        socket.sendMotion(spaceship.x, spaceship.y);
     };
     down.release = () => {
         if (!up.isDown && spaceship.vx === 0) {
