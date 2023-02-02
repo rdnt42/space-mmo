@@ -8,7 +8,7 @@ webSocket.onopen = function () { console.log("WebSocket connection opened") };
 
 export function sendMotion(x, y) {
     const motion = new MotionRequest(x, y);
-    const request = new PlayerMotionRequest(false, motion);
+    const request = new PlayerMotionRequest(true, motion);
 
     sendMessage(request);
 }
@@ -16,9 +16,8 @@ export function sendMotion(x, y) {
 //Send a message if it's not empty, then clear the input field
 function sendMessage(message) {
     if (message !== "") {
-        webSocket.send(message);
+        webSocket.send(JSON.stringify(message));
         console.log("Send message: ", message);
-        // id("message").value = "";
     }
 }
 
