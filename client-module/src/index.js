@@ -2,20 +2,17 @@
 import * as socket from "./websocket-service.js";
 import * as pixi from './libs/pixi.min.js';
 
-
 //Create a Pixi Application
 const app = new pixi.Application({autoDensity: true, resizeTo: window});
 
 //Add the canvas that Pixi automatically created for you to the HTML document
+createConnectInfo();
 document.body.appendChild(app.view);
-
 let spaceship = pixi.Sprite.from("../images/spaceship.png");
+
 let state;
 
-setup();
-
-
-function setup() {
+function playerSetup() {
     console.log("All files loaded");
     spaceshipInit();
     keyBoardInit();
@@ -29,7 +26,6 @@ function gameLoop(delta) {
 }
 
 function spaceshipInit() {
-
     app.stage.addChild(spaceship);
 
     spaceship.position.set(250, 500);
@@ -160,4 +156,27 @@ function keyBoardInit() {
 
     //Set the game state
     state = play;
+}
+
+function createConnectInfo() {
+    console.log("createConnectInfo");
+    let input = document.createElement("input");
+    input.innerHTML = "InputText";
+    input.type = "text";
+    input.name = "inputText";
+    document.body.appendChild(input);
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Submit";
+    btn.type = "submit";
+    btn.name = "formBtn";
+    document.body.appendChild(btn);
+    btn.onclick = function () {
+        console.log("playerName: " + input.value)
+        socket.initSocketConnection(input.value);
+        input.remove();
+        btn.remove();
+
+        playerSetup();
+    };
 }
