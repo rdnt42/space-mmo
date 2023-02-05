@@ -3,7 +3,7 @@ import * as render from "./render-service.js";
 
 let webSocket;
 export function initSocketConnection(playerName) {
-    webSocket = new WebSocket("ws://localhost:8082/motion/topic/" + playerName);
+    webSocket = new WebSocket("ws://localhost:8082/motion/" + playerName);
     webSocket.onclose = onClose();
     webSocket.onopen = onOpen();
     webSocket.onmessage = onMessage();
@@ -17,7 +17,7 @@ function onClose() {
 function onOpen() {
     return function (event) {
         console.log("WebSocket connection opened", event);
-        sendMotion(0, 0);
+        // sendMotion(0, 0, false);
     };
 }
 
@@ -29,9 +29,9 @@ function onMessage() {
     };
 }
 
-export function sendMotion(x, y) {
+export function sendMotion(x, y, isUpdate) {
     const motion = new MotionRequest(x, y);
-    const request = new PlayerMotionRequest(true, motion);
+    const request = new PlayerMotionRequest(isUpdate, motion);
 
     sendMessage(request);
 }

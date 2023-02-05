@@ -14,4 +14,6 @@ public interface PlayerMotionService {
     void updatePlayerMotion(String playerName, PlayerMotionRequest request);
 
     PlayersMotionListResponse getPlayersMotions(String playerName);
+
+    void initPlayerMotion(String playerName);
 }

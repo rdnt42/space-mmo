@@ -20,24 +20,25 @@ import java.util.function.Predicate;
 @Slf4j
 @RequiredArgsConstructor
 @Secured(SecurityRule.IS_ANONYMOUS)
-@ServerWebSocket("/motion/{topic}/{playerName}")
+@ServerWebSocket("/motion/{playerName}")
 public class PlayerMotionSocket {
     private final WebSocketBroadcaster broadcaster;
     private final PlayerMotionService playerMotionService;
 
     @OnOpen
-    public Publisher<String> onOpen(String topic, String playerName, WebSocketSession session) {
-        debugLog("onOpen", topic, playerName, session);
+    public Publisher<PlayersMotionListResponse> onOpen(String playerName, WebSocketSession session) {
+        debugLog("onOpen", playerName, session);
 
-        return broadcaster.broadcast(String.format("[%s] Joined %s!", playerName, topic),
-                isValid(topic, session, playerName));
+        playerMotionService.initPlayerMotion(playerName);
+        PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+
+        return broadcaster.broadcast(response, isValid(session, playerName));
     }
 
     @OnMessage
-    public Publisher<PlayersMotionListResponse> onMessage(String playerName, String topic,
-                                                          PlayerMotionRequest request, WebSocketSession session) {
-
-        debugLog("onMessage", topic, playerName, session);
+    public Publisher<PlayersMotionListResponse> onMessage(String playerName, PlayerMotionRequest request,
+                                                          WebSocketSession session) {
+        debugLog("onMessage", playerName, session);
 
         if (request.isUpdate()) {
             playerMotionService.updatePlayerMotion(playerName, request);
@@ -45,25 +46,24 @@ public class PlayerMotionSocket {
 
         PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
 
-        return broadcaster.broadcast(response, isValid(topic, session, playerName));
+        return broadcaster.broadcast(response, isValid(session, playerName));
     }
 
     @OnClose
-    public Publisher<String> onClose(String playerName, String topic, WebSocketSession session) {
-        debugLog("onClose", topic, playerName, session);
+    public Publisher<String> onClose(String playerName, WebSocketSession session) {
+        debugLog("onClose", playerName, session);
 
-//        playerMotionService.disconnectPlayer(playerName);
-        return broadcaster.broadcast(String.format("[%s] Leaving %s!", playerName, topic),
-                isValid(topic, session, playerName));
+        return broadcaster.broadcast(String.format("[%s] Leaving!", playerName), isValid(session, playerName));
     }
 
-    private Predicate<WebSocketSession> isValid(String topic, WebSocketSession session, String playerName) {
-        return s -> s != session &&
-                topic.equalsIgnoreCase(s.getUriVariables().get("topic", String.class, null)) &&
-                playerName.equalsIgnoreCase(s.getUriVariables().get("playerName", String.class, null));
+    private Predicate<WebSocketSession> isValid(WebSocketSession session, String playerName) {
+//        return s -> s != session &&
+//                topic.equalsIgnoreCase(s.getUriVariables().get("topic", String.class, null)) &&
+//                playerName.equalsIgnoreCase(s.getUriVariables().get("playerName", String.class, null));
+        return s -> true;
     }
 
-    private void debugLog(String event, String topic, String playerName, WebSocketSession session) {
-        log.debug("Event {}, session id: {}, playerName: {}, topic: {}", event, session.getId(), playerName, topic);
+    private void debugLog(String event, String playerName, WebSocketSession session) {
+        log.debug("Event {}, session id: {}, playerName: {}", event, session.getId(), playerName);
     }
 }

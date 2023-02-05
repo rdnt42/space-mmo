@@ -1,6 +1,7 @@
 package marowak.dev.service;
 
 import jakarta.inject.Singleton;
+import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.dto.motion.PlayerMotionRequest;
 import marowak.dev.dto.motion.PlayersMotionListResponse;
@@ -17,6 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Singleton
 public class PlayerMotionServiceImpl implements PlayerMotionService {
+    // FIXME just for training
+    private final int MAP_HEIGHT = 10000;
+    private final int MAP_WIDTH = 10000;
+
     private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
 
     @Override
@@ -27,11 +32,22 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public PlayersMotionListResponse getPlayersMotions(String playerName) {
-//        PlayerMotion playerMotion = playerMotionMap.get(playerName);
         List<PlayerMotion> motions = playerMotionMap.values()
                 .stream()
                 .toList();
 
         return new PlayersMotionListResponse(motions);
+    }
+
+    @Override
+    public void initPlayerMotion(String playerName) {
+        playerMotionMap.put(playerName, getInitMotion(playerName));
+    }
+
+
+    private PlayerMotion getInitMotion(String playerName) {
+        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+
+        return new PlayerMotion(playerName, motion);
     }
 }
