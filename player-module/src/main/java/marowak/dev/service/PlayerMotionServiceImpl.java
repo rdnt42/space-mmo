@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.dto.motion.PlayerMotionRequest;
 import marowak.dev.dto.motion.PlayersMotionListResponse;
-import marowak.dev.response.player.PlayerMotionResponse;
 
 import java.util.List;
 import java.util.Map;

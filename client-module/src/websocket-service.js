@@ -1,4 +1,5 @@
 import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
+import * as render from "./render-service.js";
 
 let webSocket;
 export function initSocketConnection(playerName) {
@@ -14,14 +15,17 @@ function onClose() {
     };
 }
 function onOpen() {
-    return function (p1) {
-        console.log("WebSocket connection opened");
+    return function (event) {
+        console.log("WebSocket connection opened", event);
+        sendMotion(0, 0);
     };
 }
 
 function onMessage() {
     return function (event) {
         console.log("get message", event);
+        let response = JSON.parse(event.data);
+        render.update(response.playerMotions);
     };
 }
 
