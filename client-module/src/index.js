@@ -1,4 +1,5 @@
 import * as socket from "./websocket-service.js";
+import * as render from "./render-service.js"
 
 createConnectInfo();
 
@@ -145,5 +146,7 @@ function createConnectInfo() {
         socket.initSocketConnection(input.value);
         input.remove();
         btn.remove();
+
+        render.initRender();
     };
 }

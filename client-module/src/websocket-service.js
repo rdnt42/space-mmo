@@ -25,7 +25,7 @@ function onMessage() {
     return function (event) {
         console.log("get message", event);
         let response = JSON.parse(event.data);
-        render.update(response.playerMotions);
+        render.update(response);
     };
 }
 

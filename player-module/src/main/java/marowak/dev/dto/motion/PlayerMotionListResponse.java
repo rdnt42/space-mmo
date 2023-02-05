@@ -2,7 +2,8 @@ package marowak.dev.dto.motion;
 
 import java.util.List;
 
-public record PlayersMotionListResponse(
+public record PlayerMotionListResponse(
+        Motion motion,
         List<PlayerMotion> playerMotions
 ) {
 }

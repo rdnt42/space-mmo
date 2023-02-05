@@ -1,36 +1,50 @@
 import * as pixi from './libs/pixi.min.js';
 
-const app = new pixi.Application();
-document.body.appendChild(app.view);
-
-const sprites = new pixi.ParticleContainer(10000, {
-    scale: true,
-    position: true,
-    rotation: true,
-    uvs: true,
-    alpha: true,
+const app = new pixi.Application({
     resizeTo: window
 });
-app.stage.addChild(sprites);
+
+export function initRender() {
+    document.body.appendChild(app.view);
+
+    const sprites = new pixi.ParticleContainer(10000, {
+        scale: true,
+        position: true,
+        rotation: true,
+        uvs: true,
+        alpha: true
+    });
+    app.stage.addChild(sprites);
+}
 
 // create an array to store all the sprites
 const spaceShips = new Map();
 const newStateSpaceShips = new Map();
 
-export function update(playerList) {
-    for(let player of playerList) {
-        let spaceShip = spaceShips.get(player.playerName);
-        if (spaceShip !== undefined) {
-            spaceShip.position.set(player.motion.x, player.motion.y);
-        } else {
-            spaceShip = pixi.Sprite.from("../images/spaceship.png");
-            spaceShip.position.set(window.innerHeight / 2, window.innerWidth / 2);
-            spaceShip.anchor.set(0.5, 0.5);
+export function update(playerResponse) {
+    let diffX = playerResponse.motion.x;
+    let diffY = playerResponse.motion.y;
 
+    for (let player of playerResponse.playerMotions) {
+        let spaceShip = spaceShips.get(player.playerName);
+        if (spaceShip === undefined) {
+            spaceShip = pixi.Sprite.from("../images/spaceship.png");
+            spaceShip.anchor.set(0.5, 0.5);
             app.stage.addChild(spaceShip);
             spaceShips.set(player.playerName, spaceShip);
         }
+
+        spaceShip.position.set(getX(player.motion.x, diffX), getY(player.motion.y, diffY));
+        console.log("y", spaceShip.anchor.y);
     }
+}
+
+function getX(currX, diffX) {
+    return currX - diffX + (window.innerWidth / 2);
+}
+
+function getY(currY, diffY) {
+    return currY - diffY + window.innerHeight / 2;
 }
 
 
@@ -46,29 +60,6 @@ export function update(playerList) {
 let tick = 0;
 
 app.ticker.add(() => {
-    // iterate through the sprites and update their position
-    for (let i = 0; i < spaceShips.length; i++) {
-        const spaceShip = spaceShips[i];
-        dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05;
-        dude.direction += dude.turningSpeed * 0.01;
-        dude.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
-        dude.y += Math.cos(dude.direction) * (dude.speed * dude.scale.y);
-        dude.rotation = -dude.direction + Math.PI;
-
-        // wrap the maggots
-        if (dude.x < dudeBounds.x) {
-            dude.x += dudeBounds.width;
-        } else if (dude.x > dudeBounds.x + dudeBounds.width) {
-            dude.x -= dudeBounds.width;
-        }
-
-        if (dude.y < dudeBounds.y) {
-            dude.y += dudeBounds.height;
-        } else if (dude.y > dudeBounds.y + dudeBounds.height) {
-            dude.y -= dudeBounds.height;
-        }
-    }
-
     // increment the ticker
     tick += 0.1;
 });
@@ -77,10 +68,4 @@ app.ticker.add(() => {
 export function renderOtherPlayers(playerList) {
     // app.stage.removeChildren();
 
-    const players = JSON.parse(playerList);
-    console.log("players", players.playerMotions);
-
-    for(let player of players.playerMotions) {
-        console.log("player", player.playerName);
-    }
 }

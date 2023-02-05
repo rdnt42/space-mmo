@@ -1,8 +1,7 @@
 package marowak.dev.service;
 
 import marowak.dev.dto.motion.PlayerMotionRequest;
-import marowak.dev.dto.motion.PlayersMotionListResponse;
-import marowak.dev.response.player.PlayerMotionResponse;
+import marowak.dev.dto.motion.PlayerMotionListResponse;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +12,7 @@ import marowak.dev.response.player.PlayerMotionResponse;
 public interface PlayerMotionService {
     void updatePlayerMotion(String playerName, PlayerMotionRequest request);
 
-    PlayersMotionListResponse getPlayersMotions(String playerName);
+    PlayerMotionListResponse getPlayersMotions(String playerName);
 
     void initPlayerMotion(String playerName);
 }

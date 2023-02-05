@@ -11,7 +11,7 @@ import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotionRequest;
-import marowak.dev.dto.motion.PlayersMotionListResponse;
+import marowak.dev.dto.motion.PlayerMotionListResponse;
 import marowak.dev.service.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -26,25 +26,25 @@ public class PlayerMotionSocket {
     private final PlayerMotionService playerMotionService;
 
     @OnOpen
-    public Publisher<PlayersMotionListResponse> onOpen(String playerName, WebSocketSession session) {
+    public Publisher<PlayerMotionListResponse> onOpen(String playerName, WebSocketSession session) {
         debugLog("onOpen", playerName, session);
 
         playerMotionService.initPlayerMotion(playerName);
-        PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+        PlayerMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
 
         return broadcaster.broadcast(response, isValid(session, playerName));
     }
 
     @OnMessage
-    public Publisher<PlayersMotionListResponse> onMessage(String playerName, PlayerMotionRequest request,
-                                                          WebSocketSession session) {
+    public Publisher<PlayerMotionListResponse> onMessage(String playerName, PlayerMotionRequest request,
+                                                         WebSocketSession session) {
         debugLog("onMessage", playerName, session);
 
         if (request.isUpdate()) {
             playerMotionService.updatePlayerMotion(playerName, request);
         }
 
-        PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+        PlayerMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
 
         return broadcaster.broadcast(response, isValid(session, playerName));
     }
