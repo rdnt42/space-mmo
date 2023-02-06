@@ -15,4 +15,6 @@ public interface PlayerMotionService {
     PlayerMotionListResponse getPlayersMotions(String playerName);
 
     void initPlayerMotion(String playerName);
+
+    void deletePlayer(String playerName);
 }

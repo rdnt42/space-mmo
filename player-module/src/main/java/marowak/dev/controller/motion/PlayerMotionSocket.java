@@ -52,14 +52,13 @@ public class PlayerMotionSocket {
     @OnClose
     public Publisher<String> onClose(String playerName, WebSocketSession session) {
         debugLog("onClose", playerName, session);
+        playerMotionService.deletePlayer(playerName);
 
         return broadcaster.broadcast(String.format("[%s] Leaving!", playerName), isValid(session, playerName));
     }
 
     private Predicate<WebSocketSession> isValid(WebSocketSession session, String playerName) {
-//        return s -> s != session &&
-//                topic.equalsIgnoreCase(s.getUriVariables().get("topic", String.class, null)) &&
-//                playerName.equalsIgnoreCase(s.getUriVariables().get("playerName", String.class, null));
+        // TODO need validation
         return s -> true;
     }
 
