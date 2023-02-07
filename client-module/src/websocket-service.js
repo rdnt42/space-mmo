@@ -1,5 +1,5 @@
-import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
 import * as render from "./render-service.js";
+import * as motion from "./motion-service.js"
 
 let webSocket;
 export function initSocketConnection(playerName) {
@@ -17,7 +17,6 @@ function onClose() {
 function onOpen() {
     return function (event) {
         console.log("WebSocket connection opened", event);
-        // sendMotion(0, 0, false);
     };
 }
 
@@ -26,17 +25,11 @@ function onMessage() {
         console.log("get message", event);
         let response = JSON.parse(event.data);
         render.update(response);
+        motion.update(response)
     };
 }
 
-export function sendMotion(x, y, isUpdate) {
-    const motion = new MotionRequest(x, y);
-    const request = new PlayerMotionRequest(isUpdate, motion);
-
-    sendMessage(request);
-}
-
-function sendMessage(message) {
+export function sendMessage(message) {
     if (message !== "") {
         webSocket.send(JSON.stringify(message));
         console.log("Send message: ", message);
