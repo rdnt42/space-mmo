@@ -10,8 +10,9 @@ import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.dto.motion.PlayerMotionRequest;
-import marowak.dev.dto.motion.PlayerMotionListResponse;
+import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerMotionResponse;
+import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -26,27 +27,27 @@ public class PlayerMotionSocket {
     private final PlayerMotionService playerMotionService;
 
     @OnOpen
-    public Publisher<PlayerMotionListResponse> onOpen(String playerName, WebSocketSession session) {
+    public Publisher<PlayersMotionListResponse> onOpen(String playerName, WebSocketSession session) {
         debugLog("onOpen", playerName, session);
 
         playerMotionService.initPlayerMotion(playerName);
-        PlayerMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+        PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
 
-        return broadcaster.broadcast(response, isValid(session, playerName));
+        return broadcaster.broadcast(response, filterPlayer(session, playerName));
     }
 
     @OnMessage
-    public Publisher<PlayerMotionListResponse> onMessage(String playerName, PlayerMotionRequest request,
-                                                         WebSocketSession session) {
+    public Publisher<PlayerMotionResponse> onMessage(String playerName, PlayerMotionRequest request,
+                                                          WebSocketSession session) {
         debugLog("onMessage", playerName, session);
 
         if (request.isUpdate()) {
             playerMotionService.updatePlayerMotion(playerName, request);
         }
 
-        PlayerMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+        PlayerMotionResponse response = playerMotionService.getPlayerMotion(playerName);
 
-        return broadcaster.broadcast(response, isValid(session, playerName));
+        return broadcaster.broadcast(response);
     }
 
     @OnClose
@@ -54,12 +55,13 @@ public class PlayerMotionSocket {
         debugLog("onClose", playerName, session);
         playerMotionService.deletePlayer(playerName);
 
-        return broadcaster.broadcast(String.format("[%s] Leaving!", playerName), isValid(session, playerName));
+        return broadcaster.broadcast(String.format("[%s] Leaving!", playerName));
     }
 
-    private Predicate<WebSocketSession> isValid(WebSocketSession session, String playerName) {
-        // TODO need validation
-        return s -> true;
+    private Predicate<WebSocketSession> filterPlayer(WebSocketSession session, String playerName) {
+        return s -> s != session &&
+                playerName.equalsIgnoreCase(s.getUriVariables()
+                        .get("playerName", String.class, null));
     }
 
     private void debugLog(String event, String playerName, WebSocketSession session) {

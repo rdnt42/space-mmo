@@ -3,8 +3,10 @@ package marowak.dev.service;
 import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.dto.motion.PlayerMotionRequest;
-import marowak.dev.dto.motion.PlayerMotionListResponse;
+import marowak.dev.enums.MessageCommand;
+import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerMotionResponse;
+import marowak.dev.response.player.PlayersMotionListResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -31,14 +33,19 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public PlayerMotionListResponse getPlayersMotions(String playerName) {
+    public PlayersMotionListResponse getPlayersMotions(String playerName) {
         List<PlayerMotion> motions = playerMotionMap.values()
                 .stream()
                 .toList();
 
         PlayerMotion playerMotion = playerMotionMap.get(playerName);
 
-        return new PlayerMotionListResponse(playerMotion.motion(), motions);
+        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_ALL, playerMotion.motion(), motions);
+    }
+
+    @Override
+    public PlayerMotionResponse getPlayerMotion(String playerName) {
+        return new PlayerMotionResponse(MessageCommand.CMD_UPDATE_PLAYER, playerMotionMap.get(playerName));
     }
 
     @Override
