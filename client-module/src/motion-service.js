@@ -112,6 +112,7 @@ export function keyBoardInit() {
     };
 }
 
+
 function sendMotion(x, y, isUpdate) {
     const motion = new MotionRequest(x, y);
     const request = new PlayerMotionRequest(isUpdate, motion);
@@ -120,6 +121,16 @@ function sendMotion(x, y, isUpdate) {
 }
 
 export function update(playerResponse) {
-    player.x = playerResponse.motion.x;
-    player.y = playerResponse.motion.y;
+    if(playerResponse.playerMotion.playerName !== player.playerName) {
+        return;
+    }
+    player.prevX = player.x;
+    player.prevY = player.y;
+
+    player.x = playerResponse.playerMotion.motion.x;
+    player.y = playerResponse.playerMotion.motion.y;
+}
+
+export function sendCurrentMotion() {
+    sendMotion(player.x, player.y, true);
 }

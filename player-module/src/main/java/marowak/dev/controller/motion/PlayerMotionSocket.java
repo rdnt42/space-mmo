@@ -11,6 +11,7 @@ import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerLeavingResponse;
 import marowak.dev.response.player.PlayerMotionResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.PlayerMotionService;
@@ -59,7 +60,7 @@ public class PlayerMotionSocket {
     }
 
     private Predicate<WebSocketSession> filterPlayer(WebSocketSession session, String playerName) {
-        return s -> s != session &&
+        return s -> s.getId().equals(session.getId()) &&
                 playerName.equalsIgnoreCase(s.getUriVariables()
                         .get("playerName", String.class, null));
     }

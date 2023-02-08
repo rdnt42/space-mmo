@@ -5,6 +5,7 @@ import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerLeavingResponse;
 import marowak.dev.response.player.PlayerMotionResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 
@@ -40,12 +41,12 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
         PlayerMotion playerMotion = playerMotionMap.get(playerName);
 
-        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_ALL, playerMotion.motion(), motions);
+        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_ALL, playerMotion, motions);
     }
 
     @Override
     public PlayerMotionResponse getPlayerMotion(String playerName) {
-        return new PlayerMotionResponse(MessageCommand.CMD_UPDATE_PLAYER, playerMotionMap.get(playerName));
+        return new PlayerMotionResponse(MessageCommand.CMD_UPDATE_OTHER_PLAYER, playerMotionMap.get(playerName));
     }
 
     @Override
@@ -54,8 +55,10 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public void deletePlayer(String playerName) {
+    public PlayerLeavingResponse leavingPlayer(String playerName) {
         playerMotionMap.remove(playerName);
+
+        return new PlayerLeavingResponse(MessageCommand.CMD_LEAVING_PLAYER, playerName);
     }
 
     private PlayerMotion getInitMotion(String playerName) {
