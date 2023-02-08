@@ -1,7 +1,7 @@
 package marowak.dev.service;
 
-import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerLeavingResponse;
 import marowak.dev.response.player.PlayerMotionResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 
@@ -20,5 +20,5 @@ public interface PlayerMotionService {
 
     void initPlayerMotion(String playerName);
 
-    void deletePlayer(String playerName);
+    PlayerLeavingResponse leavingPlayer(String playerName);
 }

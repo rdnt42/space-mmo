@@ -52,11 +52,11 @@ public class PlayerMotionSocket {
     }
 
     @OnClose
-    public Publisher<String> onClose(String playerName, WebSocketSession session) {
+    public Publisher<PlayerLeavingResponse> onClose(String playerName, WebSocketSession session) {
         debugLog("onClose", playerName, session);
-        playerMotionService.deletePlayer(playerName);
+        PlayerLeavingResponse response = playerMotionService.leavingPlayer(playerName);
 
-        return broadcaster.broadcast(String.format("[%s] Leaving!", playerName));
+        return broadcaster.broadcast(response);
     }
 
     private Predicate<WebSocketSession> filterPlayer(WebSocketSession session, String playerName) {
