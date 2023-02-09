@@ -59,9 +59,8 @@ export function keyBoardInit() {
     //Left arrow key `press` method
     left.press = () => {
         //Change the cat's velocity when the key is pressed
-        player.x += -5;
         // spaceship.rotation = 4.712;
-        sendMotion(player.x, player.y, true);
+        sendMotion(player.x - 15, player.y, true);
     };
 
     //Left arrow key `release` method
@@ -76,9 +75,8 @@ export function keyBoardInit() {
 
     //Up
     up.press = () => {
-        player.y += -5;
         // spaceship.rotation = 0;
-        sendMotion(player.x, player.y, true);
+        sendMotion(player.x, player.y - 15, true);
     };
     up.release = () => {
         // if (!down.isDown && spaceship.vx === 0) {
@@ -88,9 +86,8 @@ export function keyBoardInit() {
 
     //Right
     right.press = () => {
-        player.x += 5;
         // spaceship.rotation = 1.571;
-        sendMotion(player.x, player.y, true);
+        sendMotion(player.x + 15, player.y, true);
     };
     right.release = () => {
         // if (!left.isDown && spaceship.vy === 0) {
@@ -100,9 +97,8 @@ export function keyBoardInit() {
 
     //Down
     down.press = () => {
-        player.y += 5;
         // spaceship.rotation = 3.142;
-        sendMotion(player.x, player.y, true);
+        sendMotion(player.x, player.y + 15, true);
 
     };
     down.release = () => {

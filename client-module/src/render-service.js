@@ -21,7 +21,7 @@ export function initRender() {
 // create an array to store all the sprites
 const spaceShips = new Map();
 
-export function updateAll(players) {
+export function updateCurrentPlayer(players) {
     console.log("players", players)
 
     for (let playerMotion of players.playerMotions) {
@@ -32,15 +32,16 @@ export function updateAll(players) {
 export function updateSingle(singlePlayer) {
     console.log("playerMotion", singlePlayer.playerMotion);
     if (singlePlayer.playerMotion.playerName === player.playerName) {
+        let diffX = player.getDiffX();
+        let diffY = player.getDiffY();
+
         for (let [key, value] of spaceShips) {
             if (key !== player.playerName) {
-                value.position.set(value.x + player.getDiffX(), value.y + player.getDiffY());
+                value.position.set(value.x - diffX, value.y - diffY);
             }
         }
     } else {
-        let absX = player.x;
-        let absY = player.y;
-        updateOrCreatePlayer(singlePlayer.playerMotion, absX, absY);
+        updateOrCreatePlayer(singlePlayer.playerMotion, player.x, player.y);
     }
 }
 

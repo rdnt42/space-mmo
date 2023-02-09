@@ -13,10 +13,10 @@ export function executeCommand(response) {
 
     let command = obj.command;
     switch (command) {
-        case "CMD_UPDATE_ALL":
-            console.log("CMD_UPDATE_ALL");
+        case "CMD_UPDATE_CURRENT_PLAYER":
+            console.log("CMD_UPDATE_CURRENT_PLAYER");
             motion.update(obj);
-            render.updateAll(obj);
+            render.updateCurrentPlayer(obj);
 
             // TODO move to another service
             motion.sendCurrentMotion();

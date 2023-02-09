@@ -41,7 +41,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
         PlayerMotion playerMotion = playerMotionMap.get(playerName);
 
-        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_ALL, playerMotion, motions);
+        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, playerMotion, motions);
     }
 
     @Override
