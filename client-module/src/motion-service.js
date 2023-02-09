@@ -2,9 +2,6 @@ import * as socket from "./websocket-service.js";
 import player from "./obj/Player.js"
 import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
 
-let vx = 0;
-let vy = 0;
-
 function keyboard(value) {
     const key = {};
     key.value = value;
@@ -47,44 +44,35 @@ export function keyBoardInit() {
         down = keyboard("s"),
         space = keyboard(" ");
 
-
-    //Left arrow key `press` method
-    left.press = () => {
-        // spaceship.rotation = 4.712;
-        if (vx > -20) {
-            vx -= 1;
+    //Down
+    down.press = () => {
+        if (player.speed > -10) {
+            player.speed -= 1;
         }
     };
 
     //Up
     up.press = () => {
-        // spaceship.rotation = 0;
-        if (vy > -20) {
-            vy -= 1;
+        if (player.speed < 10) {
+            player.speed += 1;
         }
-
     };
 
     //Right
     right.press = () => {
-        // spaceship.rotation = 1.571;
-        if (vx < 20) {
-            vx += 1;
-        }
+        player.turnRight();
     };
 
-    //Down
-    down.press = () => {
-        // spaceship.rotation = 3.142;
-        if (vy < 20) {
-            vy += 1;
-        }
+    //Left arrow key `press` method
+    left.press = () => {
+        player.turnLeft();
     };
 
     space.press = () => {
-        vx = 0;
-        vy = 0;
+        player.speed = 0;
     }
+
+    setInterval(onTimerTick, 16); // 65,5 FPS
 }
 
 
@@ -110,10 +98,11 @@ export function sendCurrentMotion() {
     sendMotion(player.x, player.y, true);
 }
 
-setInterval(onTimerTick, 16); // 65,5 FPS
-
 function onTimerTick() {
-    if (vx !== 0 || vy !== 0) {
-        sendMotion(player.x + vx, player.y + vy, true);
+    if (player.speed !== 0) {
+        // FIXME rework formula
+        let newX = player.x + Math.cos(player.angle) * player.speed;
+        let newY = player.y - Math.sin(player.angle) * player.speed;
+        sendMotion(newX, newY, true);
     }
 }

@@ -14,7 +14,6 @@ export function executeCommand(response) {
     let command = obj.command;
     switch (command) {
         case "CMD_UPDATE_CURRENT_PLAYER":
-            console.log("CMD_UPDATE_CURRENT_PLAYER");
             motion.update(obj);
             render.updateCurrentPlayer(obj);
 
@@ -22,12 +21,10 @@ export function executeCommand(response) {
             motion.sendCurrentMotion();
             break;
         case "CMD_UPDATE_OTHER_PLAYER":
-            console.log("CMD_UPDATE_OTHER_PLAYER");
             motion.update(obj);
             render.updateSingle(obj);
             break;
         case "CMD_LEAVING_PLAYER":
-            console.log("CMD_LEAVING_PLAYER");
             break;
         default:
             console.error("Unexpected command: " + command);
