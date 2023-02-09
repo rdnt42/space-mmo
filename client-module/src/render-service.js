@@ -5,6 +5,12 @@ const app = new pixi.Application({
     resizeTo: window
 });
 
+const locationText = new pixi.Text(player.getLocation(), {
+    fill: 0xffffff,
+});
+
+let tick = 0;
+
 export function initRender() {
     document.body.appendChild(app.view);
 
@@ -16,6 +22,20 @@ export function initRender() {
         alpha: true
     });
     app.stage.addChild(sprites);
+
+    locationText.x = 25;
+    locationText.y = 50;
+    app.stage.addChild(locationText);
+
+    app.ticker.add(() => {
+        // increment the ticker
+        tick += 0.1;
+        let spaceShip = spaceShips.get(player.playerName);
+        if (spaceShip !== undefined) {
+            spaceShip.angle = player.angle;
+            updateLocationText();
+        }
+    });
 }
 
 // create an array to store all the sprites
@@ -28,9 +48,7 @@ export function updateCurrentPlayer(players) {
 }
 
 export function updateSingle(singlePlayer) {
-    console.log("playerMotion", singlePlayer.playerMotion);
     if (singlePlayer.playerMotion.playerName === player.playerName) {
-        updateLocationText();
         let diffX = player.getDiffX();
         let diffY = player.getDiffY();
 
@@ -64,7 +82,9 @@ function getY(currY, diffY) {
     return currY - diffY + window.innerHeight / 2;
 }
 
-
+function updateLocationText() {
+    locationText.text = player.getLocation();
+}
 // // create a bounding box box for the little maggots
 // const dudeBoundsPadding = 100;
 // const dudeBounds = new PIXI.Rectangle(
@@ -74,9 +94,3 @@ function getY(currY, diffY) {
 //     app.screen.height + dudeBoundsPadding * 2,
 // );
 
-let tick = 0;
-
-app.ticker.add(() => {
-    // increment the ticker
-    tick += 0.1;
-});
