@@ -22,8 +22,6 @@ export function initRender() {
 const spaceShips = new Map();
 
 export function updateCurrentPlayer(players) {
-    console.log("players", players)
-
     for (let playerMotion of players.playerMotions) {
         updateOrCreatePlayer(playerMotion, player.x, player.y);
     }
@@ -32,6 +30,7 @@ export function updateCurrentPlayer(players) {
 export function updateSingle(singlePlayer) {
     console.log("playerMotion", singlePlayer.playerMotion);
     if (singlePlayer.playerMotion.playerName === player.playerName) {
+        updateLocationText();
         let diffX = player.getDiffX();
         let diffY = player.getDiffY();
 

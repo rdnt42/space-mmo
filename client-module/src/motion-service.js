@@ -2,6 +2,9 @@ import * as socket from "./websocket-service.js";
 import player from "./obj/Player.js"
 import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
 
+let vx = 0;
+let vy = 0;
+
 function keyboard(value) {
     const key = {};
     key.value = value;
@@ -12,25 +15,12 @@ function keyboard(value) {
     //The `downHandler`
     key.downHandler = (event) => {
         if (event.key === key.value) {
-            if (key.isUp && key.press) {
-                key.press();
-            }
-            key.isDown = true;
-            key.isUp = false;
-            event.preventDefault();
+            key.press();
         }
     };
 
     //The `upHandler`
     key.upHandler = (event) => {
-        if (event.key === key.value) {
-            if (key.isDown && key.release) {
-                key.release();
-            }
-            key.isDown = false;
-            key.isUp = true;
-            event.preventDefault();
-        }
     };
 
     //Attach event listeners
@@ -54,58 +44,47 @@ export function keyBoardInit() {
     const left = keyboard("a"),
         up = keyboard("w"),
         right = keyboard("d"),
-        down = keyboard("s");
+        down = keyboard("s"),
+        space = keyboard(" ");
+
 
     //Left arrow key `press` method
     left.press = () => {
-        //Change the cat's velocity when the key is pressed
         // spaceship.rotation = 4.712;
-        sendMotion(player.x - 15, player.y, true);
-    };
-
-    //Left arrow key `release` method
-    left.release = () => {
-        //If the left arrow has been released, and the right arrow isn't down,
-        //and the cat isn't moving vertically:
-        //Stop the cat
-        // if (!right.isDown && spaceship.vy === 0) {
-        //     spaceship.vx = 0;
-        // }
+        if (vx > -20) {
+            vx -= 1;
+        }
     };
 
     //Up
     up.press = () => {
         // spaceship.rotation = 0;
-        sendMotion(player.x, player.y - 15, true);
-    };
-    up.release = () => {
-        // if (!down.isDown && spaceship.vx === 0) {
-        //     spaceship.vy = 0;
-        // }
+        if (vy > -20) {
+            vy -= 1;
+        }
+
     };
 
     //Right
     right.press = () => {
         // spaceship.rotation = 1.571;
-        sendMotion(player.x + 15, player.y, true);
-    };
-    right.release = () => {
-        // if (!left.isDown && spaceship.vy === 0) {
-        //     spaceship.vx = 0;
-        // }
+        if (vx < 20) {
+            vx += 1;
+        }
     };
 
     //Down
     down.press = () => {
         // spaceship.rotation = 3.142;
-        sendMotion(player.x, player.y + 15, true);
+        if (vy < 20) {
+            vy += 1;
+        }
+    };
 
-    };
-    down.release = () => {
-        // if (!up.isDown && spaceship.vx === 0) {
-        //     spaceship.vy = 0;
-        // }
-    };
+    space.press = () => {
+        vx = 0;
+        vy = 0;
+    }
 }
 
 
@@ -117,7 +96,7 @@ function sendMotion(x, y, isUpdate) {
 }
 
 export function update(playerResponse) {
-    if(playerResponse.playerMotion.playerName !== player.playerName) {
+    if (playerResponse.playerMotion.playerName !== player.playerName) {
         return;
     }
     player.prevX = player.x;
@@ -129,4 +108,12 @@ export function update(playerResponse) {
 
 export function sendCurrentMotion() {
     sendMotion(player.x, player.y, true);
+}
+
+setInterval(onTimerTick, 16); // 65,5 FPS
+
+function onTimerTick() {
+    if (vx !== 0 || vy !== 0) {
+        sendMotion(player.x + vx, player.y + vy, true);
+    }
 }
