@@ -7,6 +7,7 @@ class Player {
         this.prevY = y;
         this.speed = 0;
         this.angle = 270;
+        this.maxSpeed = 10;
     };
 
     getDiffX() {
@@ -22,14 +23,26 @@ class Player {
     }
 
     turnRight() {
-        if((this.angle += 10) >= 360) {
+        if((this.angle += 5) >= 360) {
             this.angle = this.angle % 360;
         }
     }
 
     turnLeft() {
-        if((this.angle -= 10) < 0) {
+        if((this.angle -= 5) < 0) {
             this.angle = this.angle % 360 + 360;
+        }
+    }
+
+    decreaseSpeed() {
+        if (player.speed > (this.maxSpeed / 2) * -1) {
+            player.speed -= 1;
+        }
+    }
+
+    increaseSpeed() {
+        if (player.speed < this.maxSpeed) {
+            player.speed += 1;
         }
     }
 

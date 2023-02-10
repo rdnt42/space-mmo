@@ -2,76 +2,18 @@ import * as socket from "./websocket-service.js";
 import player from "./obj/Player.js"
 import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
 
-function keyboard(value) {
-    const key = {};
-    key.value = value;
-    key.isDown = false;
-    key.isUp = true;
-    key.press = undefined;
-    key.release = undefined;
-    //The `downHandler`
-    key.downHandler = (event) => {
-        if (event.key === key.value) {
-            key.press();
-        }
-    };
+// Keep track of which keys are currently pressed
+let keys = {};
 
-    //The `upHandler`
-    key.upHandler = (event) => {
-    };
+document.addEventListener("keydown", function(event) {
+    keys[event.key] = true;
+});
 
-    //Attach event listeners
-    const downListener = key.downHandler.bind(key);
-    const upListener = key.upHandler.bind(key);
-
-    window.addEventListener("keydown", downListener, false);
-    window.addEventListener("keyup", upListener, false);
-
-    // Detach event listeners
-    key.unsubscribe = () => {
-        window.removeEventListener("keydown", downListener);
-        window.removeEventListener("keyup", upListener);
-    };
-
-    return key;
-}
+document.addEventListener("keyup", function(event) {
+    keys[event.key] = false;
+});
 
 export function keyBoardInit() {
-    //Capture the keyboard arrow keys
-    const left = keyboard("a"),
-        up = keyboard("w"),
-        right = keyboard("d"),
-        down = keyboard("s"),
-        space = keyboard(" ");
-
-    //Down
-    down.press = () => {
-        if (player.speed > -10) {
-            player.speed -= 1;
-        }
-    };
-
-    //Up
-    up.press = () => {
-        if (player.speed < 10) {
-            player.speed += 1;
-        }
-    };
-
-    //Right
-    right.press = () => {
-        player.turnRight();
-    };
-
-    //Left arrow key `press` method
-    left.press = () => {
-        player.turnLeft();
-    };
-
-    space.press = () => {
-        player.speed = 0;
-    }
-
     setInterval(onTimerTick, 16); // 65,5 FPS
 }
 
@@ -99,6 +41,31 @@ export function sendCurrentMotion() {
 }
 
 function onTimerTick() {
+
+    // Left
+    if (keys["a"]) {
+        player.turnLeft();
+    }
+
+    // Right
+    if (keys["d"]) {
+        player.turnRight();
+    }
+
+    // Up
+    if (keys["w"]) {
+        player.increaseSpeed();
+    }
+
+    // Down
+    if (keys["s"]) {
+        player.decreaseSpeed();
+    }
+
+    if (keys[" "]) {
+        player.speed = 0;
+    }
+
     if (player.speed !== 0) {
         let xSpeed = calculateCos(player.angle) * player.speed;
         let ySpeed = calculateSin(player.angle) * player.speed;
