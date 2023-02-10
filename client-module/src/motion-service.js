@@ -100,9 +100,17 @@ export function sendCurrentMotion() {
 
 function onTimerTick() {
     if (player.speed !== 0) {
-        // FIXME rework formula
-        let newX = player.x + Math.cos(player.angle) * player.speed;
-        let newY = player.y - Math.sin(player.angle) * player.speed;
-        sendMotion(newX, newY, true);
+        let xSpeed = calculateCos(player.angle) * player.speed;
+        let ySpeed = calculateSin(player.angle) * player.speed;
+
+        sendMotion(player.x + xSpeed, player.y + ySpeed, true);
     }
+}
+
+function calculateCos(deg) {
+    return Math.cos((Math.PI / 180) * deg);
+}
+
+function calculateSin(deg) {
+    return Math.sin((Math.PI / 180) * deg);
 }
