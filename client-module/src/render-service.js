@@ -85,12 +85,11 @@ function getY(currY, diffY) {
 function updateLocationText() {
     locationText.text = player.getLocation();
 }
-// // create a bounding box box for the little maggots
-// const dudeBoundsPadding = 100;
-// const dudeBounds = new PIXI.Rectangle(
-//     -dudeBoundsPadding,
-//     -dudeBoundsPadding,
-//     app.screen.width + dudeBoundsPadding * 2,
-//     app.screen.height + dudeBoundsPadding * 2,
-// );
+
+window.addEventListener('resize', resize);
+
+function resize() {
+    let ship = spaceShips.get(player.playerName);
+    ship.position.set(window.innerWidth / 2, window.innerHeight / 2);
+}
 
