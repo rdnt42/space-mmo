@@ -62,7 +62,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     private PlayerMotion getInitMotion(String playerName) {
-        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2, 270);
 
         return new PlayerMotion(playerName, motion);
     }

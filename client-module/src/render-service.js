@@ -32,7 +32,6 @@ export function initRender() {
         tick += 0.1;
         let spaceShip = spaceShips.get(player.playerName);
         if (spaceShip !== undefined) {
-            spaceShip.angle = player.angle;
             updateLocationText();
         }
     });
@@ -42,36 +41,41 @@ export function initRender() {
 const spaceShips = new Map();
 
 export function updateCurrentPlayer(players) {
-    for (let playerMotion of players.playerMotions) {
-        updateOrCreatePlayer(playerMotion, player.x, player.y);
+    let motion = players.playerMotion.motion;
+    for (let otherPlayer of players.playerMotions) {
+        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, motion.x, motion.y);
     }
 }
 
-export function updateSingle(singlePlayer) {
-    if (singlePlayer.playerMotion.playerName === player.playerName) {
+export function updateSingle(otherPlayer) {
+    let otherPlayerMotion = otherPlayer.playerMotion;
+    if (otherPlayerMotion.playerName === player.playerName) {
         let diffX = player.getDiffX();
         let diffY = player.getDiffY();
 
         for (let [key, value] of spaceShips) {
             if (key !== player.playerName) {
                 value.position.set(value.x - diffX, value.y - diffY);
+            } else {
+                value.angle = player.angle;
             }
         }
     } else {
-        updateOrCreatePlayer(singlePlayer.playerMotion, player.x, player.y);
+        updateOrCreatePlayer(otherPlayerMotion.motion, otherPlayerMotion.playerName, player.x, player.y);
     }
 }
 
-function updateOrCreatePlayer(player, absX, absY) {
-    let spaceShip = spaceShips.get(player.playerName);
+function updateOrCreatePlayer(motion, playerName, absX, absY) {
+    let spaceShip = spaceShips.get(playerName);
     if (spaceShip === undefined) {
         spaceShip = pixi.Sprite.from("../images/spaceship.png");
         spaceShip.anchor.set(0.5, 0.5);
         app.stage.addChild(spaceShip);
-        spaceShips.set(player.playerName, spaceShip);
+        spaceShips.set(playerName, spaceShip);
     }
 
-    spaceShip.position.set(getX(player.motion.x, absX), getY(player.motion.y, absY));
+    spaceShip.position.set(getX(motion.x, absX), getY(motion.y, absY));
+    spaceShip.angle = motion.angle;
 }
 
 function getX(currX, diffX) {

@@ -18,8 +18,8 @@ export function keyBoardInit() {
 }
 
 
-function sendMotion(x, y, isUpdate) {
-    const motion = new MotionRequest(x, y);
+function sendMotion(x, y, angle, isUpdate) {
+    const motion = new MotionRequest(x, y, angle);
     const request = new PlayerMotionRequest(isUpdate, motion);
 
     socket.sendMessage(request);
@@ -32,12 +32,16 @@ export function update(playerResponse) {
     player.prevX = player.x;
     player.prevY = player.y;
 
-    player.x = playerResponse.playerMotion.motion.x;
-    player.y = playerResponse.playerMotion.motion.y;
+    let motion = playerResponse.playerMotion.motion;
+    player.x = motion.x;
+    player.y = motion.y;
+    player.angle = motion.angle;
+
+    return player;
 }
 
 export function sendCurrentMotion() {
-    sendMotion(player.x, player.y, true);
+    sendMotion(player.x, player.y, player.angle, true);
 }
 
 function onTimerTick() {
@@ -66,11 +70,11 @@ function onTimerTick() {
         player.speed = 0;
     }
 
-    if (player.speed !== 0) {
+    if (player.speed !== 0 || keys["d"] || keys["a"]) {
         let xSpeed = calculateCos(player.angle) * player.speed;
         let ySpeed = calculateSin(player.angle) * player.speed;
 
-        sendMotion(player.x + xSpeed, player.y + ySpeed, true);
+        sendMotion(player.x + xSpeed, player.y + ySpeed, player.angle, true);
     }
 }
 

@@ -6,8 +6,9 @@ export class PlayerMotionRequest {
 }
 
 export class MotionRequest {
-    constructor(x, y) {
+    constructor(x, y, angle) {
         this.x = x;
         this.y = y;
+        this.angle = angle;
     }
 }

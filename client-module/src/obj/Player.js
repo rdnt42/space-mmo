@@ -6,7 +6,7 @@ class Player {
         this.prevX = x;
         this.prevY = y;
         this.speed = 0;
-        this.angle = 270;
+        this.angle = 0;
         this.maxSpeed = 10;
     };
 
