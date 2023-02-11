@@ -65,6 +65,13 @@ export function updateSingle(otherPlayer) {
     }
 }
 
+export function deletePlayer(deleteResponse) {
+    let ship = spaceShips.get(deleteResponse.playerName);
+    app.stage.removeChild(ship);
+
+    spaceShips.delete(deleteResponse.playerName);
+}
+
 function updateOrCreatePlayer(motion, playerName, absX, absY) {
     let spaceShip = spaceShips.get(playerName);
     if (spaceShip === undefined) {
