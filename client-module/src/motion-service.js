@@ -1,6 +1,6 @@
 import * as socket from "./websocket-service.js";
 import player from "./obj/Player.js"
-import {MotionRequest, PlayerMotionRequest} from "./request/PlayerRequest.js";
+import {PlayerMotionRequest} from "./request/PlayerRequest.js";
 
 // Keep track of which keys are currently pressed
 let keys = {};
@@ -18,10 +18,8 @@ export function keyBoardInit() {
 }
 
 
-function sendMotion(x, y, angle, isUpdate) {
-    const motion = new MotionRequest(x, y, angle);
-    const request = new PlayerMotionRequest(isUpdate, motion);
-
+function sendMotion(speed, angle, isUpdate) {
+    const request = new PlayerMotionRequest(isUpdate, speed, angle);
     socket.sendMessage(request);
 }
 
@@ -36,12 +34,13 @@ export function update(playerResponse) {
     player.x = motion.x;
     player.y = motion.y;
     player.angle = motion.angle;
+    player.speed = motion.speed;
 
     return player;
 }
 
 export function sendCurrentMotion() {
-    sendMotion(player.x, player.y, player.angle, true);
+    sendMotion(player.speed, player.angle, true);
 }
 
 function onTimerTick() {
@@ -71,17 +70,6 @@ function onTimerTick() {
     }
 
     if (player.speed !== 0 || keys["d"] || keys["a"]) {
-        let xSpeed = calculateCos(player.angle) * player.speed;
-        let ySpeed = calculateSin(player.angle) * player.speed;
-
-        sendMotion(player.x + xSpeed, player.y + ySpeed, player.angle, true);
+        sendMotion(player.speed, player.angle, true);
     }
-}
-
-function calculateCos(deg) {
-    return Math.cos((Math.PI / 180) * deg);
-}
-
-function calculateSin(deg) {
-    return Math.sin((Math.PI / 180) * deg);
 }

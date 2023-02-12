@@ -1,14 +1,8 @@
 export class PlayerMotionRequest {
-    constructor(isUpdate, motion) {
+    constructor(isUpdate, speed, angle) {
         this.isUpdate = isUpdate;
-        this.motion = motion;
-    }
-}
-
-export class MotionRequest {
-    constructor(x, y, angle) {
-        this.x = x;
-        this.y = y;
+        this.speed = speed;
         this.angle = angle;
+
     }
 }

@@ -22,15 +22,29 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class PlayerMotionServiceImpl implements PlayerMotionService {
     // FIXME just for training
-    private final int MAP_HEIGHT = 10000;
-    private final int MAP_WIDTH = 10000;
+    private static final int MAP_HEIGHT = 10000;
+    private static final int MAP_WIDTH = 10000;
 
     private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
 
     @Override
     public void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
-        PlayerMotion playerMotion = new PlayerMotion(playerName, request.motion());
+        Motion oldMotion = playerMotionMap.get(playerName)
+                .motion();
+        int newX = oldMotion.x() + getXShift(request.speed(), request.angle());
+        int newY = oldMotion.y() + getYShift(request.speed(), request.angle());
+        Motion newMotion = new Motion(newX, newY, request.angle(), request.speed());
+
+        PlayerMotion playerMotion = new PlayerMotion(playerName, newMotion);
         playerMotionMap.put(playerName, playerMotion);
+    }
+
+    private int getXShift(int speed, int angle) {
+        return (int)(Math.cos(Math.toRadians(angle)) * speed);
+    }
+
+    private int getYShift(int speed, int angle) {
+        return (int)(Math.sin(Math.toRadians(angle)) * speed);
     }
 
     @Override
@@ -62,7 +76,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     private PlayerMotion getInitMotion(String playerName) {
-        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2, 270);
+        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2, 270, 0);
 
         return new PlayerMotion(playerName, motion);
     }
