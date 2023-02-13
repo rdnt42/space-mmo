@@ -10,11 +10,14 @@ const locationText = new pixi.Text(player.getLocation(), {
 });
 
 let tick = 0;
+let sprites;
+// create an array to store all the sprites
+const spaceShips = new Map();
 
 export function initRender() {
     document.body.appendChild(app.view);
 
-    const sprites = new pixi.ParticleContainer(10000, {
+    sprites = new pixi.ParticleContainer(10000, {
         scale: true,
         position: true,
         rotation: true,
@@ -44,27 +47,9 @@ export function updateAllObjects(players) {
     }
 }
 
-export function updateSingle(otherPlayer) {
-    let otherPlayerMotion = otherPlayer.playerMotion;
-    if (otherPlayerMotion.playerName === player.playerName) {
-        let diffX = player.getDiffX();
-        let diffY = player.getDiffY();
-
-        for (let [key, value] of spaceShips) {
-            if (key !== player.playerName) {
-                value.position.set(value.x - diffX, value.y - diffY);
-            } else {
-                value.angle = player.angle;
-            }
-        }
-    } else {
-        updateOrCreatePlayer(otherPlayerMotion.motion, otherPlayerMotion.playerName, player.x, player.y);
-    }
-}
-
 export function deletePlayer(deleteResponse) {
     let ship = spaceShips.get(deleteResponse.playerName);
-    app.stage.removeChild(ship);
+    sprites.removeChild(ship);
 
     spaceShips.delete(deleteResponse.playerName);
 }
@@ -74,7 +59,7 @@ function updateOrCreatePlayer(motion, playerName, absX, absY) {
     if (spaceShip === undefined) {
         spaceShip = pixi.Sprite.from("../images/spaceship.png");
         spaceShip.anchor.set(0.5, 0.5);
-        app.stage.addChild(spaceShip);
+        sprites.addChild(spaceShip);
         spaceShips.set(playerName, spaceShip);
     }
 
