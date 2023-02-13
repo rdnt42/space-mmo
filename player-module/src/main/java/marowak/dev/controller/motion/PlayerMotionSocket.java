@@ -12,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayerLeavingResponse;
-import marowak.dev.response.player.PlayerMotionResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
-import marowak.dev.service.PlayerMotionService;
+import marowak.dev.service.motion.PlayerMotionSocketService;
 import org.reactivestreams.Publisher;
 
 import java.util.function.Predicate;
@@ -25,36 +24,31 @@ import java.util.function.Predicate;
 @ServerWebSocket("/motion/{playerName}")
 public class PlayerMotionSocket {
     private final WebSocketBroadcaster broadcaster;
-    private final PlayerMotionService playerMotionService;
+    private final PlayerMotionSocketService playerMotionSocketService;
 
     @OnOpen
     public Publisher<PlayersMotionListResponse> onOpen(String playerName, WebSocketSession session) {
         debugLog("onOpen", playerName, session);
 
-        playerMotionService.initPlayerMotion(playerName);
-        PlayersMotionListResponse response = playerMotionService.getPlayersMotions(playerName);
+        PlayersMotionListResponse response = playerMotionSocketService.onOpen(playerName);
 
         return broadcaster.broadcast(response, filterPlayer(session, playerName));
     }
 
     @OnMessage
-    public Publisher<PlayerMotionResponse> onMessage(String playerName, PlayerMotionRequest request,
+    public Publisher<PlayersMotionListResponse> onMessage(String playerName, PlayerMotionRequest request,
                                                           WebSocketSession session) {
         debugLog("onMessage", playerName, session);
 
-        if (request.isUpdate()) {
-            playerMotionService.updatePlayerMotion(playerName, request);
-        }
+        PlayersMotionListResponse response = playerMotionSocketService.onMessage(request, playerName);
 
-        PlayerMotionResponse response = playerMotionService.getPlayerMotion(playerName);
-
-        return broadcaster.broadcast(response);
+        return broadcaster.broadcast(response, filterPlayer(session, playerName));
     }
 
     @OnClose
     public Publisher<PlayerLeavingResponse> onClose(String playerName, WebSocketSession session) {
         debugLog("onClose", playerName, session);
-        PlayerLeavingResponse response = playerMotionService.leavingPlayer(playerName);
+        PlayerLeavingResponse response = playerMotionSocketService.onClose(playerName);
 
         return broadcaster.broadcast(response);
     }

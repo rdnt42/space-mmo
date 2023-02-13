@@ -37,10 +37,7 @@ export function initRender() {
     });
 }
 
-// create an array to store all the sprites
-const spaceShips = new Map();
-
-export function updateCurrentPlayer(players) {
+export function updateAllObjects(players) {
     let motion = players.playerMotion.motion;
     for (let otherPlayer of players.playerMotions) {
         updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, motion.x, motion.y);

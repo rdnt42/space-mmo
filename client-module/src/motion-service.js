@@ -39,8 +39,8 @@ export function update(playerResponse) {
     return player;
 }
 
-export function sendCurrentMotion() {
-    sendMotion(player.speed, player.angle, true);
+export function sendCurrentMotion(isUpdate) {
+    sendMotion(player.speed, player.angle, isUpdate);
 }
 
 function onTimerTick() {
@@ -69,7 +69,9 @@ function onTimerTick() {
         player.speed = 0;
     }
 
-    if (player.speed !== 0 || keys["d"] || keys["a"]) {
-        sendMotion(player.speed, player.angle, true);
+    if (keys.length !== 0) {
+        sendCurrentMotion(true);
+    } else {
+        sendCurrentMotion(false);
     }
 }

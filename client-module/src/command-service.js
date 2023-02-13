@@ -12,19 +12,19 @@ export function executeCommand(response) {
 
     let command = parseObj.command;
     switch (command) {
+        case "CMD_INIT_CURRENT_PLAYER":
+            motion.update(parseObj);
+            render.updateAllObjects(parseObj);
+
+            break;
         case "CMD_UPDATE_CURRENT_PLAYER":
             motion.update(parseObj);
-            render.updateCurrentPlayer(parseObj);
+            render.updateAllObjects(parseObj);
 
-            // TODO move to another service
-            motion.sendCurrentMotion();
-            break;
-        case "CMD_UPDATE_OTHER_PLAYER":
-            motion.update(parseObj);
-            render.updateSingle(parseObj);
             break;
         case "CMD_LEAVING_PLAYER":
             render.deletePlayer(parseObj);
+
             break;
         default:
             console.error("Unexpected command: " + command);

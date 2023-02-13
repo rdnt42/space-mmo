@@ -1,15 +1,11 @@
-package marowak.dev.service;
+package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
-import marowak.dev.response.player.PlayerLeavingResponse;
-import marowak.dev.response.player.PlayerMotionResponse;
-import marowak.dev.response.player.PlayersMotionListResponse;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,19 +44,14 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public PlayersMotionListResponse getPlayersMotions(String playerName) {
-        List<PlayerMotion> motions = playerMotionMap.values()
-                .stream()
-                .toList();
-
-        PlayerMotion playerMotion = playerMotionMap.get(playerName);
-
-        return new PlayersMotionListResponse(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, playerMotion, motions);
+    public Collection<PlayerMotion> getPlayersInRange(String playerName) {
+        // TODO added range filter
+        return playerMotionMap.values();
     }
 
     @Override
-    public PlayerMotionResponse getPlayerMotion(String playerName) {
-        return new PlayerMotionResponse(MessageCommand.CMD_UPDATE_OTHER_PLAYER, playerMotionMap.get(playerName));
+    public PlayerMotion getPlayerMotion(String playerName) {
+        return playerMotionMap.get(playerName);
     }
 
     @Override
@@ -69,10 +60,8 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public PlayerLeavingResponse leavingPlayer(String playerName) {
+    public void leavingPlayer(String playerName) {
         playerMotionMap.remove(playerName);
-
-        return new PlayerLeavingResponse(MessageCommand.CMD_LEAVING_PLAYER, playerName);
     }
 
     private PlayerMotion getInitMotion(String playerName) {
