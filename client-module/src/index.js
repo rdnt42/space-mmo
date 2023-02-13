@@ -23,7 +23,6 @@ function createConnectInfo() {
         input.remove();
         btn.remove();
 
-        render.initRender();
         motion.keyBoardInit();
     };
 }

@@ -14,6 +14,7 @@ export function executeCommand(response) {
     switch (command) {
         case "CMD_INIT_CURRENT_PLAYER":
             motion.update(parseObj);
+            render.initRender(parseObj);
             render.updateAllObjects(parseObj);
 
             break;
