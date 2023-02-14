@@ -5,14 +5,17 @@ const app = new pixi.Application({
     resizeTo: window
 });
 
-let tick = 0;
 let sprites;
 // create an array to store all the sprites
 const spaceShips = new Map();
+let players = [];
 
 export function initRender(players) {
     let playerName = players.playerMotion.playerName;
     document.body.appendChild(app.view);
+    const background = createBackground(pixi.Texture.from("../images/background/space1.jpg"));
+    app.stage.addChild(background);
+
     sprites = new pixi.ParticleContainer(10000, {
         scale: true,
         position: true,
@@ -30,18 +33,17 @@ export function initRender(players) {
     let posInfoLabel = createPosInfoLabel(player);
     app.stage.addChild(posInfoLabel);
 
+
     app.ticker.add(() => {
-        // increment the ticker
-        tick += 0.1;
         updateLocationText(posInfoLabel);
+        updateBackground(background);
+        renderPlayers();
     });
+
 }
 
-export function updateAllObjects(players) {
-    let motion = players.playerMotion.motion;
-    for (let otherPlayer of players.playerMotions) {
-        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, motion.x, motion.y);
-    }
+export function updateAllObjects(playersResponse) {
+    players = playersResponse.playerMotions;
 }
 
 export function deletePlayer(deleteResponse) {
@@ -107,3 +109,20 @@ function createPosInfoLabel(player) {
     return locationText;
 }
 
+function createBackground(texture) {
+    let bg = new pixi.TilingSprite(texture, window.innerWidth, window.innerHeight);
+    bg.position.set(0, 0);
+
+    return bg;
+}
+
+function updateBackground(bg) {
+    bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX());
+    bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY());
+}
+
+function renderPlayers() {
+    for (let otherPlayer of players) {
+        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, player.x, player.y);
+    }
+}
