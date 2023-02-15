@@ -13,8 +13,11 @@ let players = [];
 export function initRender(players) {
     let playerName = players.playerMotion.playerName;
     document.body.appendChild(app.view);
-    const background = createBackground(pixi.Texture.from("../images/background/space1.jpg"));
-    app.stage.addChild(background);
+    const bgLast = createBackground(pixi.Texture.from("../images/background/bgLastLevel.jpg"));
+    const bgFirst = createBackground(pixi.Texture.from("../images/background/bgFirstLevel.png"));
+
+    app.stage.addChild(bgLast);
+    app.stage.addChild(bgFirst);
 
     sprites = new pixi.ParticleContainer(10000, {
         scale: true,
@@ -36,7 +39,9 @@ export function initRender(players) {
 
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
-        updateBackground(background);
+        updateBackground(bgLast, 3);
+        updateBackground(bgFirst, 2);
+
         renderPlayers();
     });
 
@@ -116,9 +121,9 @@ function createBackground(texture) {
     return bg;
 }
 
-function updateBackground(bg) {
-    bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX());
-    bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY());
+function updateBackground(bg, div) {
+    bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX()) / div;
+    bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY()) / div;
 }
 
 function renderPlayers() {
