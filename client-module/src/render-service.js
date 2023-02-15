@@ -5,94 +5,49 @@ const app = new pixi.Application({
     resizeTo: window
 });
 
+
+// fast container for all sprites (faster than Container in 3-5 times)
 let sprites;
-// create an array to store all the sprites
+// map playerName - Sprite for fast changing
 const spaceShips = new Map();
+
 let players = [];
 
 export function initRender(players) {
-    let playerName = players.playerMotion.playerName;
     document.body.appendChild(app.view);
     const bgLast = createBackground(pixi.Texture.from("../images/background/bgLastLevel.jpg"));
-    const bgFirst = createBackground(pixi.Texture.from("../images/background/bgFirstLevel.png"));
-
     app.stage.addChild(bgLast);
+
+    const bgFirst = createBackground(pixi.Texture.from("../images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
 
-    sprites = new pixi.ParticleContainer(10000, {
-        scale: true,
-        position: true,
-        rotation: true,
-        uvs: true,
-        alpha: true
-    });
+    sprites = createSpritesContainer();
     app.stage.addChild(sprites);
 
-    updateOrCreatePlayer(players.playerMotion.motion, playerName, player.x, player.y);
+    updateOrCreatePlayer(players.playerMotion.motion, player.playerName, player.x, player.y);
 
-    let playerNameLabel = createPlayerNameLabel(playerName);
+    let playerNameLabel = createPlayerNameLabel(player.playerName);
     app.stage.addChild(playerNameLabel);
 
     let posInfoLabel = createPosInfoLabel(player);
     app.stage.addChild(posInfoLabel);
 
+    window.addEventListener('resize', resize);
 
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
 
-        renderPlayers();
+        updatePlayers();
     });
-
 }
 
-export function updateAllObjects(playersResponse) {
+export function updateAllPlayers(playersResponse) {
     players = playersResponse.playerMotions;
 }
 
-export function deletePlayer(deleteResponse) {
-    let ship = spaceShips.get(deleteResponse.playerName);
-    sprites.removeChild(ship);
-
-    spaceShips.delete(deleteResponse.playerName);
-}
-
-function updateOrCreatePlayer(motion, playerName, absX, absY) {
-    let spaceShip = spaceShips.get(playerName);
-    if (spaceShip === undefined) {
-        spaceShip = pixi.Sprite.from("../images/spaceship.png");
-        spaceShip.anchor.set(0.5, 0.5);
-        sprites.addChild(spaceShip);
-        spaceShip.width = 64;
-        spaceShip.height = 64;
-
-        spaceShips.set(playerName, spaceShip);
-    }
-
-    spaceShip.position.set(getX(motion.x, absX), getY(motion.y, absY));
-    spaceShip.angle = motion.angle;
-}
-
-function getX(currX, diffX) {
-    return currX - diffX + (window.innerWidth / 2);
-}
-
-function getY(currY, diffY) {
-    return currY - diffY + window.innerHeight / 2;
-}
-
-function updateLocationText(posInfoLabel) {
-    posInfoLabel.text = player.getLocation();
-}
-
-window.addEventListener('resize', resize);
-
-function resize() {
-    let ship = spaceShips.get(player.playerName);
-    ship.position.set(window.innerWidth / 2, window.innerHeight / 2);
-}
-
+// CREATE
 function createPlayerNameLabel(playerName) {
     let ship = spaceShips.get(playerName);
     const nameText = new pixi.Text(playerName, {
@@ -121,13 +76,65 @@ function createBackground(texture) {
     return bg;
 }
 
+function createSpritesContainer() {
+    return new pixi.ParticleContainer(1000, {
+        scale: true,
+        position: true,
+        rotation: true,
+        uvs: true,
+        alpha: true
+    });
+}
+
+
+// UPDATE
+function updateOrCreatePlayer(motion, playerName, absX, absY) {
+    let spaceShip = spaceShips.get(playerName);
+    if (spaceShip === undefined) {
+        spaceShip = pixi.Sprite.from("../images/spaceship.png");
+        spaceShip.anchor.set(0.5, 0.5);
+        spaceShip.width = 64;
+        spaceShip.height = 64;
+
+        spaceShips.set(playerName, spaceShip);
+        sprites.addChild(spaceShip);
+    }
+
+    spaceShip.position.set(getX(motion.x, absX), getY(motion.y, absY));
+    spaceShip.angle = motion.angle;
+}
+
+function getX(currX, diffX) {
+    return currX - diffX + (window.innerWidth / 2);
+}
+
+function getY(currY, diffY) {
+    return currY - diffY + window.innerHeight / 2;
+}
+
+function updateLocationText(posInfoLabel) {
+    posInfoLabel.text = player.getLocation();
+}
+
+function updatePlayers() {
+    for (let otherPlayer of players) {
+        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, player.x, player.y);
+    }
+}
+
 function updateBackground(bg, div) {
     bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX()) / div;
     bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY()) / div;
 }
 
-function renderPlayers() {
-    for (let otherPlayer of players) {
-        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, player.x, player.y);
-    }
+export function deletePlayer(deleteResponse) {
+    let ship = spaceShips.get(deleteResponse.playerName);
+    sprites.removeChild(ship);
+
+    spaceShips.delete(deleteResponse.playerName);
+}
+
+function resize() {
+    let ship = spaceShips.get(player.playerName);
+    ship.position.set(window.innerWidth / 2, window.innerHeight / 2);
 }

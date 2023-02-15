@@ -15,12 +15,12 @@ export function executeCommand(response) {
         case "CMD_INIT_CURRENT_PLAYER":
             motion.update(parseObj);
             render.initRender(parseObj);
-            render.updateAllObjects(parseObj);
+            render.updateAllPlayers(parseObj);
 
             break;
         case "CMD_UPDATE_CURRENT_PLAYER":
             motion.update(parseObj);
-            render.updateAllObjects(parseObj);
+            render.updateAllPlayers(parseObj);
 
             break;
         case "CMD_LEAVING_PLAYER":
