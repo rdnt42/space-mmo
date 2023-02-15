@@ -1,5 +1,6 @@
 import * as pixi from './libs/pixi.min.js';
 import player from "./obj/Player.js";
+import {SpriteShip} from "./obj/SpriteShip.js";
 
 const app = new pixi.Application({
     resizeTo: window
@@ -8,12 +9,11 @@ const app = new pixi.Application({
 
 // fast container for all sprites (faster than Container in 3-5 times)
 let sprites;
-// map playerName - Sprite for fast changing
-const spaceShips = new Map();
 
-let players = [];
+// key: playerName, value: SpriteShip obj
+let ships = new Map();
 
-export function initRender(players) {
+export function initRender() {
     document.body.appendChild(app.view);
     const bgLast = createBackground(pixi.Texture.from("../images/background/bgLastLevel.jpg"));
     app.stage.addChild(bgLast);
@@ -24,7 +24,7 @@ export function initRender(players) {
     sprites = createSpritesContainer();
     app.stage.addChild(sprites);
 
-    updateOrCreatePlayer(players.playerMotion.motion, player.playerName, player.x, player.y);
+    updatePlayers();
 
     let playerNameLabel = createPlayerNameLabel(player.playerName);
     app.stage.addChild(playerNameLabel);
@@ -44,17 +44,25 @@ export function initRender(players) {
 }
 
 export function updateAllPlayers(playersResponse) {
-    players = playersResponse.playerMotions;
+    for (let playerMotion of playersResponse.playerMotions) {
+        let ship = ships.get(playerMotion.playerName);
+        if (ship === undefined) {
+            ship = new SpriteShip(playerMotion.motion);
+            ships.set(playerMotion.playerName, ship);
+        } else {
+            ship.motion = playerMotion.motion;
+        }
+    }
 }
 
 // CREATE
 function createPlayerNameLabel(playerName) {
-    let ship = spaceShips.get(playerName);
+    let sprite = ships.get(playerName).sprite;
     const nameText = new pixi.Text(playerName, {
         fill: 0xffffff,
     });
-    nameText.x = ship.x - ship.width / 2;
-    nameText.y = ship.y - ship.height - 5;
+    nameText.x = sprite.x - sprite.width / 2;
+    nameText.y = sprite.y - sprite.height - 5;
 
     return nameText;
 }
@@ -86,22 +94,20 @@ function createSpritesContainer() {
     });
 }
 
-
 // UPDATE
-function updateOrCreatePlayer(motion, playerName, absX, absY) {
-    let spaceShip = spaceShips.get(playerName);
-    if (spaceShip === undefined) {
-        spaceShip = pixi.Sprite.from("../images/spaceship.png");
-        spaceShip.anchor.set(0.5, 0.5);
-        spaceShip.width = 64;
-        spaceShip.height = 64;
+function updateOrCreatePlayer(ship, playerName, absX, absY) {
+    if (ship.sprite === undefined) {
+        let sprite = pixi.Sprite.from("../images/spaceship.png");
+        sprite.anchor.set(0.5, 0.5);
+        sprite.width = 64;
+        sprite.height = 64;
 
-        spaceShips.set(playerName, spaceShip);
-        sprites.addChild(spaceShip);
+        sprites.addChild(sprite)
+        ship.sprite = sprite;
     }
 
-    spaceShip.position.set(getX(motion.x, absX), getY(motion.y, absY));
-    spaceShip.angle = motion.angle;
+    ship.sprite.position.set(getX(ship.motion.x, absX), getY(ship.motion.y, absY));
+    ship.sprite.angle = ship.motion.angle;
 }
 
 function getX(currX, diffX) {
@@ -109,7 +115,7 @@ function getX(currX, diffX) {
 }
 
 function getY(currY, diffY) {
-    return currY - diffY + window.innerHeight / 2;
+    return currY - diffY + (window.innerHeight / 2);
 }
 
 function updateLocationText(posInfoLabel) {
@@ -117,9 +123,9 @@ function updateLocationText(posInfoLabel) {
 }
 
 function updatePlayers() {
-    for (let otherPlayer of players) {
-        updateOrCreatePlayer(otherPlayer.motion, otherPlayer.playerName, player.x, player.y);
-    }
+    ships.forEach((value, key) => {
+        updateOrCreatePlayer(value, key, player.x, player.y);
+    })
 }
 
 function updateBackground(bg, div) {
@@ -128,12 +134,12 @@ function updateBackground(bg, div) {
 }
 
 export function deletePlayer(deleteResponse) {
-    let ship = spaceShips.get(deleteResponse.playerName);
-    spaceShips.delete(deleteResponse.playerName);
-    sprites.removeChild(ship);
+    let ship = ships.get(deleteResponse.playerName);
+    sprites.removeChild(ship.sprite);
+    ships.delete(deleteResponse.playerName);
 }
 
 function resize() {
-    let ship = spaceShips.get(player.playerName);
-    ship.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    let ship = ships.get(player.playerName);
+    ship.sprite.position.set(window.innerWidth / 2, window.innerHeight / 2);
 }
