@@ -2,7 +2,7 @@ micronaut:
   application:
     name: playerModule
   server:
-    port: 8082
+    port: 8080
   security:
     authentication: bearer
     token:

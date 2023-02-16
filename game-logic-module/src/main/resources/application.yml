@@ -1,0 +1,5 @@
+micronaut:
+  application:
+    name: playerModule
+  server:
+    port: 8082

@@ -1,13 +1,11 @@
 package marowak.dev;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.micronaut.runtime.Micronaut;
 
-@SpringBootApplication
 public class GameLogicModuleApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GameLogicModuleApplication.class, args);
+        Micronaut.run(GameLogicModuleApplication.class, args);
     }
 
 }

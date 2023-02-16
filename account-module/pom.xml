@@ -79,6 +79,11 @@
             <groupId>io.micronaut.spring</groupId>
             <artifactId>micronaut-spring</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.micronaut.security</groupId>
+            <artifactId>micronaut-security-jwt</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
