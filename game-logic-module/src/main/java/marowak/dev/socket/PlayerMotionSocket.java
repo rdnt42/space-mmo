@@ -1,4 +1,4 @@
-package marowak.dev.controller.motion;
+package marowak.dev.socket;
 
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
