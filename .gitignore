@@ -1,7 +1,7 @@
 /.idea
-/player-module/.mvn/wrapper
-/player-module/mvnw
-/player-module/mvnw.bat
+/account-module/.mvn/wrapper
+/account-module/mvnw
+/account-module/mvnw.bat
 /.env
 /client-module/package-lock.json
 /client-module/node_modules/

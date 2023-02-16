@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>game-logic-module</module>
-        <module>player-module</module>
+        <module>account-module</module>
     </modules>
 
     <name>space-mmo-parent</name>
@@ -171,7 +171,7 @@
                         </annotationProcessorPaths>
                         <compilerArgs>
                             <arg>-Amicronaut.processing.group=marowak.dev</arg>
-                            <arg>-Amicronaut.processing.module=player-module</arg>
+                            <arg>-Amicronaut.processing.module=account-module</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>

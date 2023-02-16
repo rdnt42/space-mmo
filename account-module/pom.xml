@@ -10,7 +10,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.marowak</groupId>
-    <artifactId>player-module</artifactId>
+    <artifactId>account-module</artifactId>
     <packaging>${packaging}</packaging>
 
     <properties>
