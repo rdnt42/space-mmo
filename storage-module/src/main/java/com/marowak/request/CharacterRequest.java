@@ -1,8 +1,5 @@
-package marowak.dev.request;
+package com.marowak.request;
 
-import io.micronaut.serde.annotation.Serdeable;
-
-@Serdeable
 public record CharacterRequest(
         String accountName,
         String characterName,
