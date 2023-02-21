@@ -84,6 +84,11 @@
             <artifactId>micronaut-security-jwt</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.micronaut.kafka</groupId>
+            <artifactId>micronaut-kafka</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

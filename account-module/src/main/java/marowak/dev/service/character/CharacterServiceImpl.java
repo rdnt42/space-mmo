@@ -4,7 +4,6 @@ import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.model.mongo.Character;
-import marowak.dev.repository.mongo.CharacterRepository;
 import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -18,18 +17,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
-    private final CharacterRepository characterRepository;
-
+    private final CharacterClient characterClient;
     @Override
     public Publisher<Character> getCharacters(String username) {
-        return characterRepository.getAll(username);
+        return null;
     }
 
     @Override
     public Mono<HttpStatus> createCharacter(CharacterRequest request, String username) {
-        Character character = new Character(request.characterName(), 0, username);
-
-        return characterRepository.save(character)
-                .map(added -> Boolean.TRUE.equals(added) ? HttpStatus.CREATED : HttpStatus.CONFLICT);
+        return characterClient.createCharacter(request)
+                .map(result -> result != null ? HttpStatus.CREATED : HttpStatus.CONFLICT);
     }
 }
