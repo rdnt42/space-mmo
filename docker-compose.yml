@@ -1,27 +1,24 @@
 version: "3.9"
 services:
-  mmo_server:
+  space_mmo_storage:
     image: postgres:15.1
-    depends_on:
-      - "mongo_db"
     environment:
-      - POSTGRES_DB=${SPACE_MMO_POSTGRES_DB_URL}
+      - POSTGRES_DB=space_mmo_storage
       - POSTGRES_USER=${SPACE_MMO_POSTGRES_DB_USER}
       - POSTGRES_PASSWORD=${SPACE_MMO_POSTGRES_DB_PASS}
       - PGDATA=/var/lib/pgsql_docker/data
     ports:
       - "5432:5432"
 
-  mongo_db:
-    image: mongo
+  space_mmo_auth:
+    image: postgres:15.1
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${SPACE_MMO_MONGO_DB_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${SPACE_MMO_MONGO_DB_PASS}
+      - POSTGRES_DB=space_mmo_auth
+      - POSTGRES_USER=${SPACE_MMO_POSTGRES_DB_USER}
+      - POSTGRES_PASSWORD=${SPACE_MMO_POSTGRES_DB_PASS}
+      - PGDATA=/var/lib/pgsql_docker/data
     ports:
-      - "27017:27017"
-    volumes:
-      - mongodata:/data/db
-    restart: unless-stopped
+      - "5433:5432"
 
   zookeeper:
     image: confluentinc/cp-zookeeper

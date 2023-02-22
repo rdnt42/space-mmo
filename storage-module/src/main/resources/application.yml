@@ -3,12 +3,35 @@ micronaut:
     name: storageModule
   server:
     port: 8083
-r2dbc:
-  datasources:
-    default:
-      schema-generate: CREATE_DROP
-      dialect: H2
+
 netty:
   default:
     allocator:
       max-order: 3
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+
+jpa:
+  default:
+    entity-scan:
+      classpath: true
+      packages:
+        - 'marowak.dev.entity'
+
+#r2dbc:
+#  datasources:
+#    default:
+#      url: 'r2dbc:postgresql://localhost:5432/space_mmo_storage'
+#      username: 'manager'
+#      password: 'manager'
+#      driverClassName: 'org.postgresql.Driver'
+
+datasources:
+  default:
+    url: 'jdbc:postgresql://localhost:5432/space_mmo_storage'
+    username: 'manager'
+    password: 'manager'
+    driverClassName: 'org.postgresql.Driver'
