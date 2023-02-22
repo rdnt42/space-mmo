@@ -1,8 +1,8 @@
-package com.marowak.service;
+package marowak.dev.service;
 
-import com.marowak.entity.Character;
-import com.marowak.request.CharacterMotionRequest;
-import com.marowak.request.CharacterRequest;
+import marowak.dev.entity.Character;
+import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 
 public interface CharacterService {

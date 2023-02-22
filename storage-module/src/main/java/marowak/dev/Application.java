@@ -1,4 +1,4 @@
-package com.marowak;
+package marowak.dev;
 
 import io.micronaut.runtime.Micronaut;
 

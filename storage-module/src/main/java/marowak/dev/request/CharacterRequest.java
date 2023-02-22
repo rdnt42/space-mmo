@@ -1,4 +1,4 @@
-package com.marowak.request;
+package marowak.dev.request;
 
 public record CharacterRequest(
         String accountName,

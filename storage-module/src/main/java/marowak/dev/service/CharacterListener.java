@@ -1,10 +1,10 @@
-package com.marowak.service;
+package marowak.dev.service;
 
-import com.marowak.entity.Character;
-import com.marowak.request.CharacterRequest;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.entity.Character;
+import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 
 @RequiredArgsConstructor

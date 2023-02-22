@@ -1,4 +1,4 @@
-package com.marowak.entity;
+package marowak.dev.entity;
 
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;

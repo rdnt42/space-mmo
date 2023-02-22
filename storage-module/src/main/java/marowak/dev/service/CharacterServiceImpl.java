@@ -1,11 +1,11 @@
-package com.marowak.service;
+package marowak.dev.service;
 
-import com.marowak.entity.Character;
-import com.marowak.repository.CharacterRepository;
-import com.marowak.request.CharacterMotionRequest;
-import com.marowak.request.CharacterRequest;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.entity.Character;
+import marowak.dev.repository.CharacterRepository;
+import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 
 @RequiredArgsConstructor
