@@ -56,11 +56,7 @@
             <artifactId>micronaut-jdbc-hikari</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>io.micronaut.sql</groupId>
-            <artifactId>micronaut-hibernate-jpa</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
@@ -71,10 +67,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.6.14.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micronaut.data</groupId>
-            <artifactId>micronaut-data-hibernate-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>io.micronaut.reactor</groupId>
