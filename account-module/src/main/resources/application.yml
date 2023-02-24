@@ -30,39 +30,11 @@ flyway:
 
 datasources:
   default:
-    url: 'jdbc:postgresql://localhost:5432/space_mmo'
+    url: 'jdbc:postgresql://localhost:5433/space_mmo_auth'
     username: 'manager'
     password: 'manager'
     driverClassName: 'org.postgresql.Driver'
-    hikari:
-      pool-name: ca-pool
-      minimum-idle: 2
-      maximum-pool-size: 5
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-        useLocalSessionState: true
-        rewriteBatchedStatements: true
-        cacheResultSetMetadata: true
-        cacheServerConfiguration: true
-        elideSetAutoCommits: true
-        maintainTimeStats: false
-      leak-detection-threshold: 60000
-      connection-test-query: "SELECT 1"
-      validation-timeout: 50000
 
-mongodb:
-  uri: mongodb://manager:manager@localhost:27017
-  options:
-    maxConnectionIdleTime: 10000
-    readConcern: majority
-  cluster:
-    maxWaitQueueSize: 5
-  connectionPool:
-    maxSize: 20
-
-player-character-db:
-  name: "space_mmo_character"
-  collection: "characters"
+kafka:
+  bootstrap:
+    servers: localhost:9092

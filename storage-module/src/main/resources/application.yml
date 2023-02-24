@@ -21,13 +21,13 @@ jpa:
       packages:
         - 'marowak.dev.entity'
 
-#r2dbc:
-#  datasources:
-#    default:
-#      url: 'r2dbc:postgresql://localhost:5432/space_mmo_storage'
-#      username: 'manager'
-#      password: 'manager'
-#      driverClassName: 'org.postgresql.Driver'
+r2dbc:
+  datasources:
+    default:
+      url: 'r2dbc:postgresql://localhost:5432/space_mmo_storage'
+      username: 'manager'
+      password: 'manager'
+      driverClassName: 'org.postgresql.Driver'
 
 datasources:
   default:
@@ -35,3 +35,7 @@ datasources:
     username: 'manager'
     password: 'manager'
     driverClassName: 'org.postgresql.Driver'
+
+kafka:
+  bootstrap:
+    servers: localhost:9092

@@ -10,7 +10,7 @@ import org.reactivestreams.Publisher;
 
 @RequiredArgsConstructor
 @Singleton
-public class CharacterServiceImpl implements CharacterService{
+public class CharacterServiceImpl implements CharacterService {
     private final CharacterRepository characterRepository;
 
     @Override
