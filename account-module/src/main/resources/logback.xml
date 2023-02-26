@@ -11,6 +11,7 @@
     </appender>
 
     <logger name="marowak.dev.controller" level="info"/>
+    <logger name="marowak.dev.service" level="DEBUG"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

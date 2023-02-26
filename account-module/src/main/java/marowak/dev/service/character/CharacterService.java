@@ -1,10 +1,8 @@
 package marowak.dev.service.character;
 
-import io.micronaut.http.HttpStatus;
 import marowak.dev.model.mongo.Character;
 import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,5 +13,5 @@ import reactor.core.publisher.Mono;
 public interface CharacterService {
     Publisher<Character> getCharacters(String username);
 
-    Mono<HttpStatus> createCharacter(CharacterRequest request, String username);
+    void createCharacter(CharacterRequest request, String username);
 }

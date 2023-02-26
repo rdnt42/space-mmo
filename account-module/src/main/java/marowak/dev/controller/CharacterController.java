@@ -1,6 +1,5 @@
 package marowak.dev.controller;
 
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
@@ -12,7 +11,6 @@ import marowak.dev.model.mongo.Character;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.service.character.CharacterService;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -36,7 +34,7 @@ public class CharacterController {
     }
 
     @Post
-    public Mono<HttpStatus> create(@Valid CharacterRequest request, Principal principal) {
-        return characterService.createCharacter(request, principal.getName());
+    public void create(@Valid CharacterRequest request, Principal principal) {
+        characterService.createCharacter(request, principal.getName());
     }
 }

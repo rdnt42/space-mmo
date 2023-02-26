@@ -4,9 +4,9 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
 import marowak.dev.repository.CharacterRepository;
-import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Singleton
@@ -27,7 +27,9 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void updateMotion(CharacterMotionRequest request) {
+    public Publisher<Character> updateMotion(CharacterRequest request) {
         characterRepository.update(request.characterName(), request.x(), request.y(), request.angle());
+
+        return Mono.empty();
     }
 }
