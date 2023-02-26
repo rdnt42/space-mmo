@@ -64,6 +64,11 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
         playerMotionMap.remove(playerName);
     }
 
+    @Override
+    public Collection<PlayerMotion> getAllMotions() {
+        return playerMotionMap.values();
+    }
+
     private PlayerMotion getInitMotion(String playerName) {
         Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2, 270, 0);
 

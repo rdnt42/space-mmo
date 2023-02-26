@@ -21,4 +21,6 @@ public interface PlayerMotionService {
     void initPlayerMotion(String playerName);
 
     void leavingPlayer(String playerName);
+
+    Collection<PlayerMotion> getAllMotions();
 }
