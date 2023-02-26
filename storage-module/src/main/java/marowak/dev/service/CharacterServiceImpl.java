@@ -8,6 +8,8 @@ import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
@@ -29,6 +31,16 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public Publisher<Character> updateMotion(CharacterRequest request) {
         characterRepository.update(request.characterName(), request.x(), request.y(), request.angle());
+
+        return Mono.empty();
+    }
+
+    @Override
+    public Publisher<Character> updateAllMotions(List<CharacterRequest> requests) {
+        // TODO change to batch
+        for (CharacterRequest request : requests) {
+            characterRepository.update(request.characterName(), request.x(), request.y(), request.angle());
+        }
 
         return Mono.empty();
     }

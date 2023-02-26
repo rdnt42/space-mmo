@@ -14,7 +14,7 @@ import org.reactivestreams.Publisher;
 public class CharacterListener {
     private final CharacterCommandService characterCommandService;
 
-    @Topic("characters")
+    @Topic("character")
     public Publisher<Character> createCharacter(@KafkaKey CharacterMessageKey key, CharacterRequest request) {
         return characterCommandService.executeCommand(key, request);
     }

@@ -10,7 +10,7 @@ import marowak.dev.service.character.CharacterService;
 public class SendMessageScheduler {
     private final CharacterService characterService;
 
-    @Scheduled(fixedDelay = "100ms", initialDelay = "5s")
+    @Scheduled(fixedDelay = "1s", initialDelay = "5s")
     void sendCharactersUpdate() {
         characterService.sendCharactersUpdate();
     }

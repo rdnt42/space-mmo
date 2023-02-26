@@ -1,17 +1,16 @@
 package marowak.dev.service.character;
 
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
-import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
-@KafkaClient
-public interface CharacterClient {
+@KafkaClient(batch=true)
+public interface CharactersClient {
 
     @Topic("characters")
-    Mono<CharacterRequest> sendCharacter(@KafkaKey CharacterMessageKey key, Collection<CharacterRequest> requests);
+    Mono<RecordMetadata> sendCharacters(Collection<CharacterRequest> requests);
 }
