@@ -44,4 +44,9 @@ public class CharacterServiceImpl implements CharacterService {
 
         return Mono.empty();
     }
+
+    @Override
+    public Publisher<Character> getAll() {
+        return characterRepository.findAll();
+    }
 }

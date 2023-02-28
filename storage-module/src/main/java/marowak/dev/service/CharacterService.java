@@ -12,4 +12,6 @@ public interface CharacterService {
     Publisher<Character> updateMotion(CharacterRequest request);
 
     Publisher<Character> updateAllMotions(List<CharacterRequest> requests);
+
+    Publisher<Character> getAll();
 }
