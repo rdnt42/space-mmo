@@ -10,6 +10,6 @@ import reactor.core.publisher.Mono;
 @KafkaClient
 public interface CharacterClient {
 
-    @Topic("character")
+    @Topic("characters")
     Mono<CharacterRequest> sendCharacter(@KafkaKey CharacterMessageKey key, CharacterRequest request);
 }
