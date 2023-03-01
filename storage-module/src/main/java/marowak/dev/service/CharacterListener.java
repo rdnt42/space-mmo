@@ -1,11 +1,15 @@
 package marowak.dev.service;
 
+import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.entity.Character;
+import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.reactivestreams.Publisher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -14,14 +18,13 @@ public class CharacterListener {
     private final CharacterCommandService characterCommandService;
 
     @Topic("characters")
-    public<T> void receive(List<ConsumerRecord<String, CharacterRequest>> records) {
-//        return null;
-//        return characterCommandService.executeCommand(key.get(0), request);
-    }
+    public List<Publisher<Character>> receive(@KafkaKey List<CharacterMessageKey> keys, List<CharacterRequest> requests) {
+        List<Publisher<Character>> publishers = new ArrayList<>();
+        for (int i = 0; i < requests.size(); i++) {
+            Publisher<Character> publisher = characterCommandService.executeCommand(keys.get(i), requests.get(i));
+            publishers.add(publisher);
+        }
 
-//    @Topic("characters")
-//    public<T> void receive(List<ConsumerRecord<String, String>> records) {
-////        return null;
-////        return characterCommandService.executeCommand(key.get(0), request);
-//    }
+        return publishers;
+    }
 }

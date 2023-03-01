@@ -4,10 +4,12 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.service.motion.PlayerMotionService;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +30,8 @@ public class CharacterServiceImpl implements CharacterService {
                 .map(this::convertPlayerMotion)
                 .toList();
 
-        charactersClient.sendCharacters(requests)
+        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_UPDATE);
+        charactersClient.sendCharacters(key, requests)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
@@ -38,4 +41,5 @@ public class CharacterServiceImpl implements CharacterService {
         return new CharacterRequest(null, playerMotion.playerName(),
                 playerMotion.motion().x(), playerMotion.motion().y(), playerMotion.motion().angle());
     }
+
 }
