@@ -4,9 +4,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.enums.CharacterMessageKey;
-import marowak.dev.model.mongo.Character;
 import marowak.dev.request.CharacterRequest;
-import org.reactivestreams.Publisher;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,11 +17,6 @@ import org.reactivestreams.Publisher;
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
     private final CharacterClient characterClient;
-
-    @Override
-    public Publisher<Character> getCharacters(String username) {
-        return null;
-    }
 
     @Override
     public void createCharacter(CharacterRequest request, String username) {
