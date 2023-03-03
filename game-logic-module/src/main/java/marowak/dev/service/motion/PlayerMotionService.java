@@ -1,6 +1,7 @@
 package marowak.dev.service.motion;
 
 import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.request.CharacterRequest;
 import marowak.dev.request.PlayerMotionRequest;
 
 import java.util.Collection;
@@ -18,9 +19,9 @@ public interface PlayerMotionService {
 
     PlayerMotion getPlayerMotion(String playerName);
 
-    void initPlayerMotion(String playerName);
-
     void leavingPlayer(String playerName);
 
     Collection<PlayerMotion> getAllMotions();
+
+    void addMotion(CharacterRequest character);
 }

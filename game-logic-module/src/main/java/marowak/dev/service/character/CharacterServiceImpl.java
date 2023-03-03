@@ -7,6 +7,7 @@ import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.service.motion.PlayerMotionService;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +36,14 @@ public class CharacterServiceImpl implements CharacterService {
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
+    }
+
+    @Override
+    public void initCharacters(Flux<CharacterRequest> requests) {
+        requests
+                .doOnNext(playerMotionService::addMotion)
+                .subscribe();
+
     }
 
     private CharacterRequest convertPlayerMotion(PlayerMotion playerMotion) {

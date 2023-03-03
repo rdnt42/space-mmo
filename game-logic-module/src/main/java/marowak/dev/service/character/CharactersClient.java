@@ -16,4 +16,7 @@ public interface CharactersClient {
 
     @Topic("characters")
     Mono<RecordMetadata> sendCharacters(@KafkaKey List<CharacterMessageKey> keys, Collection<CharacterRequest> requests);
+
+    @Topic("get-characters")
+    Mono<RecordMetadata> getCharacters(Collection<Object> empty);
 }

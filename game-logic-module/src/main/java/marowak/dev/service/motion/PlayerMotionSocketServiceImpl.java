@@ -18,7 +18,6 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
 
     @Override
     public PlayersMotionListResponse onOpen(String playerName) {
-        playerMotionService.initPlayerMotion(playerName);
         Collection<PlayerMotion> motions = playerMotionService.getPlayersInRange(playerName);
         PlayerMotion currPlayerMotion = playerMotionService.getPlayerMotion(playerName);
 
@@ -40,7 +39,8 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
 
     @Override
     public PlayerLeavingResponse onClose(String playerName) {
-        playerMotionService.leavingPlayer(playerName);
+        // TODO need to request state after connect
+//        playerMotionService.leavingPlayer(playerName);
 
         return new PlayerLeavingResponse(MessageCommand.CMD_LEAVING_PLAYER, playerName);
     }
