@@ -24,10 +24,7 @@ export function initRender() {
     sprites = createSpritesContainer();
     app.stage.addChild(sprites);
 
-    updatePlayers();
-
-    let playerNameLabel = createPlayerNameLabel(player.playerName);
-    app.stage.addChild(playerNameLabel);
+    reRenderPlayers();
 
     let posInfoLabel = createPosInfoLabel(player);
     app.stage.addChild(posInfoLabel);
@@ -39,7 +36,7 @@ export function initRender() {
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
 
-        updatePlayers();
+        reRenderPlayers();
     });
 }
 
@@ -57,12 +54,11 @@ export function updateAllPlayers(playersResponse) {
 
 // CREATE
 function createPlayerNameLabel(playerName) {
-    let sprite = ships.get(playerName).sprite;
     const nameText = new pixi.Text(playerName, {
         fill: 0xffffff,
     });
-    nameText.x = sprite.x - sprite.width / 2;
-    nameText.y = sprite.y - sprite.height - 5;
+    // nameText.x = x - sprite.width / 2;
+    // nameText.y = y - sprite.height - 5;
 
     return nameText;
 }
@@ -94,6 +90,14 @@ function createSpritesContainer() {
     });
 }
 
+// RENDER
+function reRenderPlayers() {
+    ships.forEach((value, key) => {
+        updateOrCreatePlayer(value, key, player.x, player.y);
+        updateOrCreateLabel(value);
+    })
+}
+
 // UPDATE
 function updateOrCreatePlayer(ship, playerName, absX, absY) {
     if (ship.sprite === undefined) {
@@ -110,6 +114,17 @@ function updateOrCreatePlayer(ship, playerName, absX, absY) {
     ship.sprite.angle = ship.motion.angle;
 }
 
+function updateOrCreateLabel(ship) {
+    if (ship.label === undefined) {
+        let playerNameLabel = createPlayerNameLabel
+        app.stage.addChild(playerNameLabel);
+        ship.label = playerNameLabel;
+    }
+
+    ship.label.x = x - sprite.width / 2;
+    ship.label.y = y - sprite.height - 5;
+}
+
 function getX(currX, diffX) {
     return currX - diffX + (window.innerWidth / 2);
 }
@@ -122,11 +137,6 @@ function updateLocationText(posInfoLabel) {
     posInfoLabel.text = player.getLocation();
 }
 
-function updatePlayers() {
-    ships.forEach((value, key) => {
-        updateOrCreatePlayer(value, key, player.x, player.y);
-    })
-}
 
 function updateBackground(bg, div) {
     bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX()) / div;
