@@ -142,6 +142,7 @@ function updateBackground(bg, div) {
 export function deletePlayer(deleteResponse) {
     let ship = ships.get(deleteResponse.playerName);
     sprites.removeChild(ship.sprite);
+    app.stage.removeChild(ship.label);
     ships.delete(deleteResponse.playerName);
 }
 
