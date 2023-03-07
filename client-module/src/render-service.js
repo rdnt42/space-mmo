@@ -54,13 +54,9 @@ export function updateAllPlayers(playersResponse) {
 
 // CREATE
 function createPlayerNameLabel(playerName) {
-    const nameText = new pixi.Text(playerName, {
+    return new pixi.Text(playerName, {
         fill: 0xffffff,
     });
-    // nameText.x = x - sprite.width / 2;
-    // nameText.y = y - sprite.height - 5;
-
-    return nameText;
 }
 
 function createPosInfoLabel(player) {
@@ -94,7 +90,7 @@ function createSpritesContainer() {
 function reRenderPlayers() {
     ships.forEach((value, key) => {
         updateOrCreatePlayer(value, key, player.x, player.y);
-        updateOrCreateLabel(value);
+        updateOrCreateLabel(value, key);
     })
 }
 
@@ -114,15 +110,15 @@ function updateOrCreatePlayer(ship, playerName, absX, absY) {
     ship.sprite.angle = ship.motion.angle;
 }
 
-function updateOrCreateLabel(ship) {
+function updateOrCreateLabel(ship, playerName) {
     if (ship.label === undefined) {
-        let playerNameLabel = createPlayerNameLabel
+        let playerNameLabel = createPlayerNameLabel(playerName);
         app.stage.addChild(playerNameLabel);
         ship.label = playerNameLabel;
     }
-
-    ship.label.x = x - sprite.width / 2;
-    ship.label.y = y - sprite.height - 5;
+    let x = ship.sprite.x - ship.sprite.width / 2;
+    let y = ship.sprite.y - ship.sprite.height - 5;
+    ship.label.position.set(x, y);
 }
 
 function getX(currX, diffX) {
