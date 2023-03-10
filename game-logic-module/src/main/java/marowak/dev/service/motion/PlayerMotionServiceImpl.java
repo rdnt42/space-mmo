@@ -18,10 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Singleton
 public class PlayerMotionServiceImpl implements PlayerMotionService {
-    // FIXME just for training
-    private static final int MAP_HEIGHT = 10000;
-    private static final int MAP_WIDTH = 10000;
-
     private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
 
     @Override
@@ -71,11 +67,5 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
         PlayerMotion playerMotion = new PlayerMotion(character.characterName(), newMotion);
         playerMotionMap.put(character.characterName(), playerMotion);
-    }
-
-    private PlayerMotion getInitMotion(String playerName) {
-        Motion motion = new Motion(MAP_WIDTH / 2, MAP_HEIGHT / 2, 270, 0);
-
-        return new PlayerMotion(playerName, motion);
     }
 }
