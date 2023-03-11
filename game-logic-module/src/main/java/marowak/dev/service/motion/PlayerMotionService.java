@@ -1,7 +1,7 @@
 package marowak.dev.service.motion;
 
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.CharacterRequest;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
 
 import java.util.Collection;
@@ -23,5 +23,5 @@ public interface PlayerMotionService {
 
     Collection<PlayerMotion> getAllMotions();
 
-    void addMotion(CharacterRequest character);
+    void addMotion(CharacterMotionRequest character);
 }

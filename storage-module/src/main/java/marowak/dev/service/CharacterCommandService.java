@@ -4,6 +4,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
 import marowak.dev.enums.CharacterMessageKey;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterRequest;
 import org.reactivestreams.Publisher;
 
@@ -14,8 +15,8 @@ public class CharacterCommandService {
 
     public Publisher<Character> executeCommand(CharacterMessageKey key, CharacterRequest request) {
         return switch (key) {
-            case CHARACTER_CREATE -> characterService.create(request);
-            case CHARACTER_UPDATE -> characterService.updateMotion(request);
+            case CHARACTER_CREATE -> characterService.create((CharacterMotionRequest) request);
+            case CHARACTER_UPDATE -> characterService.updateMotion((CharacterMotionRequest)request);
         };
     }
 }

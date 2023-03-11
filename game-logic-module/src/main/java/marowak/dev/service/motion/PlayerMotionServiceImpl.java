@@ -3,7 +3,7 @@ package marowak.dev.service.motion;
 import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.CharacterRequest;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
 
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public void addMotion(CharacterRequest character) {
+    public void addMotion(CharacterMotionRequest character) {
         Motion newMotion = new Motion(character.x(), character.y(), character.angle(), 0);
 
         PlayerMotion playerMotion = new PlayerMotion(character.characterName(), newMotion);
