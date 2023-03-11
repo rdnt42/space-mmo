@@ -26,6 +26,8 @@ public record Character(
         int y,
 
         @NotNull
-        int angle
+        int angle,
+
+        boolean isOnline
         ) {
 }
