@@ -7,4 +7,6 @@ public interface CharacterService {
     void sendCharactersUpdate();
 
     void initCharacters(Flux<CharacterMotionRequest> requests);
+
+    void sendCharacterState(String characterName, boolean isOnline);
 }

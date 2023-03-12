@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterRequest;
 import marowak.dev.request.CharacterStateRequest;
 import marowak.dev.service.motion.PlayerMotionService;
 import reactor.core.publisher.Flux;
@@ -28,7 +29,7 @@ public class CharacterServiceImpl implements CharacterService {
             return;
         }
 
-        List<CharacterMotionRequest> requests = motions.stream()
+        List<CharacterRequest> requests = motions.stream()
                 .map(this::convertPlayerMotion)
                 .toList();
 
@@ -47,8 +48,15 @@ public class CharacterServiceImpl implements CharacterService {
 
     }
 
+    @Override
+    public void sendCharacterState(String characterName, boolean isOnline) {
+        CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
+        // send
+
+    }
+
     private CharacterRequest convertPlayerMotion(PlayerMotion playerMotion) {
-        return new CharacterRequest(null, playerMotion.playerName(),
+        return new CharacterMotionRequest(null, playerMotion.playerName(),
                 playerMotion.motion().x(), playerMotion.motion().y(), playerMotion.motion().angle());
     }
 
