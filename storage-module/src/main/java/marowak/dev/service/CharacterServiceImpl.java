@@ -21,6 +21,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .x(request.x())
                 .y(request.y())
                 .angle(request.angle())
+                .isOnline(false)
                 .build();
 
         return characterRepository.save(character);
