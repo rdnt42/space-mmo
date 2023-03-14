@@ -51,7 +51,11 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
         CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
-        // send
+        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_UPDATE);
+        charactersClient.sendCharacters(key, Collections.singletonList(request))
+                .doOnError(e -> log.error("Send failed", e))
+                .doOnNext(r -> log.debug("Send message for updating characters"))
+                .subscribe();
 
     }
 
