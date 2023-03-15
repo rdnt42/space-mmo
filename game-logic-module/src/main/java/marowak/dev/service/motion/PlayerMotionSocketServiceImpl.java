@@ -7,6 +7,7 @@ import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayerLeavingResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
+import marowak.dev.service.character.CharacterService;
 
 import java.util.Collection;
 
@@ -15,9 +16,12 @@ import java.util.Collection;
 public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService {
 
     private final PlayerMotionService playerMotionService;
+    private final CharacterService characterService;
 
     @Override
     public PlayersMotionListResponse onOpen(String playerName) {
+        characterService.sendCharacterState(playerName, true);
+
         Collection<PlayerMotion> motions = playerMotionService.getPlayersInRange(playerName);
         PlayerMotion currPlayerMotion = playerMotionService.getPlayerMotion(playerName);
 
@@ -41,6 +45,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     public PlayerLeavingResponse onClose(String playerName) {
         // TODO need to request state after connect
 //        playerMotionService.leavingPlayer(playerName);
+        characterService.sendCharacterState(playerName, false);
 
         return new PlayerLeavingResponse(MessageCommand.CMD_LEAVING_PLAYER, playerName);
     }
