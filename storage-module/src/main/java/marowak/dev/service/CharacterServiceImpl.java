@@ -35,7 +35,12 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Publisher<Character> getAll() {
-        return characterRepository.findAll();
+    public Publisher<Character> getAllOnline() {
+        return characterRepository.findByOnline(true);
+    }
+
+    @Override
+    public Publisher<Character> get(String characterName) {
+        return characterRepository.findById(characterName);
     }
 }

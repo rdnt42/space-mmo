@@ -9,5 +9,7 @@ public interface CharacterService {
 
     Publisher<Character> updateMotion(CharacterMotionRequest request);
 
-    Publisher<Character> getAll();
+    Publisher<Character> getAllOnline();
+
+    Publisher<Character> get(String characterName);
 }
