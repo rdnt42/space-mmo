@@ -3,6 +3,7 @@ package marowak.dev.service.motion;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.enums.CharactersGetMessageKey;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayerLeavingResponse;
@@ -21,11 +22,10 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     @Override
     public PlayersMotionListResponse onOpen(String playerName) {
         characterService.sendCharacterState(playerName, true);
+        characterService.sendInitCharacters(CharactersGetMessageKey.CHARACTERS_GET_ONE, playerName);
 
-        Collection<PlayerMotion> motions = playerMotionService.getPlayersInRange(playerName);
-        PlayerMotion currPlayerMotion = playerMotionService.getPlayerMotion(playerName);
-
-        return new PlayersMotionListResponse(MessageCommand.CMD_INIT_CURRENT_PLAYER, currPlayerMotion, motions);
+        // TODO #43 rework PlayersMotionListResponse
+        return new PlayersMotionListResponse(MessageCommand.CMD_INIT_CURRENT_PLAYER, null, null);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
 
     @Override
     public PlayerLeavingResponse onClose(String playerName) {
-        // TODO need to request state after connect
+        // TODO #45 remove player after disconnect
 //        playerMotionService.leavingPlayer(playerName);
         characterService.sendCharacterState(playerName, false);
 

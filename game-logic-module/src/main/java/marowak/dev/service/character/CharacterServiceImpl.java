@@ -4,7 +4,8 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.enums.CharacterMessageKey;
+import marowak.dev.enums.CharactersGetMessageKey;
+import marowak.dev.enums.CharactersUpdateMessageKey;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.request.CharacterStateRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
+    private final CharactersUpdateClient charactersUpdateClient;
     private final CharactersClient charactersClient;
     private final PlayerMotionService playerMotionService;
 
@@ -33,8 +35,8 @@ public class CharacterServiceImpl implements CharacterService {
                 .map(this::convertPlayerMotion)
                 .toList();
 
-        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_UPDATE);
-        charactersClient.sendCharacters(key, requests)
+        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_UPDATE);
+        charactersUpdateClient.sendCharacters(key, requests)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
@@ -51,12 +53,20 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
         CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
-        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_UPDATE);
-        charactersClient.sendCharacters(key, Collections.singletonList(request))
+        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_UPDATE);
+        charactersUpdateClient.sendCharacters(key, Collections.singletonList(request))
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
 
+    }
+
+    @Override
+    public void sendInitCharacters(CharactersGetMessageKey key, String characterName) {
+        charactersClient.sendInitCharacters(key, characterName)
+                .doOnError(e -> log.error("Characters init error, error: {}", e.getMessage()))
+                .doOnSuccess(c -> log.info("Character init successful"))
+                .subscribe();
     }
 
     private CharacterRequest convertPlayerMotion(PlayerMotion playerMotion) {
