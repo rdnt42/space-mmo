@@ -53,8 +53,7 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
         CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
-        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_UPDATE);
-        charactersUpdateClient.sendCharacters(key, Collections.singletonList(request))
+        charactersUpdateClient.sendCharacter(CharactersUpdateMessageKey.CHARACTER_STATE_UPDATE, request)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
@@ -62,7 +61,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void sendInitCharacters(CharactersGetMessageKey key, String characterName) {
+    public void sendInitCharacter(CharactersGetMessageKey key, String characterName) {
         charactersClient.sendInitCharacters(key, characterName)
                 .doOnError(e -> log.error("Characters init error, error: {}", e.getMessage()))
                 .doOnSuccess(c -> log.info("Character init successful"))

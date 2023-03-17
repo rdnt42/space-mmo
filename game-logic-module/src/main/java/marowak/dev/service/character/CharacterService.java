@@ -11,5 +11,5 @@ public interface CharacterService {
 
     void sendCharacterState(String characterName, boolean isOnline);
 
-    void sendInitCharacters(CharactersGetMessageKey key, String characterName);
+    void sendInitCharacter(CharactersGetMessageKey key, String characterName);
 }

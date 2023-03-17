@@ -16,6 +16,6 @@ public class CharacterInit {
 
     @EventListener
     public void initCharacters(StartupEvent startupEvent) {
-        characterService.sendInitCharacters(CharactersGetMessageKey.CHARACTERS_GET_ALL, null);
+        characterService.sendInitCharacter(CharactersGetMessageKey.CHARACTERS_GET_ALL, "");
     }
 }
