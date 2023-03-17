@@ -4,6 +4,7 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import lombok.Builder;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +29,7 @@ public record Character(
         @NotNull
         int angle,
 
-        boolean isOnline
+        @Column(name = "is_online")
+        boolean online
         ) {
 }
