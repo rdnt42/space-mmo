@@ -35,7 +35,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .map(this::convertPlayerMotion)
                 .toList();
 
-        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_UPDATE);
+        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_MOTION_UPDATE);
         charactersUpdateClient.sendCharacters(key, requests)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))

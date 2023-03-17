@@ -19,6 +19,7 @@ public class CharacterInitListener {
     @Topic("get-characters")
     @SendTo("init-characters")
     public Flux<Character> receive(@KafkaKey CharactersGetMessageKey key, String characterName) {
+        log.info("Get init characters command: {}, character name: {}", key, characterName);
         return switch (key) {
             case CHARACTERS_GET_ONE -> Flux.from(characterService.get(characterName));
             case CHARACTERS_GET_ALL -> Flux.from(characterService.getAllOnline());

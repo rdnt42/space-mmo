@@ -20,12 +20,9 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     private final CharacterService characterService;
 
     @Override
-    public PlayersMotionListResponse onOpen(String playerName) {
+    public void onOpen(String playerName) {
         characterService.sendCharacterState(playerName, true);
         characterService.sendInitCharacter(CharactersGetMessageKey.CHARACTERS_GET_ONE, playerName);
-
-        // TODO #43 rework PlayersMotionListResponse
-        return new PlayersMotionListResponse(MessageCommand.CMD_INIT_CURRENT_PLAYER, null, null);
     }
 
     @Override

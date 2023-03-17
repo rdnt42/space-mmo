@@ -24,12 +24,10 @@ public class PlayerMotionSocket {
     private final PlayerMotionSocketService playerMotionSocketService;
 
     @OnOpen
-    public Publisher<PlayersMotionListResponse> onOpen(String playerName, WebSocketSession session) {
+    public void onOpen(String playerName, WebSocketSession session) {
         debugLog("onOpen", playerName, session);
 
-        PlayersMotionListResponse response = playerMotionSocketService.onOpen(playerName);
-
-        return broadcaster.broadcast(response, filterPlayer(session, playerName));
+        playerMotionSocketService.onOpen(playerName);
     }
 
     @OnMessage

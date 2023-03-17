@@ -17,12 +17,11 @@ public class CharacterListener {
 
     @Topic("characters")
     public void receive(@KafkaKey List<CharacterMessageKey> keys, List<byte[]> requests) {
-        for (int i = 0; i < requests.size(); i++) {
+        if (keys.size() != requests.size()) {
+            log.error("Null key for requests: {}", requests);
+        }
+        for (int i = 0; i < keys.size(); i++) {
             CharacterMessageKey key = keys.get(i);
-            if (key == null) {
-                log.error("Null key for requests: {}", requests);
-                break;
-            }
 
             byte[] request = requests.get(i);
             characterCommandService.tryExecuteCommand(key, request);
