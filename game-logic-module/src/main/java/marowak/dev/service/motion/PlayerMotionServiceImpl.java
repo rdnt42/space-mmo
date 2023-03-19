@@ -5,6 +5,7 @@ import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayersMotionListResponse;
 
 import java.util.Collection;
 import java.util.Map;
@@ -67,5 +68,17 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
         PlayerMotion playerMotion = new PlayerMotion(character.characterName(), newMotion);
         playerMotionMap.put(character.characterName(), playerMotion);
+    }
+
+    @Override
+    public PlayersMotionListResponse updateAndGetMotions(PlayerMotionRequest request, String playerName) {
+        if (request.isUpdate()) {
+            updatePlayerMotion(playerName, request);
+        }
+
+        Collection<PlayerMotion> motions = getPlayersInRange(playerName);
+        PlayerMotion currPlayerMotion = getPlayerMotion(playerName);
+
+        return new PlayersMotionListResponse(currPlayerMotion, motions);
     }
 }
