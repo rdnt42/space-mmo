@@ -70,7 +70,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private CharacterRequest convertPlayerMotion(PlayerMotion playerMotion) {
         return new CharacterMotionRequest(null, playerMotion.playerName(),
-                playerMotion.motion().x(), playerMotion.motion().y(), playerMotion.motion().angle());
+                playerMotion.x(), playerMotion.y(), playerMotion.angle());
     }
 
 }

@@ -2,6 +2,9 @@ package marowak.dev.dto.motion;
 
 public record PlayerMotion(
         String playerName,
-        Motion motion
+        int x,
+        int y,
+        int angle,
+        int speed
 ) {
 }

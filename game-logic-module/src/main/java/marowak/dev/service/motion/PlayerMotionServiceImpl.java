@@ -1,7 +1,6 @@
 package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
-import marowak.dev.dto.motion.Motion;
 import marowak.dev.dto.motion.PlayerMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
@@ -23,14 +22,13 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
-        Motion oldMotion = playerMotionMap.get(playerName)
-                .motion();
+        PlayerMotion oldMotion = playerMotionMap.get(playerName);
+
         int newX = oldMotion.x() + getXShift(request.speed(), request.angle());
         int newY = oldMotion.y() + getYShift(request.speed(), request.angle());
-        Motion newMotion = new Motion(newX, newY, request.angle(), request.speed());
+        PlayerMotion newMotion = new PlayerMotion(playerName, newX, newY, request.angle(), request.speed());
 
-        PlayerMotion playerMotion = new PlayerMotion(playerName, newMotion);
-        playerMotionMap.put(playerName, playerMotion);
+        playerMotionMap.put(playerName, newMotion);
     }
 
     private int getXShift(int speed, int angle) {
@@ -64,10 +62,9 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public void addMotion(CharacterMotionRequest character) {
-        Motion newMotion = new Motion(character.x(), character.y(), character.angle(), 0);
+        PlayerMotion newMotion = new PlayerMotion(character.characterName(), character.x(), character.y(), character.angle(), 0);
 
-        PlayerMotion playerMotion = new PlayerMotion(character.characterName(), newMotion);
-        playerMotionMap.put(character.characterName(), playerMotion);
+        playerMotionMap.put(character.characterName(), newMotion);
     }
 
     @Override
