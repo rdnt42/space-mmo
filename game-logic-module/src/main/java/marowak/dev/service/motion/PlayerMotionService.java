@@ -14,12 +14,6 @@ import java.util.Collection;
  * Time: 0:21
  */
 public interface PlayerMotionService {
-    void updatePlayerMotion(String playerName, PlayerMotionRequest request);
-
-    Collection<PlayerMotion> getPlayersInRange(String playerName);
-
-    PlayerMotion getPlayerMotion(String playerName);
-
     void leavingPlayer(String playerName);
 
     Collection<PlayerMotion> getAllMotions();
