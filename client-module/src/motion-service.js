@@ -23,14 +23,14 @@ function sendMotion(speed, angle, isUpdate) {
     socket.sendMessage(request);
 }
 
-export function update(playerResponse) {
-    if (playerResponse.playerMotion.playerName !== player.playerName) {
+export function update(data) {
+    let motion = data.playerMotion;
+    if (motion.playerName !== player.playerName) {
         return;
     }
     player.prevX = player.x;
-    player.prevY = player.y;
 
-    let motion = playerResponse.playerMotion.motion;
+    player.prevY = player.y;
     player.x = motion.x;
     player.y = motion.y;
     player.angle = motion.angle;

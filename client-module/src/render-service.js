@@ -40,14 +40,14 @@ export function initRender() {
     });
 }
 
-export function updateAllPlayers(playersResponse) {
-    for (let playerMotion of playersResponse.playerMotions) {
-        let ship = ships.get(playerMotion.playerName);
+export function updateAllPlayers(data) {
+    for (let motion of data.playerMotions) {
+        let ship = ships.get(motion.playerName);
         if (ship === undefined) {
-            ship = new SpriteShip(playerMotion.motion);
-            ships.set(playerMotion.playerName, ship);
+            ship = new SpriteShip(motion);
+            ships.set(motion.playerName, ship);
         } else {
-            ship.motion = playerMotion.motion;
+            ship.motion = motion.motion;
         }
     }
 }

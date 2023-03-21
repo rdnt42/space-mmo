@@ -1,6 +1,4 @@
 import * as socket from "./websocket-service.js";
-import * as render from "./render-service.js"
-import * as motion from "./motion-service.js"
 
 createConnectInfo();
 
@@ -22,7 +20,5 @@ function createConnectInfo() {
         socket.initSocketConnection(input.value);
         input.remove();
         btn.remove();
-
-        motion.keyBoardInit();
     };
 }

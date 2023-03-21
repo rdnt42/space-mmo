@@ -19,12 +19,15 @@ function onOpen(playerName) {
         // TODO move to another service
         player.playerName = playerName;
         console.log("WebSocket connection opened", event);
+
+        // TODO #44
+        // motion.keyBoardInit();
+
     };
 }
 
 function onMessage() {
     return function (event) {
-        // console.log("get message", event);
         commandService.executeCommand(event.data);
     };
 }
@@ -32,6 +35,5 @@ function onMessage() {
 export function sendMessage(message) {
     if (message !== "") {
         webSocket.send(JSON.stringify(message));
-        // console.log("Send message: ", message);
     }
 }
