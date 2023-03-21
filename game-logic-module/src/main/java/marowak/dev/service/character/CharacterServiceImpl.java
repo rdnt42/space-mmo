@@ -45,9 +45,11 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void initCharacters(Flux<CharacterMotionRequest> requests) {
         requests
-                .doOnNext(playerMotionService::addMotion)
+                .doOnNext(c -> {
+                    playerMotionService.addMotion(c);
+                    log.info("Character init successful, name: {}", c.characterName());
+                })
                 .subscribe();
-
     }
 
     @Override
@@ -57,14 +59,13 @@ public class CharacterServiceImpl implements CharacterService {
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
-
     }
 
     @Override
     public void sendInitCharacter(CharactersGetMessageKey key, String characterName) {
         charactersClient.sendInitCharacters(key, characterName)
-                .doOnError(e -> log.error("Characters init error, error: {}", e.getMessage()))
-                .doOnSuccess(c -> log.info("Character init successful"))
+                .doOnError(e -> log.error("Send Characters init error, error: {}", e.getMessage()))
+                .doOnSuccess(c -> log.info("Send Character init successful"))
                 .subscribe();
     }
 
