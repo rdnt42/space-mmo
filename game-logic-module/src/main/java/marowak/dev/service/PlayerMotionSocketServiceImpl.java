@@ -31,7 +31,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     }
 
     @Override
-    public Publisher<SocketResponse<?>> onMessage(String playerName, PlayerMotionRequest request,
+    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, PlayerMotionRequest request,
                                                                           WebSocketSession session) {
         PlayersMotionListResponse response = playerMotionService.updateAndGetMotions(request, playerName);
 
@@ -41,7 +41,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     }
 
     @Override
-    public Publisher<SocketResponse<?>> onClose(String playerName) {
+    public Publisher<SocketResponse<String>> onClose(String playerName) {
         characterService.sendCharacterState(playerName, false);
         playerMotionService.leavingPlayer(playerName);
 
@@ -55,5 +55,4 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 playerName.equalsIgnoreCase(s.getUriVariables()
                         .get("playerName", String.class, null));
     }
-
 }

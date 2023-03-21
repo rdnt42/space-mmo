@@ -7,6 +7,7 @@ import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,11 +33,11 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     private int getXShift(int speed, int angle) {
-        return (int)(Math.cos(Math.toRadians(angle)) * speed);
+        return (int) (Math.cos(Math.toRadians(angle)) * speed);
     }
 
     private int getYShift(int speed, int angle) {
-        return (int)(Math.sin(Math.toRadians(angle)) * speed);
+        return (int) (Math.sin(Math.toRadians(angle)) * speed);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public PlayerMotion getPlayerMotion(String playerName) {
-        return playerMotionMap.get(playerName);
+        return playerMotionMap.getOrDefault(playerName, null);
     }
 
     @Override
@@ -69,12 +70,16 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public PlayersMotionListResponse updateAndGetMotions(PlayerMotionRequest request, String playerName) {
+        PlayerMotion currPlayerMotion = getPlayerMotion(playerName);
+        if (currPlayerMotion == null) {
+            return new PlayersMotionListResponse(null, Collections.emptyList());
+        }
+
         if (request.isUpdate()) {
             updatePlayerMotion(playerName, request);
         }
 
         Collection<PlayerMotion> motions = getPlayersInRange(playerName);
-        PlayerMotion currPlayerMotion = getPlayerMotion(playerName);
 
         return new PlayersMotionListResponse(currPlayerMotion, motions);
     }
