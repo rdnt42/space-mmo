@@ -33,9 +33,13 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     @Override
     public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, PlayerMotionRequest request,
                                                                           WebSocketSession session) {
-        PlayersMotionListResponse response = playerMotionService.updateAndGetMotions(request, playerName);
-
-        SocketResponse<PlayersMotionListResponse> socketResponse = new SocketResponse<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+        SocketResponse<PlayersMotionListResponse> socketResponse;
+        if (!playerMotionService.isPlayerInit(playerName)) {
+            socketResponse = new SocketResponse<>(MessageCommand.CMD_NOT_INIT_CURRENT_PLAYER, null);
+        } else {
+            PlayersMotionListResponse response = playerMotionService.updateAndGetMotions(request, playerName);
+            socketResponse = new SocketResponse<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+        }
 
         return broadcaster.broadcast(socketResponse, filterOtherPlayers(session, playerName));
     }
