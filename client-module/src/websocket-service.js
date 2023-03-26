@@ -1,5 +1,6 @@
 import * as commandService from "./command-service.js"
 import player from "./obj/Player.js";
+import {startInitProcess} from "./init-service.js";
 
 let webSocket;
 export function initSocketConnection(playerName) {
@@ -19,6 +20,7 @@ function onOpen(playerName) {
         // TODO move to another service
         player.playerName = playerName;
         console.log("WebSocket connection opened", event);
+        startInitProcess();
 
         // TODO #44
         // motion.keyBoardInit();

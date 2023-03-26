@@ -7,7 +7,7 @@ import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.dto.SocketMessage;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.response.player.SocketResponse;
 import marowak.dev.service.PlayerMotionSocketService;
@@ -27,7 +27,7 @@ public class PlayerMotionSocket {
     }
 
     @OnMessage
-    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, PlayerMotionRequest request,
+    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
         debugLog("onMessage", playerName, session);
 

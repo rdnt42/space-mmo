@@ -5,6 +5,7 @@ import io.micronaut.websocket.WebSocketSession;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.CharactersGetMessageKey;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
@@ -31,14 +32,26 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     }
 
     @Override
-    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, PlayerMotionRequest request,
+    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
         SocketResponse<PlayersMotionListResponse> socketResponse;
-        if (!playerMotionService.isPlayerInit(playerName)) {
-            socketResponse = new SocketResponse<>(MessageCommand.CMD_NOT_INIT_CURRENT_PLAYER, null);
-        } else {
-            PlayersMotionListResponse response = playerMotionService.updateAndGetMotions(request, playerName);
-            socketResponse = new SocketResponse<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+        switch (request.command()) {
+            case CMD_INIT_CURRENT_PLAYER -> {
+                if (!playerMotionService.isPlayerInit(playerName)) {
+                    socketResponse = new SocketResponse<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, null);
+                } else {
+                    PlayersMotionListResponse response = playerMotionService.getMotions(playerName);
+                    socketResponse = new SocketResponse<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, response);
+                }
+            }
+            case CMD_UPDATE_CURRENT_PLAYER -> {
+                PlayersMotionListResponse response =
+                        playerMotionService.updateAndGetMotions((PlayerMotionRequest)request.data(), playerName);
+                socketResponse = new SocketResponse<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+            }
+            default ->
+                    throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
+
         }
 
         return broadcaster.broadcast(socketResponse, filterOtherPlayers(session, playerName));

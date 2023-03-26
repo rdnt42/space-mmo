@@ -1,5 +1,6 @@
 import * as render from "./render-service.js";
 import * as motion from "./motion-service.js"
+import {initCharacter} from "./init-service.js";
 
 export function executeCommand(response) {
     let socketResponse;
@@ -16,6 +17,7 @@ export function executeCommand(response) {
             // motion.update(parseObj);
             // render.updateAllPlayers(parseObj);
             // render.initRender();
+            initCharacter(socketResponse.data);
 
             break;
         case "CMD_UPDATE_CURRENT_PLAYER":
