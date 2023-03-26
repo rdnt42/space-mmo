@@ -6,7 +6,6 @@ const app = new pixi.Application({
     resizeTo: window
 });
 
-
 // fast container for all sprites (faster than Container in 3-5 times)
 let sprites;
 
@@ -41,13 +40,13 @@ export function initRender() {
 }
 
 export function updateAllPlayers(data) {
-    for (let motion of data.playerMotions) {
+    for (let motion of data.playersMotions) {
         let ship = ships.get(motion.playerName);
         if (ship === undefined) {
             ship = new SpriteShip(motion);
             ships.set(motion.playerName, ship);
         } else {
-            ship.motion = motion.motion;
+            ship.motion = motion;
         }
     }
 }

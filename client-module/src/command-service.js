@@ -1,6 +1,7 @@
 import * as render from "./render-service.js";
 import * as motion from "./motion-service.js"
 import {initCharacter} from "./init-service.js";
+import {commands} from "./const/MessageCommand.js";
 
 export function executeCommand(response) {
     let socketResponse;
@@ -13,19 +14,16 @@ export function executeCommand(response) {
 
     let command = socketResponse.command;
     switch (command) {
-        case "CMD_INIT_CURRENT_PLAYER":
-            // motion.update(parseObj);
-            // render.updateAllPlayers(parseObj);
-            // render.initRender();
+        case commands.CMD_INIT_CURRENT_PLAYER:
             initCharacter(socketResponse.data);
 
             break;
-        case "CMD_UPDATE_CURRENT_PLAYER":
+        case commands.CMD_UPDATE_CURRENT_PLAYER:
             motion.update(socketResponse.data);
             render.updateAllPlayers(socketResponse.data);
 
             break;
-        case "CMD_LEAVING_PLAYER":
+        case commands.CMD_LEAVING_PLAYER:
             render.deletePlayer(socketResponse);
 
             break;

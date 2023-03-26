@@ -1,9 +1,11 @@
 package marowak.dev.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketSession;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.CharactersGetMessageKey;
@@ -24,12 +26,15 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     private final CharacterService characterService;
     private final WebSocketBroadcaster broadcaster;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void onOpen(String playerName) {
         characterService.sendCharacterState(playerName, true);
         characterService.sendInitCharacter(CharactersGetMessageKey.CHARACTERS_GET_ONE, playerName);
     }
 
+    @SneakyThrows
     @Override
     public Publisher<SocketMessage<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
@@ -44,8 +49,9 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 }
             }
             case CMD_UPDATE_CURRENT_PLAYER -> {
+                PlayerMotionRequest value = objectMapper.convertValue(request.data(), PlayerMotionRequest.class);
                 PlayersMotionListResponse response =
-                        playerMotionService.updateAndGetMotions((PlayerMotionRequest)request.data(), playerName);
+                        playerMotionService.updateAndGetMotions(value, playerName);
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
             }
             default ->
