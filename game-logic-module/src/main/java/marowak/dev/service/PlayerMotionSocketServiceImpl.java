@@ -10,7 +10,6 @@ import marowak.dev.enums.CharactersGetMessageKey;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
-import marowak.dev.response.player.SocketResponse;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
@@ -32,22 +31,22 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     }
 
     @Override
-    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
+    public Publisher<SocketMessage<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
-        SocketResponse<PlayersMotionListResponse> socketResponse;
+        SocketMessage<PlayersMotionListResponse> socketResponse;
         switch (request.command()) {
             case CMD_INIT_CURRENT_PLAYER -> {
                 if (!playerMotionService.isPlayerInit(playerName)) {
-                    socketResponse = new SocketResponse<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, null);
+                    socketResponse = new SocketMessage<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, null);
                 } else {
                     PlayersMotionListResponse response = playerMotionService.getMotions(playerName);
-                    socketResponse = new SocketResponse<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, response);
+                    socketResponse = new SocketMessage<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, response);
                 }
             }
             case CMD_UPDATE_CURRENT_PLAYER -> {
                 PlayersMotionListResponse response =
                         playerMotionService.updateAndGetMotions((PlayerMotionRequest)request.data(), playerName);
-                socketResponse = new SocketResponse<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
@@ -58,11 +57,11 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     }
 
     @Override
-    public Publisher<SocketResponse<String>> onClose(String playerName) {
+    public Publisher<SocketMessage<String>> onClose(String playerName) {
         characterService.sendCharacterState(playerName, false);
         playerMotionService.leavingPlayer(playerName);
 
-        SocketResponse<String> socketResponse = new SocketResponse<>(MessageCommand.CMD_LEAVING_PLAYER, playerName);
+        SocketMessage<String> socketResponse = new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName);
 
         return broadcaster.broadcast(socketResponse);
     }

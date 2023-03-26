@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.response.player.PlayersMotionListResponse;
-import marowak.dev.response.player.SocketResponse;
 import marowak.dev.service.PlayerMotionSocketService;
 import org.reactivestreams.Publisher;
 
@@ -27,7 +26,7 @@ public class PlayerMotionSocket {
     }
 
     @OnMessage
-    public Publisher<SocketResponse<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
+    public Publisher<SocketMessage<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
         debugLog("onMessage", playerName, session);
 
@@ -35,7 +34,7 @@ public class PlayerMotionSocket {
     }
 
     @OnClose
-    public Publisher<SocketResponse<String>> onClose(String playerName, WebSocketSession session) {
+    public Publisher<SocketMessage<String>> onClose(String playerName, WebSocketSession session) {
         debugLog("onClose", playerName, session);
 
         return playerMotionSocketService.onClose(playerName);
