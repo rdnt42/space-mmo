@@ -39,39 +39,47 @@ export function update(data) {
     return player;
 }
 
-export function sendCurrentMotion(isUpdate) {
-    sendMotion(player.speed, player.angle, isUpdate);
+export function sendCurrentMotion(updatePlayer, isUpdate) {
+    sendMotion(updatePlayer.speed, updatePlayer.angle, isUpdate);
 }
 
 function onTimerTick() {
-
+    const copyPlayer = structuredClone(player);
     // Left
     if (keys["a"]) {
-        player.turnLeft();
+        if((copyPlayer.angle -= 5) < 0) {
+            copyPlayer.angle = copyPlayer.angle % 360 + 360;
+        }
     }
 
     // Right
     if (keys["d"]) {
-        player.turnRight();
+        if((copyPlayer.angle += 5) >= 360) {
+            copyPlayer.angle = copyPlayer.angle % 360;
+        }
     }
 
     // Up
     if (keys["w"]) {
-        player.increaseSpeed();
+        if (copyPlayer.speed < copyPlayer.maxSpeed) {
+            copyPlayer.speed += 1;
+        }
     }
 
     // Down
     if (keys["s"]) {
-        player.decreaseSpeed();
+        if (copyPlayer.speed > (copyPlayer.maxSpeed / 2) * -1) {
+            copyPlayer.speed -= 1;
+        }
     }
 
     if (keys[" "]) {
-        player.speed = 0;
+        copyPlayer.speed = 0;
     }
 
     if (keys.length !== 0) {
-        sendCurrentMotion(true);
+        sendCurrentMotion(copyPlayer, true);
     } else {
-        sendCurrentMotion(false);
+        sendCurrentMotion(copyPlayer, false);
     }
 }

@@ -39,12 +39,11 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public PlayersMotionListResponse updateAndGetMotions(PlayerMotionRequest request, String playerName) {
-        PlayerMotion currPlayerMotion = playerMotionMap.get(playerName);
-
         if (request.isUpdate()) {
             updatePlayerMotion(playerName, request);
         }
 
+        PlayerMotion currPlayerMotion = playerMotionMap.get(playerName);
         Collection<PlayerMotion> motions = getPlayersInRange(playerName);
 
         return new PlayersMotionListResponse(currPlayerMotion, motions);

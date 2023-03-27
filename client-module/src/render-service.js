@@ -12,7 +12,13 @@ let sprites;
 // key: playerName, value: SpriteShip obj
 let ships = new Map();
 
+let windowWidth;
+let windowHeight;
+
 export function initRender() {
+    windowWidth = window.innerWidth / 2;
+    windowHeight = window.innerHeight / 2;
+
     document.body.appendChild(app.view);
     const bgLast = createBackground(pixi.Texture.from("../images/background/bgLastLevel.jpg"));
     app.stage.addChild(bgLast);
@@ -87,8 +93,9 @@ function createSpritesContainer() {
 
 // RENDER
 function reRenderPlayers() {
+    const playerShip = ships.get(player.playerName);
     ships.forEach((value, key) => {
-        updateOrCreatePlayer(value, key, player.x, player.y);
+        updateOrCreatePlayer(value, key, playerShip.motion.x, playerShip.motion.y);
         updateOrCreateLabel(value, key);
     })
 }
@@ -121,11 +128,11 @@ function updateOrCreateLabel(ship, playerName) {
 }
 
 function getX(currX, diffX) {
-    return currX - diffX + (window.innerWidth / 2);
+    return currX - diffX + windowWidth;
 }
 
 function getY(currY, diffY) {
-    return currY - diffY + (window.innerHeight / 2);
+    return currY - diffY + windowHeight;
 }
 
 function updateLocationText(posInfoLabel) {

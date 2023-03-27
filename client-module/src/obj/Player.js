@@ -22,30 +22,6 @@ class Player {
         return "X: " + this.x + " Y: " + this.y + " speed: " + this.speed + " angle: " + this.angle;
     }
 
-    turnRight() {
-        if((this.angle += 5) >= 360) {
-            this.angle = this.angle % 360;
-        }
-    }
-
-    turnLeft() {
-        if((this.angle -= 5) < 0) {
-            this.angle = this.angle % 360 + 360;
-        }
-    }
-
-    decreaseSpeed() {
-        if (player.speed > (this.maxSpeed / 2) * -1) {
-            player.speed -= 1;
-        }
-    }
-
-    increaseSpeed() {
-        if (player.speed < this.maxSpeed) {
-            player.speed += 1;
-        }
-    }
-
 }
 
 const player = new Player();
