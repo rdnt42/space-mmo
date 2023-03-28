@@ -24,7 +24,7 @@ export function executeCommand(response) {
 
             break;
         case commands.CMD_LEAVING_PLAYER:
-            render.deletePlayer(socketResponse);
+            render.deletePlayer(socketResponse.data);
 
             break;
         default:

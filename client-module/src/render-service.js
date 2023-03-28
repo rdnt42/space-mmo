@@ -145,11 +145,11 @@ function updateBackground(bg, div) {
     bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY()) / div;
 }
 
-export function deletePlayer(deleteResponse) {
-    let ship = ships.get(deleteResponse.playerName);
+export function deletePlayer(playerName) {
+    let ship = ships.get(playerName);
     sprites.removeChild(ship.sprite);
     app.stage.removeChild(ship.label);
-    ships.delete(deleteResponse.playerName);
+    ships.delete(playerName);
 }
 
 function resize() {
