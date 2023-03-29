@@ -1,7 +1,6 @@
 package marowak.dev.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micronaut.core.async.publisher.Publishers;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +36,7 @@ public class CharacterCommandService {
         Publisher<Character> publisher = switch (key) {
             case CHARACTER_CREATE -> characterService.create((CharacterMotionRequest)request);
             case CHARACTER_MOTION_UPDATE -> characterService.updateMotion((CharacterMotionRequest)request);
-            case CHARACTER_STATE_UPDATE -> Publishers.empty();
+            case CHARACTER_STATE_UPDATE -> characterService.updateState((CharacterStateRequest)request);
         };
 
         Subscriber<Character> subscriber = getSubscriber(key, request);

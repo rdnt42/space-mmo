@@ -12,4 +12,6 @@ public interface CharacterRepository extends ReactiveStreamsCrudRepository<Chara
     void update(@Id String id, int x, int y, int angle);
 
     Publisher<Character> findByOnline(boolean isOnline);
+
+    void update(@Id String id, boolean online);
 }

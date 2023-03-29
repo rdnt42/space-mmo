@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
 import marowak.dev.repository.CharacterRepository;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterStateRequest;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -42,5 +43,12 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public Publisher<Character> get(String characterName) {
         return characterRepository.findById(characterName);
+    }
+
+    @Override
+    public Publisher<Character> updateState(CharacterStateRequest request) {
+        characterRepository.update(request.characterName(), request.isOnline());
+
+        return Mono.empty();
     }
 }
