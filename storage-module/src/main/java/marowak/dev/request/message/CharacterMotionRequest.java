@@ -1,4 +1,4 @@
-package marowak.dev.request;
+package marowak.dev.request.message;
 
 import io.micronaut.serde.annotation.Serdeable;
 

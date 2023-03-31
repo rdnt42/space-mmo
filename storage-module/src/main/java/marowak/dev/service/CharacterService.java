@@ -1,8 +1,8 @@
 package marowak.dev.service;
 
 import marowak.dev.entity.Character;
-import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterStateRequest;
+import marowak.dev.request.message.CharacterMotionRequest;
+import marowak.dev.request.message.CharacterStateRequest;
 import org.reactivestreams.Publisher;
 
 public interface CharacterService {

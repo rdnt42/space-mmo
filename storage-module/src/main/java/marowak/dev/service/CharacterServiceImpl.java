@@ -4,8 +4,8 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
 import marowak.dev.repository.CharacterRepository;
-import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterStateRequest;
+import marowak.dev.request.message.CharacterMotionRequest;
+import marowak.dev.request.message.CharacterStateRequest;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
