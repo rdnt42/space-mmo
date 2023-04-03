@@ -14,8 +14,8 @@
     <version>1.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>mechanics</module>
-        <module>account</module>
+        <module>game-logic-module</module>
+        <module>account-module</module>
     </modules>
 
     <name>space-mmo-parent</name>
