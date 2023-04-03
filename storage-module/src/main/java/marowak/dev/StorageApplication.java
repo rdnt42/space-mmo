@@ -2,9 +2,9 @@ package marowak.dev;
 
 import io.micronaut.runtime.Micronaut;
 
-public class Application {
+public class StorageApplication {
 
     public static void main(String[] args) {
-        Micronaut.run(Application.class, args);
+        Micronaut.run(StorageApplication.class, args);
     }
 }

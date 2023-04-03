@@ -2,10 +2,8 @@ package marowak.dev;
 
 import io.micronaut.runtime.Micronaut;
 
-public class GameLogicModuleApplication {
-
+public class AccountApplication {
     public static void main(String[] args) {
-        Micronaut.run(GameLogicModuleApplication.class, args);
+        Micronaut.run(AccountApplication.class, args);
     }
-
 }
