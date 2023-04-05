@@ -1,6 +1,6 @@
 create table if not exists engines
 (
-    engine_id      bigserial,
+    engine_id      bigserial primary key,
     is_active      bool     not null,
     character_name text references characters (character_name),
     engine_type_id smallint references engine_types (engine_type_id),

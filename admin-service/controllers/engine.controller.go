@@ -7,15 +7,13 @@ import (
 	"net/http"
 )
 
-type EngineController struct {
-	DB *gorm.DB
+var db *gorm.DB
+
+func NewEngineController(DB *gorm.DB) {
+	db = DB
 }
 
-func NewEngineController(DB *gorm.DB) EngineController {
-	return EngineController{DB}
-}
-
-func (ec *EngineController) CreateEngine(ctx *gin.Context) {
+func CreateEngine(ctx *gin.Context) {
 	var payload *models.CreateEngineRequest
 
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
@@ -31,7 +29,7 @@ func (ec *EngineController) CreateEngine(ctx *gin.Context) {
 		Cost:          payload.Cost,
 	}
 
-	result := ec.DB.Create(newEngine)
+	result := db.Create(newEngine)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"status": "error", "message": result.Error.Error()})
 		return

@@ -1,7 +1,7 @@
 package models
 
 type Engine struct {
-	EngineId      uint64
+	EngineId      int64 `gorm:"primary_key;auto_increment;not_null"`
 	IsActive      bool
 	CharacterName string
 	EngineTypeId  int16
