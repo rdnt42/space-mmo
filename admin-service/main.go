@@ -1,7 +1,7 @@
 package main
 
 import (
-	"admin-service/controllers"
+	"admin-service/services"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -49,7 +49,8 @@ func initDb() {
 }
 
 func initEngines(rg *gin.RouterGroup) {
-	controllers.NewEngineController(DB)
+	services.NewEngineController(DB)
 	router := rg.Group("engines")
-	router.POST("/", controllers.CreateEngine)
+	router.POST("/", services.CreateEngine)
+	router.GET("/", services.GetEngines)
 }

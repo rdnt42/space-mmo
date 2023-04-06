@@ -1,4 +1,4 @@
-package controllers
+package services
 
 import (
 	"admin-service/models"
@@ -21,7 +21,7 @@ func CreateEngine(ctx *gin.Context) {
 		return
 	}
 
-	newEngine := models.Engine{
+	newEngine := &models.Engine{
 		CharacterName: payload.CharacterName,
 		EngineTypeId:  payload.EngineTypeId,
 		Speed:         payload.Speed,
@@ -36,4 +36,15 @@ func CreateEngine(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "data": newEngine})
+}
+
+func GetEngines(ctx *gin.Context) {
+	var engines []models.Engine
+	results := db.Find(&engines)
+	if results.Error != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{"status": "error", "message": results.Error})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(engines), "data": engines})
 }
