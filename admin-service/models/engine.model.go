@@ -19,7 +19,6 @@ type CreateEngineRequest struct {
 }
 
 type UpdateEngineRequest struct {
-	EngineId      uint64 `json:"engine_id"  binding:"required"`
 	CharacterName string `json:"character_name"`
 	EngineTypeId  int16  `json:"engine_type_id"`
 	Speed         int16  `json:"speed"`

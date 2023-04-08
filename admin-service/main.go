@@ -53,5 +53,6 @@ func initEngines(rg *gin.RouterGroup) {
 	router := rg.Group("engines")
 	router.POST("/", services.CreateEngine)
 	router.GET("/", services.GetEngines)
-	router.PUT("/", services.UpdateEngine)
+	router.PUT("/:engineId", services.UpdateEngine)
+	router.DELETE("/:engineId", services.DeleteEngine)
 }
