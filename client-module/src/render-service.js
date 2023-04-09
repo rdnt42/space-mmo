@@ -6,8 +6,15 @@ const app = new pixi.Application({
     resizeTo: window
 });
 
+const Sort = {
+    OTHER_PLAYERS: 30,
+    PLAYER: 90,
+    INVENTORY: 100
+}
+
 // fast container for all sprites (faster than Container in 3-5 times)
 let sprites;
+let inventory;
 
 // key: playerName, value: SpriteShip obj
 let ships = new Map();
@@ -20,11 +27,14 @@ export function initRender() {
     windowHeight = window.innerHeight / 2;
 
     document.body.appendChild(app.view);
-    const bgLast = createBackground(pixi.Texture.from("../images/background/bgLastLevel.jpg"));
+    const bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
     app.stage.addChild(bgLast);
 
-    const bgFirst = createBackground(pixi.Texture.from("../images/background/bgFirstLevel.png"));
+    const bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
+
+    inventory = createInventory();
+    app.stage.addChild(inventory);
 
     sprites = createSpritesContainer();
     app.stage.addChild(sprites);
@@ -35,6 +45,8 @@ export function initRender() {
     app.stage.addChild(posInfoLabel);
 
     window.addEventListener('resize', resize);
+
+    app.stage.sortChildren();
 
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
@@ -87,8 +99,19 @@ function createSpritesContainer() {
         position: true,
         rotation: true,
         uvs: true,
-        alpha: true
+        alpha: true,
+        zIndex: Sort.OTHER_PLAYERS
     });
+}
+
+function createInventory() {
+    inventory = pixi.Sprite.from("./images/inventory_empty.png");
+    inventory.visible = false;
+    inventory.anchor.set(0.5, 0.5);
+    inventory.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    inventory.zIndex = Sort.INVENTORY
+
+    return inventory;
 }
 
 // RENDER
@@ -103,7 +126,7 @@ function reRenderPlayers() {
 // UPDATE
 function updateOrCreatePlayer(ship, playerName, absX, absY) {
     if (ship.sprite === undefined) {
-        let sprite = pixi.Sprite.from("../images/spaceship.png");
+        let sprite = pixi.Sprite.from("./images/spaceship.png");
         sprite.anchor.set(0.5, 0.5);
         sprite.width = 64;
         sprite.height = 64;
@@ -139,7 +162,6 @@ function updateLocationText(posInfoLabel) {
     posInfoLabel.text = player.getLocation();
 }
 
-
 function updateBackground(bg, div) {
     bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX()) / div;
     bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY()) / div;
@@ -155,4 +177,8 @@ export function deletePlayer(playerName) {
 function resize() {
     let ship = ships.get(player.playerName);
     ship.sprite.position.set(window.innerWidth / 2, window.innerHeight / 2);
+}
+
+export function changeStateInventory(state) {
+    inventory.visible = state;
 }
