@@ -83,6 +83,19 @@ func GetEngines(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(engines), "data": engines})
 }
 
+func GetEngine(ctx *gin.Context) {
+	engineId := ctx.Param("engineId")
+	var engine models.Engine
+	result := db.First(&engine, engineId)
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"status": "error",
+			"message": fmt.Sprintf("Engine with id: %s dosn't exists", engineId)})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": engine})
+}
+
 func DeleteEngine(ctx *gin.Context) {
 	engineId := ctx.Param("engineId")
 	var engine models.Engine
