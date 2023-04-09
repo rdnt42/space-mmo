@@ -33,11 +33,11 @@ func CreateEngine(ctx *gin.Context) {
 
 	result := db.Create(newEngine)
 	if result.Error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": result.Error.Error()})
+		ctx.JSON(http.StatusBadRequest, result.Error.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "data": newEngine})
+	ctx.JSON(http.StatusCreated, newEngine)
 }
 
 func UpdateEngine(ctx *gin.Context) {
@@ -65,22 +65,22 @@ func UpdateEngine(ctx *gin.Context) {
 
 	result = db.Save(&engine)
 	if result.Error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": result.Error.Error()})
+		ctx.JSON(http.StatusBadRequest, result.Error.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": engine})
+	ctx.JSON(http.StatusOK, engine)
 }
 
 func GetEngines(ctx *gin.Context) {
 	var engines []models.Engine
 	results := db.Find(&engines)
 	if results.Error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": results.Error})
+		ctx.JSON(http.StatusBadRequest, results.Error)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(engines), "data": engines})
+	ctx.JSON(http.StatusOK, engines)
 }
 
 func GetEngine(ctx *gin.Context) {
@@ -88,12 +88,11 @@ func GetEngine(ctx *gin.Context) {
 	var engine models.Engine
 	result := db.First(&engine, engineId)
 	if result.Error != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"status": "error",
-			"message": fmt.Sprintf("Engine with id: %s dosn't exists", engineId)})
+		ctx.JSON(http.StatusNotFound, fmt.Sprintf("Engine with id: %s dosn't exists", engineId))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": engine})
+	ctx.JSON(http.StatusOK, engine)
 }
 
 func DeleteEngine(ctx *gin.Context) {
@@ -101,14 +100,13 @@ func DeleteEngine(ctx *gin.Context) {
 	var engine models.Engine
 	result := db.First(&engine, engineId)
 	if result.Error != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"status": "error",
-			"message": fmt.Sprintf("Engine with id: %s dosn't exists", engineId)})
+		ctx.JSON(http.StatusNotFound, fmt.Sprintf("Engine with id: %s dosn't exists", engineId))
 		return
 	}
 
 	result = db.Delete(&engine)
 	if result.Error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": result.Error})
+		ctx.JSON(http.StatusBadRequest, result.Error)
 		return
 	}
 

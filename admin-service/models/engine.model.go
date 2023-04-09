@@ -11,17 +11,17 @@ type Engine struct {
 }
 
 type CreateEngineRequest struct {
-	CharacterName string `json:"character_name"  binding:"required"`
-	EngineTypeId  int16  `json:"engine_type_id"  binding:"required"`
+	CharacterName string `json:"characterName"  binding:"required"`
+	EngineTypeId  int16  `json:"engineTypeId"  binding:"required"`
 	Speed         int16  `json:"speed"  binding:"required"`
-	UpgradeLevel  int16  `json:"upgrade_level"`
+	UpgradeLevel  int16  `json:"upgradeLevel"`
 	Cost          int32  `json:"cost"`
 }
 
 type UpdateEngineRequest struct {
-	CharacterName string `json:"character_name"`
-	EngineTypeId  int16  `json:"engine_type_id"`
+	CharacterName string `json:"characterName"`
+	EngineTypeId  int16  `json:"engineTypeId"`
 	Speed         int16  `json:"speed"`
-	UpgradeLevel  int16  `json:"upgrade_level"`
+	UpgradeLevel  int16  `json:"upgradeLevel"`
 	Cost          int32  `json:"cost"`
 }
