@@ -50,8 +50,8 @@ export function initRender() {
 
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
-        updateBackground(bgLast, 3);
-        updateBackground(bgFirst, 2);
+        updateBackground(bgLast, 180);
+        updateBackground(bgFirst, 120);
 
         reRenderPlayers();
     });

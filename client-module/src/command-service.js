@@ -14,16 +14,16 @@ export function executeCommand(response) {
 
     let command = socketResponse.command;
     switch (command) {
-        case commands.CMD_INIT_CURRENT_PLAYER:
+        case commands.InitPlayer:
             initCharacter(socketResponse.data);
 
             break;
-        case commands.CMD_UPDATE_CURRENT_PLAYER:
+        case commands.UpdatePlayer:
             motion.update(socketResponse.data);
             render.updateAllPlayers(socketResponse.data);
 
             break;
-        case commands.CMD_LEAVING_PLAYER:
+        case commands.LeavingPlayer:
             render.deletePlayer(socketResponse.data);
 
             break;

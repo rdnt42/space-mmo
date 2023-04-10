@@ -1,6 +1,7 @@
 import * as character from './character-service.js'
 import * as motion from "./motion-service.js";
 import * as render from "./render-service.js";
+import {mainLogicInit} from "./main-logic.js";
 
 let isPlayerInit = false;
 const timerInterval = 250;
@@ -29,7 +30,7 @@ export function initCharacter(character) {
         motion.update(character);
         render.updateAllPlayers(character);
         render.initRender();
-        motion.keyBoardInit();
+        mainLogicInit();
         console.log("Character init success");
     }
 }
