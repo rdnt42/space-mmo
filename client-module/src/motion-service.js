@@ -15,8 +15,8 @@ export function update(data) {
     player.prevX = player.x;
 
     player.prevY = player.y;
-    player.x = motion.x;
-    player.y = motion.y;
+    player.x = Math.round(motion.x / 60);
+    player.y = Math.round(motion.y / 60);
     player.angle = motion.angle;
     player.speed = motion.speed;
 

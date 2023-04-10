@@ -65,8 +65,8 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     private void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
         PlayerMotion oldMotion = playerMotionMap.get(playerName);
 
-        int newX = oldMotion.x() + getXShift(request.speed(), request.angle());
-        int newY = oldMotion.y() + getYShift(request.speed(), request.angle());
+        long newX = oldMotion.x() + getXShift(request.speed(), request.angle());
+        long newY = oldMotion.y() + getYShift(request.speed(), request.angle());
         PlayerMotion newMotion = new PlayerMotion(playerName, newX, newY, request.angle(), request.speed());
 
         playerMotionMap.put(playerName, newMotion);

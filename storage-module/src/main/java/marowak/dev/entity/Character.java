@@ -22,9 +22,9 @@ public record Character(
         int experience,
 
         @NotNull
-        int x,
+        long x,
         @NotNull
-        int y,
+        long y,
 
         @NotNull
         int angle,

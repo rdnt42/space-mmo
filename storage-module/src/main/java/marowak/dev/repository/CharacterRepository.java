@@ -9,7 +9,7 @@ import org.reactivestreams.Publisher;
 
 @R2dbcRepository(dialect = Dialect.POSTGRES)
 public interface CharacterRepository extends ReactiveStreamsCrudRepository<Character, String> {
-    void update(@Id String id, int x, int y, int angle);
+    void update(@Id String id, long x, long y, int angle);
 
     Publisher<Character> findByOnline(boolean isOnline);
 

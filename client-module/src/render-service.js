@@ -50,8 +50,8 @@ export function initRender() {
 
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
-        updateBackground(bgLast, 180);
-        updateBackground(bgFirst, 120);
+        updateBackground(bgLast, 3);
+        updateBackground(bgFirst, 2);
 
         reRenderPlayers();
     });
@@ -66,6 +66,9 @@ export function updateAllPlayers(data) {
         } else {
             ship.motion = motion;
         }
+
+        motion.x = Math.round(motion.x / 60);
+        motion.y = Math.round(motion.y / 60);
     }
 }
 
