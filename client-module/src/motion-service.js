@@ -1,11 +1,5 @@
-import * as socket from "./websocket-service.js";
 import player from "./obj/Player.js"
-import {PlayerMotionRequest} from "./request/PlayerRequest.js";
 
-function sendMotion(speed, angle, isUpdate) {
-    const request = new PlayerMotionRequest(isUpdate, speed, angle);
-    socket.sendMessage(request);
-}
 
 export function update(data) {
     let motion = data.playerMotion;

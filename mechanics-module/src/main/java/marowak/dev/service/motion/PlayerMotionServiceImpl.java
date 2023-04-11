@@ -82,6 +82,9 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     private Collection<PlayerMotion> getPlayersInRange(String playerName) {
         // TODO added range filter
-        return playerMotionMap.values();
+        return playerMotionMap.values().stream()
+                .filter(v -> !v.playerName().equals(playerName))
+                .toList();
     }
+
 }

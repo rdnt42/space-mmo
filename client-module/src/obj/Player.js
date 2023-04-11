@@ -7,7 +7,7 @@ class Player {
         this.prevY = y;
         this.speed = 0;
         this.angle = 0;
-        this.maxSpeed = 10;
+        this.maxSpeed = 600;
     };
 
     getDiffX() {

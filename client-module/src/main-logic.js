@@ -1,7 +1,7 @@
 import player from "./obj/Player.js";
 import * as keyboard from "./keyboard-service.js"
-import {sendCurrentMotion} from "./motion-service.js";
 import {Direction} from "./const/Direction.js";
+import * as characterService from "./character-service.js";
 
 const freq = 60;
 const freqTime = 1000 / freq;
@@ -13,11 +13,11 @@ export function mainLogicInit() {
 
 function worldTick() {
     let move = getPlayerDirectionAnSpeed(player.speed, player.maxSpeed, player.angle);
-    sendCurrentMotion(move, true);
+    characterService.renderCharacters();
+    characterService.sendMotion(move.speed, move.angle, true);
 }
 
 function getPlayerDirectionAnSpeed(speed, maxSpeed, angle) {
-    maxSpeed = 600;
     let currSpeedDiff = Math.round((maxSpeed * freqTime) / accelerationTime);
 
     let directions = keyboard.getDirections();

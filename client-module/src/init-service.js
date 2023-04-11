@@ -1,5 +1,4 @@
-import * as character from './character-service.js'
-import * as motion from "./motion-service.js";
+import * as playerService from './character-service.js'
 import * as render from "./render-service.js";
 import {mainLogicInit} from "./main-logic.js";
 
@@ -15,22 +14,22 @@ export function startInitProcess() {
             console.log("Stopped character init loop")
         } else {
             console.log("Try to init character")
-            character.sendInitCharacter();
+            playerService.sendInitPlayer();
             tryCount--;
         }
     }, timerInterval);
     console.log("Started character init loop")
 }
 
-export function initCharacter(character) {
-    if (character == null) {
-        console.log("Character not init");
+export function initCharacter(data) {
+    if (data == null) {
+        console.log("Character.js not init");
     } else {
         isPlayerInit = true;
-        motion.update(character);
-        render.updateAllPlayers(character);
         render.initRender();
+        playerService.initMyCharacter(data.playerMotion.playerName, data.playerMotion);
+
         mainLogicInit();
-        console.log("Character init success");
+        console.log("My character init success");
     }
 }
