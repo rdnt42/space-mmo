@@ -1,4 +1,3 @@
-import player from "./obj/Player.js";
 import * as keyboard from "./keyboard-service.js"
 import {Direction} from "./const/Direction.js";
 import * as characterService from "./character-service.js";
@@ -12,7 +11,8 @@ export function mainLogicInit() {
 }
 
 function worldTick() {
-    let move = getPlayerDirectionAnSpeed(player.speed, player.maxSpeed, player.angle);
+    let character = characterService.getPlayerCharacter();
+    let move = getPlayerDirectionAnSpeed(character.movement.speed, character.movement.maxSpeed, character.movement.angle);
     characterService.renderCharacters();
     characterService.sendMotion(move.speed, move.angle, true);
 }

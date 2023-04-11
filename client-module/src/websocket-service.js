@@ -1,30 +1,23 @@
 import * as commandService from "./command-service.js"
-import player from "./obj/Player.js";
 import {startInitProcess} from "./init-service.js";
 
 let webSocket;
 export function initSocketConnection(playerName) {
     webSocket = new WebSocket("ws://localhost:8082/motion/" + playerName);
     webSocket.onclose = onClose();
-    webSocket.onopen = onOpen(playerName);
+    webSocket.onopen = onOpen();
     webSocket.onmessage = onMessage();
 }
 
 function onClose() {
-    return function (p1) {
+    return function () {
         console.log("WebSocket connection closed");
     };
 }
-function onOpen(playerName) {
+function onOpen() {
     return function (event) {
-        // TODO move to another service
-        player.playerName = playerName;
         console.log("WebSocket connection opened", event);
         startInitProcess();
-
-        // TODO #44
-        // motion.keyBoardInit();
-
     };
 }
 

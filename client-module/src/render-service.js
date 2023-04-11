@@ -1,6 +1,4 @@
 import * as pixi from './libs/pixi.min.js';
-import player from "./obj/Player.js";
-import {SpriteShip} from "./obj/SpriteShip.js";
 import * as characterService from "./character-service.js";
 
 const app = new pixi.Application({
@@ -16,9 +14,6 @@ const Sort = {
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
 let inventory;
-
-// key: playerName, value: SpriteShip obj
-let ships = new Map();
 
 let windowWidth;
 let windowHeight;
@@ -40,10 +35,10 @@ export function initRender() {
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
 
-    let posInfoLabel = createPosInfoLabel(player);
+    let posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
 
-    window.addEventListener('resize', resize);
+    //TODO #24 window.addEventListener('resize', resize);
 
     app.stage.sortChildren();
 
@@ -54,28 +49,10 @@ export function initRender() {
     });
 }
 
-export function updateAllPlayers(data) {
-    for (let motion of data.playersMotions) {
-        let ship = ships.get(motion.playerName);
-        if (ship === undefined) {
-            ship = new SpriteShip(motion);
-            ships.set(motion.playerName, ship);
-        } else {
-            ship.motion = motion;
-        }
-
-        motion.x = Math.round(motion.x / 60);
-        motion.y = Math.round(motion.y / 60);
-    }
-}
 
 // CREATE
-function createPlayerNameLabel(playerName) {
-    return
-}
-
-function createPosInfoLabel(player) {
-    const locationText = new pixi.Text(player.getLocation(), {
+function createPosInfoLabel() {
+    const locationText = new pixi.Text("", {
         fill: 0xffffff,
     });
     locationText.x = 25;
@@ -112,42 +89,6 @@ function createInventory() {
     return inventory;
 }
 
-// RENDER
-function reRenderPlayers() {
-    const playerShip = ships.get(player.playerName);
-    ships.forEach((value, key) => {
-        updateOrCreatePlayer(value, key, playerShip.motion.x, playerShip.motion.y);
-        updateOrCreateLabel(value, key);
-    })
-}
-
-// UPDATE
-function updateOrCreatePlayer(ship, playerName, absX, absY) {
-    if (ship.sprite === undefined) {
-        let sprite = pixi.Sprite.from("./images/spaceship.png");
-        sprite.anchor.set(0.5, 0.5);
-        sprite.width = 64;
-        sprite.height = 64;
-
-        spritesContainer.addChild(sprite)
-        ship.sprite = sprite;
-    }
-
-    ship.sprite.position.set(getX(ship.motion.x, absX), getY(ship.motion.y, absY));
-    ship.sprite.angle = ship.motion.angle;
-}
-
-function updateOrCreateLabel(ship, playerName) {
-    if (ship.label === undefined) {
-        let playerNameLabel = createPlayerNameLabel(playerName);
-        app.stage.addChild(playerNameLabel);
-        ship.label = playerNameLabel;
-    }
-    let x = ship.sprite.x - ship.sprite.width / 2;
-    let y = ship.sprite.y - ship.sprite.height - 5;
-    ship.label.position.set(x, y);
-}
-
 function getX(currX, diffX) {
     return currX - diffX + windowWidth;
 }
@@ -157,17 +98,14 @@ function getY(currY, diffY) {
 }
 
 function updateLocationText(posInfoLabel) {
-    posInfoLabel.text = player.getLocation();
+    let playerCharacter = characterService.getPlayerCharacter();
+    posInfoLabel.text = playerCharacter.getLocation();
 }
 
 function updateBackground(bg, div) {
-    bg.tilePosition.x -= (isNaN(player.getDiffX()) ? 0 : player.getDiffX()) / div;
-    bg.tilePosition.y -= (isNaN(player.getDiffY()) ? 0 : player.getDiffY()) / div;
-}
-
-function resize() {
-    let ship = ships.get(player.playerName);
-    ship.sprite.position.set(window.innerWidth / 2, window.innerHeight / 2);
+    let playerCharacter = characterService.getPlayerCharacter();
+    bg.tilePosition.x -= (isNaN(playerCharacter.getDiffX()) ? 0 : playerCharacter.getDiffX()) / div;
+    bg.tilePosition.y -= (isNaN(playerCharacter.getDiffY()) ? 0 : playerCharacter.getDiffY()) / div;
 }
 
 export function changeStateInventory(state) {

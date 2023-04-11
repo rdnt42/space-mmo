@@ -33,7 +33,8 @@ export function renderCharacters() {
 export function updateOrCreateCharacters(data) {
     updateCharacter(data.playerMotion.playerName, data.playerMotion);
 
-    // TODO add cleaner for charactersMap who not in response
+    //TODO add cleaner for charactersMap who not in response
+    if(data.playersMotions === undefined) return;
     for (let playerMotion of data.playersMotions) {
         let character = charactersMap.get(playerMotion.playerName);
         if (character === undefined) {
