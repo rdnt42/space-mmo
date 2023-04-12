@@ -11,11 +11,11 @@ export function mainLogicInit() {
 
 function worldTick() {
     let character = characterService.getPlayerCharacter();
-    let move = getPlayerDirectionAnSpeed(character.movement.speed, character.movement.maxSpeed, character.movement.angle);
+    let move = getPlayerDirectionAndSpeed(character.movement.speed, character.movement.maxSpeed, character.movement.angle);
     characterService.sendMotion(move.speed, move.angle, true);
 }
 
-function getPlayerDirectionAnSpeed(speed, maxSpeed, angle) {
+function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
     let currSpeedDiff = Math.round((maxSpeed * FREQUENCY_TIME) / accelerationTime);
 
     let directions = keyboard.getDirections();
@@ -32,11 +32,9 @@ function getPlayerDirectionAnSpeed(speed, maxSpeed, angle) {
             if (speed < minSpeed) speed = minSpeed;
         }
 
-        if (direction === Direction.Left) {
-            angle -= 5;
+        if (direction === Direction.Left && (angle -= 5) < 0) {
             angle = angle % 360 + 360;
-        } else if (direction === Direction.Right) {
-            angle += 5;
+        } else if (direction === Direction.Right && (angle += 5) >= 360) {
             angle = angle % 360;
         }
     }

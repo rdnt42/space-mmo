@@ -1,5 +1,5 @@
 import * as commandService from "./command-service.js"
-import {startInitProcess} from "./init-service.js";
+import * as initService from "./init-service.js";
 
 let webSocket;
 export function initSocketConnection(playerName) {
@@ -17,7 +17,7 @@ function onClose() {
 function onOpen() {
     return function (event) {
         console.log("WebSocket connection opened", event);
-        startInitProcess();
+        initService.startInitProcess();
     };
 }
 
