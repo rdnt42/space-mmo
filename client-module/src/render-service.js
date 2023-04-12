@@ -14,7 +14,7 @@ const Sort = {
 
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
-let inventory;
+let inventoryContainer;
 
 let windowWidth;
 let windowHeight;
@@ -30,8 +30,7 @@ export function initRender() {
     const bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
 
-    inventory = createInventory();
-    app.stage.addChild(inventory);
+    inventoryContainer = createInventory();
 
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
@@ -41,13 +40,12 @@ export function initRender() {
 
     //TODO #24 window.addEventListener('resize', resize);
 
-    app.stage.sortChildren();
-
     app.ticker.add(() => {
         renderCharacters();
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
+        app.stage.sortChildren();
     });
 }
 
@@ -80,16 +78,6 @@ function createSpritesContainer() {
     });
 }
 
-function createInventory() {
-    inventory = pixi.Sprite.from("./images/inventory_empty.png");
-    inventory.visible = false;
-    inventory.anchor.set(0.5, 0.5);
-    inventory.position.set(window.innerWidth / 2, window.innerHeight / 2);
-    inventory.zIndex = Sort.INVENTORY
-
-    return inventory;
-}
-
 function getX(currX, diffX) {
     return currX - diffX + windowWidth;
 }
@@ -110,7 +98,7 @@ function updateBackground(bg, div) {
 }
 
 export function changeStateInventory(state) {
-    inventory.visible = state;
+    inventoryContainer.visible = state;
 }
 
 /// Character
@@ -147,6 +135,7 @@ export function createCharacterLabel(character) {
     let label = new pixi.Text(character.characterName, {
         fill: 0xffffff,
     });
+    label.zIndex = Sort.OTHER_PLAYERS;
     app.stage.addChild(label);
 
     return label;
@@ -155,4 +144,39 @@ export function createCharacterLabel(character) {
 export function removeCharacter(character) {
     spritesContainer.removeChild(character.sprite);
     app.stage.removeChild(character.label);
+}
+
+/// Inventory
+function createInventory() {
+    let inventoryContainer = new pixi.Container();
+    app.stage.addChild(inventoryContainer);
+    inventoryContainer.visible = true;
+
+    let inventory = pixi.Sprite.from("./images/inventory_empty.png");
+    inventory.position.set(inventoryContainer.width / 2, inventoryContainer.height / 2)
+    inventoryContainer.addChild(inventory);
+    inventory.width = 436;
+    inventory.height = 500;
+    inventory.position.set(0, 0);
+
+    let holdContainer = new pixi.Container();
+    let hold = pixi.Sprite.from("./images/hold_empty.png");
+    holdContainer.addChild(hold);
+    hold.width = 336;
+    hold.height = 76;
+    hold.anchor.set(0.5, 0);
+    hold.position.set(inventory.width / 2, inventory.height);
+
+    inventoryContainer.addChild(holdContainer);
+    inventoryContainer.height = inventory.height + hold.height;
+    inventoryContainer.width = inventory.width;
+    inventoryContainer.position.set(app.screen.width / 2, app.screen.height / 2);
+    inventoryContainer.pivot.set(inventoryContainer.width / 2, inventoryContainer.height / 2);
+    inventoryContainer.zIndex = Sort.INVENTORY;
+
+    return inventoryContainer;
+}
+
+export function renderEngines() {
+
 }
