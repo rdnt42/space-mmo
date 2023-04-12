@@ -12,7 +12,7 @@ export class Character {
     };
 
     initCharacter(x, y, angle, speed) {
-        this.movement = new Movement(x, y, angle, speed);
+        this.movement = new Movement(Math.round(x / FREQUENCY), Math.round(y / FREQUENCY), angle, speed);
         this.sprite = renderService.createCharacterSprite();
         this.label = renderService.createCharacterLabel(this);
     }
@@ -37,11 +37,6 @@ export class Character {
     getLocation() {
         return "X: " + this.movement.x + " Y: " + this.movement.y + " speed: " +
             this.movement.speed + " angle: " + this.movement.angle;
-    }
-
-    render() {
-        renderService.renderCharacter(this);
-        renderService.renderCharacterLabel(this);
     }
 
     destroy() {

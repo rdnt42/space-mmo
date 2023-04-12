@@ -1,5 +1,6 @@
 import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
+import {getAllCharacters} from "./character-service.js";
 
 const app = new pixi.Application({
     resizeTo: window
@@ -19,8 +20,8 @@ let windowWidth;
 let windowHeight;
 
 export function initRender() {
-    windowWidth = window.innerWidth / 2;
-    windowHeight = window.innerHeight / 2;
+    windowWidth = Math.floor(window.innerWidth / 2);
+    windowHeight = Math.floor(window.innerHeight / 2);
 
     document.body.appendChild(app.view);
     const bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
@@ -43,12 +44,12 @@ export function initRender() {
     app.stage.sortChildren();
 
     app.ticker.add(() => {
+        renderCharacters();
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
     });
 }
-
 
 // CREATE
 function createPosInfoLabel() {
@@ -113,20 +114,22 @@ export function changeStateInventory(state) {
 }
 
 /// Character
-export function renderCharacter(character) {
+function renderCharacters() {
+    let characters = getAllCharacters();
     let playerCharacter = characterService.getPlayerCharacter();
-    let movement = character.movement;
-    let sprite = character.sprite;
+    let x = playerCharacter.movement.x;
+    let y = playerCharacter.movement.y;
 
-    let x = getX(movement.x, playerCharacter.movement.x);
-    let y = getY(movement.y, playerCharacter.movement.y);
-    sprite.position.set(x, y);
-    sprite.angle = movement.angle;
-}
+    for (let character of characters.values()) {
+        let movement = character.movement;
+        let sprite = character.sprite;
 
-export function renderCharacterLabel(character) {
-    let sprite = character.sprite;
-    character.label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
+        let newX = getX(movement.x, x);
+        let newY = getY(movement.y, y);
+        sprite.position.set(newX, newY);
+        sprite.angle = movement.angle;
+        character.label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
+    }
 }
 
 export function createCharacterSprite() {

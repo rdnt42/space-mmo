@@ -24,10 +24,8 @@ export function sendMotion(speed, angle, isUpdate) {
     socket.sendMessage(request);
 }
 
-export function renderCharacters() {
-    for (let character of charactersMap.values()) {
-        character.render();
-    }
+export function getAllCharacters() {
+    return charactersMap;
 }
 
 export function updateOrCreateCharacters(data) {
