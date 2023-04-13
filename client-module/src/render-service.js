@@ -14,6 +14,7 @@ const Sort = {
     INVENTORY: 100,
     EQUIPMENT: 110
 }
+const HOLD_CELL_NUM = 6;
 
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
@@ -21,6 +22,7 @@ let inventoryContainer;
 
 let charactersMap = new Map();
 let characterLabelsMap = new Map();
+let holdCellsEmpty = [];
 let holdCells = [];
 
 let windowWidth;
@@ -181,14 +183,14 @@ export function createInventory() {
     hold.position.set(inventory.width / 2, inventory.height);
     container.addChild(hold);
 
-    for (let i = 0; i < 6; i++) {
-        let cell = pixi.Sprite.from("./images/hold_cell_empty.png");
-        cell.width = 39;
-        cell.height = 40;
-        cell.anchor.set(0, 0.5);
-        cell.position.set(91 + i * (cell.width + 4), inventory.height + hold.height / 2 - 4);
-        container.addChild(cell);
-        holdCells.push(cell);
+    for (let i = 0; i < HOLD_CELL_NUM; i++) {
+        const rectangle = pixi.Sprite.from(pixi.Texture.WHITE);
+        rectangle.width = 40;
+        rectangle.height = 40;
+        rectangle.position.set(91 + i * (rectangle.width + 3), inventory.height + hold.height / 2 - 4);
+        rectangle.anchor.set(0, 0.5);
+        container.addChild(rectangle);
+        holdCellsEmpty.push(rectangle);
     }
 
     container.height = inventory.height + hold.height;
@@ -200,15 +202,16 @@ export function createInventory() {
     inventoryContainer = container;
 }
 
-export function createEquipment(equipmentType) {
+export function createEquipment(equipmentType, idx) {
     let equipment;
     switch (equipmentType) {
         case EquipmentType.Engine:
             equipment = pixi.Sprite.from("./images/engine.png");
     }
+    inventoryContainer.addChild(equipment);
+
     equipment.interactive = true;
     equipment.cursor = 'pointer';
-    equipment.anchor.set(0.5);
     equipment
         // events for drag start
         .on('mousedown', onDragStart)
@@ -221,14 +224,20 @@ export function createEquipment(equipmentType) {
         // events for drag move
         .on('mousemove', onDragMove)
         .on('touchmove', onDragMove);
-    equipment.position.set(300, 300);
     equipment.zIndex = Sort.EQUIPMENT;
-    equipment.visible = false;
-    app.stage.addChild(equipment);
+
+    equipment.anchor.set(0.5);
+    equipment.scale.set(0.6);
+    if (idx <= HOLD_CELL_NUM) {
+        equipment.visible = true;
+        equipment.position.set(holdCellsEmpty[idx].x + holdCellsEmpty[idx].width / 2, holdCellsEmpty[idx].y);
+    } else {
+        equipment.visible = false;
+    }
+
 }
 
 function onDragMove(event) {
-    console.log("onDragMove");
     if (dragTarget) {
         dragTarget.parent.toLocal(event.global, null, dragTarget.position);
     }
@@ -236,14 +245,15 @@ function onDragMove(event) {
 
 function onDragStart() {
     dragTarget = this;
-    dragTarget.scale.set(0.5);
+    // dragTarget.scale.set(0.5);
     app.stage.on('pointermove', onDragMove);
 }
 
 function onDragEnd() {
     if (dragTarget) {
         app.stage.off('pointermove', onDragMove);
-        dragTarget.scale.set(1);
+        // TODO 1 when equipped
+        // dragTarget.scale.set(1);
         dragTarget = null;
     }
 }
