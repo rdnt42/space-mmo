@@ -1,13 +1,17 @@
-class Inventory {
+import * as renderService from "../render-service.js";
+
+export class Inventory {
+    isOpen = false;
+
     constructor(){
-        this.isOpen = false;
+    }
+
+    initInventory() {
+        renderService.createInventory();
     }
 
     changeState() {
-        return this.isOpen = !this.isOpen
+        this.isOpen = !this.isOpen;
+        renderService.changeStateInventory(this.isOpen);
     }
 }
-
-const inventory = new Inventory()
-
-export default inventory;

@@ -1,7 +1,7 @@
-import {commands} from "../const/MessageCommand.js";
+import {Commands} from "../const/MessageCommand.js";
 
 export class PlayerInitRequest {
     constructor() {
-        this.command = commands.InitPlayer;
+        this.command = Commands.InitPlayer;
     }
 }

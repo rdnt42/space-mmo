@@ -4,8 +4,6 @@ import {FREQUENCY} from "../const/Common.js";
 export class Character {
     characterName;
     movement;
-    sprite;
-    label;
 
     constructor(characterName) {
         this.characterName = characterName;
@@ -13,8 +11,8 @@ export class Character {
 
     initCharacter(x, y, angle, speed) {
         this.movement = new Movement(Math.round(x / FREQUENCY), Math.round(y / FREQUENCY), angle, speed);
-        this.sprite = renderService.createCharacterSprite();
-        this.label = renderService.createCharacterLabel(this);
+        renderService.createCharacterLabel(this.characterName);
+        renderService.createCharacterSprite(this.characterName);
     }
 
     updateCharacter(x, y, angle, speed) {

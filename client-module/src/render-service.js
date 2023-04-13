@@ -1,25 +1,37 @@
 import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
 import {getAllCharacters} from "./character-service.js";
+import {EquipmentType} from "./const/EquipmentType.js";
 
 const app = new pixi.Application({
     resizeTo: window
 });
+let dragTarget = null;
 
 const Sort = {
     OTHER_PLAYERS: 30,
     PLAYER: 90,
-    INVENTORY: 100
+    INVENTORY: 100,
+    EQUIPMENT: 110
 }
 
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
 let inventoryContainer;
 
+let charactersMap = new Map();
+let characterLabelsMap = new Map();
+let holdCells = [];
+
 let windowWidth;
 let windowHeight;
 
 export function initRender() {
+    app.stage.interactive = true;
+    app.stage.hitArea = app.screen;
+    app.stage.on('pointerup', onDragEnd);
+    app.stage.on('pointerupoutside', onDragEnd);
+
     windowWidth = Math.floor(window.innerWidth / 2);
     windowHeight = Math.floor(window.innerHeight / 2);
 
@@ -29,8 +41,6 @@ export function initRender() {
 
     const bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
-
-    inventoryContainer = createInventory();
 
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
@@ -110,73 +120,130 @@ function renderCharacters() {
 
     for (let character of characters.values()) {
         let movement = character.movement;
-        let sprite = character.sprite;
+        let sprite = charactersMap.get(character.characterName);
 
         let newX = getX(movement.x, x);
         let newY = getY(movement.y, y);
         sprite.position.set(newX, newY);
         sprite.angle = movement.angle;
-        character.label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
+
+        let label = characterLabelsMap.get(character.characterName);
+        label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
     }
 }
 
-export function createCharacterSprite() {
+export function createCharacterSprite(characterName) {
     let sprite = pixi.Sprite.from("./images/spaceship.png");
     sprite.anchor.set(0.5, 0.5);
     sprite.width = 64;
     sprite.height = 64;
 
     spritesContainer.addChild(sprite);
-
-    return sprite;
+    charactersMap.set(characterName, sprite);
 }
 
-export function createCharacterLabel(character) {
-    let label = new pixi.Text(character.characterName, {
+export function createCharacterLabel(characterName) {
+    let label = new pixi.Text(characterName, {
         fill: 0xffffff,
     });
     label.zIndex = Sort.OTHER_PLAYERS;
     app.stage.addChild(label);
-
-    return label;
+    characterLabelsMap.set(characterName, label);
 }
 
-export function removeCharacter(character) {
-    spritesContainer.removeChild(character.sprite);
-    app.stage.removeChild(character.label);
+export function removeCharacter(characterName) {
+    let sprite = charactersMap.get(characterName);
+    charactersMap.delete(characterName);
+    spritesContainer.removeChild(sprite);
+
+    let label = characterLabelsMap.get(characterName);
+    characterLabelsMap.delete(characterName);
+    app.stage.removeChild(label);
 }
 
 /// Inventory
-function createInventory() {
-    let inventoryContainer = new pixi.Container();
-    app.stage.addChild(inventoryContainer);
-    inventoryContainer.visible = true;
+export function createInventory() {
+    let container = new pixi.Container();
+    app.stage.addChild(container);
+    container.visible = false;
 
     let inventory = pixi.Sprite.from("./images/inventory_empty.png");
-    inventory.position.set(inventoryContainer.width / 2, inventoryContainer.height / 2)
-    inventoryContainer.addChild(inventory);
+    inventory.position.set(container.width / 2, container.height / 2)
+    container.addChild(inventory);
     inventory.width = 436;
     inventory.height = 500;
     inventory.position.set(0, 0);
 
-    let holdContainer = new pixi.Container();
     let hold = pixi.Sprite.from("./images/hold_empty.png");
-    holdContainer.addChild(hold);
     hold.width = 336;
     hold.height = 76;
     hold.anchor.set(0.5, 0);
     hold.position.set(inventory.width / 2, inventory.height);
+    container.addChild(hold);
 
-    inventoryContainer.addChild(holdContainer);
-    inventoryContainer.height = inventory.height + hold.height;
-    inventoryContainer.width = inventory.width;
-    inventoryContainer.position.set(app.screen.width / 2, app.screen.height / 2);
-    inventoryContainer.pivot.set(inventoryContainer.width / 2, inventoryContainer.height / 2);
-    inventoryContainer.zIndex = Sort.INVENTORY;
+    for (let i = 0; i < 6; i++) {
+        let cell = pixi.Sprite.from("./images/hold_cell_empty.png");
+        cell.width = 39;
+        cell.height = 40;
+        cell.anchor.set(0, 0.5);
+        cell.position.set(91 + i * (cell.width + 4), inventory.height + hold.height / 2 - 4);
+        container.addChild(cell);
+        holdCells.push(cell);
+    }
 
-    return inventoryContainer;
+    container.height = inventory.height + hold.height;
+    container.width = inventory.width;
+    container.position.set(app.screen.width / 2, app.screen.height / 2);
+    container.pivot.set(container.width / 2, container.height / 2);
+    container.zIndex = Sort.INVENTORY;
+
+    inventoryContainer = container;
 }
 
-export function renderEngines() {
+export function createEquipment(equipmentType) {
+    let equipment;
+    switch (equipmentType) {
+        case EquipmentType.Engine:
+            equipment = pixi.Sprite.from("./images/engine.png");
+    }
+    equipment.interactive = true;
+    equipment.cursor = 'pointer';
+    equipment.anchor.set(0.5);
+    equipment
+        // events for drag start
+        .on('mousedown', onDragStart)
+        .on('touchstart', onDragStart)
+        // events for drag end
+        .on('mouseup', onDragEnd)
+        .on('mouseupoutside', onDragEnd)
+        .on('touchend', onDragEnd)
+        .on('touchendoutside', onDragEnd)
+        // events for drag move
+        .on('mousemove', onDragMove)
+        .on('touchmove', onDragMove);
+    equipment.position.set(300, 300);
+    equipment.zIndex = Sort.EQUIPMENT;
+    equipment.visible = false;
+    app.stage.addChild(equipment);
+}
 
+function onDragMove(event) {
+    console.log("onDragMove");
+    if (dragTarget) {
+        dragTarget.parent.toLocal(event.global, null, dragTarget.position);
+    }
+}
+
+function onDragStart() {
+    dragTarget = this;
+    dragTarget.scale.set(0.5);
+    app.stage.on('pointermove', onDragMove);
+}
+
+function onDragEnd() {
+    if (dragTarget) {
+        app.stage.off('pointermove', onDragMove);
+        dragTarget.scale.set(1);
+        dragTarget = null;
+    }
 }
