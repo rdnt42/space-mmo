@@ -5,16 +5,12 @@ export class Inventory {
     isOpen = false;
     equipments = [];
 
-    constructor(){
-    }
-
     initInventory() {
         renderService.createInventory();
     }
 
-    addEquipment(equipmentType, idx) {
-        let equipment = new Equipment();
-        equipment.initEquipment(equipmentType, idx);
+    addEquipment(equipmentType, idx, id) {
+        let equipment = new Equipment(equipmentType, idx, id);
         this.equipments.push(equipment);
 
     }

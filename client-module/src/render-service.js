@@ -1,7 +1,7 @@
 import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
 import {getAllCharacters} from "./character-service.js";
-import {EquipmentType} from "./const/EquipmentType.js";
+import {doubleClickCallback} from "./inventory-service.js";
 
 const app = new pixi.Application({
     resizeTo: window
@@ -23,7 +23,6 @@ let inventoryContainer;
 let charactersMap = new Map();
 let characterLabelsMap = new Map();
 let holdCellsEmpty = [];
-let holdCells = [];
 
 let windowWidth;
 let windowHeight;
@@ -192,6 +191,12 @@ export function createInventory() {
         container.addChild(rectangle);
         holdCellsEmpty.push(rectangle);
     }
+    let engineCell = pixi.Sprite.from(pixi.Texture.WHITE);
+    engineCell.width = 60;
+    engineCell.height = 60;
+    engineCell.anchor.set(0.5, 0.5);
+    engineCell.position.set(85, 235);
+    container.addChild(engineCell);
 
     container.height = inventory.height + hold.height;
     container.width = inventory.width;
@@ -202,15 +207,11 @@ export function createInventory() {
     inventoryContainer = container;
 }
 
-export function createEquipment(equipmentType, idx) {
-    let equipment;
-    switch (equipmentType) {
-        case EquipmentType.Engine:
-            equipment = pixi.Sprite.from("./images/engine.png");
-    }
+export function initEquipment(equipment, idx) {
     inventoryContainer.addChild(equipment);
 
     equipment.interactive = true;
+    equipment.buttonMode = true;
     equipment.cursor = 'pointer';
     equipment
         // events for drag start
@@ -223,8 +224,10 @@ export function createEquipment(equipmentType, idx) {
         .on('touchendoutside', onDragEnd)
         // events for drag move
         .on('mousemove', onDragMove)
-        .on('touchmove', onDragMove);
+        .on('touchmove', onDragMove)
+        .on('click', onClick)
     equipment.zIndex = Sort.EQUIPMENT;
+    console.log(equipment)
 
     equipment.anchor.set(0.5);
     equipment.scale.set(0.6);
@@ -245,7 +248,6 @@ function onDragMove(event) {
 
 function onDragStart() {
     dragTarget = this;
-    // dragTarget.scale.set(0.5);
     app.stage.on('pointermove', onDragMove);
 }
 
@@ -257,3 +259,13 @@ function onDragEnd() {
         dragTarget = null;
     }
 }
+
+// TODO event 'dblClick' doesn't work
+let prevClickTime = Date.now();
+function onClick() {
+    if ((Date.now() - prevClickTime) <= 500) {
+        doubleClickCallback(this);
+    }
+    prevClickTime = Date.now();
+}
+
