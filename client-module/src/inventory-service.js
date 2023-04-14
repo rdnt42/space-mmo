@@ -1,10 +1,14 @@
 import {Inventory} from "./obj/Inventory.js";
 import {EquipmentType} from "./const/EquipmentType.js";
+import {Equipment} from "./obj/Equipment.js";
 
 export function initInventory() {
     let inventory = new Inventory();
-    inventory.initInventory();
-    inventory.addEquipment(EquipmentType.Engine, 2, 123);
+    let engine = new Equipment(EquipmentType.Engine,123, false);
+    let fuelTank = new Equipment(EquipmentType.FuelTank,200, false);
+
+    inventory.addCargo(engine);
+    inventory.addCargo(fuelTank);
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "i") {

@@ -1,18 +1,26 @@
 import * as renderService from "../render-service.js";
-import {Equipment} from "./Equipment.js";
+import {CargoCell} from "./CargoCell.js";
 
 export class Inventory {
     isOpen = false;
-    equipments = [];
+    cargoCells = [];
 
-    initInventory() {
+    constructor() {
         renderService.createInventory();
+        for (let i = 0; i < 6; i++) {
+            let holdCell = new CargoCell(undefined, i);
+            this.cargoCells.push(holdCell);
+        }
     }
 
-    addEquipment(equipmentType, idx, id) {
-        let equipment = new Equipment(equipmentType, idx, id);
-        this.equipments.push(equipment);
-
+    addCargo(cargo) {
+        for (let cargoCell of this.cargoCells) {
+            if (cargoCell.cargo === undefined) {
+                renderService.addToCargo(cargo, cargoCell, true);
+                cargoCell.cargo = cargo;
+                break;
+            }
+        }
     }
 
     changeState() {

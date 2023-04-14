@@ -3,20 +3,24 @@ import * as PIXI from "../libs/pixi.min.js";
 import {EquipmentType} from "../const/EquipmentType.js";
 
 export class Equipment extends PIXI.Sprite {
+    isEquipped;
     equipmentType;
-    idx;
     id;
 
-    constructor(equipmentType, idx, id) {
+    constructor(equipmentType, id, isEquipped) {
         let url;
         switch (equipmentType) {
             case EquipmentType.Engine:
                 url = "./images/engine.png";
+                break;
+            case EquipmentType.FuelTank:
+                url = "./images/fuel_tank.png";
+                break;
         }
         super(PIXI.Texture.from(url));
-        this.idx = idx;
         this.id = id;
+        this.isEquipped = isEquipped;
         this.equipmentType = equipmentType;
-        renderService.initEquipment(this, idx);
+        renderService.initEquipment(this);
     }
 }

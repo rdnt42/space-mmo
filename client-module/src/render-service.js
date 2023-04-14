@@ -14,15 +14,15 @@ const Sort = {
     INVENTORY: 100,
     EQUIPMENT: 110
 }
-const HOLD_CELL_NUM = 6;
 
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
-let inventoryContainer;
+let INVENTORY_CONTAINER;
+let INVENTORY;
+let CARGO;
 
 let charactersMap = new Map();
 let characterLabelsMap = new Map();
-let holdCellsEmpty = [];
 
 let windowWidth;
 let windowHeight;
@@ -109,7 +109,7 @@ function updateBackground(bg, div) {
 }
 
 export function changeStateInventory(state) {
-    inventoryContainer.visible = state;
+    INVENTORY_CONTAINER.visible = state;
 }
 
 /// Character
@@ -174,23 +174,16 @@ export function createInventory() {
     inventory.width = 436;
     inventory.height = 500;
     inventory.position.set(0, 0);
+    INVENTORY = inventory;
 
-    let hold = pixi.Sprite.from("./images/hold_empty.png");
-    hold.width = 336;
-    hold.height = 76;
-    hold.anchor.set(0.5, 0);
-    hold.position.set(inventory.width / 2, inventory.height);
-    container.addChild(hold);
+    let cargo = pixi.Sprite.from("./images/cargo_empty.png");
+    cargo.width = 336;
+    cargo.height = 76;
+    cargo.anchor.set(0.5, 0);
+    cargo.position.set(inventory.width / 2, inventory.height);
+    container.addChild(cargo);
+    CARGO = cargo;
 
-    for (let i = 0; i < HOLD_CELL_NUM; i++) {
-        const rectangle = pixi.Sprite.from(pixi.Texture.WHITE);
-        rectangle.width = 40;
-        rectangle.height = 40;
-        rectangle.position.set(91 + i * (rectangle.width + 3), inventory.height + hold.height / 2 - 4);
-        rectangle.anchor.set(0, 0.5);
-        container.addChild(rectangle);
-        holdCellsEmpty.push(rectangle);
-    }
     let engineCell = pixi.Sprite.from(pixi.Texture.WHITE);
     engineCell.width = 60;
     engineCell.height = 60;
@@ -198,26 +191,32 @@ export function createInventory() {
     engineCell.position.set(85, 235);
     container.addChild(engineCell);
 
-    container.height = inventory.height + hold.height;
+    container.height = inventory.height + cargo.height;
     container.width = inventory.width;
     container.position.set(app.screen.width / 2, app.screen.height / 2);
     container.pivot.set(container.width / 2, container.height / 2);
     container.zIndex = Sort.INVENTORY;
 
-    inventoryContainer = container;
+    INVENTORY_CONTAINER = container;
 }
 
-export function initEquipment(equipment, idx) {
-    inventoryContainer.addChild(equipment);
+export function initHoldCell(cell, idx) {
+    cell.width = 40;
+    cell.height = 40;
+    cell.position.set(91 + idx * (cell.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
+    cell.anchor.set(0, 0.5);
+    INVENTORY_CONTAINER.addChild(cell);
+}
+
+export function initEquipment(equipment) {
+    INVENTORY_CONTAINER.addChild(equipment);
 
     equipment.interactive = true;
     equipment.buttonMode = true;
     equipment.cursor = 'pointer';
     equipment
-        // events for drag start
         .on('mousedown', onDragStart)
         .on('touchstart', onDragStart)
-        // events for drag end
         .on('mouseup', onDragEnd)
         .on('mouseupoutside', onDragEnd)
         .on('touchend', onDragEnd)
@@ -230,14 +229,7 @@ export function initEquipment(equipment, idx) {
     console.log(equipment)
 
     equipment.anchor.set(0.5);
-    equipment.scale.set(0.6);
-    if (idx <= HOLD_CELL_NUM) {
-        equipment.visible = true;
-        equipment.position.set(holdCellsEmpty[idx].x + holdCellsEmpty[idx].width / 2, holdCellsEmpty[idx].y);
-    } else {
-        equipment.visible = false;
-    }
-
+    equipment.scale.set(0.5);
 }
 
 function onDragMove(event) {
@@ -262,10 +254,20 @@ function onDragEnd() {
 
 // TODO event 'dblClick' doesn't work
 let prevClickTime = Date.now();
+
 function onClick() {
     if ((Date.now() - prevClickTime) <= 500) {
         doubleClickCallback(this);
     }
     prevClickTime = Date.now();
+}
+
+export function equip(equipment, slot) {
+
+}
+
+export function addToCargo(equipment, hold, isVisible) {
+    equipment.visible = isVisible;
+    equipment.position.set(hold.x + hold.width / 2, hold.y);
 }
 
