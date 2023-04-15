@@ -2,6 +2,7 @@ import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
 import {getAllCharacters} from "./character-service.js";
 import {doubleClickCallback} from "./inventory-service.js";
+import {EquipmentType} from "./const/EquipmentType";
 
 const app = new pixi.Application({
     resizeTo: window
@@ -184,13 +185,6 @@ export function createInventory() {
     container.addChild(cargo);
     CARGO = cargo;
 
-    let engineCell = pixi.Sprite.from(pixi.Texture.WHITE);
-    engineCell.width = 60;
-    engineCell.height = 60;
-    engineCell.anchor.set(0.5, 0.5);
-    engineCell.position.set(85, 235);
-    container.addChild(engineCell);
-
     container.height = inventory.height + cargo.height;
     container.width = inventory.width;
     container.position.set(app.screen.width / 2, app.screen.height / 2);
@@ -200,12 +194,23 @@ export function createInventory() {
     INVENTORY_CONTAINER = container;
 }
 
-export function initHoldCell(cell, idx) {
+export function initCargoCell(cell, idx) {
     cell.width = 40;
     cell.height = 40;
     cell.position.set(91 + idx * (cell.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
     cell.anchor.set(0, 0.5);
     INVENTORY_CONTAINER.addChild(cell);
+}
+
+export function initEquipmentCell(equipmentCell, equipmentType) {
+    equipmentCell.width = 60;
+    equipmentCell.height = 60;
+    equipmentCell.anchor.set(0.5, 0.5);
+    switch (equipmentType) {
+        case EquipmentType.Engine:
+            equipmentCell.position.set(85, 235);
+    }
+    INVENTORY_CONTAINER.addChild(equipmentCell);
 }
 
 export function initEquipment(equipment) {

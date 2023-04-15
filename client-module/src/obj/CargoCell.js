@@ -1,5 +1,5 @@
 import * as PIXI from "../libs/pixi.min.js";
-import {initHoldCell} from "../render-service.js";
+import {initCargoCell} from "../render-service.js";
 
 export class CargoCell extends PIXI.Sprite {
     cargo;
@@ -9,6 +9,6 @@ export class CargoCell extends PIXI.Sprite {
         super(PIXI.Texture.WHITE);
         this.cargo = cargo;
         this.idx = idx;
-        initHoldCell(this, idx);
+        initCargoCell(this, idx);
     }
 }
