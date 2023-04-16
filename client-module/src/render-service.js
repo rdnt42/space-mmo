@@ -2,7 +2,7 @@ import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
 import {getAllCharacters} from "./character-service.js";
 import {doubleClickCallback} from "./inventory-service.js";
-import {EquipmentType} from "./const/EquipmentType";
+import {EquipmentType} from "./const/EquipmentType.js";
 
 const app = new pixi.Application({
     resizeTo: window
@@ -202,13 +202,16 @@ export function initCargoCell(cell, idx) {
     INVENTORY_CONTAINER.addChild(cell);
 }
 
-export function initEquipmentCell(equipmentCell, equipmentType) {
+export function initEquipmentSlot(equipmentCell, equipmentType) {
     equipmentCell.width = 60;
     equipmentCell.height = 60;
     equipmentCell.anchor.set(0.5, 0.5);
     switch (equipmentType) {
         case EquipmentType.Engine:
             equipmentCell.position.set(85, 235);
+            break;
+        case EquipmentType.FuelTank:
+            equipmentCell.position.set(350, 235);
     }
     INVENTORY_CONTAINER.addChild(equipmentCell);
 }
@@ -226,13 +229,10 @@ export function initEquipment(equipment) {
         .on('mouseupoutside', onDragEnd)
         .on('touchend', onDragEnd)
         .on('touchendoutside', onDragEnd)
-        // events for drag move
         .on('mousemove', onDragMove)
         .on('touchmove', onDragMove)
         .on('click', onClick)
     equipment.zIndex = Sort.EQUIPMENT;
-    console.log(equipment)
-
     equipment.anchor.set(0.5);
     equipment.scale.set(0.5);
 }

@@ -1,9 +1,13 @@
 import * as renderService from "../render-service.js";
 import {CargoCell} from "./CargoCell.js";
+import {EquipmentSlot} from "./EquipmentSlot.js";
+import {EquipmentType} from "../const/EquipmentType.js";
 
 export class Inventory {
     isOpen = false;
     cargoCells = [];
+    engineSlot;
+    fuelTankSlot;
 
     constructor() {
         renderService.createInventory();
@@ -11,6 +15,8 @@ export class Inventory {
             let holdCell = new CargoCell(undefined, i);
             this.cargoCells.push(holdCell);
         }
+        this.engineSlot = new EquipmentSlot(EquipmentType.Engine);
+        this.fuelTankSlot = new EquipmentSlot(EquipmentType.FuelTank);
     }
 
     addCargo(cargo) {
