@@ -5,20 +5,18 @@ import {EquipmentType} from "../const/EquipmentType.js";
 export class Equipment extends PIXI.Sprite {
     isEquipped;
     equipmentType;
-    id;
 
-    constructor(equipmentType, id, isEquipped) {
+    constructor(equipmentType, idx, isEquipped) {
         let url;
         switch (equipmentType) {
             case EquipmentType.Engine:
-                url = "./images/engine.png";
+                url = "./images/engine" + idx + ".gif";
                 break;
             case EquipmentType.FuelTank:
-                url = "./images/fuel_tank.png";
+                url = "./images/fuel_tank" + idx + ".gif";
                 break;
         }
         super(PIXI.Texture.from(url));
-        this.id = id;
         this.isEquipped = isEquipped;
         this.equipmentType = equipmentType;
         renderService.initEquipment(this);
