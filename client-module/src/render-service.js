@@ -256,7 +256,7 @@ function onDragEnd() {
     }
 }
 
-// TODO event 'dblClick' doesn't work
+// event 'dblClick' doesn't work
 let prevClickTime = Date.now();
 
 function onClick() {
@@ -266,10 +266,9 @@ function onClick() {
     prevClickTime = Date.now();
 }
 
-export function addToCargo(equipment, hold, isVisible) {
-    equipment.position.set(hold.x + hold.width / 2, hold.y);
-    equipment.scale.set(0.5);
-    equipment.visible = isVisible;
+export function addToCargoCell(cargo, hold) {
+    cargo.position.set(hold.x + hold.width / 2, hold.y);
+    cargo.scale.set(0.5);
 }
 
 export function addToEquipmentSlot(equipment, slot) {

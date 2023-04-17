@@ -27,39 +27,60 @@ export class Inventory {
     }
 
     addCargo(cargo) {
+        let cell = this.#getFreeCargoCell();
+        if (cell === undefined) {
+            alert("Нет свободного места в трюме!")
+            return false;
+        }
+
+        cell.addToCargoCell(cargo);
+        return true;
+    }
+
+    #getCargoCell(equipment) {
         for (let cargoCell of this.cargoCells) {
-            if (cargoCell.cargo === undefined) {
-                renderService.addToCargo(cargo, cargoCell, true);
-                cargoCell.cargo = cargo;
-                break;
+            if (cargoCell.getCargo() === equipment) {
+                return cargoCell;
             }
         }
+
+        return undefined;
+    }
+
+    #getFreeCargoCell() {
+        return this.#getCargoCell(undefined);
     }
 
     swapEquipment(equipment) {
-        //TODO refactor
         if (equipment.isEquipped) {
-            this.addCargo(equipment);
-            equipment.isEquipped = false;
-            return;
+            this.#unequip(equipment);
+        } else {
+            this.#equip(equipment);
+        }
+    }
+
+    #equip(equipment) {
+        let equipmentSlot = this.equipmentSlots.get(equipment.equipmentType);
+        let cell = this.#getCargoCell(equipment);
+
+        let removedFromSlot = equipmentSlot.removeFromEquipmentSlot();
+        let removedFromCell = cell.removeFromCargoCell();
+
+        equipmentSlot.addToEquipmentSlot(removedFromCell);
+        if (removedFromSlot !== undefined) {
+            cell.addToCargoCell(removedFromSlot);
+        }
+    }
+
+    #unequip(equipment) {
+        if (this.#getFreeCargoCell() === undefined) {
+            alert("В трюме нет места, чтобы снять оборудование!")
+            return
         }
 
         let equipmentSlot = this.equipmentSlots.get(equipment.equipmentType);
-        if(equipmentSlot === undefined) return;
-
-        let currEquipped = equipmentSlot.equipment;
-        renderService.addToEquipmentSlot(equipment, equipmentSlot);
-        equipment.isEquipped = true;
-        for (let cargoCell of this.cargoCells) {
-            if (cargoCell.cargo === equipment) {
-                cargoCell.cargo = undefined;
-            }
-        }
-
-        if (currEquipped !== undefined) {
-            equipment.isEquipped = false;
-            this.addCargo(currEquipped);
-        }
+        let removedEquipment = equipmentSlot.removeFromEquipmentSlot();
+        this.addCargo(removedEquipment);
     }
 
     changeState() {
