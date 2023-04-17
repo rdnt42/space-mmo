@@ -234,7 +234,6 @@ export function initEquipment(equipment) {
         .on('click', onClick)
     equipment.zIndex = Sort.EQUIPMENT;
     equipment.anchor.set(0.5);
-    equipment.scale.set(0.5);
 }
 
 function onDragMove(event) {
@@ -267,12 +266,14 @@ function onClick() {
     prevClickTime = Date.now();
 }
 
-export function equip(equipment, slot) {
-
+export function addToCargo(equipment, hold, isVisible) {
+    equipment.position.set(hold.x + hold.width / 2, hold.y);
+    equipment.scale.set(0.5);
+    equipment.visible = isVisible;
 }
 
-export function addToCargo(equipment, hold, isVisible) {
-    equipment.visible = isVisible;
-    equipment.position.set(hold.x + hold.width / 2, hold.y);
+export function addToEquipmentSlot(equipment, slot) {
+    equipment.position.set(slot.x, slot.y);
+    equipment.scale.set(1);
 }
 
