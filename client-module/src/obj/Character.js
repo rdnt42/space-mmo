@@ -18,8 +18,8 @@ export class Character {
     updateCharacter(x, y, angle, speed) {
         this.movement.prevX = this.movement.x;
         this.movement.prevY = this.movement.y;
-        this.movement.x = Math.round(x / FREQUENCY);
-        this.movement.y = Math.round(y / FREQUENCY);
+        this.movement.x = x / FREQUENCY;
+        this.movement.y = y / FREQUENCY;
         this.movement.angle = angle;
         this.movement.speed = speed;
     }
@@ -33,7 +33,7 @@ export class Character {
     }
 
     getLocation() {
-        return "X: " + this.movement.x + " Y: " + this.movement.y + " speed: " +
+        return "X: " + Math.round(this.movement.x) + " Y: " + Math.round(this.movement.y) + " speed: " +
             this.movement.speed + " angle: " + this.movement.angle;
     }
 

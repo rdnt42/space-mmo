@@ -9,6 +9,13 @@ export class EquipmentSlot extends PIXI.Sprite {
         renderService.initEquipmentSlot(this, equipmentType);
     }
 
+    addToEquipmentSlot(equipment) {
+        this.#equipment = equipment;
+        equipment.isEquipped = true;
+        renderService.addToEquipmentSlot(equipment, this);
+        equipment.visible = true;
+    }
+
     removeFromEquipmentSlot() {
         if(this.#equipment === undefined) return undefined;
 
@@ -18,12 +25,5 @@ export class EquipmentSlot extends PIXI.Sprite {
         removedEquipment.visible = false;
 
         return removedEquipment;
-    }
-
-    addToEquipmentSlot(equipment) {
-        this.#equipment = equipment;
-        equipment.isEquipped = true;
-        renderService.addToEquipmentSlot(equipment, this);
-        equipment.visible = true;
     }
 }
