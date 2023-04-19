@@ -194,35 +194,53 @@ export function createInventory() {
     INVENTORY_CONTAINER = container;
 }
 
-export function initCargoCell(cell, idx) {
-    cell.width = 40;
-    cell.height = 40;
-    cell.position.set(91 + idx * (cell.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
-    cell.anchor.set(0, 0.5);
-    INVENTORY_CONTAINER.addChild(cell);
+export function initCargoCell(idx) {
+    const texture = pixi.Texture.WHITE;
+    const sprite = new pixi.Sprite(texture);
+    sprite.width = 40;
+    sprite.height = 40;
+    sprite.position.set(91 + idx * (sprite.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
+    sprite.anchor.set(0, 0.5);
+    INVENTORY_CONTAINER.addChild(sprite);
+
+    return sprite;
 }
 
-export function initEquipmentSlot(equipmentCell, equipmentType) {
-    equipmentCell.width = 60;
-    equipmentCell.height = 60;
-    equipmentCell.anchor.set(0.5, 0.5);
+export function initEquipmentSlot(equipmentType) {
+    const texture = pixi.Texture.WHITE;
+    const sprite = new pixi.Sprite(texture);
+    sprite.width = 60;
+    sprite.height = 60;
+    sprite.anchor.set(0.5, 0.5);
     switch (equipmentType) {
         case EquipmentType.Engine:
-            equipmentCell.position.set(85, 235);
+            sprite.position.set(85, 235);
             break;
         case EquipmentType.FuelTank:
-            equipmentCell.position.set(350, 235);
+            sprite.position.set(350, 235);
     }
-    INVENTORY_CONTAINER.addChild(equipmentCell);
+    INVENTORY_CONTAINER.addChild(sprite);
+
+    return sprite;
 }
 
-export function initEquipment(equipment) {
-    INVENTORY_CONTAINER.addChild(equipment);
+export function initEquipment(equipmentType, idx) {
+    let url;
+    switch (equipmentType) {
+        case EquipmentType.Engine:
+            url = "./images/engine" + idx + ".gif";
+            break;
+        case EquipmentType.FuelTank:
+            url = "./images/fuel_tank" + idx + ".gif";
+            break;
+    }
+    const texture = pixi.Texture.from(url);
+    const sprite = new pixi.Sprite(texture);
+    sprite.interactive = true;
 
-    equipment.interactive = true;
-    equipment.buttonMode = true;
-    equipment.cursor = 'pointer';
-    equipment
+    sprite.buttonMode = true;
+    sprite.cursor = 'pointer';
+    sprite
         .on('mousedown', onDragStart)
         .on('touchstart', onDragStart)
         .on('mouseup', onDragEnd)
@@ -232,8 +250,12 @@ export function initEquipment(equipment) {
         .on('mousemove', onDragMove)
         .on('touchmove', onDragMove)
         .on('click', onClick)
-    equipment.zIndex = Sort.EQUIPMENT;
-    equipment.anchor.set(0.5);
+    sprite.zIndex = Sort.EQUIPMENT;
+    sprite.anchor.set(0.5);
+
+    INVENTORY_CONTAINER.addChild(sprite);
+
+    return sprite;
 }
 
 function onDragMove(event) {
@@ -269,10 +291,20 @@ function onClick() {
 export function addToCargoCell(cargo, hold) {
     cargo.position.set(hold.x + hold.width / 2, hold.y);
     cargo.scale.set(0.5);
+    cargo.visible = true;
+}
+
+export function removeFromCargoCell(cargo) {
+    cargo.visible = false;
 }
 
 export function addToEquipmentSlot(equipment, slot) {
     equipment.position.set(slot.x, slot.y);
     equipment.scale.set(1);
+    equipment.visible = true;
+}
+
+export function removeFromEquipmentSlot(equipment) {
+    equipment.visible = false;
 }
 

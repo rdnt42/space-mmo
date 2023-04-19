@@ -1,15 +1,15 @@
-import * as PIXI from "../libs/pixi.min.js";
 import * as renderService from "../render-service.js";
 
-export class CargoCell extends PIXI.Sprite {
+export class CargoCell {
+    texture;
+
     #cargo;
     idx;
 
     constructor(cargo, idx) {
-        super(PIXI.Texture.WHITE);
         this.#cargo = cargo;
         this.idx = idx;
-        renderService.initCargoCell(this, idx);
+        this.texture = renderService.initCargoCell(idx);
     }
 
     getCargo() {
@@ -17,9 +17,8 @@ export class CargoCell extends PIXI.Sprite {
     }
 
     addToCargoCell(cargo) {
-        renderService.addToCargoCell(cargo, this);
+        renderService.addToCargoCell(cargo.texture, this.texture);
         this.#cargo = cargo;
-        cargo.visible = true;
     }
 
     removeFromCargoCell() {
@@ -27,7 +26,7 @@ export class CargoCell extends PIXI.Sprite {
 
         let removedCargo = this.#cargo;
         this.#cargo = undefined;
-        removedCargo.visible = false;
+        renderService.removeFromCargoCell(removedCargo.texture)
 
         return removedCargo;
     }

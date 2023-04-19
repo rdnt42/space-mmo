@@ -25,9 +25,9 @@ export function initInventory() {
     });
 }
 
-export function doubleClickCallback(item) {
-    if (item instanceof Equipment) {
-        inventory.swapEquipment(item);
+export function doubleClickCallback(texture) {
+    if (texture.textureParentObj instanceof Equipment) {
+        inventory.swapEquipment(texture.textureParentObj);
     }
 }
 
