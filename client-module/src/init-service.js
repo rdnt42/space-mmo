@@ -1,7 +1,7 @@
 import * as playerService from './character-service.js'
-import * as render from "./render-service.js";
 import {mainLogicInit} from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
+import {initEngine} from "./render-engine.js";
 
 let isPlayerInit = false;
 const timerInterval = 250;
@@ -27,7 +27,7 @@ export function initCharacter(data) {
         console.log("Character.js not init");
     } else {
         isPlayerInit = true;
-        render.initRender();
+        initEngine();
         playerService.initMyCharacter(data.playerMotion.playerName, data.playerMotion);
         inventoryService.initInventory();
 

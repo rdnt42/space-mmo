@@ -1,4 +1,4 @@
-import * as render from "./render-service.js";
+import * as render from "./render-service-pixi.js";
 import * as initService from "./init-service.js";
 import * as characterService from "./character-service.js";
 import {Commands} from "./const/MessageCommand.js";

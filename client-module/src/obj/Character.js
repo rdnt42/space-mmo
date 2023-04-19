@@ -1,5 +1,6 @@
-import * as renderService from "../render-service.js";
 import {FREQUENCY} from "../const/Common.js";
+import {renderEngine} from "../render-engine.js";
+
 
 export class Character {
     characterName;
@@ -11,8 +12,8 @@ export class Character {
 
     initCharacter(x, y, angle, speed) {
         this.movement = new Movement(Math.round(x / FREQUENCY), Math.round(y / FREQUENCY), angle, speed);
-        renderService.createCharacterLabel(this.characterName);
-        renderService.createCharacterSprite(this.characterName);
+        renderEngine.createCharacterLabel(this.characterName);
+        renderEngine.createCharacter(this.characterName);
     }
 
     updateCharacter(x, y, angle, speed) {
@@ -38,7 +39,7 @@ export class Character {
     }
 
     destroy() {
-        renderService.removeCharacter(this);
+        renderEngine.removeCharacter(this);
     }
 
 }

@@ -1,4 +1,4 @@
-import * as renderService from "../render-service.js";
+import {renderEngine} from "../render-engine.js";
 
 export class Equipment {
     texture;
@@ -11,7 +11,7 @@ export class Equipment {
         this.isEquipped = isEquipped;
         this.equipmentType = equipmentType;
         this.idx = idx;
-        this.texture = renderService.initEquipment(this.equipmentType, this.idx);
+        this.texture = renderEngine.initEquipment(this.equipmentType, this.idx);
         this.texture['textureParentObj'] = this;
     }
 }

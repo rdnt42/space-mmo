@@ -1,4 +1,4 @@
-import * as renderService from "../render-service.js";
+import {renderEngine} from "../render-engine.js";
 
 export class CargoCell {
     texture;
@@ -9,7 +9,7 @@ export class CargoCell {
     constructor(cargo, idx) {
         this.#cargo = cargo;
         this.idx = idx;
-        this.texture = renderService.initCargoCell(idx);
+        this.texture = renderEngine.initCargoCell(idx);
     }
 
     getCargo() {
@@ -17,7 +17,7 @@ export class CargoCell {
     }
 
     addToCargoCell(cargo) {
-        renderService.addToCargoCell(cargo.texture, this.texture);
+        renderEngine.addToCargoCell(cargo.texture, this.texture);
         this.#cargo = cargo;
     }
 
@@ -26,7 +26,7 @@ export class CargoCell {
 
         let removedCargo = this.#cargo;
         this.#cargo = undefined;
-        renderService.removeFromCargoCell(removedCargo.texture)
+        renderEngine.removeFromCargoCell(removedCargo.texture)
 
         return removedCargo;
     }

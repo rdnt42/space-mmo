@@ -1,7 +1,7 @@
-import * as renderService from "../render-service.js";
 import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import {EquipmentType} from "../const/EquipmentType.js";
+import {renderEngine} from "../render-engine.js";
 
 export class Inventory {
     isOpen = false;
@@ -9,7 +9,7 @@ export class Inventory {
     equipmentSlots = new Map();
 
     constructor(slots) {
-        renderService.createInventory();
+        renderEngine.createInventory();
         for (let i = 0; i < 6; i++) {
             let holdCell = new CargoCell(undefined, i);
             this.cargoCells.push(holdCell);
@@ -85,6 +85,6 @@ export class Inventory {
 
     changeState() {
         this.isOpen = !this.isOpen;
-        renderService.changeStateInventory(this.isOpen);
+        renderEngine.changeStateInventory(this.isOpen);
     }
 }

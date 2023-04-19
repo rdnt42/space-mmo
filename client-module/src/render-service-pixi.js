@@ -1,6 +1,5 @@
 import * as pixi from './libs/pixi.min.js';
 import * as characterService from "./character-service.js";
-import {getAllCharacters} from "./character-service.js";
 import {doubleClickCallback} from "./inventory-service.js";
 import {EquipmentType} from "./const/EquipmentType.js";
 
@@ -28,7 +27,7 @@ let characterLabelsMap = new Map();
 let windowWidth;
 let windowHeight;
 
-export function initRender() {
+function initEngine() {
     app.stage.interactive = true;
     app.stage.hitArea = app.screen;
     app.stage.on('pointerup', onDragEnd);
@@ -109,13 +108,13 @@ function updateBackground(bg, div) {
     bg.tilePosition.y -= (isNaN(playerCharacter.getDiffY()) ? 0 : playerCharacter.getDiffY()) / div;
 }
 
-export function changeStateInventory(state) {
+function changeStateInventory(state) {
     INVENTORY_CONTAINER.visible = state;
 }
 
 /// Character
 function renderCharacters() {
-    let characters = getAllCharacters();
+    let characters = characterService.getAllCharacters();
     let playerCharacter = characterService.getPlayerCharacter();
     let x = playerCharacter.movement.x;
     let y = playerCharacter.movement.y;
@@ -134,7 +133,7 @@ function renderCharacters() {
     }
 }
 
-export function createCharacterSprite(characterName) {
+function createCharacter(characterName) {
     let sprite = pixi.Sprite.from("./images/spaceship.png");
     sprite.anchor.set(0.5, 0.5);
     sprite.width = 64;
@@ -144,7 +143,7 @@ export function createCharacterSprite(characterName) {
     charactersMap.set(characterName, sprite);
 }
 
-export function createCharacterLabel(characterName) {
+function createCharacterLabel(characterName) {
     let label = new pixi.Text(characterName, {
         fill: 0xffffff,
     });
@@ -153,7 +152,7 @@ export function createCharacterLabel(characterName) {
     characterLabelsMap.set(characterName, label);
 }
 
-export function removeCharacter(characterName) {
+function removeCharacter(characterName) {
     let sprite = charactersMap.get(characterName);
     charactersMap.delete(characterName);
     spritesContainer.removeChild(sprite);
@@ -164,7 +163,7 @@ export function removeCharacter(characterName) {
 }
 
 /// Inventory
-export function createInventory() {
+function createInventory() {
     let container = new pixi.Container();
     app.stage.addChild(container);
     container.visible = false;
@@ -194,7 +193,7 @@ export function createInventory() {
     INVENTORY_CONTAINER = container;
 }
 
-export function initCargoCell(idx) {
+function initCargoCell(idx) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.width = 40;
@@ -206,7 +205,7 @@ export function initCargoCell(idx) {
     return sprite;
 }
 
-export function initEquipmentSlot(equipmentType) {
+function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.width = 60;
@@ -224,7 +223,7 @@ export function initEquipmentSlot(equipmentType) {
     return sprite;
 }
 
-export function initEquipment(equipmentType, idx) {
+function initEquipment(equipmentType, idx) {
     let url;
     switch (equipmentType) {
         case EquipmentType.Engine:
@@ -288,23 +287,77 @@ function onClick() {
     prevClickTime = Date.now();
 }
 
-export function addToCargoCell(cargo, hold) {
+function addToCargoCell(cargo, hold) {
     cargo.position.set(hold.x + hold.width / 2, hold.y);
     cargo.scale.set(0.5);
     cargo.visible = true;
 }
 
-export function removeFromCargoCell(cargo) {
+function removeFromCargoCell(cargo) {
     cargo.visible = false;
 }
 
-export function addToEquipmentSlot(equipment, slot) {
+function addToEquipmentSlot(equipment, slot) {
     equipment.position.set(slot.x, slot.y);
     equipment.scale.set(1);
     equipment.visible = true;
 }
 
-export function removeFromEquipmentSlot(equipment) {
+function removeFromEquipmentSlot(equipment) {
     equipment.visible = false;
 }
 
+export class PixiEngine  {
+    constructor() {
+        initEngine();
+    }
+
+    createCharacter(characterName) {
+        createCharacter(characterName);
+    }
+
+    createCharacterLabel(characterName) {
+        createCharacterLabel(characterName);
+    }
+
+    removeCharacter(characterName) {
+        removeCharacter(characterName);
+    }
+
+    createInventory() {
+        createInventory();
+    }
+
+    initEquipment(equipmentType, idx) {
+        return initEquipment(equipmentType, idx);
+    }
+
+    initCargoCell(idx) {
+        return initCargoCell(idx);
+    }
+
+    initEquipmentSlot(equipmentType) {
+        return initEquipmentSlot(equipmentType);
+    }
+
+    addToEquipmentSlot(equipment, slot) {
+        addToEquipmentSlot(equipment, slot);
+    }
+
+    removeFromEquipmentSlot(equipment) {
+        removeFromEquipmentSlot(equipment);
+    }
+
+    addToCargoCell(cargo, hold) {
+        addToCargoCell(cargo, hold);
+    }
+
+    removeFromCargoCell(cargo) {
+        removeFromCargoCell(cargo);
+    }
+
+    changeStateInventory(state) {
+        changeStateInventory(state);
+    }
+
+}
