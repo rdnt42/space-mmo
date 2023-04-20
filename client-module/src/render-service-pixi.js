@@ -3,9 +3,7 @@ import * as characterService from "./character-service.js";
 import {doubleClickCallback} from "./inventory-service.js";
 import {EquipmentType} from "./const/EquipmentType.js";
 
-const app = new pixi.Application({
-    resizeTo: window
-});
+let app;
 let dragTarget = null;
 
 const Sort = {
@@ -28,6 +26,9 @@ let windowWidth;
 let windowHeight;
 
 function initEngine() {
+    app = new pixi.Application({
+        resizeTo: window
+    });
     app.stage.interactive = true;
     app.stage.hitArea = app.screen;
     app.stage.on('pointerup', onDragEnd);
