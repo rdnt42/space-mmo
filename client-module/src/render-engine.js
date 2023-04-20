@@ -1,9 +1,9 @@
 import {PixiEngine} from "./render-service-pixi.js";
-import {ThreeEngine} from "./render-service-three.js";
+import {ThreeEngine} from "./render/three/engine.js";
 
 export let renderEngine;
 
-const engineType = "PIXI";
+const engineType = "THREE";
 
 export function initEngine() {
     if (engineType === "PIXI") {
