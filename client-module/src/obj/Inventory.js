@@ -1,7 +1,7 @@
 import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import {EquipmentType} from "../const/EquipmentType.js";
-import {renderEngine} from "../render-engine.js";
+import {renderEngine} from "../render/render-engine.js";
 
 export class Inventory {
     isOpen = false;

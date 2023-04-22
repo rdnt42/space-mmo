@@ -1,4 +1,4 @@
-import {renderEngine} from "../render-engine.js";
+import {renderEngine} from "../render/render-engine.js";
 
 export class Equipment {
     texture;

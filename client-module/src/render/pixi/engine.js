@@ -1,7 +1,7 @@
-import * as pixi from './libs/pixi.min.js';
-import * as characterService from "./character-service.js";
-import {doubleClickCallback} from "./inventory-service.js";
-import {EquipmentType} from "./const/EquipmentType.js";
+import * as pixi from '../../libs/pixi.min.js';
+import * as characterService from "../../character-service.js";
+import {doubleClickCallback} from "../../inventory-service.js";
+import {EquipmentType} from "../../const/EquipmentType.js";
 
 let app;
 let dragTarget = null;
@@ -29,7 +29,6 @@ function initEngine() {
     app = new pixi.Application({
         resizeTo: window
     });
-    app.stage.interactive = true;
     app.stage.hitArea = app.screen;
     app.stage.on('pointerup', onDragEnd);
     app.stage.on('pointerupoutside', onDragEnd);
@@ -228,15 +227,15 @@ function initEquipment(equipmentType, idx) {
     let url;
     switch (equipmentType) {
         case EquipmentType.Engine:
-            url = "./images/engine" + idx + ".gif";
+            url = "./images/engine" + idx + ".png";
             break;
         case EquipmentType.FuelTank:
-            url = "./images/fuel_tank" + idx + ".gif";
+            url = "./images/fuel_tank" + idx + ".png";
             break;
     }
     const texture = pixi.Texture.from(url);
     const sprite = new pixi.Sprite(texture);
-    sprite.interactive = true;
+    sprite.eventMode = "static";
 
     sprite.buttonMode = true;
     sprite.cursor = 'pointer';
@@ -272,8 +271,6 @@ function onDragStart() {
 function onDragEnd() {
     if (dragTarget) {
         app.stage.off('pointermove', onDragMove);
-        // TODO 1 when equipped
-        // dragTarget.scale.set(1);
         dragTarget = null;
     }
 }
@@ -310,6 +307,7 @@ function removeFromEquipmentSlot(equipment) {
 
 export class PixiEngine  {
     constructor() {
+        console.log("pixi")
         initEngine();
     }
 

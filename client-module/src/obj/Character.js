@@ -1,5 +1,5 @@
 import {FREQUENCY} from "../const/Common.js";
-import {renderEngine} from "../render-engine.js";
+import {renderEngine} from "../render/render-engine.js";
 
 
 export class Character {

@@ -2,17 +2,8 @@ import * as THREE from "../../libs/three.js"
 import {OBJShip} from "./OBJShip.js";
 import {Background} from "./background.js";
 
-
 let camera, scene, renderer;
-let player, obstacles = [];
-
 let firstLevel, lastLevel;
-
-let windowHalfX = window.innerWidth / 2;
-let windowHalfY = window.innerHeight / 2;
-
-init();
-render();
 
 function init() {
 // Initialize the scene
@@ -43,28 +34,28 @@ function init() {
 
 function render() {
     requestAnimationFrame(render);
-    update();
 
     renderer.render(scene, camera);
     firstLevel.position.x = camera.position.x * 0.1;
     firstLevel.position.y = camera.position.y * 0.1;
 }
 
-function update() {
-}
-
-
 export class ThreeEngine {
     constructor() {
+        init();
+        render();
     }
 
     createCharacter(characterName) {
+        //
     }
 
     createCharacterLabel(characterName) {
+        //
     }
 
     removeCharacter(characterName) {
+        //
     }
 
     createInventory() {
@@ -84,37 +75,24 @@ export class ThreeEngine {
     }
 
     addToEquipmentSlot(equipment, slot) {
+        //
     }
 
     removeFromEquipmentSlot(equipment) {
+        //
     }
 
     addToCargoCell(cargo, hold) {
+        //
     }
 
     removeFromCargoCell(cargo) {
+        //
     }
 
     changeStateInventory(state) {
+      //
     }
 
 }
 
-function onWindowResize() {
-
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-}
-
-function onDocumentMouseMove(event) {
-
-    mouseX = (event.clientX - windowHalfX) / 2;
-    mouseY = (event.clientY - windowHalfY) / 2;
-
-}

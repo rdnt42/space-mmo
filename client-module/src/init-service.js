@@ -1,7 +1,7 @@
 import * as playerService from './character-service.js'
 import {mainLogicInit} from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
-import {initEngine} from "./render-engine.js";
+import {initEngine} from "./render/render-engine.js";
 
 let isPlayerInit = false;
 const timerInterval = 250;
