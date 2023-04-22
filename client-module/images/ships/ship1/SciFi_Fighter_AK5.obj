@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 01.07.2016 17:49:58
 
-mtllib ship1.mtl
+mtllib ship.mtl
 
 #
 # object SciFi_Fighter_AK5

@@ -1,5 +1,5 @@
 import * as THREE from "../../libs/three.js"
-import {Spaceship} from "./spaceship.js";
+import {MTLShip} from "./MTLShip.js";
 
 
 let camera, scene, renderer;
@@ -33,7 +33,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    new Spaceship(scene);
+    new MTLShip(scene);
 }
 
 

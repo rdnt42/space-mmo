@@ -1,20 +1,27 @@
 import {OBJLoader} from "../../libs/objloader.js";
 import * as THREE from "../../libs/three.js"
 
-export function Spaceship(scene) {
+export function OBJShip(scene) {
+    const id = 1;
     let ship;
+
     function loadModel() {
-        ship.traverse(function (child) {
-            if (child.isMesh) child.material.map = texture;
+        ship.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                child.material.map = texture1;
+            }
         });
+        ship.rotation.x = Math.PI / 2;
         ship.position.set(0, 0, 0);
+        ship.scale.set(0.06, 0.06, 0.06)
+
         scene.add(ship);
     }
 
     const manager = new THREE.LoadingManager(loadModel);
     // texture
     const textureLoader = new THREE.TextureLoader(manager);
-    const texture = textureLoader.load('../../images/ships/ship2/ship2-texture.bmp');
+    const texture1 = textureLoader.load('../../images/ships/ship' + id + '/SciFi_Fighter_AK5-diffuse.jpg');
 
     // model
     function onProgress(xhr) {
@@ -28,10 +35,8 @@ export function Spaceship(scene) {
     }
 
     const loader = new OBJLoader(manager);
-    loader.load('../../images/ships/ship2/ship2.obj', function (obj) {
+    loader.load('../../images/ships/ship' + id + '/SciFi_Fighter_AK5.obj', function (obj) {
+        scene.add(obj);
         ship = obj;
-        ship.rotation.x = Math.PI / 2;
-        ship.scale.set(0.1, 0.1, 0.1)
-
     }, onProgress, onError);
 }
