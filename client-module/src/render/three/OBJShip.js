@@ -1,8 +1,7 @@
 import {OBJLoader} from "../../libs/objloader.js";
 import * as THREE from "../../libs/three.js"
 
-export function OBJShip(scene) {
-    const id = 1;
+export function OBJShip(scene, id) {
     let ship;
 
     function loadModel() {
@@ -13,7 +12,7 @@ export function OBJShip(scene) {
         });
         ship.rotation.x = Math.PI / 2;
         ship.position.set(0, 0, 0);
-        ship.scale.set(0.06, 0.06, 0.06)
+        ship.scale.set(0.03, 0.03, 0.03)
 
         scene.add(ship);
     }
@@ -21,7 +20,7 @@ export function OBJShip(scene) {
     const manager = new THREE.LoadingManager(loadModel);
     // texture
     const textureLoader = new THREE.TextureLoader(manager);
-    const texture1 = textureLoader.load('../../images/ships/ship' + id + '/SciFi_Fighter_AK5-diffuse.jpg');
+    const texture1 = textureLoader.load('../../images/ships/ship' + id + '/texture.jpg');
 
     // model
     function onProgress(xhr) {
@@ -35,7 +34,7 @@ export function OBJShip(scene) {
     }
 
     const loader = new OBJLoader(manager);
-    loader.load('../../images/ships/ship' + id + '/SciFi_Fighter_AK5.obj', function (obj) {
+    loader.load('../../images/ships/ship' + id + '/ship.obj', function (obj) {
         scene.add(obj);
         ship = obj;
     }, onProgress, onError);

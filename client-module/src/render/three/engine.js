@@ -1,9 +1,12 @@
 import * as THREE from "../../libs/three.js"
-import {MTLShip} from "./MTLShip.js";
+import {OBJShip} from "./OBJShip.js";
+import {Background} from "./background.js";
 
 
 let camera, scene, renderer;
 let player, obstacles = [];
+
+let firstLevel, lastLevel;
 
 let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
@@ -17,8 +20,7 @@ function init() {
 
     // Initialize the camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 100);
-    // camera.position.z = 1400
+    camera.position.set(0, 0, 500);
     camera.lookAt(scene.position);
 
     const ambientLight = new THREE.AmbientLight('#ffffff', 1.5);
@@ -33,19 +35,19 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    new MTLShip(scene);
+    OBJShip(scene, 1);
+    lastLevel = Background(scene, -1, '../../images/background/bgLastLevel.jpg');
+    firstLevel = Background(scene, 0, '../../images/background/bgFirstLevel.png');
 }
 
 
 function render() {
-    // Update the game objects
+    requestAnimationFrame(render);
     update();
 
-    // Render the scene
     renderer.render(scene, camera);
-
-    // Request the next frame
-    requestAnimationFrame(render);
+    firstLevel.position.x = camera.position.x * 0.1;
+    firstLevel.position.y = camera.position.y * 0.1;
 }
 
 function update() {

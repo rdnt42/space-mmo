@@ -1,15 +1,15 @@
 import * as THREE from "../../libs/three.js"
 
-export function Background(scene) {
-    let geometry = new THREE.PlaneGeometry(3000, 3000)
+export function Background(scene, level, url, scale) {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(url);
+    const geometry = new THREE.PlaneGeometry(window.innerWidth , window.innerHeight );
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const mesh = new THREE.Mesh(geometry, material);
 
-    const textureLoader = new THREE.TextureLoader()
-    let material = new THREE.MeshBasicMaterial({ map: textureLoader.load("../../images/background/bgLastLevel.jpg")})
-    let bg = new THREE.Mesh(geometry, material)
+    mesh.position.set(0, 0, level);
 
-    bg.rotation.z = -Math.PI / 2;
-    bg.position.z = -900;
-    bg.position.y = 1000;
+    scene.add(mesh);
 
-    scene.add(bg);
+    return mesh;
 }
