@@ -63,7 +63,7 @@ export function initInventory(data) {
     if (data != null) {
         isInventoryInit = true;
         initEngine();
-        inventoryService.initInventory();
+        inventoryService.initInventory(data.slots, data.equipments, data.cargos);
 
         console.log("My character init success");
     }

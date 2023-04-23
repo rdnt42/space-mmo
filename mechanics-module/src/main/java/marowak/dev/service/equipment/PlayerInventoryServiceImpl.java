@@ -34,27 +34,28 @@ public class PlayerInventoryServiceImpl implements PlayerInventoryService {
         Equipment engine = Engine.builder()
                 .id(1)
                 .slotId(1)
-                .engineTypeId(1)
                 .speed(600)
                 .upgradeLevel(0)
                 .cost(10000)
                 .equipped(true)
+                .equipmentType(1)
                 .build();
 
         Equipment engineNonEquipped = Engine.builder()
                 .id(2)
                 .slotId(1)
-                .engineTypeId(2)
                 .speed(800)
                 .upgradeLevel(0)
                 .cost(100000)
                 .equipped(false)
+                .equipmentType(2)
                 .build();
 
         Equipment fuelTank = FuelTank.builder()
                 .id(3)
                 .slotId(2)
-                .fuelTankTypeId(1)
+                .equipmentType(1)
+                .equipped(true)
                 .build();
 
         Collection<Integer> slots = new ArrayList<>();

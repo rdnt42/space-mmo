@@ -1,4 +1,6 @@
 export const EquipmentType = {
-    Engine: "ENGINE",
-    FuelTank: "FUEL_TANK"
+    Engine: 1,
+    FuelTank: 2,
+    Scanner: 3,
+    Radar: 4
 }

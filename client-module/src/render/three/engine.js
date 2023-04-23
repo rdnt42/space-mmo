@@ -45,54 +45,5 @@ export class ThreeEngine {
         init();
         render();
     }
-
-    createCharacter(characterName) {
-        //
-    }
-
-    createCharacterLabel(characterName) {
-        //
-    }
-
-    removeCharacter(characterName) {
-        //
-    }
-
-    createInventory() {
-        return {};
-    }
-
-    initEquipment(equipmentType, idx) {
-        return {};
-    }
-
-    initCargoCell(idx) {
-        return {};
-    }
-
-    initEquipmentSlot(equipmentType) {
-        return {};
-    }
-
-    addToEquipmentSlot(equipment, slot) {
-        //
-    }
-
-    removeFromEquipmentSlot(equipment) {
-        //
-    }
-
-    addToCargoCell(cargo, hold) {
-        //
-    }
-
-    removeFromCargoCell(cargo) {
-        //
-    }
-
-    changeStateInventory(state) {
-      //
-    }
-
 }
 

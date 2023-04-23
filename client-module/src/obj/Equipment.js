@@ -3,15 +3,15 @@ import {renderEngine} from "../render/render-engine.js";
 export class Equipment {
     texture;
 
-    idx;
     isEquipped;
     equipmentType;
+    slotId;
 
-    constructor(equipmentType, idx, isEquipped) {
+    constructor(slotId, equipmentType, isEquipped) {
         this.isEquipped = isEquipped;
         this.equipmentType = equipmentType;
-        this.idx = idx;
-        this.texture = renderEngine.initEquipment(this.equipmentType, this.idx);
+        this.slotId = slotId;
+        this.texture = renderEngine.initEquipment(this.slotId, this.equipmentType);
         this.texture['textureParentObj'] = this;
     }
 }

@@ -8,4 +8,6 @@ import lombok.Getter;
 public class Equipment {
     private final int id;
     private final int slotId;
+    private final boolean equipped;
+    private final int equipmentType;
 }

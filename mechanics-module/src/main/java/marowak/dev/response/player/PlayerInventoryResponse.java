@@ -9,7 +9,7 @@ import java.util.Collection;
 @Builder
 public record PlayerInventoryResponse(
         Collection<Integer> slots,
-        Collection<Equipment> equipments,
+        Collection<? extends Equipment> equipments,
         Collection<Cargo> cargos
 ) {
 }

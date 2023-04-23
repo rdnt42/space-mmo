@@ -60,7 +60,7 @@ export class Inventory {
     }
 
     #equip(equipment) {
-        let equipmentSlot = this.equipmentSlots.get(equipment.equipmentType);
+        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
         let cell = this.#getCargoCell(equipment);
 
         let removedFromSlot = equipmentSlot.removeFromEquipmentSlot();
@@ -72,13 +72,20 @@ export class Inventory {
         }
     }
 
+    equip(equipment) {
+        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
+        if (equipmentSlot !== undefined) {
+            equipmentSlot.addToEquipmentSlot(equipment);
+        }
+    }
+
     #unequip(equipment) {
         if (this.#getFreeCargoCell() === undefined) {
             alert("В трюме нет места, чтобы снять оборудование!")
             return
         }
 
-        let equipmentSlot = this.equipmentSlots.get(equipment.equipmentType);
+        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
         let removedEquipment = equipmentSlot.removeFromEquipmentSlot();
         this.addCargo(removedEquipment);
     }
