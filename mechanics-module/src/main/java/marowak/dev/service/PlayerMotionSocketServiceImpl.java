@@ -11,8 +11,10 @@ import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.CharactersGetMessageKey;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.response.player.PlayerInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
+import marowak.dev.service.equipment.PlayerInventoryService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -23,6 +25,7 @@ import java.util.function.Predicate;
 @Singleton
 public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService {
     private final PlayerMotionService playerMotionService;
+    private final PlayerInventoryService playerInventoryService;
     private final CharacterService characterService;
     private final WebSocketBroadcaster broadcaster;
 
@@ -36,17 +39,17 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
 
     @SneakyThrows
     @Override
-    public Publisher<SocketMessage<PlayersMotionListResponse>> onMessage(String playerName, SocketMessage<?> request,
+    public Publisher<SocketMessage<?>> onMessage(String playerName, SocketMessage<?> request,
                                                                           WebSocketSession session) {
-        SocketMessage<PlayersMotionListResponse> socketResponse;
+        SocketMessage<?> socketResponse;
         switch (request.command()) {
-            case CMD_INIT_CURRENT_PLAYER -> {
-                if (!playerMotionService.isPlayerInit(playerName)) {
-                    socketResponse = new SocketMessage<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, null);
-                } else {
-                    PlayersMotionListResponse response = playerMotionService.getMotions(playerName);
-                    socketResponse = new SocketMessage<>(MessageCommand.CMD_INIT_CURRENT_PLAYER, response);
-                }
+            case CMD_GET_MOTIONS -> {
+                PlayersMotionListResponse response = playerMotionService.getMotions(playerName);
+                socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, response);
+            }
+            case CMD_GET_INVENTORY -> {
+                PlayerInventoryResponse response = playerInventoryService.getPlayerInventory(playerName);
+                socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, response);
             }
             case CMD_UPDATE_CURRENT_PLAYER -> {
                 PlayerMotionRequest value = objectMapper.convertValue(request.data(), PlayerMotionRequest.class);

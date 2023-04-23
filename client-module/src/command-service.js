@@ -14,19 +14,23 @@ export function executeCommand(response) {
 
     let command = socketResponse.command;
     switch (command) {
-        case Commands.InitPlayer:
-            initService.initCharacter(socketResponse.data);
+        case Commands.GetMotions:
+            initService.initMotions(socketResponse.data);
             characterService.updateOrCreateCharacters(socketResponse.data);
-
             break;
+
+        case Commands.GetInventory:
+            initService.initInventory(socketResponse.data);
+            break;
+
         case Commands.UpdatePlayer:
             characterService.updateOrCreateCharacters(socketResponse.data);
-
             break;
+
         case Commands.LeavingPlayer:
             render.removeCharacter(socketResponse.data);
-
             break;
+
         default:
             console.error("Unexpected command: " + command);
     }

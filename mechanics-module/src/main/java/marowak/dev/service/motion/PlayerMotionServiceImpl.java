@@ -52,6 +52,9 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     @Override
     public PlayersMotionListResponse getMotions(String playerName) {
         PlayerMotion currPlayerMotion = playerMotionMap.get(playerName);
+        if (currPlayerMotion == null) {
+            return null;
+        }
         Collection<PlayerMotion> motions = getPlayersInRange(playerName);
 
         return new PlayersMotionListResponse(currPlayerMotion, motions);

@@ -1,13 +1,18 @@
 import * as socket from "./websocket-service.js";
-import {PlayerInitRequest} from "./request/PlayerInitRequest.js";
+import {PlayerEmptyRequest} from "./request/PlayerEmptyRequest.js";
 import {PlayerMotionRequest} from "./request/PlayerRequest.js";
 import {Character} from "./obj/Character.js";
+import {Commands} from "./const/MessageCommand.js";
 
 let playerCharacterName;
 let charactersMap = new Map();
 
-export function sendInitPlayer() {
-    socket.sendMessage(new PlayerInitRequest());
+export function sendGetMotions() {
+    socket.sendMessage(new PlayerEmptyRequest(Commands.GetMotions));
+}
+
+export function sendGetInventory() {
+    socket.sendMessage(new PlayerEmptyRequest(Commands.GetInventory));
 }
 
 export function initMyCharacter(characterName, playerMotion) {
