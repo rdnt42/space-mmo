@@ -1,4 +1,4 @@
-export const EquipmentType = {
+export const EquipmentSlotId = {
     Engine: 1,
     FuelTank: 2,
     Scanner: 3,

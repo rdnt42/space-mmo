@@ -16,7 +16,7 @@ export function sendGetInventory() {
 }
 
 export function initMyCharacter(characterName, playerMotion) {
-    createCharacter(characterName, playerMotion);
+    createCharacter(characterName, playerMotion, 3);
     playerCharacterName = characterName;
 }
 
@@ -41,7 +41,7 @@ export function updateOrCreateCharacters(data) {
     for (let playerMotion of data.playersMotions) {
         let character = charactersMap.get(playerMotion.playerName);
         if (character === undefined) {
-            createCharacter(playerMotion.playerName, playerMotion);
+            createCharacter(playerMotion.playerName, playerMotion, 3);
         } else {
             updateCharacter(playerMotion.playerName, playerMotion);
         }
@@ -53,9 +53,9 @@ function updateCharacter(characterName, playerMotion) {
     character.updateCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed);
 }
 
-function createCharacter(characterName, playerMotion) {
+function createCharacter(characterName, playerMotion, shipTypeId) {
     let character = new Character(characterName);
-    character.initCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed);
+    character.initCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed, shipTypeId);
 
     charactersMap.set(characterName, character);
 }

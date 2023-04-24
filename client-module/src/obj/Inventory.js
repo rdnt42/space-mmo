@@ -1,6 +1,6 @@
 import {CargoCell} from "./CargoCell.js";
+import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
-import {EquipmentType} from "../const/EquipmentType.js";
 import {renderEngine} from "../render/render-engine.js";
 
 export class Inventory {
@@ -19,7 +19,7 @@ export class Inventory {
 
     loadConfig(slots) {
         for (let slot of slots) {
-            if (Object.values(EquipmentType).includes(slot)) {
+            if (Object.values(EquipmentSlotId).includes(slot)) {
                 console.log(`init inventory slot: ${slot}`)
                 this.equipmentSlots.set(slot, new EquipmentSlot(slot));
             }

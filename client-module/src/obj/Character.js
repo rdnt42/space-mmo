@@ -10,10 +10,10 @@ export class Character {
         this.characterName = characterName;
     };
 
-    initCharacter(x, y, angle, speed) {
+    initCharacter(x, y, angle, speed, shipTypeId) {
         this.movement = new Movement(Math.round(x / FREQUENCY), Math.round(y / FREQUENCY), angle, speed);
         renderEngine.createCharacterLabel(this.characterName);
-        renderEngine.createCharacter(this.characterName);
+        renderEngine.createCharacter(this.characterName, shipTypeId);
     }
 
     updateCharacter(x, y, angle, speed) {

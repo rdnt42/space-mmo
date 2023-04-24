@@ -1,7 +1,7 @@
 import * as pixi from '../../libs/pixi.min.js';
 import * as characterService from "../../character-service.js";
 import {doubleClickCallback} from "../../inventory-service.js";
-import {EquipmentType} from "../../const/EquipmentType.js";
+import {EquipmentSlotId} from "../../const/EquipmentSlotId.js";
 
 let app;
 let dragTarget = null;
@@ -133,11 +133,11 @@ function renderCharacters() {
     }
 }
 
-function createCharacter(characterName) {
-    let sprite = pixi.Sprite.from("./images/spaceship.png");
+function createCharacter(characterName, shipTypeId) {
+    let sprite = pixi.Sprite.from("./images/ship" + shipTypeId + ".png");
     sprite.anchor.set(0.5, 0.5);
-    sprite.width = 64;
-    sprite.height = 64;
+    sprite.width = 72;
+    sprite.height = 72;
 
     spritesContainer.addChild(sprite);
     charactersMap.set(characterName, sprite);
@@ -196,6 +196,7 @@ function createInventory() {
 function initCargoCell(idx) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
+    sprite.visible = false;
     sprite.width = 40;
     sprite.height = 40;
     sprite.position.set(91 + idx * (sprite.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
@@ -208,20 +209,21 @@ function initCargoCell(idx) {
 function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
+    sprite.visible = false;
     sprite.width = 60;
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
     switch (equipmentType) {
-        case EquipmentType.Engine:
+        case EquipmentSlotId.Engine:
             sprite.position.set(85, 235);
             break;
-        case EquipmentType.FuelTank:
+        case EquipmentSlotId.FuelTank:
             sprite.position.set(85, 335);
             break;
-        case EquipmentType.Scanner:
+        case EquipmentSlotId.Scanner:
             sprite.position.set(350, 235);
             break;
-        case EquipmentType.Radar:
+        case EquipmentSlotId.Radar:
             sprite.position.set(350, 335);
             break;
     }
@@ -233,10 +235,10 @@ function initEquipmentSlot(equipmentType) {
 function initEquipment(slotId, equipmentType) {
     let url;
     switch (slotId) {
-        case EquipmentType.Engine:
+        case EquipmentSlotId.Engine:
             url = "./images/engine" + equipmentType + ".png";
             break;
-        case EquipmentType.FuelTank:
+        case EquipmentSlotId.FuelTank:
             url = "./images/fuel_tank" + equipmentType + ".png";
             break;
     }
@@ -318,8 +320,8 @@ export class PixiEngine  {
         initEngine();
     }
 
-    createCharacter(characterName) {
-        createCharacter(characterName);
+    createCharacter(characterName, shipTypeId) {
+        createCharacter(characterName, shipTypeId);
     }
 
     createCharacterLabel(characterName) {
