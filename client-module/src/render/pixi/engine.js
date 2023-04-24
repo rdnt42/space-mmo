@@ -2,6 +2,7 @@ import * as pixi from '../../libs/pixi.min.js';
 import * as characterService from "../../character-service.js";
 import {doubleClickCallback} from "../../inventory-service.js";
 import {EquipmentSlotId} from "../../const/EquipmentSlotId.js";
+import {shipsCfgMap} from "../../cfg/images-cfg.js";
 
 let app;
 let dragTarget = null;
@@ -134,10 +135,20 @@ function renderCharacters() {
 }
 
 function createCharacter(characterName, shipTypeId) {
-    let sprite = pixi.Sprite.from("./images/ship" + shipTypeId + ".png");
+    let textureArr = [];
+    for (let i = 0; i < shipsCfgMap.get(shipTypeId); i++) {
+        let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
+        const texture = pixi.Texture.from(img);
+        textureArr.push(texture);
+    }
+
+    const sprite = new pixi.AnimatedSprite(textureArr);
+
     sprite.anchor.set(0.5, 0.5);
-    sprite.width = 72;
-    sprite.height = 72;
+    sprite.width = 0.75;
+    sprite.height = 0.75;
+    sprite.animationSpeed = 0.3;
+    sprite.play();
 
     spritesContainer.addChild(sprite);
     charactersMap.set(characterName, sprite);

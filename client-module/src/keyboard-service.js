@@ -3,10 +3,12 @@ import {Direction} from "./const/Direction.js";
 let keys = {};
 
 document.addEventListener("keydown", function (event) {
+    event.preventDefault();
     keys[event.key] = true;
 });
 
 document.addEventListener("keyup", function (event) {
+    event.preventDefault();
     keys[event.key] = false;
 });
 

@@ -19,6 +19,7 @@ export function initInventory(slots, equipments, cargos) {
     }
 
     document.addEventListener("keydown", (event) => {
+        event.preventDefault();
         if (event.key === "i") {
             inventory.changeState();
         }
