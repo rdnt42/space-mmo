@@ -16,7 +16,7 @@ function worldTick() {
 }
 
 function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
-    let currSpeedDiff = Math.round((maxSpeed * FREQUENCY_TIME) / accelerationTime);
+    let currSpeedDiff = (maxSpeed * FREQUENCY_TIME) / accelerationTime;
 
     let directions = keyboard.getDirections();
     for (const direction of directions) {

@@ -6,8 +6,8 @@ import io.micronaut.serde.annotation.Serdeable;
 public record CharacterMotionRequest(
         String accountName,
         String characterName,
-        long x,
-        long y,
+        double x,
+        double y,
         int angle
 ) implements CharacterRequest{
 }

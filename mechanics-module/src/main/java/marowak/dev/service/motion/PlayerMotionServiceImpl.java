@@ -6,6 +6,8 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,19 +70,21 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     private void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
         PlayerMotion oldMotion = playerMotionMap.get(playerName);
 
-        long newX = oldMotion.x() + getXShift(request.speed(), request.angle());
-        long newY = oldMotion.y() + getYShift(request.speed(), request.angle());
-        PlayerMotion newMotion = new PlayerMotion(playerName, newX, newY, request.angle(), request.speed());
+        double newX = oldMotion.x() + getXShift(request.speed(), request.angle());
+        BigDecimal fx = BigDecimal.valueOf(newX).setScale(2, RoundingMode.HALF_UP);
+        double newY = oldMotion.y() + getYShift(request.speed(), request.angle());
+        BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
+        PlayerMotion newMotion = new PlayerMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(), request.speed());
 
         playerMotionMap.put(playerName, newMotion);
     }
 
-    private int getXShift(int speed, int angle) {
-        return (int) (Math.cos(Math.toRadians(angle)) * speed);
+    private double getXShift(float speed, int angle) {
+        return Math.cos(Math.toRadians(angle)) * speed;
     }
 
-    private int getYShift(int speed, int angle) {
-        return (int) (Math.sin(Math.toRadians(angle)) * speed);
+    private double getYShift(float speed, int angle) {
+        return Math.sin(Math.toRadians(angle)) * speed;
     }
 
     private Collection<PlayerMotion> getPlayersInRange(String playerName) {

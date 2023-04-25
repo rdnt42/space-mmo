@@ -72,5 +72,6 @@ public class PlayerInventoryServiceImpl implements PlayerInventoryService {
                 .build();
 
         playerInventoryMap.put("p1", inventory);
+        playerInventoryMap.put("sd", inventory);
     }
 }

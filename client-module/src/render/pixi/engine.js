@@ -3,6 +3,7 @@ import * as characterService from "../../character-service.js";
 import {doubleClickCallback} from "../../inventory-service.js";
 import {EquipmentSlotId} from "../../const/EquipmentSlotId.js";
 import {shipsCfgMap} from "../../cfg/images-cfg.js";
+import {FREQUENCY} from "../../const/Common.js";
 
 let app;
 let dragTarget = null;
@@ -75,6 +76,7 @@ function createPosInfoLabel() {
 function createBackground(texture) {
     let bg = new pixi.TilingSprite(texture, window.innerWidth, window.innerHeight);
     bg.position.set(0, 0);
+    bg.tilePosition.set(0, 0);
 
     return bg;
 }
@@ -105,8 +107,12 @@ function updateLocationText(posInfoLabel) {
 
 function updateBackground(bg, div) {
     let playerCharacter = characterService.getPlayerCharacter();
-    bg.tilePosition.x -= (isNaN(playerCharacter.getDiffX()) ? 0 : playerCharacter.getDiffX()) / div;
-    bg.tilePosition.y -= (isNaN(playerCharacter.getDiffY()) ? 0 : playerCharacter.getDiffY()) / div;
+    bg.tilePosition.x -= Math.round(playerCharacter.getDiffX() * FREQUENCY / div);
+    bg.tilePosition.y -= Math.round(playerCharacter.getDiffY() * FREQUENCY / div);
+    bg.tilePosition.x += 0.128;
+    bg.tilePosition.y += 0.64;
+    // console.log("x", bg.tilePosition.x);
+    // console.log("y", bg.tilePosition.y);
 }
 
 function changeStateInventory(state) {
@@ -325,7 +331,7 @@ function removeFromEquipmentSlot(equipment) {
     equipment.visible = false;
 }
 
-export class PixiEngine  {
+export class PixiEngine {
     constructor() {
         console.log("pixi")
         initEngine();

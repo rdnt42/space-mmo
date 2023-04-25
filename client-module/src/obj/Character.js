@@ -11,7 +11,7 @@ export class Character {
     };
 
     initCharacter(x, y, angle, speed, shipTypeId) {
-        this.movement = new Movement(Math.round(x / FREQUENCY), Math.round(y / FREQUENCY), angle, speed);
+        this.movement = new Movement(x, y, angle, speed);
         renderEngine.createCharacterLabel(this.characterName);
         renderEngine.createCharacter(this.characterName, shipTypeId);
     }
@@ -26,6 +26,7 @@ export class Character {
     }
 
     getDiffX() {
+        console.log(this.movement.x - this.movement.prevX)
         return this.movement.x - this.movement.prevX;
     }
 
@@ -51,7 +52,7 @@ class Movement {
     prevY;
     speed;
     angle;
-    maxSpeed = 600;
+    maxSpeed = 60;
 
     constructor(x, y, angle, speed) {
         this.x = x;
