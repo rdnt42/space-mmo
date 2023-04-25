@@ -1,4 +1,3 @@
-import {FREQUENCY} from "../const/Common.js";
 import {renderEngine} from "../render/render-engine.js";
 
 
@@ -19,14 +18,13 @@ export class Character {
     updateCharacter(x, y, angle, speed) {
         this.movement.prevX = this.movement.x;
         this.movement.prevY = this.movement.y;
-        this.movement.x = x / FREQUENCY;
-        this.movement.y = y / FREQUENCY;
+        this.movement.x = x;
+        this.movement.y = y;
         this.movement.angle = angle;
         this.movement.speed = speed;
     }
 
     getDiffX() {
-        console.log(this.movement.x - this.movement.prevX)
         return this.movement.x - this.movement.prevX;
     }
 
@@ -36,7 +34,7 @@ export class Character {
 
     getLocation() {
         return "X: " + Math.round(this.movement.x) + " Y: " + Math.round(this.movement.y) + " speed: " +
-            this.movement.speed + " angle: " + this.movement.angle;
+            Math.round(this.movement.speed) + " angle: " + this.movement.angle;
     }
 
     destroy() {
