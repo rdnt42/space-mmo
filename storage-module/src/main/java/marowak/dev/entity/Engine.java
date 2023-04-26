@@ -1,43 +1,29 @@
 package marowak.dev.entity;
 
-import io.micronaut.data.annotation.GeneratedValue;
-import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.MappedEntity;
 import lombok.Builder;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Builder
-@MappedEntity(value = "engines")
-public record Engine(
+@Entity
+@Table(name = "engines")
+public class Engine extends Equipment {
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_name", insertable = false, updatable = false)
+    Character character;
 
-        @Id
-        @GeneratedValue
-        @Column(name = "engine_id")
-        Long id,
+    String characterName;
 
-        @Column(name = "is_active")
-        boolean active,
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "engine_type_id", insertable = false, updatable = false)
+    EngineType engineType;
 
-        @ManyToOne(optional = false, fetch = FetchType.LAZY)
-        @JoinColumn(name = "character_name", insertable = false, updatable = false)
-        Character character,
+    int engineTypeId;
 
-        String characterName,
+    int speed;
 
-        @ManyToOne(optional = false, fetch = FetchType.LAZY)
-        @JoinColumn(name = "engine_type_id", insertable = false, updatable = false)
-        EngineType engineType,
+    int upgradeLevel;
 
-        int engineTypeId,
-
-        int speed,
-
-        int upgradeLevel,
-
-        int cost
-) {
+    int cost;
 }
+

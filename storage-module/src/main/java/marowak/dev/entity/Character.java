@@ -1,15 +1,17 @@
 package marowak.dev.entity;
 
-import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.MappedEntity;
 import lombok.Builder;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Builder
-@MappedEntity(value = "characters")
+@Entity
+@Table(name = "characters")
 public record Character(
 
         @Id
@@ -31,5 +33,7 @@ public record Character(
 
         @Column(name = "is_online")
         boolean online
+
         ) {
+
 }
