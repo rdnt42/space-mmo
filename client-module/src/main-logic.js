@@ -41,6 +41,6 @@ function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
 
     return {
         speed: speed,
-        angle: angle
+        angle: angle,
     }
 }

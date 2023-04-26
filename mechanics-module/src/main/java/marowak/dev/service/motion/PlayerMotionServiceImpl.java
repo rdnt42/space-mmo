@@ -9,6 +9,7 @@ import marowak.dev.response.player.PlayersMotionListResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,7 +35,8 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public void addMotion(CharacterMotionRequest character) {
-        PlayerMotion newMotion = new PlayerMotion(character.characterName(), character.x(), character.y(), character.angle(), 0);
+        PlayerMotion newMotion = new PlayerMotion(character.characterName(), character.x(), character.y(),
+                character.angle(), 0, new Date().getTime());
 
         playerMotionMap.put(character.characterName(), newMotion);
     }
@@ -70,11 +72,19 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     private void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
         PlayerMotion oldMotion = playerMotionMap.get(playerName);
 
-        double newX = oldMotion.x() + getXShift(request.speed(), request.angle());
+        long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
+        if(diffTime < 0) return;
+
+        float relativeSpeed = (request.speed() * diffTime) / 1000;
+
+        double newX = oldMotion.x() + getXShift(relativeSpeed, request.angle());
         BigDecimal fx = BigDecimal.valueOf(newX).setScale(2, RoundingMode.HALF_UP);
-        double newY = oldMotion.y() + getYShift(request.speed(), request.angle());
+
+        double newY = oldMotion.y() + getYShift(relativeSpeed, request.angle());
         BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
-        PlayerMotion newMotion = new PlayerMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(), request.speed());
+
+        PlayerMotion newMotion = new PlayerMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
+                request.speed(), request.lastUpdateTime());
 
         playerMotionMap.put(playerName, newMotion);
     }

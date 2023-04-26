@@ -55,8 +55,8 @@ function initEngine() {
     app.ticker.add(() => {
         renderCharacters();
         updateLocationText(posInfoLabel);
-        updateBackground(bgLast, 3 * 10);
-        updateBackground(bgFirst, 2 * 10);
+        updateBackground(bgLast, 3);
+        updateBackground(bgFirst, 2);
         app.stage.sortChildren();
     });
 }
@@ -108,12 +108,8 @@ function updateBackground(bg, div) {
     let playerCharacter = characterService.getPlayerCharacter();
     let addX = parseFloat(playerCharacter.getDiffX() / div);
     let addY = parseFloat(playerCharacter.getDiffY() / div);
-    // if (addX !== 0.00) {
-    //     console.log("addX", addX)
-    // }
     bg.tilePosition.x -= addX;
     bg.tilePosition.y -= addY;
-    // console.log("x: " + bg.tilePosition.x + ", y: " + bg.tilePosition.y);
 }
 
 function changeStateInventory(state) {

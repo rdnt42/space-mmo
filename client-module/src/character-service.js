@@ -25,7 +25,7 @@ export function getPlayerCharacter() {
 }
 
 export function sendMotion(speed, angle, isUpdate) {
-    const request = new PlayerMotionRequest(isUpdate, speed, angle);
+    const request = new PlayerMotionRequest(isUpdate, speed, angle, Date.now());
     socket.sendMessage(request);
 }
 
