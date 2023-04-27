@@ -1,35 +1,32 @@
 package marowak.dev.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "engine_types")
-public class EngineType {
+public record EngineType (
     @Id
     @Column(name = "engine_type_id")
-    int id;
+    int id,
 
     @NotNull
-    String name;
+    String name,
 
-    long baseCost;
+    long baseCost,
 
-    int baseSpeed;
+    int baseSpeed,
 
-    int baseJump;
-
-    @NotNull
-    String dscRu;
+    int baseJump,
 
     @NotNull
-    String nameRu;
+    String dscRu,
+
+    @NotNull
+    String nameRu
+)
+{
 }

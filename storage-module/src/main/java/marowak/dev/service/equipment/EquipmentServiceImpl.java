@@ -4,22 +4,16 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Equipment;
 import marowak.dev.repository.EngineR2Repository;
-import marowak.dev.repository.EngineRepository;
-
-import java.util.List;
-import java.util.stream.StreamSupport;
+import org.reactivestreams.Publisher;
 
 @RequiredArgsConstructor
 @Singleton
 public class EquipmentServiceImpl implements EquipmentService {
-    private final EngineRepository engineRepository;
     private final EngineR2Repository engineR2Repository;
 
     @Override
-    public List<Equipment> getAllOnline() {
-        return StreamSupport
-                .stream(engineRepository.findAll().spliterator(), false)
-                .toList();
+    public Publisher<? extends Equipment> getAllOnline() {
+        return engineR2Repository.findAll();
     }
 
 }

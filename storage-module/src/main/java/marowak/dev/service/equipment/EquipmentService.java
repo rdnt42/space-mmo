@@ -1,9 +1,8 @@
 package marowak.dev.service.equipment;
 
 import marowak.dev.entity.Equipment;
-
-import java.util.List;
+import org.reactivestreams.Publisher;
 
 public interface EquipmentService {
-    List<Equipment> getAllOnline();
+    Publisher<? extends Equipment> getAllOnline();
 }

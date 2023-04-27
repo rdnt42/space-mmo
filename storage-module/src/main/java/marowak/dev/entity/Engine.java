@@ -1,33 +1,37 @@
 package marowak.dev.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Builder
 @Entity
 @Table(name = "engines")
-public class Engine extends Equipment {
-    @Column(name = "character_name")
-    String characterName;
+public record Engine (
+        @Id
+        @GeneratedValue(generator = "equipment_seq")
+        @Column(name = "equipment_id")
+        Long id,
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "engine_type_id", insertable = false, updatable = false)
-    EngineType engineType;
+        int slotId,
 
-    @Column(name = "engine_type_id")
-    int engineTypeId;
+        boolean equipped,
+        @Column(name = "character_name")
+        String characterName,
 
-    int speed;
+        @ManyToOne(optional = false, fetch = FetchType.EAGER)
+        @JoinColumn(name = "engine_type_id", insertable = false, updatable = false)
+        EngineType engineType,
 
-    int upgradeLevel;
+        @Column(name = "engine_type_id")
+        int engineTypeId,
 
-    int cost;
+        int speed,
+
+        int upgradeLevel,
+
+        int cost
+        ) implements Equipment
+{
 }
 
