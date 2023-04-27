@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.character;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Singleton;

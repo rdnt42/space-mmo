@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;

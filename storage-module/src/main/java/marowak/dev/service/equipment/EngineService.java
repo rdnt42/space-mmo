@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.equipment;
 
 import marowak.dev.entity.Engine;
 import marowak.dev.request.message.EngineRequest;

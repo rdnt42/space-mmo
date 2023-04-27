@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.character;
 
 import marowak.dev.entity.Character;
 import marowak.dev.request.message.CharacterMotionRequest;

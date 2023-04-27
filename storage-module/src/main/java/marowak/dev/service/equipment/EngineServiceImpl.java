@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.equipment;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +22,5 @@ public class EngineServiceImpl implements EngineService {
 
         return engineRepository.save(engine);
     }
+
 }
