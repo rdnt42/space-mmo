@@ -11,7 +11,7 @@ netty:
 
 flyway:
   datasources:
-    default:
+    jdbc:
       enabled: true
 
 jpa:
@@ -30,11 +30,12 @@ r2dbc:
       driverClassName: 'org.postgresql.Driver'
 
 datasources:
-  default:
+  jdbc:
     url: 'jdbc:postgresql://localhost:5432/space_mmo_storage'
     username: 'manager'
     password: 'manager'
     driverClassName: 'org.postgresql.Driver'
+
 
 kafka:
   bootstrap:

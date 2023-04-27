@@ -6,8 +6,10 @@ import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.messaging.annotation.SendTo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.entity.Equipment;
+import marowak.dev.entity.Engine;
 import marowak.dev.enums.EquipmentMessageKey;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,11 +20,11 @@ public class EquipmentListener {
     // TODO need uniform style
     @Topic("equipments")
     @SendTo("equipments-answer")
-    public Iterable<Equipment> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
+    public List<Engine> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
         log.info("Get init characters command: {}, character name: {}", key, characterName);
         return switch (key) {
             case EQUIPMENTS_GET_ONE -> null;
-            case EQUIPMENTS_GET_ALL -> equipmentService.getAllOnline();
+            case EQUIPMENTS_GET_ALL -> null;
         };
     }
 }

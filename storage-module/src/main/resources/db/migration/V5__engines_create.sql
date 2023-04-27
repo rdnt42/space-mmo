@@ -2,7 +2,7 @@ create sequence if not exists equipment_seq;
 
 create table if not exists engines
 (
-    engine_id      bigint default nextval('equipment_seq'),
+    equipment_id      bigint default nextval('equipment_seq'),
     slot_id        smallint,
     equipped       bool,
     character_name text references characters (character_name),
