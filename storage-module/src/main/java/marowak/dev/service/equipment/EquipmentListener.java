@@ -7,7 +7,6 @@ import io.micronaut.messaging.annotation.SendTo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.enums.EquipmentMessageKey;
-import message.EquipmentMark;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -19,10 +18,10 @@ public class EquipmentListener {
     // TODO need uniform style
     @Topic("equipments")
     @SendTo("equipments-answer")
-    public Flux<? extends EquipmentMark> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
+    public Flux<String> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
         log.info("Get equipments command: {}, character name: {}", key, characterName);
         return switch (key) {
-            case EQUIPMENTS_GET_ONE -> equipmentService.getForCharacter(characterName);
+            case EQUIPMENTS_GET_ONE -> null;
             case EQUIPMENTS_GET_ALL -> equipmentService.getAllOnline();
         };
     }

@@ -20,10 +20,6 @@ public record Engine (
         @Column(name = "character_name")
         String characterName,
 
-        @ManyToOne(optional = false, fetch = FetchType.EAGER)
-        @JoinColumn(name = "engine_type_id", insertable = false, updatable = false)
-        EngineType engineType,
-
         @Column(name = "engine_type_id")
         int engineTypeId,
 

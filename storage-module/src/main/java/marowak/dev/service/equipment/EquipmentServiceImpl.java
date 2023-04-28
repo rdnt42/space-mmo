@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Engine;
 import marowak.dev.repository.EngineR2Repository;
 import message.EngineMessage;
-import message.EquipmentMark;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
@@ -16,19 +15,19 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final EngineR2Repository engineR2Repository;
 
     @Override
-    public Flux<? extends EquipmentMark> getAllOnline() {
+    public Flux<String> getAllOnline() {
 
         return Flux.from(engineR2Repository.findAll())
                 .map(engineToMessage);
     }
 
     @Override
-    public Flux<? extends EquipmentMark> getForCharacter(String characterName) {
+    public Flux<String> getForCharacter(String characterName) {
         return engineR2Repository.findByCharacterName(characterName)
                 .map(engineToMessage);
     }
 
-    Function<Engine, EngineMessage> engineToMessage = engine -> EngineMessage.builder()
+    Function<Engine, String> engineToMessage = engine -> EngineMessage.builder()
             .id(engine.id())
             .slotId(engine.slotId())
             .equipped(engine.equipped())
@@ -37,5 +36,6 @@ public class EquipmentServiceImpl implements EquipmentService {
             .speed(engine.speed())
             .upgradeLevel(engine.upgradeLevel())
             .cost(engine.cost())
-            .build();
+            .build()
+            .toString();
 }

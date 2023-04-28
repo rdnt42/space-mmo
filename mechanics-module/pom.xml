@@ -70,6 +70,12 @@
             <artifactId>micronaut-kafka</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>marovak.dev</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

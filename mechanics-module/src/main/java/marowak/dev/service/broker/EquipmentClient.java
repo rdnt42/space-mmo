@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono;
 @KafkaClient
 public interface EquipmentClient {
     @Topic("equipments")
-    Mono<RecordMetadata> sendInitCharacters(@KafkaKey EquipmentMessageKey key, String characterName);
+    Mono<RecordMetadata> sendGetEquipments(@KafkaKey EquipmentMessageKey key, String characterName);
 }
