@@ -17,6 +17,7 @@
         <module>mechanics-module</module>
         <module>account-module</module>
         <module>storage-module</module>
+        <module>common</module>
     </modules>
 
     <name>space-mmo-parent</name>

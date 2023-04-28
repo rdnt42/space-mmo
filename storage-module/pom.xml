@@ -81,16 +81,21 @@
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
-      <artifactId>r2dbc-postgresql</artifactId>
+        <artifactId>r2dbc-postgresql</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.data</groupId>
-      <artifactId>micronaut-data-hibernate-jpa</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>io.micronaut.data</groupId>
+          <artifactId>micronaut-data-hibernate-jpa</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>marovak.dev</groupId>
+          <artifactId>common</artifactId>
+          <version>1.0</version>
+      </dependency>
 
   </dependencies>
 

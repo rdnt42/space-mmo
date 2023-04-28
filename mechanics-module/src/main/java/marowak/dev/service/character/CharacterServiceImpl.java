@@ -9,6 +9,7 @@ import marowak.dev.enums.CharactersUpdateMessageKey;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.request.CharacterStateRequest;
+import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.motion.PlayerMotionService;
 import reactor.core.publisher.Flux;
 

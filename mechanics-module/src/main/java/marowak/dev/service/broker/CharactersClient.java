@@ -1,4 +1,4 @@
-package marowak.dev.service.character;
+package marowak.dev.service.broker;
 
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;

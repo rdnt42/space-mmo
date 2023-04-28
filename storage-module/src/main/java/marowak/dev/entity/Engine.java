@@ -32,7 +32,6 @@ public record Engine (
         int upgradeLevel,
 
         int cost
-        ) implements Equipment
-{
+) {
 }
 

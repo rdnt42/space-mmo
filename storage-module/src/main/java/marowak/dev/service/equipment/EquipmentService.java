@@ -1,8 +1,10 @@
 package marowak.dev.service.equipment;
 
-import marowak.dev.entity.Equipment;
-import org.reactivestreams.Publisher;
+import message.EquipmentMark;
+import reactor.core.publisher.Flux;
 
 public interface EquipmentService {
-    Publisher<? extends Equipment> getAllOnline();
+    Flux<? extends EquipmentMark> getAllOnline();
+
+    Flux<? extends EquipmentMark> getForCharacter(String characterName);
 }
