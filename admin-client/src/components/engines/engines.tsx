@@ -15,7 +15,8 @@ export const EngineList = () => (
     <List>
         <Datagrid>
             <TextField source="id"/>
-            <TextField source="isActive"/>
+            <TextField source="equipped"/>
+            <TextField source="slotId"/>
             <TextField source="characterName"/>
             <TextField source="engineTypeId"/>
             <TextField source="speed"/>
@@ -43,6 +44,7 @@ export const EngineCreate = () => (
     <Create>
         <SimpleForm>
             <ReferenceInput source="engineId" reference="engines"/>
+            <NumberInput source="slotId"/>
             <TextInput source="characterName"/>
             <NumberInput source="engineTypeId"/>
             <NumberInput source="speed"/>

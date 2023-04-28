@@ -16,6 +16,7 @@ public record Engine (
         int slotId,
 
         boolean equipped,
+
         @Column(name = "character_name")
         String characterName,
 

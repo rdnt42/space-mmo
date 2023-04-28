@@ -25,6 +25,8 @@ func CreateEngine(ctx *gin.Context) {
 
 	newEngine := &models.Engine{
 		CharacterName: payload.CharacterName,
+		Equipped:      false,
+		SlotId:        payload.SlotId,
 		EngineTypeId:  payload.EngineTypeId,
 		Speed:         payload.Speed,
 		UpgradeLevel:  payload.UpgradeLevel,
