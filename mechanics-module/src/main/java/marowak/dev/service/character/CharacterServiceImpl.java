@@ -6,11 +6,9 @@ import keys.CharactersGetMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterRequest;
-import marowak.dev.request.CharacterStateRequest;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.motion.PlayerMotionService;
+import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
@@ -32,7 +30,7 @@ public class CharacterServiceImpl implements CharacterService {
             return;
         }
 
-        List<CharacterRequest> requests = motions.stream()
+        List<CharacterMessage> requests = motions.stream()
                 .map(this::convertPlayerMotion)
                 .toList();
 
@@ -44,19 +42,22 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void initCharacters(Flux<CharacterMotionRequest> requests) {
+    public void initCharacters(Flux<CharacterMessage> requests) {
         requests
                 .doOnNext(c -> {
                     playerMotionService.addMotion(c);
-                    log.info("Character init successful, name: {}", c.characterName());
+                    log.info("Character init successful, name: {}", c.getCharacterName());
                 })
                 .subscribe();
     }
 
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
-        CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
-        charactersUpdateClient.sendCharacter(CharacterMessageKey.CHARACTER_STATE_UPDATE, request)
+        CharacterMessage message = CharacterMessage.builder()
+                .characterName(characterName)
+                .online(isOnline)
+                .build();
+        charactersUpdateClient.sendCharacter(CharacterMessageKey.CHARACTER_STATE_UPDATE, message)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();
@@ -70,9 +71,13 @@ public class CharacterServiceImpl implements CharacterService {
                 .subscribe();
     }
 
-    private CharacterRequest convertPlayerMotion(PlayerMotion playerMotion) {
-        return new CharacterMotionRequest(null, playerMotion.playerName(),
-                playerMotion.x(), playerMotion.y(), playerMotion.angle());
+    private CharacterMessage convertPlayerMotion(PlayerMotion playerMotion) {
+        return CharacterMessage.builder()
+                .characterName(playerMotion.playerName())
+                .x(playerMotion.x())
+                .y(playerMotion.y())
+                .angle(playerMotion.angle())
+                .build();
     }
 
 }

@@ -2,9 +2,9 @@ package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
+import message.CharacterMessage;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,11 +34,11 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public void addMotion(CharacterMotionRequest character) {
-        PlayerMotion newMotion = new PlayerMotion(character.characterName(), character.x(), character.y(),
-                character.angle(), 0, new Date().getTime());
+    public void addMotion(CharacterMessage character) {
+        PlayerMotion newMotion = new PlayerMotion(character.getAccountName(), character.getX(), character.getY(),
+                character.getAngle(), 0, new Date().getTime());
 
-        playerMotionMap.put(character.characterName(), newMotion);
+        playerMotionMap.put(character.getCharacterName(), newMotion);
     }
 
     @Override

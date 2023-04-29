@@ -7,8 +7,8 @@ import io.micronaut.messaging.annotation.SendTo;
 import keys.CharactersGetMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.entity.Character;
-import reactor.core.publisher.Flux;
+import message.CharacterMessage;
+import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,11 +18,11 @@ public class CharacterInitListener {
 
     @Topic("get-characters")
     @SendTo("init-characters")
-    public Flux<Character> receive(@KafkaKey CharactersGetMessageKey key, String characterName) {
+    public Publisher<CharacterMessage> receive(@KafkaKey CharactersGetMessageKey key, String characterName) {
         log.info("Get init characters command: {}, character name: {}", key, characterName);
         return switch (key) {
-            case CHARACTERS_GET_ONE -> Flux.from(characterService.get(characterName));
-            case CHARACTERS_GET_ALL -> Flux.from(characterService.getAllOnline());
+            case CHARACTERS_GET_ONE -> characterService.get(characterName);
+            case CHARACTERS_GET_ALL -> characterService.getAllOnline();
         };
     }
 }

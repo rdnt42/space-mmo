@@ -1,18 +1,17 @@
 package marowak.dev.service.character;
 
-import marowak.dev.entity.Character;
-import marowak.dev.request.message.CharacterMotionRequest;
-import marowak.dev.request.message.CharacterStateRequest;
-import org.reactivestreams.Publisher;
+import message.CharacterMessage;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CharacterService {
-    Publisher<Character> create(CharacterMotionRequest request);
+    Mono<CharacterMessage> create(CharacterMessage message);
 
-    Publisher<Character> updateMotion(CharacterMotionRequest request);
+    Mono<CharacterMessage> updateMotion(CharacterMessage message);
 
-    Publisher<Character> getAllOnline();
+    Flux<CharacterMessage> getAllOnline();
 
-    Publisher<Character> get(String characterName);
+    Mono<CharacterMessage> get(String characterName);
 
-    Publisher<Character> updateState(CharacterStateRequest request);
+    Mono<CharacterMessage> updateState(CharacterMessage message);
 }

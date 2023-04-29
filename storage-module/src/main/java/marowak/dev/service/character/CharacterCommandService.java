@@ -5,10 +5,7 @@ import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.entity.Character;
-import marowak.dev.request.message.CharacterMotionRequest;
-import marowak.dev.request.message.CharacterRequest;
-import marowak.dev.request.message.CharacterStateRequest;
+import message.CharacterMessage;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.BaseSubscriber;
@@ -23,7 +20,7 @@ public class CharacterCommandService {
     private final CharacterService characterService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void tryExecuteCommand(CharacterMessageKey key, byte[] bytes)  {
+    public void tryExecuteCommand(CharacterMessageKey key, byte[] bytes) {
         try {
             executeCommand(key, bytes);
         } catch (IOException e) {
@@ -31,39 +28,37 @@ public class CharacterCommandService {
         }
     }
 
+    // TODO fix this
+    ObjectMapper mapper = new ObjectMapper();
+
     private void executeCommand(CharacterMessageKey key, byte[] bytes) throws IOException {
-        CharacterRequest request = convertToRequest(key, bytes);
-        Publisher<Character> publisher = switch (key) {
-            case CHARACTER_CREATE -> characterService.create((CharacterMotionRequest)request);
-            case CHARACTER_MOTION_UPDATE -> characterService.updateMotion((CharacterMotionRequest)request);
-            case CHARACTER_STATE_UPDATE -> characterService.updateState((CharacterStateRequest)request);
+        CharacterMessage message = objectMapper.readValue(bytes, CharacterMessage.class);
+        Publisher<CharacterMessage> publisher = switch (key) {
+            case CHARACTER_CREATE -> characterService.create(message);
+            case CHARACTER_MOTION_UPDATE -> characterService.updateMotion(message);
+            case CHARACTER_STATE_UPDATE -> characterService.updateState((message));
         };
 
-        Subscriber<Character> subscriber = getSubscriber(key, request);
+        Subscriber<CharacterMessage> subscriber = getSubscriber(key);
         publisher.subscribe(subscriber);
     }
 
-    private CharacterRequest convertToRequest(CharacterMessageKey key, byte[] request) throws IOException {
-        return switch (key) {
-            case CHARACTER_CREATE, CHARACTER_MOTION_UPDATE -> objectMapper.readValue(request, CharacterMotionRequest.class);
-            case CHARACTER_STATE_UPDATE -> objectMapper.readValue(request, CharacterStateRequest.class);
-        };
-    }
-
-    private Subscriber<Character> getSubscriber(CharacterMessageKey key, CharacterRequest request) {
+    // FIXME
+    private Subscriber<CharacterMessage> getSubscriber(CharacterMessageKey key) {
+        String fixme = "fixme pls";
         return new BaseSubscriber<>() {
             @Override
             protected void hookOnComplete() {
                 super.hookOnComplete();
                 log.debug("Received command: {}, for account:{}, character: {}",
-                        key, request.characterName(), request.characterName());
+                        key, fixme, fixme);
             }
 
             @Override
             protected void hookOnError(@NonNull Throwable throwable) {
                 super.hookOnError(throwable);
                 log.error("Error when command: {}, for account:{}, character: {}, error: {}",
-                        key, request.accountName(), request.characterName(), throwable);
+                        key, fixme, fixme, throwable);
             }
         };
     }

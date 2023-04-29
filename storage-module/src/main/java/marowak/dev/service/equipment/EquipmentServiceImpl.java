@@ -29,7 +29,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .map(engineToMessage);
     }
 
-    Function<Engine, EquipmentMessage> engineToMessage = engine -> EngineMessage.builder()
+    private final Function<Engine, EquipmentMessage> engineToMessage = engine -> EngineMessage.builder()
             .id(engine.id())
             .slotId(engine.slotId())
             .equipped(engine.equipped())

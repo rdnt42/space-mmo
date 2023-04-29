@@ -3,52 +3,65 @@ package marowak.dev.service.character;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
-import marowak.dev.repository.CharacterRepository;
-import marowak.dev.request.message.CharacterMotionRequest;
-import marowak.dev.request.message.CharacterStateRequest;
-import org.reactivestreams.Publisher;
+import marowak.dev.repository.CharacterR2Repository;
+import message.CharacterMessage;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
-    private final CharacterRepository characterRepository;
+    private final CharacterR2Repository characterR2Repository;
 
     @Override
-    public Publisher<Character> create(CharacterMotionRequest request) {
+    public Mono<CharacterMessage> create(CharacterMessage message) {
         Character character = Character.builder()
-                .accountName(request.accountName())
-                .characterName(request.characterName())
-                .x(request.x())
-                .y(request.y())
-                .angle(request.angle())
+                .accountName(message.getAccountName())
+                .characterName(message.getCharacterName())
+                .x(message.getX())
+                .y(message.getY())
+                .angle(message.getAngle())
                 .online(false)
                 .build();
 
-        return characterRepository.save(character);
+        return Mono.from(characterR2Repository.save(character))
+                .map(characterToMessage);
     }
 
     @Override
-    public Publisher<Character> updateMotion(CharacterMotionRequest request) {
-        characterRepository.update(request.characterName(), request.x(), request.y(), request.angle());
+    public Mono<CharacterMessage> updateMotion(CharacterMessage message) {
+        characterR2Repository.update(message.getCharacterName(), message.getX(), message.getY(), message.getAngle());
 
         return Mono.empty();
     }
 
     @Override
-    public Publisher<Character> getAllOnline() {
-        return characterRepository.findByOnline(true);
+    public Flux<CharacterMessage> getAllOnline() {
+        return characterR2Repository.findByOnline(true)
+                .map(characterToMessage);
     }
 
     @Override
-    public Publisher<Character> get(String characterName) {
-        return characterRepository.findById(characterName);
+    public Mono<CharacterMessage> get(String characterName) {
+        return Mono.from(characterR2Repository.findById(characterName))
+                .map(characterToMessage);
     }
 
     @Override
-    public Publisher<Character> updateState(CharacterStateRequest request) {
-        characterRepository.update(request.characterName(), request.isOnline());
+    public Mono<CharacterMessage> updateState(CharacterMessage message) {
+        characterR2Repository.update(message.getCharacterName(), message.isOnline());
 
         return Mono.empty();
     }
+
+    private final Function<Character, CharacterMessage> characterToMessage = character -> CharacterMessage.builder()
+            .characterName(character.characterName())
+            .accountName(character.accountName())
+            .experience(character.experience())
+            .x(character.x())
+            .y(character.y())
+            .angle(character.angle())
+            .build();
 }

@@ -8,7 +8,7 @@ import keys.EquipmentMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import message.EquipmentMessage;
-import reactor.core.publisher.Flux;
+import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class EquipmentListener {
     // TODO need uniform style
     @Topic("equipments")
     @SendTo("equipments-answer")
-    public Flux<EquipmentMessage> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
+    public Publisher<EquipmentMessage> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
         log.info("Get equipments command: {}, character name: {}", key, characterName);
         return switch (key) {
             case EQUIPMENTS_GET_ONE -> null;
