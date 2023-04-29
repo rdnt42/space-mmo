@@ -1,21 +1,13 @@
 package message;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
-@Builder
-@Data
-public class EngineMessage implements EquipmentMark {
-        Long id;
-
-        int slotId;
-
-        boolean equipped;
-
+@Getter
+public class EngineMessage extends EquipmentMessage {
         String characterName;
 
         int engineTypeId;
