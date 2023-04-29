@@ -3,6 +3,7 @@ package marowak.dev.service.broker;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import keys.EquipmentMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.service.equipment.EquipmentService;
@@ -17,7 +18,7 @@ public class EquipmentListener {
     private final EquipmentService equipmentService;
 
     @Topic("equipments-answer")
-    public void receive(@KafkaKey String key, Flux<EquipmentMessage> equipments) {
+    public void receive(@KafkaKey EquipmentMessageKey key, Flux<EquipmentMessage> equipments) {
         equipments.doOnNext(e -> {
                     if (e instanceof EngineMessage) {
                         log.info("value: {}", ((EngineMessage) e).getSpeed());

@@ -3,7 +3,7 @@ package marowak.dev.service.broker;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import marowak.dev.enums.EquipmentMessageKey;
+import keys.EquipmentMessageKey;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 

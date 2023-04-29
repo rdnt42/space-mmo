@@ -1,9 +1,9 @@
 package marowak.dev.service.equipment;
 
 import jakarta.inject.Singleton;
+import keys.EquipmentMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.enums.EquipmentMessageKey;
 import marowak.dev.service.broker.EquipmentClient;
 
 

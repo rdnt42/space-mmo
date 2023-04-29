@@ -1,4 +1,4 @@
-package marowak.dev.enums;
+package keys;
 
 public enum EquipmentMessageKey {
     EQUIPMENTS_GET_ONE,

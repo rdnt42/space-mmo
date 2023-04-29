@@ -1,6 +1,6 @@
 package marowak.dev.service.character;
 
-import marowak.dev.enums.CharactersGetMessageKey;
+import keys.CharactersGetMessageKey;
 import marowak.dev.request.CharacterMotionRequest;
 import reactor.core.publisher.Flux;
 

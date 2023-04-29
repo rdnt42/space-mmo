@@ -1,11 +1,11 @@
 package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
+import keys.CharacterMessageKey;
+import keys.CharactersGetMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.enums.CharactersGetMessageKey;
-import marowak.dev.enums.CharactersUpdateMessageKey;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterRequest;
 import marowak.dev.request.CharacterStateRequest;
@@ -36,7 +36,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .map(this::convertPlayerMotion)
                 .toList();
 
-        List<CharactersUpdateMessageKey> key = Collections.singletonList(CharactersUpdateMessageKey.CHARACTER_MOTION_UPDATE);
+        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_MOTION_UPDATE);
         charactersUpdateClient.sendCharacters(key, requests)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
@@ -56,7 +56,7 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
         CharacterStateRequest request = new CharacterStateRequest(null, characterName, isOnline);
-        charactersUpdateClient.sendCharacter(CharactersUpdateMessageKey.CHARACTER_STATE_UPDATE, request)
+        charactersUpdateClient.sendCharacter(CharacterMessageKey.CHARACTER_STATE_UPDATE, request)
                 .doOnError(e -> log.error("Send failed", e))
                 .doOnNext(r -> log.debug("Send message for updating characters"))
                 .subscribe();

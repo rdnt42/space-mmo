@@ -3,9 +3,9 @@ package marowak.dev.service.character;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.enums.CharacterMessageKey;
 
 import java.util.List;
 

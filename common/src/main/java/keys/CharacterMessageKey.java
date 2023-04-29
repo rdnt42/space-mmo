@@ -1,4 +1,4 @@
-package marowak.dev.enums;
+package keys;
 
 public enum CharacterMessageKey {
     CHARACTER_CREATE,

@@ -4,10 +4,10 @@ import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.messaging.annotation.SendTo;
+import keys.CharactersGetMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.entity.Character;
-import marowak.dev.enums.CharactersGetMessageKey;
 import reactor.core.publisher.Flux;
 
 @Slf4j

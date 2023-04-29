@@ -3,7 +3,7 @@ package marowak.dev.service.character;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import marowak.dev.enums.CharactersUpdateMessageKey;
+import keys.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
@@ -15,9 +15,9 @@ import java.util.List;
 public interface CharactersUpdateClient {
 
     @Topic("characters")
-    Mono<RecordMetadata> sendCharacters(@KafkaKey List<CharactersUpdateMessageKey> keys, Collection<CharacterRequest> requests);
+    Mono<RecordMetadata> sendCharacters(@KafkaKey List<CharacterMessageKey> keys, Collection<CharacterRequest> requests);
 
     @Topic("characters")
-    Mono<RecordMetadata> sendCharacter(@KafkaKey CharactersUpdateMessageKey key, CharacterRequest request);
+    Mono<RecordMetadata> sendCharacter(@KafkaKey CharacterMessageKey key, CharacterRequest request);
 
 }

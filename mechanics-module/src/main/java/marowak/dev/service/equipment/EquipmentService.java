@@ -1,6 +1,6 @@
 package marowak.dev.service.equipment;
 
-import marowak.dev.enums.EquipmentMessageKey;
+import keys.EquipmentMessageKey;
 
 public interface EquipmentService {
     void sendGetEquipments(EquipmentMessageKey key, String characterName);

@@ -3,7 +3,7 @@ package marowak.dev.service.character;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import marowak.dev.enums.CharacterMessageKey;
+import keys.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
 import reactor.core.publisher.Mono;
 

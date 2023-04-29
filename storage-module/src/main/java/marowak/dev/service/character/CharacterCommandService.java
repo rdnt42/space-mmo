@@ -2,10 +2,10 @@ package marowak.dev.service.character;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Singleton;
+import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.entity.Character;
-import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.message.CharacterMotionRequest;
 import marowak.dev.request.message.CharacterRequest;
 import marowak.dev.request.message.CharacterStateRequest;

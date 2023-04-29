@@ -1,9 +1,9 @@
 package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
+import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.enums.CharacterMessageKey;
 import marowak.dev.request.CharacterRequest;
 
 /**

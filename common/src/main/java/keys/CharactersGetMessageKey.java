@@ -1,4 +1,4 @@
-package marowak.dev.enums;
+package keys;
 
 public enum CharactersGetMessageKey {
     CHARACTERS_GET_ONE,

@@ -34,6 +34,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>marovak.dev</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>io.micronaut.data</groupId>
       <artifactId>micronaut-data-r2dbc</artifactId>
       <scope>compile</scope>
@@ -91,12 +96,6 @@
           <groupId>io.micronaut.data</groupId>
           <artifactId>micronaut-data-hibernate-jpa</artifactId>
       </dependency>
-      <dependency>
-          <groupId>marovak.dev</groupId>
-          <artifactId>common</artifactId>
-          <version>1.0</version>
-      </dependency>
-
   </dependencies>
 
   <build>
