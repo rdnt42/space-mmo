@@ -67,10 +67,10 @@ public class CharacterServiceImpl implements CharacterService {
                 .key(key)
                 .characterName(characterName)
                 .build();
-//        charactersClient.sendInitCharacters(message)
-//                .doOnError(e -> log.error("Send Characters init error, key: {}, name: {}, error: {}", key, characterName, e.getMessage()))
-//                .doOnSuccess(c -> log.info("Send Character init successful, key: {}, name: {}", key, characterName))
-//                .subscribe();
+        charactersClient.sendInitCharacters(message)
+                .doOnError(e -> log.error("Send Characters init error, key: {}, name: {}, error: {}", key, characterName, e.getMessage()))
+                .doOnSuccess(c -> log.info("Send Character init successful, key: {}, name: {}", key, characterName))
+                .subscribe();
     }
 
     private CharacterMessage convertToUpdateMessage(PlayerMotion playerMotion) {

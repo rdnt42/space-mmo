@@ -12,7 +12,7 @@ import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
-@KafkaListener
+@KafkaListener(producerClientId = "equipments-producer")
 public class EquipmentListener {
     private final EquipmentService equipmentService;
 

@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 
 @Slf4j
 @RequiredArgsConstructor
-@KafkaListener
+@KafkaListener(producerClientId = "characters-producer")
 public class CharacterListener {
     private final CharacterCommandService characterCommandService;
 

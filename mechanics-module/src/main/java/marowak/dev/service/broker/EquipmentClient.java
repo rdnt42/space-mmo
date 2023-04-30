@@ -7,7 +7,7 @@ import keys.EquipmentMessageKey;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
-@KafkaClient
+@KafkaClient(id = "equipments-producer")
 public interface EquipmentClient {
     @Topic("equipments")
     Mono<RecordMetadata> sendGetEquipments(@KafkaKey EquipmentMessageKey key, String characterName);
