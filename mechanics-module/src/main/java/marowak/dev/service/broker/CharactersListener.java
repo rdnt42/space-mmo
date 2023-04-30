@@ -12,7 +12,7 @@ import reactor.core.publisher.Flux;
 public class CharactersListener {
     private final CharacterService characterService;
 
-    @Topic("init-characters")
+    @Topic("characters-answer")
     public void receive(Flux<CharacterMessage> requests) {
         characterService.initCharacters(requests);
     }

@@ -1,6 +1,6 @@
 package marowak.dev.service.character;
 
-import keys.CharactersGetMessageKey;
+import keys.CharacterMessageKey;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 
@@ -11,5 +11,5 @@ public interface CharacterService {
 
     void sendCharacterState(String characterName, boolean isOnline);
 
-    void sendInitCharacter(CharactersGetMessageKey key, String characterName);
+    void sendInitCharacter(CharacterMessageKey key, String characterName);
 }

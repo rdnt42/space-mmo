@@ -16,7 +16,6 @@ import org.reactivestreams.Publisher;
 public class EquipmentListener {
     private final EquipmentService equipmentService;
 
-    // TODO need uniform style
     @Topic("equipments")
     @SendTo("equipments-answer")
     public Publisher<EquipmentMessage> receive(@KafkaKey EquipmentMessageKey key, String characterName) {

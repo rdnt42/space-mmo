@@ -2,7 +2,6 @@ package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
-import keys.CharactersGetMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.PlayerMotion;
@@ -12,14 +11,13 @@ import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
-    private final CharactersUpdateClient charactersUpdateClient;
+//    private final CharactersUpdateClient charactersUpdateClient;
     private final CharactersClient charactersClient;
     private final PlayerMotionService playerMotionService;
 
@@ -30,15 +28,14 @@ public class CharacterServiceImpl implements CharacterService {
             return;
         }
 
-        List<CharacterMessage> requests = motions.stream()
-                .map(this::convertPlayerMotion)
+        List<CharacterMessage> messages = motions.stream()
+                .map(this::convertToUpdateMessage)
                 .toList();
 
-        List<CharacterMessageKey> key = Collections.singletonList(CharacterMessageKey.CHARACTER_MOTION_UPDATE);
-        charactersUpdateClient.sendCharacters(key, requests)
-                .doOnError(e -> log.error("Send failed", e))
-                .doOnNext(r -> log.debug("Send message for updating characters"))
-                .subscribe();
+//        charactersUpdateClient.sendCharacters(messages)
+//                .doOnError(e -> log.error("Send failed", e))
+//                .doOnNext(r -> log.debug("Send message for updating characters"))
+//                .subscribe();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class CharacterServiceImpl implements CharacterService {
         requests
                 .doOnNext(c -> {
                     playerMotionService.addMotion(c);
-                    log.info("Character init successful, name: {}", c.getCharacterName());
+                    log.info("Character init successful, key: {}, character name: {}", c.getKey(), c.getCharacterName());
                 })
                 .subscribe();
     }
@@ -54,25 +51,31 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharacterState(String characterName, boolean isOnline) {
         CharacterMessage message = CharacterMessage.builder()
+                .key(CharacterMessageKey.CHARACTER_STATE_UPDATE)
                 .characterName(characterName)
                 .online(isOnline)
                 .build();
-        charactersUpdateClient.sendCharacter(CharacterMessageKey.CHARACTER_STATE_UPDATE, message)
-                .doOnError(e -> log.error("Send failed", e))
-                .doOnNext(r -> log.debug("Send message for updating characters"))
-                .subscribe();
+//        charactersUpdateClient.sendCharacter(message)
+//                .doOnError(e -> log.error("Send failed", e))
+//                .doOnNext(r -> log.debug("Send message for updating characters"))
+//                .subscribe();
     }
 
     @Override
-    public void sendInitCharacter(CharactersGetMessageKey key, String characterName) {
-        charactersClient.sendInitCharacters(key, characterName)
-                .doOnError(e -> log.error("Send Characters init error, error: {}", e.getMessage()))
-                .doOnSuccess(c -> log.info("Send Character init successful"))
-                .subscribe();
+    public void sendInitCharacter(CharacterMessageKey key, String characterName) {
+        CharacterMessage message = CharacterMessage.builder()
+                .key(key)
+                .characterName(characterName)
+                .build();
+//        charactersClient.sendInitCharacters(message)
+//                .doOnError(e -> log.error("Send Characters init error, key: {}, name: {}, error: {}", key, characterName, e.getMessage()))
+//                .doOnSuccess(c -> log.info("Send Character init successful, key: {}, name: {}", key, characterName))
+//                .subscribe();
     }
 
-    private CharacterMessage convertPlayerMotion(PlayerMotion playerMotion) {
+    private CharacterMessage convertToUpdateMessage(PlayerMotion playerMotion) {
         return CharacterMessage.builder()
+                .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
                 .characterName(playerMotion.playerName())
                 .x(playerMotion.x())
                 .y(playerMotion.y())

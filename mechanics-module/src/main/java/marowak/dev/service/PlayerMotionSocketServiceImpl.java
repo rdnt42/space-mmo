@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketSession;
 import jakarta.inject.Singleton;
-import keys.CharactersGetMessageKey;
+import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
     @Override
     public void onOpen(String playerName) {
         characterService.sendCharacterState(playerName, true);
-        characterService.sendInitCharacter(CharactersGetMessageKey.CHARACTERS_GET_ONE, playerName);
+        characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ONE, playerName);
     }
 
     @SneakyThrows
