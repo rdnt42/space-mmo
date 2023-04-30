@@ -16,8 +16,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public void sendGetEquipments(EquipmentMessageKey key, String characterName) {
         equipmentClient.sendGetEquipments(key, characterName)
-                .doOnError(e -> log.error("Send Characters init error, error: {}", e.getMessage()))
-                .doOnSuccess(c -> log.info("Send Character init successful"))
+                .doOnError(e -> log.error("Send Characters init error, key{}, character: {}, error: {}", key, characterName, e.getMessage()))
+                .doOnSuccess(c -> log.info("Send Character init, key: {}, character: {}", key, characterName))
                 .subscribe();
     }
 }

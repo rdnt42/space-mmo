@@ -14,6 +14,8 @@ import java.util.Collection;
  * Time: 0:21
  */
 public interface PlayerMotionService {
+
+    // TODO all response to flux/mono
     void leavingPlayer(String playerName);
 
     Collection<PlayerMotion> getAllMotions();

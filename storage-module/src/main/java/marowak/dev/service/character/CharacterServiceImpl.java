@@ -1,6 +1,7 @@
 package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
+import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.entity.Character;
 import marowak.dev.repository.CharacterR2Repository;
@@ -8,7 +9,7 @@ import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
 @Singleton
@@ -17,7 +18,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public Mono<CharacterMessage> create(CharacterMessage message) {
-        Character character = Character.builder()
+        Character res = Character.builder()
                 .accountName(message.getAccountName())
                 .characterName(message.getCharacterName())
                 .x(message.getX())
@@ -26,42 +27,44 @@ public class CharacterServiceImpl implements CharacterService {
                 .online(false)
                 .build();
 
-        return Mono.from(characterR2Repository.save(character))
-                .map(characterToMessage);
+        return Mono.from(characterR2Repository.save(res))
+                .map(character -> characterToMessage.apply(character, CharacterMessageKey.CHARACTER_CREATE));
     }
 
     @Override
     public Mono<CharacterMessage> updateMotion(CharacterMessage message) {
         characterR2Repository.update(message.getCharacterName(), message.getX(), message.getY(), message.getAngle());
 
-        return Mono.empty();
+        return Mono.just(message);
     }
 
     @Override
     public Flux<CharacterMessage> getAllOnline() {
         return characterR2Repository.findByOnline(true)
-                .map(characterToMessage);
+                .map(character -> characterToMessage.apply(character, CharacterMessageKey.CHARACTERS_GET_ALL));
     }
 
     @Override
     public Mono<CharacterMessage> get(String characterName) {
         return Mono.from(characterR2Repository.findById(characterName))
-                .map(characterToMessage);
+                .map(character -> characterToMessage.apply(character, CharacterMessageKey.CHARACTERS_GET_ONE));
     }
 
     @Override
     public Mono<CharacterMessage> updateState(CharacterMessage message) {
         characterR2Repository.update(message.getCharacterName(), message.isOnline());
 
-        return Mono.empty();
+        return Mono.just(message);
     }
 
-    private final Function<Character, CharacterMessage> characterToMessage = character -> CharacterMessage.builder()
-            .characterName(character.characterName())
-            .accountName(character.accountName())
-            .experience(character.experience())
-            .x(character.x())
-            .y(character.y())
-            .angle(character.angle())
-            .build();
+    private final BiFunction<Character, CharacterMessageKey, CharacterMessage> characterToMessage =
+            (character, key) -> CharacterMessage.builder()
+                    .key(key)
+                    .characterName(character.characterName())
+                    .accountName(character.accountName())
+                    .experience(character.experience())
+                    .x(character.x())
+                    .y(character.y())
+                    .angle(character.angle())
+                    .build();
 }
