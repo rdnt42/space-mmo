@@ -14,13 +14,13 @@ import {
 export const EngineList = () => (
     <List>
         <Datagrid>
-            <TextField source="id"/>
-            <TextField source="equipped"/>
-            <TextField source="slotId"/>
-            <TextField source="characterName"/>
-            <TextField source="engineTypeId"/>
+            <TextField source="equipment.id"/>
+            <TextField source="equipment.equipped"/>
+            <TextField source="equipment.slotId"/>
+            <TextField source="equipment.characterName"/>
+            <TextField source="equipment.equipmentTypeId"/>
+            <TextField source="equipment.upgradeLevel"/>
             <TextField source="speed"/>
-            <TextField source="upgradeLevel"/>
             <TextField source="cost"/>
             <EditButton/>
         </Datagrid>
@@ -32,7 +32,7 @@ export const EngineEdit = () => (
         <SimpleForm>
             <ReferenceInput source="engineId" reference="engines"/>
             <TextInput source="characterName"/>
-            <NumberInput source="engineTypeId"/>
+            <NumberInput source="equipmentTypeId"/>
             <NumberInput source="speed"/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
@@ -46,7 +46,7 @@ export const EngineCreate = () => (
             <ReferenceInput source="engineId" reference="engines"/>
             <NumberInput source="slotId"/>
             <TextInput source="characterName"/>
-            <NumberInput source="engineTypeId"/>
+            <NumberInput source="equipmentTypeId"/>
             <NumberInput source="speed"/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>

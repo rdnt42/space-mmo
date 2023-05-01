@@ -20,13 +20,13 @@ import lombok.experimental.SuperBuilder;
 public class EquipmentMessage {
     EquipmentMessageKey key;
 
-    String characterName;
-
     Long id;
 
     int slotId;
 
-    int equipmentTypeId;
-
     boolean equipped;
+
+    String characterName;
+
+    int equipmentTypeId;
 }

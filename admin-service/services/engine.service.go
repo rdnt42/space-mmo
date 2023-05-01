@@ -15,25 +15,29 @@ func NewEngineController(DB *gorm.DB) {
 }
 
 func CreateEngine(ctx *gin.Context) {
-	var payload *models.CreateEngineRequest
+	var req *models.CreateEngineRequest
 
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
 
 		return
 	}
 
-	newEngine := &models.Engine{
-		CharacterName: payload.CharacterName,
-		Equipped:      false,
-		SlotId:        payload.SlotId,
-		EngineTypeId:  payload.EngineTypeId,
-		Speed:         payload.Speed,
-		UpgradeLevel:  payload.UpgradeLevel,
-		Cost:          payload.Cost,
+	equipment := &models.Equipment{
+		Equipped:        false,
+		SlotId:          req.SlotId,
+		CharacterName:   req.CharacterName,
+		EquipmentTypeId: req.EquipmentTypeId,
+		UpgradeLevel:    req.UpgradeLevel,
 	}
 
-	result := db.Create(newEngine)
+	newEngine := &models.Engine{
+		Equipment: *equipment,
+		Speed:     req.Speed,
+		Cost:      req.Cost,
+	}
+
+	result := db.Create(&newEngine)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, result.Error.Error())
 		return
@@ -43,9 +47,9 @@ func CreateEngine(ctx *gin.Context) {
 }
 
 func UpdateEngine(ctx *gin.Context) {
-	var payload *models.UpdateEngineRequest
+	var req *models.UpdateEngineRequest
 
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -55,15 +59,15 @@ func UpdateEngine(ctx *gin.Context) {
 	result := db.First(&engine, engineId)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"status": "error",
-			"message": fmt.Sprintf("Engine with id: %d dosn't exists", payload.EngineTypeId)})
+			"message": fmt.Sprintf("Engine with id: %s dosn't exists", engineId)})
 		return
 	}
 
-	engine.CharacterName = payload.CharacterName
-	engine.EngineTypeId = payload.EngineTypeId
-	engine.Speed = payload.Speed
-	engine.UpgradeLevel = payload.UpgradeLevel
-	engine.Cost = payload.Cost
+	engine.Equipment.CharacterName = req.CharacterName
+	engine.Equipment.EquipmentTypeId = req.EquipmentTypeId
+	engine.Equipment.UpgradeLevel = req.UpgradeLevel
+	engine.Speed = req.Speed
+	engine.Cost = req.Cost
 
 	result = db.Save(&engine)
 	if result.Error != nil {
