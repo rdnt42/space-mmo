@@ -18,7 +18,7 @@ public class CharacterInit {
     private final EquipmentService equipmentService;
 
     @EventListener
-    public void initCharacters(StartupEvent startupEvent) {
+    public void initData(StartupEvent startupEvent) {
         characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ALL, "");
         equipmentService.sendGetEquipments(EquipmentMessageKey.EQUIPMENTS_GET_ALL, "");
     }

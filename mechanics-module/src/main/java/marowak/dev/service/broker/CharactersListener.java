@@ -17,7 +17,8 @@ public class CharactersListener {
 
     @Topic(TOPIC_NAME)
     public void receive(Flux<CharacterMessage> messages) {
-        messages.doOnError(e -> log.error("Topic {} receive error: ", TOPIC_NAME, e))
+        messages
+                .doOnError(e -> log.error("Topic {} receive error: ", TOPIC_NAME, e))
                 .doOnNext(message -> log.debug("Topic {} receive message: {}, key: {}", TOPIC_NAME, message.getCharacterName(), message.getKey()))
                 .flatMap(characterCommandService::executeCommand)
                 .subscribe();

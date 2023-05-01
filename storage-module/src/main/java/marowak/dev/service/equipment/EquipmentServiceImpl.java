@@ -24,6 +24,12 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .map(engine -> engineToMessage.apply(engine, EquipmentMessageKey.EQUIPMENTS_GET_ALL));
     }
 
+    @Override
+    public Flux<EquipmentMessage> getForCharacter(String characterName) {
+        return engineR2Repository.findByCharacterName(characterName)
+                .map(engine -> engineToMessage.apply(engine, EquipmentMessageKey.EQUIPMENTS_GET_ONE));
+    }
+
     private final BiFunction<Engine, EquipmentMessageKey, EquipmentMessage> engineToMessage =
             (engine, key) -> EngineMessage.builder()
                     .key(key)
@@ -31,7 +37,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     .slotId(engine.slotId())
                     .equipped(engine.equipped())
                     .characterName(engine.characterName())
-                    .engineTypeId(engine.engineTypeId())
+                    .equipmentTypeId(engine.engineTypeId())
                     .speed(engine.speed())
                     .upgradeLevel(engine.upgradeLevel())
                     .cost(engine.cost())

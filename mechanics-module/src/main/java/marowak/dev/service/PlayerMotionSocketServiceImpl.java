@@ -11,10 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.PlayerMotionRequest;
-import marowak.dev.response.player.PlayerInventoryResponse;
+import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
-import marowak.dev.service.equipment.PlayerInventoryService;
+import marowak.dev.service.equipment.CharacterInventoryService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 @Singleton
 public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService {
     private final PlayerMotionService playerMotionService;
-    private final PlayerInventoryService playerInventoryService;
+    private final CharacterInventoryService characterInventoryService;
     private final CharacterService characterService;
     private final WebSocketBroadcaster broadcaster;
 
@@ -48,7 +48,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, response);
             }
             case CMD_GET_INVENTORY -> {
-                PlayerInventoryResponse response = playerInventoryService.getPlayerInventory(playerName);
+                CharacterInventoryResponse response = characterInventoryService.getInventory(playerName);
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, response);
             }
             case CMD_UPDATE_CURRENT_PLAYER -> {

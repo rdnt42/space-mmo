@@ -1,12 +1,11 @@
 package marowak.dev.dto.equipment;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
+@NoArgsConstructor
+@SuperBuilder
 public class FuelTank extends Equipment{
-    @Builder
-    public FuelTank(int id, int slotId,  boolean equipped, int equipmentType) {
-        super(id, slotId, equipped, equipmentType);
-    }
 }

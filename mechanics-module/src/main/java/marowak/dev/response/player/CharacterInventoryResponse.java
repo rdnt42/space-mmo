@@ -7,7 +7,7 @@ import marowak.dev.dto.equipment.Equipment;
 import java.util.Collection;
 
 @Builder
-public record PlayerInventoryResponse(
+public record CharacterInventoryResponse(
         Collection<Integer> slots,
         Collection<? extends Equipment> equipments,
         Collection<Cargo> cargos

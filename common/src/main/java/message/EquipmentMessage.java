@@ -17,12 +17,16 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public abstract class EquipmentMessage {
+public class EquipmentMessage {
     EquipmentMessageKey key;
+
+    String characterName;
 
     Long id;
 
     int slotId;
+
+    int equipmentTypeId;
 
     boolean equipped;
 }

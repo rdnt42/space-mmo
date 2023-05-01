@@ -7,3 +7,6 @@ micronaut:
 kafka:
   bootstrap:
     servers: localhost:9092
+
+jackson:
+  serializationInclusion: ALWAYS

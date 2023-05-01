@@ -1,13 +1,15 @@
 package marowak.dev.dto.equipment;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 public class Equipment {
-    private final int id;
-    private final int slotId;
-    private final boolean equipped;
-    private final int equipmentType;
+    private long id;
+    private int slotId;
+    private boolean equipped;
+    private int equipmentType;
 }

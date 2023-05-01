@@ -4,14 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
+@SuperBuilder
 public class EngineMessage extends EquipmentMessage {
-        String characterName;
-
-        int engineTypeId;
-
         int speed;
 
         int upgradeLevel;
