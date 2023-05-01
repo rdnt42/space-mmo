@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.shceduler;
 
 import io.micronaut.scheduling.annotation.Scheduled;
 import jakarta.inject.Singleton;

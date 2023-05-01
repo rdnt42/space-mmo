@@ -14,9 +14,10 @@ import org.reactivestreams.Publisher;
 @RequiredArgsConstructor
 @KafkaListener(producerClientId = "equipments-producer")
 public class EquipmentListener {
+    private static final String TOPIC_NAME = "characters";
     private final EquipmentService equipmentService;
 
-    @Topic("equipments")
+    @Topic(TOPIC_NAME)
     @SendTo("equipments-answer")
     public Publisher<EquipmentMessage> receive(@KafkaKey EquipmentMessageKey key, String characterName) {
         log.info("Get equipments command: {}, character name: {}", key, characterName);

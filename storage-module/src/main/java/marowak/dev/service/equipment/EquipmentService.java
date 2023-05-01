@@ -5,6 +5,4 @@ import reactor.core.publisher.Flux;
 
 public interface EquipmentService {
     Flux<EquipmentMessage> getAllOnline();
-
-    Flux<EquipmentMessage> getForCharacter(String characterName);
 }

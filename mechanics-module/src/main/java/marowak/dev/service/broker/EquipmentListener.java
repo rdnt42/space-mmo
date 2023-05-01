@@ -15,9 +15,11 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 @KafkaListener
 public class EquipmentListener {
+    private static final String TOPIC_NAME = "equipments-answer";
+
     private final EquipmentService equipmentService;
 
-    @Topic("equipments-answer")
+    @Topic(TOPIC_NAME)
     public void receive(@KafkaKey EquipmentMessageKey key, Flux<EquipmentMessage> equipments) {
         equipments.doOnNext(e -> {
                     if (e instanceof EngineMessage) {

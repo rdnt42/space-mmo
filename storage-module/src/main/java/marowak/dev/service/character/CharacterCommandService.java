@@ -13,7 +13,6 @@ public class CharacterCommandService {
     private final CharacterService characterService;
 
     public Publisher<CharacterMessage> executeCommand(CharacterMessage message) {
-        log.info("execute command: {}", message.getKey());
         return switch (message.getKey()) {
             case CHARACTER_CREATE -> characterService.create(message);
             case CHARACTER_MOTION_UPDATE -> characterService.updateMotion(message);

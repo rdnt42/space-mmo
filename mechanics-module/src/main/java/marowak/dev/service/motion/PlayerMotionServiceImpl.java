@@ -35,7 +35,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
     @Override
     public void addMotion(CharacterMessage character) {
-        PlayerMotion newMotion = new PlayerMotion(character.getAccountName(), character.getX(), character.getY(),
+        PlayerMotion newMotion = new PlayerMotion(character.getCharacterName(), character.getX(), character.getY(),
                 character.getAngle(), 0, new Date().getTime());
 
         playerMotionMap.put(character.getCharacterName(), newMotion);

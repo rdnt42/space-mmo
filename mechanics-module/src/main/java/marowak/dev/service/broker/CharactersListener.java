@@ -12,7 +12,7 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 @KafkaListener
 public class CharactersListener {
-    private final String TOPIC_NAME = "characters-answer";
+    private static final String TOPIC_NAME = "characters-answer";
     private final CharacterCommandService characterCommandService;
 
     @Topic(TOPIC_NAME)

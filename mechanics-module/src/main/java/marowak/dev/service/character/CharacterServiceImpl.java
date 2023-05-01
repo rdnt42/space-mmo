@@ -28,9 +28,10 @@ public class CharacterServiceImpl implements CharacterService {
         }
 
         Flux<PlayerMotion> motionFlux = Flux.fromIterable(motions);
-        motionFlux.map(motionToMessage)
+        motionFlux
+                .map(motionToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
-                .doOnNext(charactersClient::sendCharacters)
+                .flatMap(charactersClient::sendCharacters)
                 .subscribe();
     }
 
@@ -60,6 +61,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .key(key)
                 .characterName(characterName)
                 .build();
+
         charactersClient.sendCharacters(message)
                 .doOnError(e -> log.error("Send Characters init error, key: {}, name: {}, error: {}", key, characterName, e.getMessage()))
                 .doOnSuccess(c -> log.info("Send Character init, key: {}, name: {}", key, characterName))
