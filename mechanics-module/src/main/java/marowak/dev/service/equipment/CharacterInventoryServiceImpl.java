@@ -3,6 +3,7 @@ package marowak.dev.service.equipment;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
+import marowak.dev.dto.equipment.Cargo;
 import marowak.dev.dto.equipment.Equipment;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import message.EquipmentMessage;
@@ -39,6 +40,10 @@ public class CharacterInventoryServiceImpl implements CharacterInventoryService 
 
         Equipment equipment = messageToEquipment.apply(message);
         inventory.equipments().put(equipment.getId(), equipment);
+        if (!equipment.isEquipped()) {
+            Cargo cargo = new Cargo(1, 1);
+            inventory.cargos().put(cargo.id(), cargo);
+        }
         inventory.slots().add(equipment.getSlotId());
 
         log.info("Inventory update successful, character name: {}, equipment id: {}", message.getCharacterName(), equipment.getId());
