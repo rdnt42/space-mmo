@@ -5,7 +5,9 @@ import keys.EquipmentMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.entity.Engine;
+import marowak.dev.entity.Equipment;
 import marowak.dev.repository.EngineR2Repository;
+import marowak.dev.repository.EquipmentR2Repository;
 import message.EngineMessage;
 import message.EquipmentMessage;
 import reactor.core.publisher.Flux;
@@ -17,29 +19,45 @@ import java.util.function.BiFunction;
 @Singleton
 public class EquipmentServiceImpl implements EquipmentService {
     private final EngineR2Repository engineR2Repository;
+    private final EquipmentR2Repository equipmentR2Repository;
 
     @Override
     public Flux<EquipmentMessage> getAllOnline() {
-        return Flux.from(engineR2Repository.findAll())
-                .map(engine -> engineToMessage.apply(engine, EquipmentMessageKey.EQUIPMENTS_GET_ALL));
+        Flux<Engine> engines = Flux.from(engineR2Repository.findAll());
+        Flux<Equipment> equipments = engines.flatMap(engine -> equipmentR2Repository.findById(engine.id()));
+
+        return Flux.zip(engines, equipments).map(tuple -> engineToMessage.apply(tuple.getT1(), tuple.getT2()))
+                .map(message -> messageToMessage.apply((EngineMessage) message, EquipmentMessageKey.EQUIPMENTS_GET_ALL));
     }
 
     @Override
     public Flux<EquipmentMessage> getForCharacter(String characterName) {
-        return engineR2Repository.findByCharacterName(characterName)
-                .map(engine -> engineToMessage.apply(engine, EquipmentMessageKey.EQUIPMENTS_GET_ONE));
+        return Flux.empty();
     }
 
-    private final BiFunction<Engine, EquipmentMessageKey, EquipmentMessage> engineToMessage =
-            (engine, key) -> EngineMessage.builder()
+    // TODO fix this
+    private final BiFunction<EngineMessage, EquipmentMessageKey, EquipmentMessage> messageToMessage =
+            (message, key) -> EngineMessage.builder()
                     .key(key)
+                    .id(message.getId())
+                    .slotId(message.getSlotId())
+                    .equipped(message.isEquipped())
+                    .characterName(message.getCharacterName())
+                    .equipmentTypeId(message.getEquipmentTypeId())
+                    .speed(message.getSpeed())
+                    .upgradeLevel(message.getUpgradeLevel())
+                    .cost(message.getCost())
+                    .build();
+
+    private final BiFunction<Engine, Equipment, EquipmentMessage> engineToMessage =
+            (engine, equipment) -> EngineMessage.builder()
                     .id(engine.id())
-                    .slotId(engine.slotId())
-                    .equipped(engine.equipped())
-                    .characterName(engine.characterName())
-                    .equipmentTypeId(engine.engineTypeId())
+                    .slotId(equipment.slotId())
+                    .equipped(equipment.equipped())
+                    .characterName(equipment.characterName())
+                    .equipmentTypeId(equipment.equipmentTypeId())
+                    .upgradeLevel(equipment.upgradeLevel())
                     .speed(engine.speed())
-                    .upgradeLevel(engine.upgradeLevel())
                     .cost(engine.cost())
                     .build();
 }

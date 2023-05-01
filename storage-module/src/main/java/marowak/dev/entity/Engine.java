@@ -2,30 +2,19 @@ package marowak.dev.entity;
 
 import lombok.Builder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Builder
 @Entity
 @Table(name = "engines")
-public record Engine (
+public record Engine(
         @Id
-        @GeneratedValue(generator = "equipment_seq")
         @Column(name = "equipment_id")
         Long id,
-
-        int slotId,
-
-        boolean equipped,
-
-        @Column(name = "character_name")
-        String characterName,
-
-        @Column(name = "engine_type_id")
-        int engineTypeId,
-
         int speed,
-
-        int upgradeLevel,
 
         int cost
 ) {
