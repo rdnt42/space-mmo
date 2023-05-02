@@ -1,10 +1,10 @@
-package marowak.dev.service.equipment;
+package marowak.dev.service.item;
 
 import marowak.dev.response.player.CharacterInventoryResponse;
-import message.EquipmentMessage;
+import message.ItemMessage;
 
 public interface CharacterInventoryService {
     CharacterInventoryResponse getInventory(String playerName);
 
-    void updateInventory(EquipmentMessage message);
+    void updateInventory(ItemMessage message);
 }

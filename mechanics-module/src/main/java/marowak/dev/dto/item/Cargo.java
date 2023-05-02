@@ -1,4 +1,4 @@
-package marowak.dev.dto.equipment;
+package marowak.dev.dto.item;
 
 public record Cargo(long id, int slotId) {
 }

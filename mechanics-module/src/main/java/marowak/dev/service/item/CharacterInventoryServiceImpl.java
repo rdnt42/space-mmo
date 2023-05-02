@@ -1,12 +1,12 @@
-package marowak.dev.service.equipment;
+package marowak.dev.service.item;
 
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
-import marowak.dev.dto.equipment.Cargo;
-import marowak.dev.dto.equipment.Equipment;
+import marowak.dev.dto.item.Cargo;
+import marowak.dev.dto.item.Item;
 import marowak.dev.response.player.CharacterInventoryResponse;
-import message.EquipmentMessage;
+import message.ItemMessage;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,38 +29,40 @@ public class CharacterInventoryServiceImpl implements CharacterInventoryService 
         return CharacterInventoryResponse.builder()
                 .slots(characterInventory.slots())
                 .cargos(characterInventory.cargos().values())
-                .equipments(characterInventory.equipments().values())
+                .items(characterInventory.items().values())
                 .build();
     }
 
     @Override
-    public void updateInventory(EquipmentMessage message) {
+    public void updateInventory(ItemMessage message) {
         playerInventoryMap.putIfAbsent(message.getCharacterName(), createInventory());
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
-        Equipment equipment = messageToEquipment.apply(message);
-        inventory.equipments().put(equipment.getId(), equipment);
-        if (!equipment.isEquipped()) {
+        Item item = messageToItem.apply(message);
+        inventory.items().put(item.getId(), item);
+        if (!item.isEquipped()) {
             Cargo cargo = new Cargo(1, 1);
             inventory.cargos().put(cargo.id(), cargo);
         }
-        inventory.slots().add(equipment.getSlotId());
+        inventory.slots().add(item.getSlotId());
 
-        log.info("Inventory update successful, character name: {}, equipment id: {}", message.getCharacterName(), equipment.getId());
+        log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
     }
 
     private CharacterInventory createInventory() {
         return CharacterInventory.builder()
                 .slots(new HashSet<>())
                 .cargos(new HashMap<>())
-                .equipments(new HashMap<>())
+                .items(new HashMap<>())
                 .build();
     }
 
-    private final Function<EquipmentMessage, Equipment> messageToEquipment = message -> Equipment.builder()
+    private final Function<ItemMessage, Item> messageToItem = message -> Item.builder()
             .id(message.getId())
             .slotId(message.getSlotId())
             .equipped(message.isEquipped())
-            .equipmentType(message.getEquipmentTypeId())
+            .itemTypeId(message.getItemTypeId())
+            .upgradeLevel(message.getUpgradeLevel())
+            .cost(message.getCost())
             .build();
 }

@@ -2,12 +2,12 @@ package marowak.dev.service.broker;
 
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import message.EquipmentMessage;
+import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
-@KafkaClient(id = "equipments-producer")
-public interface EquipmentClient {
-    @Topic("equipments")
-    Mono<RecordMetadata> sendGetEquipments(EquipmentMessage message);
+@KafkaClient(id = "items-producer")
+public interface ItemClient {
+    @Topic("items")
+    Mono<RecordMetadata> sendGetItems(ItemMessage message);
 }

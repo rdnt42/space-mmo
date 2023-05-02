@@ -14,7 +14,7 @@ import marowak.dev.request.PlayerMotionRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
-import marowak.dev.service.equipment.CharacterInventoryService;
+import marowak.dev.service.item.CharacterInventoryService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
 

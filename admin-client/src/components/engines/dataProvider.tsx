@@ -22,7 +22,14 @@ export const dataProvider: DataProvider = {
     },
 
     getOne: (resource, params) => httpClient(`${apiUrl}/${resource}/${params.id}`).then(({json}) => ({
-        data: json,
+        data: {
+            ...json,
+            characterName: json.item.characterName,
+            slotId: json.item.slotId,
+            itemTypeId: json.item.itemTypeId,
+            upgradeLevel: json.item.upgradeLevel,
+            cost: json.item.cost
+        },
     })),
 
     update: (resource, params) => httpClient(`${apiUrl}/${resource}/${params.id}`, {

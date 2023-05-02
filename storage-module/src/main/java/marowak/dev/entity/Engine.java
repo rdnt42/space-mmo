@@ -12,11 +12,11 @@ import javax.persistence.Table;
 @Table(name = "engines")
 public record Engine(
         @Id
-        @Column(name = "equipment_id")
+        @Column(name = "item_id")
         Long id,
         int speed,
 
-        int cost
+        int jump
 ) {
 }
 

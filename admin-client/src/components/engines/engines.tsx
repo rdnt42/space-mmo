@@ -14,14 +14,15 @@ import {
 export const EngineList = () => (
     <List>
         <Datagrid>
-            <TextField source="equipment.id"/>
-            <TextField source="equipment.equipped"/>
-            <TextField source="equipment.slotId"/>
-            <TextField source="equipment.characterName"/>
-            <TextField source="equipment.equipmentTypeId"/>
-            <TextField source="equipment.upgradeLevel"/>
+            <TextField source="item.id" label="id"/>
+            <TextField source="item.equipped" label="equipped"/>
+            <TextField source="item.slotId" label="slot"/>
+            <TextField source="item.characterName" label="character"/>
+            <TextField source="item.itemTypeId" label="item type"/>
+            <TextField source="item.upgradeLevel" label="level"/>
+            <TextField source="item.cost" label="cost"/>
             <TextField source="speed"/>
-            <TextField source="cost"/>
+            <TextField source="jump"/>
             <EditButton/>
         </Datagrid>
     </List>
@@ -31,11 +32,13 @@ export const EngineEdit = () => (
     <Edit>
         <SimpleForm>
             <ReferenceInput source="engineId" reference="engines"/>
+            <NumberInput disabled source="id"/>
             <TextInput source="characterName"/>
-            <NumberInput source="equipmentTypeId"/>
-            <NumberInput source="speed"/>
+            <NumberInput source="itemTypeId"/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
+            <NumberInput source="speed"/>
+            <NumberInput source="jump"/>
         </SimpleForm>
     </Edit>
 );
@@ -46,10 +49,11 @@ export const EngineCreate = () => (
             <ReferenceInput source="engineId" reference="engines"/>
             <NumberInput source="slotId"/>
             <TextInput source="characterName"/>
-            <NumberInput source="equipmentTypeId"/>
-            <NumberInput source="speed"/>
+            <NumberInput source="itemTypeId"/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
+            <NumberInput source="speed"/>
+            <NumberInput source="jump"/>
         </SimpleForm>
     </Create>
 );

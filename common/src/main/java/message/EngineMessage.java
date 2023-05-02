@@ -7,11 +7,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class EngineMessage extends EquipmentMessage {
-        int speed;
+public class EngineMessage extends ItemMessage {
+    private int speed;
 
-        int upgradeLevel;
-
-        int cost;
+    private int jump;
 }
 

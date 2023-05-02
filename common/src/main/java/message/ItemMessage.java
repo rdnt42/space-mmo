@@ -2,7 +2,7 @@ package message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import keys.EquipmentMessageKey;
+import keys.ItemMessageKey;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,16 +17,20 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class EquipmentMessage {
-    EquipmentMessageKey key;
+public class ItemMessage {
+    private ItemMessageKey key;
 
-    Long id;
+    private Long id;
 
-    int slotId;
+    private int slotId;
 
-    boolean equipped;
+    private boolean equipped;
 
-    String characterName;
+    private String characterName;
 
-    int equipmentTypeId;
+    private int itemTypeId;
+
+    private int upgradeLevel;
+
+    private int cost;
 }

@@ -1,17 +1,17 @@
 import {renderEngine} from "../render/render-engine.js";
 
-export class Equipment {
+export class Item {
     texture;
 
     isEquipped;
-    equipmentType;
+    itemTypeId;
     slotId;
 
-    constructor(slotId, equipmentType, isEquipped) {
+    constructor(slotId, itemTypeId, isEquipped) {
         this.isEquipped = isEquipped;
-        this.equipmentType = equipmentType;
+        this.itemTypeId = itemTypeId;
         this.slotId = slotId;
-        this.texture = renderEngine.initEquipment(this.slotId, this.equipmentType);
+        this.texture = renderEngine.initItem(this.slotId, this.itemTypeId);
         this.texture['textureParentObj'] = this;
     }
 }

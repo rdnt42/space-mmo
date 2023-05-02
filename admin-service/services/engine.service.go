@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"net/http"
 )
 
@@ -23,18 +24,19 @@ func CreateEngine(ctx *gin.Context) {
 		return
 	}
 
-	equipment := &models.Equipment{
-		Equipped:        false,
-		SlotId:          req.SlotId,
-		CharacterName:   req.CharacterName,
-		EquipmentTypeId: req.EquipmentTypeId,
-		UpgradeLevel:    req.UpgradeLevel,
+	equipment := &models.Item{
+		Equipped:      false,
+		SlotId:        req.SlotId,
+		CharacterName: req.CharacterName,
+		ItemTypeId:    req.ItemTypeId,
+		UpgradeLevel:  req.UpgradeLevel,
+		Cost:          req.Cost,
 	}
 
 	newEngine := &models.Engine{
-		Equipment: *equipment,
-		Speed:     req.Speed,
-		Cost:      req.Cost,
+		Item:  *equipment,
+		Speed: req.Speed,
+		Jump:  req.Jump,
 	}
 
 	result := db.Create(&newEngine)
@@ -56,18 +58,19 @@ func UpdateEngine(ctx *gin.Context) {
 
 	engineId := ctx.Param("engineId")
 	var engine models.Engine
-	result := db.First(&engine, engineId)
+	result := db.Preload(clause.Associations).First(&engine, engineId)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"status": "error",
 			"message": fmt.Sprintf("Engine with id: %s dosn't exists", engineId)})
 		return
 	}
 
-	engine.Equipment.CharacterName = req.CharacterName
-	engine.Equipment.EquipmentTypeId = req.EquipmentTypeId
-	engine.Equipment.UpgradeLevel = req.UpgradeLevel
-	engine.Speed = req.Speed
-	engine.Cost = req.Cost
+	engine.Item.CharacterName = req.CharacterName
+	engine.Item.ItemTypeId = *req.ItemTypeId
+	engine.Item.UpgradeLevel = *req.UpgradeLevel
+	engine.Item.Cost = *req.Cost
+	engine.Speed = *req.Speed
+	engine.Jump = *req.Jump
 
 	result = db.Save(&engine)
 	if result.Error != nil {
@@ -80,7 +83,7 @@ func UpdateEngine(ctx *gin.Context) {
 
 func GetEngines(ctx *gin.Context) {
 	var engines []models.Engine
-	results := db.Find(&engines)
+	results := db.Preload(clause.Associations).Find(&engines)
 	if results.Error != nil {
 		ctx.JSON(http.StatusBadRequest, results.Error)
 		return
@@ -92,7 +95,7 @@ func GetEngines(ctx *gin.Context) {
 func GetEngine(ctx *gin.Context) {
 	engineId := ctx.Param("engineId")
 	var engine models.Engine
-	result := db.First(&engine, engineId)
+	result := db.Preload(clause.Associations).First(&engine, engineId)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, fmt.Sprintf("Engine with id: %s dosn't exists", engineId))
 		return

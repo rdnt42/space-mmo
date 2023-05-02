@@ -1,14 +1,14 @@
 import {Inventory} from "./obj/Inventory.js";
-import {Equipment} from "./obj/Equipment.js";
+import {Item} from "./obj/Item.js";
 
 let inventory;
 
-export function initInventory(slots, equipments, cargos) {
+export function initInventory(slots, items, cargos) {
     console.log(slots)
     inventory = new Inventory(slots);
-    for (const eq of equipments) {
-        if (eq.equipped) {
-            let equipment = new Equipment(eq.slotId, eq.equipmentType, false);
+    for (const item of items) {
+        if (item.equipped) {
+            let equipment = new Item(item.slotId, item.itemTypeId, false);
             inventory.equip(equipment);
         }
     }
@@ -27,7 +27,7 @@ export function initInventory(slots, equipments, cargos) {
 }
 
 export function doubleClickCallback(texture) {
-    if (texture.textureParentObj instanceof Equipment) {
+    if (texture.textureParentObj instanceof Item) {
         inventory.swapEquipment(texture.textureParentObj);
     }
 }
