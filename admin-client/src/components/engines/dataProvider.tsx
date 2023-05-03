@@ -26,7 +26,6 @@ export const dataProvider: DataProvider = {
             ...json,
             characterName: json.item.characterName,
             slotId: json.item.slotId,
-            itemTypeId: json.item.itemTypeId,
             upgradeLevel: json.item.upgradeLevel,
             cost: json.item.cost
         },

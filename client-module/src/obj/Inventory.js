@@ -26,6 +26,16 @@ export class Inventory {
         }
     }
 
+    addItem(item) {
+        if (item.isEquipped) {
+            let slot = this.equipmentSlots.get(item.typeId);
+            slot.addToEquipmentSlot(item);
+        } else {
+            let cargoCell = this.cargoCells[item.slotId];
+            cargoCell.addToCargoCell(item);
+        }
+    }
+
     addCargo(cargo) {
         let cell = this.#getFreeCargoCell();
         if (cell === undefined) {
@@ -72,10 +82,10 @@ export class Inventory {
         }
     }
 
-    equip(equipment) {
-        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
+    equip(item) {
+        let equipmentSlot = this.equipmentSlots.get(item.slotId);
         if (equipmentSlot !== undefined) {
-            equipmentSlot.addToEquipmentSlot(equipment);
+            equipmentSlot.addToEquipmentSlot(item);
         }
     }
 

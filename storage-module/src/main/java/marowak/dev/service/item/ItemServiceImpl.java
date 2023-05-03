@@ -45,7 +45,10 @@ public class ItemServiceImpl implements ItemService {
                     .itemTypeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())
                     .cost(item.cost())
+                    .name(item.nameRu())
+                    .dsc(item.dscRu())
                     .speed(engine.speed())
                     .jump(engine.jump())
+                    .engineType(engine.engineTypeId())
                     .build();
 }

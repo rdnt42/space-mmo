@@ -19,7 +19,6 @@ type CreateEngineRequest struct {
 
 type UpdateEngineRequest struct {
 	CharacterName string `json:"characterName"`
-	ItemTypeId    *int16 `json:"itemTypeId" binding:"required"`
 	UpgradeLevel  *int16 `json:"upgradeLevel" binding:"required"`
 	Cost          *int32 `json:"cost" binding:"required"`
 	Speed         *int16 `json:"speed" binding:"required"`

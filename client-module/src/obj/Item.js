@@ -4,14 +4,17 @@ export class Item {
     texture;
 
     isEquipped;
-    itemTypeId;
+    typeId;
+    subTypeId;
     slotId;
 
-    constructor(slotId, itemTypeId, isEquipped) {
+    constructor(slotId, typeId, subTypeId, isEquipped) {
         this.isEquipped = isEquipped;
-        this.itemTypeId = itemTypeId;
+        this.typeId = typeId;
+        this.subTypeId = subTypeId;
         this.slotId = slotId;
-        this.texture = renderEngine.initItem(this.slotId, this.itemTypeId);
+        this.texture = renderEngine.initItem(this.typeId, this.subTypeId);
         this.texture['textureParentObj'] = this;
     }
+
 }

@@ -11,5 +11,7 @@ public class EngineMessage extends ItemMessage {
     private int speed;
 
     private int jump;
+
+    private int engineType;
 }
 

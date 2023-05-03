@@ -4,7 +4,10 @@ create table if not exists items
     slot_id        integer,
     equipped       bool not null default false,
     character_name text references characters (character_name),
-    item_type_id   smallint references item_types (item_type_id),
+    item_type_id   integer references item_types (item_type_id),
     upgrade_level  smallint,
-    cost           integer
+    cost           integer,
+    name_ru        text not null,
+    dsc_ru         text not null,
+    unique (character_name, slot_id)
 )

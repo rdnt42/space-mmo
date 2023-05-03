@@ -246,14 +246,14 @@ function initEquipmentSlot(equipmentType) {
     return sprite;
 }
 
-function initItem(slotId, itemTypeId) {
+function initItem(typeId, subTypeId) {
     let url;
-    switch (slotId) {
+    switch (typeId) {
         case EquipmentSlotId.Engine:
-            url = "./images/engine" + itemTypeId + ".png";
+            url = "./images/engine" + subTypeId + ".png";
             break;
         case EquipmentSlotId.FuelTank:
-            url = "./images/fuel_tank" + itemTypeId + ".png";
+            url = "./images/fuel_tank" + subTypeId + ".png";
             break;
     }
     const texture = pixi.Texture.from(url);
@@ -274,6 +274,7 @@ function initItem(slotId, itemTypeId) {
         .on('click', onClick)
     sprite.zIndex = Sort.EQUIPMENT;
     sprite.anchor.set(0.5);
+    sprite.visible = false;
 
     INVENTORY_CONTAINER.addChild(sprite);
 
@@ -350,8 +351,8 @@ export class PixiEngine {
         createInventory();
     }
 
-    initItem(slotId, itemTypeId) {
-        return initItem(slotId, itemTypeId);
+    initItem(typeId, subTypeId) {
+        return initItem(typeId, subTypeId);
     }
 
     initCargoCell(idx) {

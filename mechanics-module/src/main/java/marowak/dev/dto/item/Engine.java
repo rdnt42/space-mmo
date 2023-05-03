@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Engine extends Item {
     private int speed;
-    private int upgradeLevel;
-    private int cost;
+    private int jump;
+    private int subTypeId;
 }

@@ -22,7 +22,7 @@ public class ItemMessage {
 
     private Long id;
 
-    private int slotId;
+    private Integer slotId;
 
     private boolean equipped;
 
@@ -30,7 +30,11 @@ public class ItemMessage {
 
     private int itemTypeId;
 
-    private int upgradeLevel;
+    private Integer upgradeLevel;
 
-    private int cost;
+    private Integer cost;
+
+    private String name;
+
+    private String dsc;
 }

@@ -16,7 +16,9 @@ public record Engine(
         Long id,
         int speed,
 
-        int jump
+        int jump,
+
+        int engineTypeId
 ) {
 }
 

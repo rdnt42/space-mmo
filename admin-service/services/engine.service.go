@@ -66,7 +66,6 @@ func UpdateEngine(ctx *gin.Context) {
 	}
 
 	engine.Item.CharacterName = req.CharacterName
-	engine.Item.ItemTypeId = *req.ItemTypeId
 	engine.Item.UpgradeLevel = *req.UpgradeLevel
 	engine.Item.Cost = *req.Cost
 	engine.Speed = *req.Speed

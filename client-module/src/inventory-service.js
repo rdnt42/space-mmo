@@ -3,19 +3,12 @@ import {Item} from "./obj/Item.js";
 
 let inventory;
 
-export function initInventory(slots, items, cargos) {
+export function initInventory(slots, items) {
     console.log(slots)
     inventory = new Inventory(slots);
     for (const item of items) {
-        if (item.equipped) {
-            let equipment = new Item(item.slotId, item.itemTypeId, false);
-            inventory.equip(equipment);
-        }
-    }
-
-    for (const cargo of cargos) {
-        console.log(cargo)
-        // inventory.addCargo(cargo);
+        let it = new Item(item.slotId, item.itemTypeId, item.subTypeId, item.equipped);
+        inventory.addItem(it);
     }
 
     document.addEventListener("keydown", (event) => {
