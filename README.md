@@ -16,13 +16,13 @@
 
 ## Backend to frontend contract
 
-### CMD_UPDATE_CURRENT_PLAYER
+### CMD_UPDATE_MOTION
 
 #### response:
 
 ```json
 {
-  "command": "CMD_UPDATE_CURRENT_PLAYER",
+  "command": "CMD_UPDATE_MOTION",
   "data": {
     "playerMotion": {
       "playerName": "name",

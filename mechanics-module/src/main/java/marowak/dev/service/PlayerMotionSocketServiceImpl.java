@@ -9,12 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
+import marowak.dev.dto.item.Item;
 import marowak.dev.enums.MessageCommand;
-import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.request.CharacterInventoryItemRequest;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
-import marowak.dev.service.item.CharacterInventoryService;
+import marowak.dev.service.item.InventoryService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -25,7 +27,7 @@ import java.util.function.Predicate;
 @Singleton
 public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService {
     private final PlayerMotionService playerMotionService;
-    private final CharacterInventoryService characterInventoryService;
+    private final InventoryService inventoryService;
     private final CharacterService characterService;
     private final WebSocketBroadcaster broadcaster;
 
@@ -48,14 +50,20 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, response);
             }
             case CMD_GET_INVENTORY -> {
-                CharacterInventoryResponse response = characterInventoryService.getInventory(playerName);
+                CharacterInventoryResponse response = inventoryService.getInventory(playerName);
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, response);
             }
-            case CMD_UPDATE_CURRENT_PLAYER -> {
-                PlayerMotionRequest value = objectMapper.convertValue(request.data(), PlayerMotionRequest.class);
+            case CMD_UPDATE_MOTION -> {
+                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
                 PlayersMotionListResponse response =
                         playerMotionService.updateAndGetMotions(value, playerName);
-                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_CURRENT_PLAYER, response);
+                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, response);
+            }
+            case CMD_UPDATE_INVENTORY_ITEM -> {
+                CharacterInventoryItemRequest value = objectMapper.convertValue(request.data(), CharacterInventoryItemRequest.class);
+                Item item = inventoryService.updateInventory(value, playerName);
+
+                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item);
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());

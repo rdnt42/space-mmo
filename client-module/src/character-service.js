@@ -1,6 +1,6 @@
 import * as socket from "./websocket-service.js";
 import {PlayerEmptyRequest} from "./request/PlayerEmptyRequest.js";
-import {PlayerMotionRequest} from "./request/PlayerRequest.js";
+import {CharacterMotionRequest} from "./request/CharacterRequest.js";
 import {Character} from "./obj/Character.js";
 import {Commands} from "./const/MessageCommand.js";
 
@@ -25,7 +25,7 @@ export function getPlayerCharacter() {
 }
 
 export function sendMotion(speed, angle, isUpdate) {
-    const request = new PlayerMotionRequest(isUpdate, speed, angle, Date.now());
+    const request = new CharacterMotionRequest(isUpdate, speed, angle, Date.now());
     socket.sendMessage(request);
 }
 

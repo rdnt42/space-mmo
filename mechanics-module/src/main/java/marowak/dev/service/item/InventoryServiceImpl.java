@@ -5,20 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Item;
+import marowak.dev.request.CharacterInventoryItemRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import message.EngineMessage;
 import message.ItemMessage;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @Slf4j
 @Singleton
-public class CharacterInventoryServiceImpl implements CharacterInventoryService {
+public class InventoryServiceImpl implements InventoryService {
     private final Map<String, CharacterInventory> playerInventoryMap = new ConcurrentHashMap<>();
 
     private static final Set<Integer> baseConfig = new HashSet<>();
@@ -37,7 +35,7 @@ public class CharacterInventoryServiceImpl implements CharacterInventoryService 
     }
 
     @Override
-    public void updateInventory(ItemMessage message) {
+    public void updateInventoryFromStorage(ItemMessage message) {
         playerInventoryMap.putIfAbsent(message.getCharacterName(), createInventory());
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
@@ -46,6 +44,32 @@ public class CharacterInventoryServiceImpl implements CharacterInventoryService 
             inventory.items().put(item.getId(), item);
             log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
         }
+    }
+
+    @Override
+    public Item updateInventory(CharacterInventoryItemRequest request, String playerName) {
+        CharacterInventory inventory = Optional.ofNullable(playerInventoryMap.get(playerName))
+                .orElseThrow();
+        Item item = Optional.ofNullable(inventory.items().get(request.itemId()))
+                .orElseThrow();
+        Item newItem = Item.builder()
+                .id(item.getId())
+                .slotId(request.slotId())
+                .equipped(request.equipped())
+                .itemTypeId(item.getItemTypeId())
+                .upgradeLevel(item.getUpgradeLevel())
+                .cost(item.getCost())
+                .name(item.getName())
+                .dsc(item.getDsc())
+                .build();
+
+        playerInventoryMap.get(playerName)
+                .items()
+                .put(newItem.getId(), newItem);
+
+        log.info("updateInventory id: {}, slot: {}", request.itemId(), request.slotId());
+
+        return newItem;
     }
 
     private CharacterInventory createInventory() {

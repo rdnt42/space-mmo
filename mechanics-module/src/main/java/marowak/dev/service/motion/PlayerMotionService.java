@@ -1,7 +1,7 @@
 package marowak.dev.service.motion;
 
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import message.CharacterMessage;
 
@@ -22,7 +22,7 @@ public interface PlayerMotionService {
 
     void addMotion(CharacterMessage character);
 
-    PlayersMotionListResponse updateAndGetMotions(PlayerMotionRequest request, String playerName);
+    PlayersMotionListResponse updateAndGetMotions(CharacterMotionRequest request, String playerName);
 
     PlayersMotionListResponse getMotions(String playerName);
 

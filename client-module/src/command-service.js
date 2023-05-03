@@ -23,7 +23,7 @@ export function executeCommand(response) {
             initService.initInventory(socketResponse.data);
             break;
 
-        case Commands.UpdatePlayer:
+        case Commands.UpdateMotion:
             characterService.updateOrCreateCharacters(socketResponse.data);
             break;
 

@@ -2,7 +2,7 @@ package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
 import marowak.dev.dto.motion.PlayerMotion;
-import marowak.dev.request.PlayerMotionRequest;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import message.CharacterMessage;
 
@@ -42,7 +42,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public PlayersMotionListResponse updateAndGetMotions(PlayerMotionRequest request, String playerName) {
+    public PlayersMotionListResponse updateAndGetMotions(CharacterMotionRequest request, String playerName) {
         if (request.isUpdate()) {
             updatePlayerMotion(playerName, request);
         }
@@ -69,11 +69,11 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
         return playerMotionMap.containsKey(playerName);
     }
 
-    private void updatePlayerMotion(String playerName, PlayerMotionRequest request) {
+    private void updatePlayerMotion(String playerName, CharacterMotionRequest request) {
         PlayerMotion oldMotion = playerMotionMap.get(playerName);
 
         long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
-        if(diffTime < 0) return;
+        if (diffTime < 0) return;
 
         float relativeSpeed = (request.speed() * diffTime) / 1000;
 

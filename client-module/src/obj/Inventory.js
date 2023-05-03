@@ -2,6 +2,8 @@ import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import {renderEngine} from "../render/render-engine.js";
+import * as socket from "../websocket-service.js";
+import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 // TODO naming conventions
 export class Inventory {
@@ -31,9 +33,11 @@ export class Inventory {
         if (item.isEquipped) {
             let slot = this.equipmentSlots.get(item.typeId);
             slot.addToEquipmentSlot(item);
+            socket.sendMessage(new CharacterItemRequest(item.id, null))
         } else {
             let cargoCell = this.cargoCells[item.slotId];
             cargoCell.addToCargoCell(item);
+            socket.sendMessage(new CharacterItemRequest(item.id, cargoCell.idx))
         }
     }
 
@@ -45,6 +49,8 @@ export class Inventory {
         }
 
         cell.addToCargoCell(cargo);
+        socket.sendMessage(new CharacterItemRequest(cargo.id, cell.idx))
+
         return true;
     }
 
@@ -80,7 +86,9 @@ export class Inventory {
         equipmentSlot.addToEquipmentSlot(removedFromCell);
         if (removedFromSlot !== undefined) {
             cell.addToCargoCell(removedFromSlot);
+            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, cell.idx))
         }
+        socket.sendMessage(new CharacterItemRequest(equipment.id, null))
     }
 
     #unequip(equipment) {

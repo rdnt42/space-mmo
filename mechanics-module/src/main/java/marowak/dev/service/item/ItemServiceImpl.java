@@ -13,7 +13,7 @@ import message.ItemMessage;
 @Singleton
 public class ItemServiceImpl implements ItemService {
     private final ItemClient itemClient;
-    private final CharacterInventoryService characterInventoryService;
+    private final InventoryService inventoryService;
 
     @Override
     public void sendGetItems(ItemMessageKey key, String characterName) {
@@ -30,6 +30,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void updateItem(ItemMessage message) {
-        characterInventoryService.updateInventory(message);
+        inventoryService.updateInventoryFromStorage(message);
     }
 }
