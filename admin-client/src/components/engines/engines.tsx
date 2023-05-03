@@ -20,9 +20,12 @@ export const EngineList = () => (
             <TextField source="item.characterName" label="character"/>
             <TextField source="item.itemTypeId" label="item type"/>
             <TextField source="item.upgradeLevel" label="level"/>
+            <TextField source="item.nameRu" label="name"/>
+            <TextField source="item.dscRu" label="dsc"/>
             <TextField source="item.cost" label="cost"/>
             <TextField source="speed"/>
             <TextField source="jump"/>
+            <TextField source="engineTypeId"/>
             <EditButton/>
         </Datagrid>
     </List>
@@ -49,11 +52,13 @@ export const EngineCreate = () => (
             <ReferenceInput source="engineId" reference="engines"/>
             <NumberInput source="slotId"/>
             <TextInput source="characterName"/>
-            <NumberInput source="itemTypeId"/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
             <NumberInput source="speed"/>
             <NumberInput source="jump"/>
+            <TextInput source="name" label="name"/>
+            <TextInput source="dsc" label="dsc"/>
+            <NumberInput source="engineTypeId"/>
         </SimpleForm>
     </Create>
 );

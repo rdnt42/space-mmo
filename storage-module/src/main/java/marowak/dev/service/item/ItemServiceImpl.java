@@ -22,12 +22,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Flux<ItemMessage> getAllOnline() {
-        Flux<Engine> engines = Flux.from(engineR2Repository.findAll());
-        Flux<Item> items = engines
-                .flatMap(engine -> itemR2Repository.findById(engine.id()));
-
-        return Flux.zip(engines, items)
-                .map(tuple -> engineToMessage.apply(tuple.getT1(), tuple.getT2(), ItemMessageKey.ITEMS_GET_ALL));
+        return Flux.from(engineR2Repository.findAll())
+                .flatMap(engine -> Flux.from(itemR2Repository.findById(engine.id()))
+                        .map(item -> engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_ALL)));
     }
 
     @Override

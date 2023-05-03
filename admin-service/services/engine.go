@@ -1,6 +1,7 @@
 package services
 
 import (
+	"admin-service/constants"
 	"admin-service/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -28,15 +29,18 @@ func CreateEngine(ctx *gin.Context) {
 		Equipped:      false,
 		SlotId:        req.SlotId,
 		CharacterName: req.CharacterName,
-		ItemTypeId:    req.ItemTypeId,
+		ItemTypeId:    constants.EngineItemTypeId,
 		UpgradeLevel:  req.UpgradeLevel,
 		Cost:          req.Cost,
+		NameRu:        req.Name,
+		DscRu:         req.Dsc,
 	}
 
 	newEngine := &models.Engine{
-		Item:  *equipment,
-		Speed: req.Speed,
-		Jump:  req.Jump,
+		Item:         *equipment,
+		Speed:        req.Speed,
+		Jump:         req.Jump,
+		EngineTypeId: req.EngineTypeId,
 	}
 
 	result := db.Create(&newEngine)
