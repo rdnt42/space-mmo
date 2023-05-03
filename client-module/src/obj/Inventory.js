@@ -3,6 +3,7 @@ import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import {renderEngine} from "../render/render-engine.js";
 
+// TODO naming conventions
 export class Inventory {
     isOpen = false;
     cargoCells = [];
@@ -70,7 +71,7 @@ export class Inventory {
     }
 
     #equip(equipment) {
-        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
+        let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let cell = this.#getCargoCell(equipment);
 
         let removedFromSlot = equipmentSlot.removeFromEquipmentSlot();
@@ -82,20 +83,13 @@ export class Inventory {
         }
     }
 
-    equip(item) {
-        let equipmentSlot = this.equipmentSlots.get(item.slotId);
-        if (equipmentSlot !== undefined) {
-            equipmentSlot.addToEquipmentSlot(item);
-        }
-    }
-
     #unequip(equipment) {
         if (this.#getFreeCargoCell() === undefined) {
             alert("В трюме нет места, чтобы снять оборудование!")
             return
         }
 
-        let equipmentSlot = this.equipmentSlots.get(equipment.slotId);
+        let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let removedEquipment = equipmentSlot.removeFromEquipmentSlot();
         this.addCargo(removedEquipment);
     }
