@@ -24,8 +24,6 @@ public class ItemMessage {
 
     private Integer slotId;
 
-    private boolean equipped;
-
     private String characterName;
 
     private int itemTypeId;

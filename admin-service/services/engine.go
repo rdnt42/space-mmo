@@ -26,7 +26,6 @@ func CreateEngine(ctx *gin.Context) {
 	}
 
 	equipment := &models.Item{
-		Equipped:      false,
 		SlotId:        req.SlotId,
 		CharacterName: req.CharacterName,
 		ItemTypeId:    constants.EngineItemTypeId,

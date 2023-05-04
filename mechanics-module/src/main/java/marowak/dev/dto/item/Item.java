@@ -10,8 +10,6 @@ import lombok.experimental.SuperBuilder;
 public class Item {
     private long id;
     private Integer slotId;
-    // TODO delete that, can use just slotId
-    private boolean equipped;
     private int itemTypeId;
     private Integer upgradeLevel;
     private Integer cost;

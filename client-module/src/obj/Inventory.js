@@ -29,15 +29,13 @@ export class Inventory {
         }
     }
 
-    addItem(item) {
+    addInitItem(item) {
         if (item.slotId === null) {
             let slot = this.equipmentSlots.get(item.typeId);
             slot.addToEquipmentSlot(item);
-            socket.sendMessage(new CharacterItemRequest(item.id, null))
         } else {
             let cargoCell = this.cargoCells[item.slotId];
             cargoCell.addToCargoCell(item);
-            socket.sendMessage(new CharacterItemRequest(item.id, cargoCell.idx))
         }
     }
 
@@ -49,7 +47,7 @@ export class Inventory {
         }
 
         cell.addToCargoCell(cargo);
-        socket.sendMessage(new CharacterItemRequest(cargo.id, cell.idx))
+        socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId))
 
         return true;
     }
@@ -69,26 +67,27 @@ export class Inventory {
     }
 
     swapEquipment(equipment) {
-        if (equipment.isEquipped) {
+        if (equipment.slotId === null) {
             this.#unequip(equipment);
         } else {
             this.#equip(equipment);
         }
     }
 
+    // #64 TODO sending in one place
     #equip(equipment) {
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let cell = this.#getCargoCell(equipment);
 
         let removedFromSlot = equipmentSlot.removeFromEquipmentSlot();
         let removedFromCell = cell.removeFromCargoCell();
+        socket.sendMessage(new CharacterItemRequest(equipment.id, equipment.slotId));
 
         equipmentSlot.addToEquipmentSlot(removedFromCell);
         if (removedFromSlot !== undefined) {
             cell.addToCargoCell(removedFromSlot);
-            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, cell.idx))
+            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, removedFromSlot.slotId))
         }
-        socket.sendMessage(new CharacterItemRequest(equipment.id, null))
     }
 
     #unequip(equipment) {

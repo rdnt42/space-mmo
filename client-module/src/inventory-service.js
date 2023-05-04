@@ -7,8 +7,8 @@ export function initInventory(slots, items) {
     console.log(slots)
     inventory = new Inventory(slots);
     for (const item of items) {
-        let it = new Item(item.id, item.slotId, item.itemTypeId, item.subTypeId, item.equipped);
-        inventory.addItem(it);
+        let it = new Item(item.id, item.slotId, item.itemTypeId, item.subTypeId);
+        inventory.addInitItem(it);
     }
 
     document.addEventListener("keydown", (event) => {

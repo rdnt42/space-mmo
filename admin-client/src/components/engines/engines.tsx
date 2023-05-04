@@ -15,7 +15,6 @@ export const EngineList = () => (
     <List>
         <Datagrid>
             <TextField source="item.id" label="id"/>
-            <TextField source="item.equipped" label="equipped"/>
             <TextField source="item.slotId" label="slot"/>
             <TextField source="item.characterName" label="character"/>
             <TextField source="item.itemTypeId" label="item type"/>

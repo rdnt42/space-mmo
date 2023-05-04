@@ -19,6 +19,7 @@ export class CargoCell {
     addToCargoCell(cargo) {
         renderEngine.addToCargoCell(cargo.texture, this.texture);
         this.#cargo = cargo;
+        cargo.slotId = this.idx;
     }
 
     removeFromCargoCell() {
@@ -26,7 +27,8 @@ export class CargoCell {
 
         let removedCargo = this.#cargo;
         this.#cargo = undefined;
-        renderEngine.removeFromCargoCell(removedCargo.texture)
+        renderEngine.removeFromCargoCell(removedCargo.texture);
+        removedCargo.slotId = null;
 
         return removedCargo;
     }

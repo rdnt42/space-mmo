@@ -45,7 +45,6 @@ public class ItemServiceImpl implements ItemService {
                     .key(key)
                     .id(engine.id())
                     .slotId(item.slotId())
-                    .equipped(item.equipped())
                     .characterName(item.characterName())
                     .itemTypeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())

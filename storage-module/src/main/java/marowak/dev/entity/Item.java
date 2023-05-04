@@ -19,8 +19,6 @@ public record Item(
         @Nullable
         Integer slotId,
 
-        boolean equipped,
-
         @Column(name = "character_name")
         String characterName,
 

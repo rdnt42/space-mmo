@@ -3,14 +3,12 @@ import {renderEngine} from "../render/render-engine.js";
 export class Item {
     texture;
     id;
-    isEquipped;
     typeId;
     subTypeId;
     slotId;
 
-    constructor(id, slotId, typeId, subTypeId, isEquipped) {
+    constructor(id, slotId, typeId, subTypeId) {
         this.id = id;
-        this.isEquipped = isEquipped;
         this.typeId = typeId;
         this.subTypeId = subTypeId;
         this.slotId = slotId;

@@ -107,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
     private final Function<EngineMessage, Item> engineMessageToItem = message -> Engine.builder()
             .id(message.getId())
             .slotId(message.getSlotId())
-            .equipped(message.isEquipped())
             .itemTypeId(message.getItemTypeId())
             .upgradeLevel(message.getUpgradeLevel())
             .cost(message.getCost())

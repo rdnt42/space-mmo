@@ -10,7 +10,6 @@ export class EquipmentSlot {
 
     addToEquipmentSlot(equipment) {
         this.#equipment = equipment;
-        equipment.isEquipped = true;
         renderEngine.addToEquipmentSlot(equipment.texture, this.texture);
     }
 
@@ -18,7 +17,6 @@ export class EquipmentSlot {
         if(this.#equipment === undefined) return undefined;
 
         let removedEquipment = this.#equipment;
-        removedEquipment.isEquipped = false;
         this.#equipment = undefined;
         renderEngine.removeFromEquipmentSlot(removedEquipment.texture);
 
