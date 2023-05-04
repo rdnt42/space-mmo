@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
                     .items()
                     .put(newItem.getId(), newItem);
 
-            sendItemUpdate(item);
+            sendItemUpdate(newItem);
             log.info("updateInventory id: {}, slot: {}", request.itemId(), request.slotId());
             return newItem;
         }
