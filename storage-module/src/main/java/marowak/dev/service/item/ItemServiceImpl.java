@@ -12,6 +12,7 @@ import marowak.dev.service.TriFunction;
 import message.EngineMessage;
 import message.ItemMessage;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +31,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Flux<ItemMessage> getForCharacter(String characterName) {
         return Flux.empty();
+    }
+
+    @Override
+    public Mono<ItemMessage> updateItem(ItemMessage message) {
+        itemR2Repository.update(message.getId(), message.getSlotId());
+
+        return Mono.empty();
     }
 
     private final TriFunction<Engine, Item, ItemMessageKey, ItemMessage> engineToMessage =

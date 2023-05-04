@@ -30,7 +30,7 @@ export class Inventory {
     }
 
     addItem(item) {
-        if (item.isEquipped) {
+        if (item.slotId === null) {
             let slot = this.equipmentSlots.get(item.typeId);
             slot.addToEquipmentSlot(item);
             socket.sendMessage(new CharacterItemRequest(item.id, null))

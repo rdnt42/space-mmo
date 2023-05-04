@@ -14,6 +14,7 @@ public class ItemCommandService {
         return switch (message.getKey()) {
             case ITEMS_GET_ONE -> itemService.getForCharacter(message.getCharacterName());
             case ITEMS_GET_ALL -> itemService.getAllOnline();
+            case ITEMS_UPDATE -> itemService.updateItem(message);
         };
     }
 

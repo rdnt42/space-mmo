@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono;
 @KafkaClient(id = "items-producer")
 public interface ItemClient {
     @Topic("items")
-    Mono<RecordMetadata> sendGetItems(ItemMessage message);
+    Mono<RecordMetadata> sendItems(ItemMessage message);
 }

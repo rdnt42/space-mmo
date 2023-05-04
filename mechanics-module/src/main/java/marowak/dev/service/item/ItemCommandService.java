@@ -13,7 +13,7 @@ public class ItemCommandService {
 
     public Publisher<Void> executeCommand(ItemMessage message) {
         switch (message.getKey()) {
-            case ITEMS_GET_ALL, ITEMS_GET_ONE -> itemService.updateItem(message);
+            case ITEMS_GET_ALL, ITEMS_GET_ONE -> itemService.updateInventoryFromStorage(message);
             default -> { // Ignore other events
             }
         }

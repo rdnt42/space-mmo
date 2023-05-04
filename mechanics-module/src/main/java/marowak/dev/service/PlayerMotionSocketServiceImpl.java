@@ -16,7 +16,7 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
-import marowak.dev.service.item.InventoryService;
+import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.PlayerMotionService;
 import org.reactivestreams.Publisher;
 
@@ -27,7 +27,8 @@ import java.util.function.Predicate;
 @Singleton
 public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService {
     private final PlayerMotionService playerMotionService;
-    private final InventoryService inventoryService;
+
+    private final ItemService itemService;
     private final CharacterService characterService;
     private final WebSocketBroadcaster broadcaster;
 
@@ -50,7 +51,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, response);
             }
             case CMD_GET_INVENTORY -> {
-                CharacterInventoryResponse response = inventoryService.getInventory(playerName);
+                CharacterInventoryResponse response = itemService.getInventory(playerName);
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, response);
             }
             case CMD_UPDATE_MOTION -> {
@@ -61,7 +62,7 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 CharacterInventoryItemRequest value = objectMapper.convertValue(request.data(), CharacterInventoryItemRequest.class);
-                Item item = inventoryService.updateInventory(value, playerName);
+                Item item = itemService.updateInventoryFromClient(value, playerName);
 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item);
             }
