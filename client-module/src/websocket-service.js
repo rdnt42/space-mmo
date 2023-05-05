@@ -17,9 +17,7 @@ function onClose() {
 function onOpen() {
     return function (event) {
         console.log("WebSocket connection opened", event);
-        initService.startInitMotions();
-        initService.startInitInventory();
-        initService.checkInit();
+        initService.startInitAll();
     };
 }
 

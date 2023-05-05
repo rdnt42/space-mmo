@@ -16,3 +16,7 @@ export function initEngine() {
         renderEngine = new ThreeEngine();
     }
 }
+
+export function startEngineTimer() {
+    renderEngine.startEngineTimer();
+}

@@ -26,6 +26,10 @@ let characterLabelsMap = new Map();
 let windowWidth;
 let windowHeight;
 
+let posInfoLabel;
+let bgLast;
+let bgFirst;
+
 function initEngine() {
     app = new pixi.Application({
         resizeTo: window
@@ -38,20 +42,22 @@ function initEngine() {
     windowHeight = Math.floor(window.innerHeight / 2);
 
     document.body.appendChild(app.view);
-    const bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
+    bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
     app.stage.addChild(bgLast);
 
-    const bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
+    bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
 
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
 
-    let posInfoLabel = createPosInfoLabel();
+    posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
 
-    //TODO #24 window.addEventListener('resize', resize);
+}
 
+//TODO #24 window.addEventListener('resize', resize);
+function startEngineTimer() {
     app.ticker.add(() => {
         renderCharacters();
         updateLocationText(posInfoLabel);
@@ -380,6 +386,10 @@ export class PixiEngine {
 
     changeStateInventory(state) {
         changeStateInventory(state);
+    }
+
+    startEngineTimer() {
+        startEngineTimer();
     }
 
 }

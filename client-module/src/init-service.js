@@ -1,75 +1,73 @@
-import {mainLogicInit} from "./main-logic.js";
+import * as main from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
-import {initEngine} from "./render/render-engine.js";
-import {initKeyBoard} from "./keyboard-service.js";
+import * as engine from "./render/render-engine.js";
+import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
 
-let isMotionsInit = false;
-let isInventoryInit = false;
 const timerInterval = 250;
-let tryCount;
-
-let initData = {}
-
-// TODO refactor
-export function startInitMotions() {
-    tryCount = 10;
-    const initLoop = setInterval(() => {
-        if (isMotionsInit || tryCount < 0) {
-            clearInterval(initLoop);
-            console.log("Stopped character init motions loop")
-        } else {
-            console.log("Try to init character motions")
-            characterService.sendGetMotions();
-            tryCount--;
-        }
-    }, timerInterval);
-    console.log("Started character init motions loop")
+let timers = new Map();
+const funcs = {
+    characters: "Characters",
+    inventory: "Inventory"
 }
 
-export function startInitInventory() {
-    tryCount = 10;
-    const initLoop = setInterval(() => {
-        if (isInventoryInit || tryCount < 0) {
-            clearInterval(initLoop);
-            console.log("Stopped character init inventory loop")
-        } else {
-            console.log("Try to init character inventory")
-            characterService.sendGetInventory();
-            tryCount--;
-        }
-    }, timerInterval);
-    console.log("Started character init inventory loop")
+export function startInitAll() {
+    engine.initEngine();
+
+    initBefore(characterService.sendGetMotions, funcs.characters);
+    initBefore(characterService.sendGetInventory, funcs.inventory);
 }
 
-export function checkInit() {
-    const initLoop = setInterval(() => {
-        if (isInventoryInit && isMotionsInit) {
-            clearInterval(initLoop);
-            initEngine();
+function initBefore(func, funcName) {
+    let attempt = 0;
+    const maxAttempt = 5;
 
-            let motion = initData.motion;
-            characterService.initMyCharacter(motion.playerMotion.playerName, motion.playerMotion);
-            characterService.updateOrCreateCharacters(motion);
-
-            let inventory = initData.inventory;
-            inventoryService.initInventory(inventory.slots, inventory.items);
-
-            mainLogicInit();
-            initKeyBoard();
-            console.log("Character init success");
+    let timerId = setInterval(() => {
+        console.log(`attempt: ${attempt} for function: ${funcName}`);
+        if (attempt > maxAttempt) {
+            console.log(`initialization for function: ${funcName} stopped due to exceeded retries`);
+        } else {
+            console.log(`try init function: ${funcName}`);
+            attempt++;
+            func();
         }
     }, timerInterval);
+
+    timers.set(funcName, timerId);
+}
+
+function initAfter() {
+    if (timers.size > 0) return;
+
+    main.mainLogicInit();
+    keyboard.initKeyBoard();
+    engine.startEngineTimer();
+    console.log("Client init success");
 }
 
 export function tryInitMotions(data) {
     if (data == null) return;
-    isMotionsInit = true;
-    initData.motion = data;
+
+    stopTimer(funcs.characters);
+    characterService.initMyCharacter(data.playerMotion.playerName, data.playerMotion);
+    characterService.updateOrCreateCharacters(data);
+    removeTimer(funcs.characters);
 }
 
 export function tryInitInventory(data) {
     if (data == null) return;
-    isInventoryInit = true;
-    initData.inventory = data;
+
+    stopTimer(funcs.inventory);
+    inventoryService.initInventory(data.slots, data.items);
+    removeTimer(funcs.inventory);
+}
+
+function stopTimer(key) {
+    let timer = timers.get(key);
+    clearInterval(timer);
+}
+
+function removeTimer(key) {
+    timers.delete(key);
+    initAfter();
 }
