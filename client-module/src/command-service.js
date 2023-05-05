@@ -15,12 +15,11 @@ export function executeCommand(response) {
     let command = socketResponse.command;
     switch (command) {
         case Commands.GetMotions:
-            initService.initMotions(socketResponse.data);
-            characterService.updateOrCreateCharacters(socketResponse.data);
+            initService.tryInitMotions(socketResponse.data);
             break;
 
         case Commands.GetInventory:
-            initService.initInventory(socketResponse.data);
+            initService.tryInitInventory(socketResponse.data);
             break;
 
         case Commands.UpdateMotion:

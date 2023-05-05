@@ -331,7 +331,6 @@ function removeFromEquipmentSlot(equipment) {
 
 export class PixiEngine {
     constructor() {
-        console.log("pixi")
         initEngine();
     }
 

@@ -3,7 +3,6 @@ import * as socket from "./websocket-service.js";
 createConnectInfo();
 
 function createConnectInfo() {
-    console.log("createConnectInfo");
     let input = document.createElement("input");
     input.innerHTML = "InputText";
     input.type = "text";
@@ -16,7 +15,7 @@ function createConnectInfo() {
     btn.name = "formBtn";
     document.body.appendChild(btn);
     btn.onclick = function () {
-        console.log("playerName: " + input.value)
+        console.log(`playerName: ${input.value}`)
         socket.initSocketConnection(input.value);
         input.remove();
         btn.remove();

@@ -23,10 +23,10 @@ export class Inventory {
     loadConfig(slots) {
         for (let slot of slots) {
             if (Object.values(EquipmentSlotId).includes(slot)) {
-                console.log(`init inventory slot: ${slot}`)
                 this.equipmentSlots.set(slot, new EquipmentSlot(slot));
             }
         }
+        console.log(`init equipment slots: ${slots}`);
     }
 
     addInitItem(item) {

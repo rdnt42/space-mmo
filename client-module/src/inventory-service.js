@@ -5,7 +5,6 @@ import {EquipmentSlotId} from "./const/EquipmentSlotId.js";
 let inventory;
 
 export function initInventory(slots, items) {
-    console.log(slots)
     inventory = new Inventory(slots);
     for (const itemSrc of items) {
         let it = new Item(itemSrc);

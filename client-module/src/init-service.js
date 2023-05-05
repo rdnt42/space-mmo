@@ -1,13 +1,15 @@
-import * as playerService from './character-service.js'
 import {mainLogicInit} from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
 import {initEngine} from "./render/render-engine.js";
 import {initKeyBoard} from "./keyboard-service.js";
+import * as characterService from "./character-service.js";
 
 let isMotionsInit = false;
 let isInventoryInit = false;
 const timerInterval = 250;
 let tryCount;
+
+let initData = {}
 
 // TODO refactor
 export function startInitMotions() {
@@ -18,7 +20,7 @@ export function startInitMotions() {
             console.log("Stopped character init motions loop")
         } else {
             console.log("Try to init character motions")
-            playerService.sendGetMotions();
+            characterService.sendGetMotions();
             tryCount--;
         }
     }, timerInterval);
@@ -33,7 +35,7 @@ export function startInitInventory() {
             console.log("Stopped character init inventory loop")
         } else {
             console.log("Try to init character inventory")
-            playerService.sendGetInventory();
+            characterService.sendGetInventory();
             tryCount--;
         }
     }, timerInterval);
@@ -44,29 +46,30 @@ export function checkInit() {
     const initLoop = setInterval(() => {
         if (isInventoryInit && isMotionsInit) {
             clearInterval(initLoop);
-            console.log("All data init");
+            initEngine();
+
+            let motion = initData.motion;
+            characterService.initMyCharacter(motion.playerMotion.playerName, motion.playerMotion);
+            characterService.updateOrCreateCharacters(motion);
+
+            let inventory = initData.inventory;
+            inventoryService.initInventory(inventory.slots, inventory.items);
+
             mainLogicInit();
             initKeyBoard();
+            console.log("Character init success");
         }
     }, timerInterval);
 }
 
-export function initMotions(data) {
-    if (data != null) {
-        isMotionsInit = true;
-        initEngine();
-        playerService.initMyCharacter(data.playerMotion.playerName, data.playerMotion);
-
-        console.log("My character init success");
-    }
+export function tryInitMotions(data) {
+    if (data == null) return;
+    isMotionsInit = true;
+    initData.motion = data;
 }
 
-export function initInventory(data) {
-    if (data != null) {
-        isInventoryInit = true;
-        initEngine();
-        inventoryService.initInventory(data.slots, data.items);
-
-        console.log("My character init success");
-    }
+export function tryInitInventory(data) {
+    if (data == null) return;
+    isInventoryInit = true;
+    initData.inventory = data;
 }
