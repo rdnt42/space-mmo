@@ -4,7 +4,7 @@ import * as engine from "./render/render-engine.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
 
-const timerInterval = 250;
+const timerInterval = 100;
 let timers = new Map();
 const funcs = {
     characters: "Characters",

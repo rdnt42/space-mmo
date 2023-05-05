@@ -27,6 +27,7 @@ let windowWidth;
 let windowHeight;
 
 let posInfoLabel;
+let speedLabel;
 let bgLast;
 let bgFirst;
 
@@ -63,6 +64,7 @@ function startEngineTimer() {
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
+        updateSpeedLabel(speedLabel);
         app.stage.sortChildren();
     });
 }
@@ -108,6 +110,11 @@ function getY(currY, diffY) {
 function updateLocationText(posInfoLabel) {
     let playerCharacter = characterService.getPlayerCharacter();
     posInfoLabel.text = playerCharacter.getLocation();
+}
+
+function updateSpeedLabel(speedLabel) {
+    let playerCharacter = characterService.getPlayerCharacter();
+    speedLabel.text = Math.round(playerCharacter.movement.speed);
 }
 
 function updateBackground(bg, div) {
@@ -209,6 +216,16 @@ function createInventory() {
     container.position.set(app.screen.width / 2, app.screen.height / 2);
     container.pivot.set(container.width / 2, container.height / 2);
     container.zIndex = Sort.INVENTORY;
+
+    speedLabel = new pixi.Text("0", {
+        fill: 0x000000,
+        fontSize: 20,
+    });
+    speedLabel.x = 378;
+    speedLabel.y = 48;
+    speedLabel.anchor.set(0.5, 0.5);
+
+    container.addChild(speedLabel);
 
     INVENTORY_CONTAINER = container;
 }
