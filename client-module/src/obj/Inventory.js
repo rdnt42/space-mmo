@@ -105,4 +105,8 @@ export class Inventory {
         this.isOpen = !this.isOpen;
         renderEngine.changeStateInventory(this.isOpen);
     }
+
+    getEquipment(typeId) {
+        return this.equipmentSlots.get(typeId).getEquipment();
+    }
 }

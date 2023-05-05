@@ -1,4 +1,5 @@
 import {renderEngine} from "../render/render-engine.js";
+import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 
 export class Item {
     texture;
@@ -7,13 +8,20 @@ export class Item {
     subTypeId;
     slotId;
 
-    constructor(id, slotId, typeId, subTypeId) {
-        this.id = id;
-        this.typeId = typeId;
-        this.subTypeId = subTypeId;
-        this.slotId = slotId;
+    constructor(item) {
+        this.id = item.id;
+        this.typeId = item.itemTypeId;
+        this.subTypeId = item.subTypeId;
+        this.slotId = item.slotId;
+        this.additionalFields(item);
         this.texture = renderEngine.initItem(this.typeId, this.subTypeId);
         this.texture['textureParentObj'] = this;
+    }
+
+    additionalFields(item) {
+        if (item.itemTypeId === EquipmentSlotId.Engine) {
+            this.maxSpeed = item.speed;
+        }
     }
 
 }

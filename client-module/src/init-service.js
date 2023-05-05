@@ -2,6 +2,7 @@ import * as playerService from './character-service.js'
 import {mainLogicInit} from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
 import {initEngine} from "./render/render-engine.js";
+import {initKeyBoard} from "./keyboard-service.js";
 
 let isMotionsInit = false;
 let isInventoryInit = false;
@@ -45,6 +46,7 @@ export function checkInit() {
             clearInterval(initLoop);
             console.log("All data init");
             mainLogicInit();
+            initKeyBoard();
         }
     }, timerInterval);
 }

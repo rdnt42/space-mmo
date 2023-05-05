@@ -50,7 +50,6 @@ class Movement {
     prevY;
     speed;
     angle;
-    maxSpeed = 600;
 
     constructor(x, y, angle, speed) {
         this.x = x;

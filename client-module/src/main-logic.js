@@ -2,6 +2,7 @@ import * as keyboard from "./keyboard-service.js"
 import {Direction} from "./const/Direction.js";
 import * as characterService from "./character-service.js";
 import {FREQUENCY_TIME} from "./const/Common.js";
+import * as inventoryService from "./inventory-service.js";
 
 const accelerationTime = 1500;
 
@@ -11,8 +12,12 @@ export function mainLogicInit() {
 
 function worldTick() {
     let character = characterService.getPlayerCharacter();
-    let move = getPlayerDirectionAndSpeed(character.movement.speed, character.movement.maxSpeed, character.movement.angle);
-    characterService.sendMotion(move.speed, move.angle, true);
+
+    let engine = inventoryService.getEngine();
+    if (engine !== undefined) {
+        let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
+        characterService.sendMotion(move.speed, move.angle, true);
+    }
 }
 
 function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {

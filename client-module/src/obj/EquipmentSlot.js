@@ -14,12 +14,16 @@ export class EquipmentSlot {
     }
 
     removeFromEquipmentSlot() {
-        if(this.#equipment === undefined) return undefined;
+        if (this.#equipment === undefined) return undefined;
 
         let removedEquipment = this.#equipment;
         this.#equipment = undefined;
         renderEngine.removeFromEquipmentSlot(removedEquipment.texture);
 
         return removedEquipment;
+    }
+
+    getEquipment() {
+        return this.#equipment;
     }
 }
