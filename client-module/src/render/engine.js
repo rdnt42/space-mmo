@@ -1,8 +1,8 @@
-import * as pixi from '../../libs/pixi.min.js';
-import * as characterService from "../../character-service.js";
-import {doubleClickCallback} from "../../inventory-service.js";
-import {EquipmentSlotId} from "../../const/EquipmentSlotId.js";
-import {shipsCfgMap} from "../../cfg/images-cfg.js";
+import * as pixi from '../libs/pixi.min.js';
+import * as characterService from "../character-service.js";
+import {doubleClickCallback} from "../inventory-service.js";
+import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
+import {shipsCfgMap} from "../cfg/images-cfg.js";
 
 let app;
 let dragTarget = null;
@@ -31,7 +31,7 @@ let speedLabel;
 let bgLast;
 let bgFirst;
 
-function initEngine() {
+export function initEngine() {
     app = new pixi.Application({
         resizeTo: window
     });
@@ -58,7 +58,7 @@ function initEngine() {
 }
 
 //TODO #24 window.addEventListener('resize', resize);
-function startEngineTimer() {
+export function startEngineTimer() {
     app.ticker.add(() => {
         renderCharacters();
         updateLocationText(posInfoLabel);
@@ -119,7 +119,7 @@ function updateBackground(bg, div) {
     bg.tilePosition.y -= addY;
 }
 
-function changeStateInventory(state) {
+export function changeStateInventory(state) {
     INVENTORY_CONTAINER.visible = state;
 }
 
@@ -144,7 +144,7 @@ function renderCharacters() {
     }
 }
 
-function createCharacter(characterName, shipTypeId) {
+export function createCharacter(characterName, shipTypeId) {
     let textureArr = [];
     for (let i = 0; i < shipsCfgMap.get(shipTypeId); i++) {
         let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
@@ -164,7 +164,7 @@ function createCharacter(characterName, shipTypeId) {
     charactersMap.set(characterName, sprite);
 }
 
-function createCharacterLabel(characterName) {
+export function createCharacterLabel(characterName) {
     let label = new pixi.Text(characterName, {
         fill: 0xffffff,
     });
@@ -173,7 +173,7 @@ function createCharacterLabel(characterName) {
     characterLabelsMap.set(characterName, label);
 }
 
-function removeCharacter(characterName) {
+export function removeCharacter(characterName) {
     let sprite = charactersMap.get(characterName);
     charactersMap.delete(characterName);
     spritesContainer.removeChild(sprite);
@@ -184,7 +184,7 @@ function removeCharacter(characterName) {
 }
 
 /// Inventory
-function createInventory() {
+export function createInventory() {
     let container = new pixi.Container();
     app.stage.addChild(container);
     container.visible = false;
@@ -224,7 +224,7 @@ function createInventory() {
     INVENTORY_CONTAINER = container;
 }
 
-function initCargoCell(idx) {
+export function initCargoCell(idx) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.visible = false;
@@ -237,7 +237,7 @@ function initCargoCell(idx) {
     return sprite;
 }
 
-function initEquipmentSlot(equipmentType) {
+export function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.visible = false;
@@ -263,7 +263,7 @@ function initEquipmentSlot(equipmentType) {
     return sprite;
 }
 
-function initItem(typeId, subTypeId) {
+export function initItem(typeId, subTypeId) {
     let url;
     switch (typeId) {
         case EquipmentSlotId.Engine:
@@ -298,6 +298,30 @@ function initItem(typeId, subTypeId) {
     return sprite;
 }
 
+export function addToCargoCell(cargo, hold) {
+    cargo.position.set(hold.x + hold.width / 2, hold.y);
+    cargo.scale.set(0.5);
+    cargo.visible = true;
+}
+
+export function removeFromCargoCell(cargo) {
+    cargo.visible = false;
+}
+
+export function addToEquipmentSlot(equipment, slot) {
+    equipment.position.set(slot.x, slot.y);
+    equipment.scale.set(1);
+    equipment.visible = true;
+}
+
+export function removeFromEquipmentSlot(equipment) {
+    equipment.visible = false;
+}
+
+export function setSpeedLabel(speed) {
+    speedLabel.text = speed;
+}
+
 function onDragMove(event) {
     if (dragTarget) {
         dragTarget.parent.toLocal(event.global, null, dragTarget.position);
@@ -324,92 +348,4 @@ function onClick() {
         doubleClickCallback(this);
     }
     prevClickTime = Date.now();
-}
-
-function addToCargoCell(cargo, hold) {
-    cargo.position.set(hold.x + hold.width / 2, hold.y);
-    cargo.scale.set(0.5);
-    cargo.visible = true;
-}
-
-function removeFromCargoCell(cargo) {
-    cargo.visible = false;
-}
-
-function addToEquipmentSlot(equipment, slot) {
-    equipment.position.set(slot.x, slot.y);
-    equipment.scale.set(1);
-    equipment.visible = true;
-}
-
-function removeFromEquipmentSlot(equipment) {
-    equipment.visible = false;
-}
-
-function setSpeedLabel(speed) {
-    speedLabel.text = speed;
-}
-
-// TODO change this realisation
-export class PixiEngine {
-    constructor() {
-        initEngine();
-    }
-
-    createCharacter(characterName, shipTypeId) {
-        createCharacter(characterName, shipTypeId);
-    }
-
-    createCharacterLabel(characterName) {
-        createCharacterLabel(characterName);
-    }
-
-    removeCharacter(characterName) {
-        removeCharacter(characterName);
-    }
-
-    createInventory() {
-        createInventory();
-    }
-
-    initItem(typeId, subTypeId) {
-        return initItem(typeId, subTypeId);
-    }
-
-    initCargoCell(idx) {
-        return initCargoCell(idx);
-    }
-
-    initEquipmentSlot(equipmentType) {
-        return initEquipmentSlot(equipmentType);
-    }
-
-    addToEquipmentSlot(equipment, slot) {
-        addToEquipmentSlot(equipment, slot);
-    }
-
-    removeFromEquipmentSlot(equipment) {
-        removeFromEquipmentSlot(equipment);
-    }
-
-    addToCargoCell(cargo, hold) {
-        addToCargoCell(cargo, hold);
-    }
-
-    removeFromCargoCell(cargo) {
-        removeFromCargoCell(cargo);
-    }
-
-    changeStateInventory(state) {
-        changeStateInventory(state);
-    }
-
-    startEngineTimer() {
-        startEngineTimer();
-    }
-
-    setEngineSpeedLabel(speed) {
-        setSpeedLabel(speed);
-    }
-
 }

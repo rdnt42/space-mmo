@@ -1,6 +1,6 @@
 import * as main from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
-import * as engine from "./render/render-engine.js";
+import * as renderEngine from "./render/engine.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
 
@@ -12,7 +12,7 @@ const funcs = {
 }
 
 export function startInitAll() {
-    engine.initEngine();
+    renderEngine.initEngine();
 
     initBefore(characterService.sendGetMotions, funcs.characters);
     initBefore(characterService.sendGetInventory, funcs.inventory);
@@ -41,7 +41,7 @@ function initAfter() {
 
     main.mainLogicInit();
     keyboard.initKeyBoard();
-    engine.startEngineTimer();
+    renderEngine.startEngineTimer();
     console.log("Client init success");
 }
 

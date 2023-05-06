@@ -1,7 +1,7 @@
 import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
-import {renderEngine} from "../render/render-engine.js";
+import * as renderEngine from "../render/engine.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../request/CharacterRequest.js";
 

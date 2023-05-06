@@ -1,4 +1,4 @@
-import {renderEngine} from "../render/render-engine.js";
+import * as renderEngine from "../render/engine.js";
 
 export class CargoCell {
     texture;

@@ -1,4 +1,4 @@
-import {renderEngine} from "../render/render-engine.js";
+import * as renderEngine from "../render/engine.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 
 export class EquipmentSlot {
@@ -13,7 +13,7 @@ export class EquipmentSlot {
         this.#equipment = equipment;
         renderEngine.addToEquipmentSlot(equipment.texture, this.texture);
         if (this.#equipment.typeId === EquipmentSlotId.Engine) {
-            renderEngine.setEngineSpeedLabel(this.#equipment.maxSpeed);
+            renderEngine.setSpeedLabel(this.#equipment.maxSpeed);
         }
     }
 
@@ -25,7 +25,7 @@ export class EquipmentSlot {
         renderEngine.removeFromEquipmentSlot(removedEquipment.texture);
         // TODO maybe move to inventory
         if (removedEquipment.typeId === EquipmentSlotId.Engine) {
-            renderEngine.setEngineSpeedLabel(0);
+            renderEngine.setSpeedLabel(0);
         }
 
         return removedEquipment;
