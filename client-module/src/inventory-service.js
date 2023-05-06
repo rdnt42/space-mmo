@@ -25,6 +25,34 @@ export function doubleClickCallback(texture) {
     }
 }
 
+export function dragEndCallback(texture) {
+    let item = texture.textureParentObj;
+    let newIdx;
+    for (const cell of inventory.cargoCells) {
+        if (cell.getCargo() === item) {
+            newIdx = cell.idx;
+            continue;
+        }
+        let hasCollision = hasHalfCollision(texture, cell.texture);
+        if (hasCollision) {
+            newIdx = cell.idx;
+            break;
+        }
+    }
+    console.log(`idx after dragging ${newIdx}`);
+    inventory.moveCargoToCell(item, newIdx);
+}
+
+function hasHalfCollision(r1, r2) {
+    let r1Bounds = r1.getBounds();
+    let r2Bounds = r2.getBounds();
+
+    return r1Bounds.x + r1Bounds.width * 0.5 > r2Bounds.x &&
+        r1Bounds.x < r2Bounds.x + r2Bounds.width * 0.5 &&
+        r1Bounds.y + r1Bounds.height * 0.5 > r2Bounds.y &&
+        r1Bounds.y < r2Bounds.y + r2Bounds.height * 0.5;
+}
+
 export function getEngine() {
     return inventory.getEquipment(EquipmentSlotId.Engine);
 }

@@ -1,4 +1,4 @@
-import * as renderEngine from "../render/engine.js";
+import * as render from "../render/render.js";
 
 export class CargoCell {
     texture;
@@ -9,7 +9,7 @@ export class CargoCell {
     constructor(cargo, idx) {
         this.#cargo = cargo;
         this.idx = idx;
-        this.texture = renderEngine.initCargoCell(idx);
+        this.texture = render.initCargoCell(idx);
     }
 
     getCargo() {
@@ -17,7 +17,8 @@ export class CargoCell {
     }
 
     addToCargoCell(cargo) {
-        renderEngine.addToCargoCell(cargo.texture, this.texture);
+        render.addToCargoCell(cargo.texture, this.texture);
+
         this.#cargo = cargo;
         cargo.slotId = this.idx;
     }
@@ -27,7 +28,7 @@ export class CargoCell {
 
         let removedCargo = this.#cargo;
         this.#cargo = undefined;
-        renderEngine.removeFromCargoCell(removedCargo.texture);
+        render.removeFromCargoCell(removedCargo.texture);
         removedCargo.slotId = null;
 
         return removedCargo;

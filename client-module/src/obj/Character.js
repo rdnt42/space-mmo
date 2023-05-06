@@ -1,4 +1,4 @@
-import * as renderEngine from "../render/engine.js";
+import * as renderEngine from "../render/render.js";
 
 export class Character {
     characterName;

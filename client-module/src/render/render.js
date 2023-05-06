@@ -1,6 +1,6 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
-import {doubleClickCallback} from "../inventory-service.js";
+import {doubleClickCallback, dragEndCallback} from "../inventory-service.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
@@ -328,15 +328,23 @@ function onDragMove(event) {
     }
 }
 
+// TODO conflict with click
+let start;
+
 function onDragStart() {
+    start = Date.now();
     dragTarget = this;
     app.stage.on('pointermove', onDragMove);
+    console.log("satrt pointermove")
 }
 
 function onDragEnd() {
     if (dragTarget) {
         app.stage.off('pointermove', onDragMove);
         dragTarget = null;
+        if ((Date.now() - start) > 100) {
+            dragEndCallback(this);
+        }
     }
 }
 

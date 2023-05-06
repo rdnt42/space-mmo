@@ -1,7 +1,7 @@
 import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
-import * as renderEngine from "../render/engine.js";
+import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
@@ -50,6 +50,20 @@ export class Inventory {
         socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId))
 
         return true;
+    }
+
+    moveCargoToCell(cargo, idx) {
+        let cell = this.#getCargoCell(cargo);
+        if (cell !== undefined) {
+            cell.removeFromCargoCell();
+        }
+        // TODO rework this
+        if (idx === undefined) {
+            this.#equip(cargo);
+        } else {
+            (this.cargoCells)[idx].addToCargoCell(cargo);
+        }
+        socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId));
     }
 
     #getCargoCell(equipment) {

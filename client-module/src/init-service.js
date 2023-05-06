@@ -1,6 +1,6 @@
 import * as main from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
-import * as renderEngine from "./render/engine.js";
+import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
 

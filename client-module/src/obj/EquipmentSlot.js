@@ -1,4 +1,4 @@
-import * as renderEngine from "../render/engine.js";
+import * as renderEngine from "../render/render.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 
 export class EquipmentSlot {
