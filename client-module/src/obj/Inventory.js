@@ -74,7 +74,7 @@ export class Inventory {
         }
     }
 
-    // #64 TODO sending in one place
+    // #64 TODO sending in one place and make equip/unequip func
     #equip(equipment) {
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let cell = this.#getCargoCell(equipment);
@@ -86,7 +86,7 @@ export class Inventory {
         equipmentSlot.addToEquipmentSlot(removedFromCell);
         if (removedFromSlot !== undefined) {
             cell.addToCargoCell(removedFromSlot);
-            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, removedFromSlot.slotId))
+            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, removedFromSlot.slotId));
         }
     }
 

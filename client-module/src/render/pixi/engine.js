@@ -64,7 +64,6 @@ function startEngineTimer() {
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
-        updateSpeedLabel(speedLabel);
         app.stage.sortChildren();
     });
 }
@@ -110,11 +109,6 @@ function getY(currY, diffY) {
 function updateLocationText(posInfoLabel) {
     let playerCharacter = characterService.getPlayerCharacter();
     posInfoLabel.text = playerCharacter.getLocation();
-}
-
-function updateSpeedLabel(speedLabel) {
-    let playerCharacter = characterService.getPlayerCharacter();
-    speedLabel.text = Math.round(playerCharacter.movement.speed);
 }
 
 function updateBackground(bg, div) {
@@ -342,16 +336,21 @@ function removeFromCargoCell(cargo) {
     cargo.visible = false;
 }
 
-function addToEquipmentSlot(item, slot) {
-    item.position.set(slot.x, slot.y);
-    item.scale.set(1);
-    item.visible = true;
+function addToEquipmentSlot(equipment, slot) {
+    equipment.position.set(slot.x, slot.y);
+    equipment.scale.set(1);
+    equipment.visible = true;
 }
 
 function removeFromEquipmentSlot(equipment) {
     equipment.visible = false;
 }
 
+function setSpeedLabel(speed) {
+    speedLabel.text = speed;
+}
+
+// TODO change this realisation
 export class PixiEngine {
     constructor() {
         initEngine();
@@ -407,6 +406,10 @@ export class PixiEngine {
 
     startEngineTimer() {
         startEngineTimer();
+    }
+
+    setEngineSpeedLabel(speed) {
+        setSpeedLabel(speed);
     }
 
 }
