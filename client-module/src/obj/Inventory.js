@@ -46,24 +46,15 @@ export class Inventory {
             return false;
         }
 
-        cell.addToCargoCell(cargo);
-        socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId))
-
-        return true;
+        return this.addCargoBySlot(cargo, cell.idx);
     }
 
-    moveCargoToCell(cargo, idx) {
-        let cell = this.#getCargoCell(cargo);
-        if (cell !== undefined) {
-            cell.removeFromCargoCell();
-        }
-        // TODO rework this
-        if (idx === undefined) {
-            this.#equip(cargo);
-        } else {
-            (this.cargoCells)[idx].addToCargoCell(cargo);
-        }
+    addCargoBySlot(cargo, slotId) {
+        let cell = this.cargoCells[slotId];
+        cell.addToCargoCell(cargo);
         socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId));
+
+        return true;
     }
 
     #getCargoCell(equipment) {
@@ -80,28 +71,30 @@ export class Inventory {
         return this.#getCargoCell(undefined);
     }
 
-    swapEquipment(equipment) {
-        if (equipment.slotId === null) {
+    changeEquipmentSlot(equipment) {
+        let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
+        let currEquipment = equipmentSlot.getEquipment();
+
+        if (equipment.slotId !== null && currEquipment === undefined) {
+            this.#equip(equipment);
+        } else if (currEquipment === equipment) {
             this.#unequip(equipment);
         } else {
-            this.#equip(equipment);
+            this.#swap(equipment, currEquipment);
         }
     }
 
-    // #64 TODO sending in one place and make equip/unequip func
     #equip(equipment) {
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
-        let cell = this.#getCargoCell(equipment);
-
-        let removedFromSlot = equipmentSlot.removeFromEquipmentSlot();
-        let removedFromCell = cell.removeFromCargoCell();
+        this.cargoCells[equipment.typeId].removeFromCargoCell();
+        equipmentSlot.addToEquipmentSlot(equipment);
         socket.sendMessage(new CharacterItemRequest(equipment.id, equipment.slotId));
+    }
 
-        equipmentSlot.addToEquipmentSlot(removedFromCell);
-        if (removedFromSlot !== undefined) {
-            cell.addToCargoCell(removedFromSlot);
-            socket.sendMessage(new CharacterItemRequest(removedFromSlot.id, removedFromSlot.slotId));
-        }
+    #swap(eqAdd, eqRemove) {
+        let currSlotId = eqAdd.slotId;
+        this.#equip(eqAdd);
+        this.addCargoBySlot(eqRemove, currSlotId);
     }
 
     #unequip(equipment) {

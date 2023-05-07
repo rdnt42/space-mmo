@@ -335,7 +335,6 @@ function onDragStart() {
     start = Date.now();
     dragTarget = this;
     app.stage.on('pointermove', onDragMove);
-    console.log("satrt pointermove")
 }
 
 function onDragEnd() {

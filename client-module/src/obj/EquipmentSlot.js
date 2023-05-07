@@ -11,6 +11,7 @@ export class EquipmentSlot {
 
     addToEquipmentSlot(equipment) {
         this.#equipment = equipment;
+        this.#equipment.slotId = null;
         renderEngine.addToEquipmentSlot(equipment.texture, this.texture);
         if (this.#equipment.typeId === EquipmentSlotId.Engine) {
             renderEngine.setSpeedLabel(this.#equipment.maxSpeed);

@@ -21,7 +21,7 @@ export function initInventory(slots, items) {
 
 export function doubleClickCallback(texture) {
     if (texture.textureParentObj instanceof Item) {
-        inventory.swapEquipment(texture.textureParentObj);
+        inventory.changeEquipmentSlot(texture.textureParentObj);
     }
 }
 
@@ -40,7 +40,7 @@ export function dragEndCallback(texture) {
         }
     }
     console.log(`idx after dragging ${newIdx}`);
-    inventory.moveCargoToCell(item, newIdx);
+    inventory.addCargoBySlot(item, newIdx);
 }
 
 function hasHalfCollision(r1, r2) {
