@@ -3,7 +3,7 @@ import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 
-// TODO naming conventions, to lot code
+// TODO naming conventions, too lot code
 export class Inventory {
     isOpen = false;
     cargoCells = [];
@@ -86,6 +86,7 @@ export class Inventory {
         }
     }
 
+    // TODO too lot branches
     moveItem(item) {
         if (item.slotId === null) { // unequip equipment
             let equipmentSlot = this.equipmentSlots.get(item.typeId);
@@ -102,8 +103,13 @@ export class Inventory {
             let oldCell = this.#getCargoCell(item);
             let newCell = this.#getCollisionCell(item);
 
+            let eqSlot;
             if (newCell !== undefined) {
                 oldCell.swapCargo(newCell);
+            } else if ((eqSlot = this.#getCollisionEquipmentSlot(item)) !== undefined && eqSlot.getEquipment() === undefined) {
+                this.#equip(item);
+            } else if (eqSlot.getEquipment() !== undefined) {
+                this.#swapEquipment(item, eqSlot.getEquipment())
             } else {
                 oldCell.center();
             }
@@ -115,6 +121,15 @@ export class Inventory {
             if (renderEngine.hasHalfCollision(item.texture, cell.texture)) {
                 return cell;
             }
+        }
+
+        return undefined;
+    }
+
+    #getCollisionEquipmentSlot(item) {
+        let equipmentSlot = this.equipmentSlots.get(item.typeId);
+        if (renderEngine.hasHalfCollision(item.texture, equipmentSlot.texture)) {
+            return equipmentSlot;
         }
 
         return undefined;
