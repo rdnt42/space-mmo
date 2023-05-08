@@ -36,8 +36,8 @@ export function initEngine() {
         resizeTo: window
     });
     app.stage.hitArea = app.screen;
-    app.stage.on('pointerup', onDragEnd);
-    app.stage.on('pointerupoutside', onDragEnd);
+    // app.stage.on('pointerup', onDragEnd);
+    // app.stage.on('pointerupoutside', onDragEnd);
 
     windowWidth = Math.floor(window.innerWidth / 2);
     windowHeight = Math.floor(window.innerHeight / 2);
@@ -298,8 +298,8 @@ export function initItem(typeId, subTypeId) {
     return sprite;
 }
 
-export function addToCargoCell(cargo, hold) {
-    cargo.position.set(hold.x + hold.width / 2, hold.y);
+export function addToCargoCell(cargo, cell) {
+    cargo.position.set(cell.x + cell.width / 2, cell.y);
     cargo.scale.set(0.5);
     cargo.visible = true;
 }
@@ -322,6 +322,16 @@ export function setSpeedLabel(speed) {
     speedLabel.text = speed;
 }
 
+export function hasHalfCollision(r1, r2) {
+    let r1Bounds = r1.getBounds();
+    let r2Bounds = r2.getBounds();
+
+    return r1Bounds.x + r1Bounds.width * 0.5 > r2Bounds.x &&
+        r1Bounds.x < r2Bounds.x + r2Bounds.width * 0.5 &&
+        r1Bounds.y + r1Bounds.height * 0.5 > r2Bounds.y &&
+        r1Bounds.y < r2Bounds.y + r2Bounds.height * 0.5;
+}
+
 function onDragMove(event) {
     if (dragTarget) {
         dragTarget.parent.toLocal(event.global, null, dragTarget.position);
@@ -340,10 +350,10 @@ function onDragStart() {
 function onDragEnd() {
     if (dragTarget) {
         app.stage.off('pointermove', onDragMove);
-        dragTarget = null;
-        if ((Date.now() - start) > 100) {
-            dragEndCallback(this);
+        if ((Date.now() - start) > 250) {
+            dragEndCallback(dragTarget);
         }
+        dragTarget = null;
     }
 }
 

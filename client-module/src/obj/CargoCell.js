@@ -1,4 +1,6 @@
 import * as render from "../render/render.js";
+import * as socket from "../websocket-service.js";
+import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 export class CargoCell {
     texture;
@@ -17,10 +19,13 @@ export class CargoCell {
     }
 
     addToCargoCell(cargo) {
-        render.addToCargoCell(cargo.texture, this.texture);
-
         this.#cargo = cargo;
-        cargo.slotId = this.idx;
+
+        if (cargo !== undefined) {
+            render.addToCargoCell(cargo.texture, this.texture);
+            cargo.slotId = this.idx;
+            socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId));
+        }
     }
 
     removeFromCargoCell() {
@@ -31,6 +36,13 @@ export class CargoCell {
         render.removeFromCargoCell(removedCargo.texture);
         removedCargo.slotId = null;
 
+
         return removedCargo;
+    }
+
+    swapCargo(newCell) {
+        let newItem = newCell.getCargo();
+        newCell.addToCargoCell(this.#cargo);
+        this.addToCargoCell(newItem);
     }
 }

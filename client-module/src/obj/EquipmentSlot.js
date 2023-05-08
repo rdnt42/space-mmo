@@ -1,5 +1,7 @@
 import * as renderEngine from "../render/render.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
+import * as socket from "../websocket-service.js";
+import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 export class EquipmentSlot {
     texture;
@@ -16,6 +18,7 @@ export class EquipmentSlot {
         if (this.#equipment.typeId === EquipmentSlotId.Engine) {
             renderEngine.setSpeedLabel(this.#equipment.maxSpeed);
         }
+        socket.sendMessage(new CharacterItemRequest(equipment.id, equipment.slotId));
     }
 
     removeFromEquipmentSlot() {

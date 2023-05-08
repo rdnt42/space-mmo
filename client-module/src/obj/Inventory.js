@@ -2,8 +2,6 @@ import {CargoCell} from "./CargoCell.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
-import * as socket from "../websocket-service.js";
-import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 // TODO naming conventions
 export class Inventory {
@@ -52,7 +50,6 @@ export class Inventory {
     addCargoBySlot(cargo, slotId) {
         let cell = this.cargoCells[slotId];
         cell.addToCargoCell(cargo);
-        socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId));
 
         return true;
     }
@@ -84,11 +81,21 @@ export class Inventory {
         }
     }
 
+    moveItem(item) {
+        let oldCell = this.#getCargoCell(item);
+        for (const cell of this.cargoCells) {
+            if (renderEngine.hasHalfCollision(item.texture, cell.texture)) {
+                oldCell.swapCargo(cell);
+                return;
+            }
+        }
+        oldCell.addToCargoCell(item);
+    }
+
     #equip(equipment) {
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
-        this.cargoCells[equipment.typeId].removeFromCargoCell();
+        this.cargoCells[equipment.slotId].removeFromCargoCell();
         equipmentSlot.addToEquipmentSlot(equipment);
-        socket.sendMessage(new CharacterItemRequest(equipment.id, equipment.slotId));
     }
 
     #swap(eqAdd, eqRemove) {
