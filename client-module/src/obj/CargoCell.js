@@ -45,4 +45,8 @@ export class CargoCell {
         newCell.addToCargoCell(this.#cargo);
         this.addToCargoCell(newItem);
     }
+
+    center() {
+        render.addToCargoCell(this.#cargo.texture, this.texture);
+    }
 }

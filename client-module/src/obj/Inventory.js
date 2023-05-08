@@ -3,7 +3,7 @@ import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 
-// TODO naming conventions
+// TODO naming conventions, to lot code
 export class Inventory {
     isOpen = false;
     cargoCells = [];
@@ -39,10 +39,7 @@ export class Inventory {
 
     addCargo(cargo) {
         let cell = this.#getFreeCargoCell();
-        if (cell === undefined) {
-            alert("Нет свободного места в трюме!")
-            return false;
-        }
+        if (cell === undefined) return false;
 
         return this.addCargoBySlot(cargo, cell.idx);
     }
@@ -65,7 +62,12 @@ export class Inventory {
     }
 
     #getFreeCargoCell() {
-        return this.#getCargoCell(undefined);
+        let cell = this.#getCargoCell(undefined);
+        if (cell === undefined) {
+            alert("Нет свободного места в трюме!")
+        }
+
+        return cell;
     }
 
     changeEquipmentSlot(equipment) {
@@ -75,21 +77,47 @@ export class Inventory {
         if (equipment.slotId !== null && currEquipment === undefined) {
             this.#equip(equipment);
         } else if (currEquipment === equipment) {
-            this.#unequip(equipment);
+            let cell = this.#getFreeCargoCell();
+            if (cell === undefined) return;
+
+            this.#unequipTo(equipment, cell.idx);
         } else {
-            this.#swap(equipment, currEquipment);
+            this.#swapEquipment(equipment, currEquipment);
         }
     }
 
     moveItem(item) {
-        let oldCell = this.#getCargoCell(item);
-        for (const cell of this.cargoCells) {
-            if (renderEngine.hasHalfCollision(item.texture, cell.texture)) {
-                oldCell.swapCargo(cell);
-                return;
+        if (item.slotId === null) { // unequip equipment
+            let equipmentSlot = this.equipmentSlots.get(item.typeId);
+            let newCell = this.#getCollisionCell(item);
+
+            if (newCell !== undefined && newCell.getCargo() !== undefined) {
+                this.#swapEquipment(newCell.getCargo(), item);
+            } else if (newCell !== undefined) {
+                this.#unequipTo(item, newCell.idx);
+            } else {
+                equipmentSlot.center();
+            }
+        } else { // moving in hold
+            let oldCell = this.#getCargoCell(item);
+            let newCell = this.#getCollisionCell(item);
+
+            if (newCell !== undefined) {
+                oldCell.swapCargo(newCell);
+            } else {
+                oldCell.center();
             }
         }
-        oldCell.addToCargoCell(item);
+    }
+
+    #getCollisionCell(item) {
+        for (const cell of this.cargoCells) {
+            if (renderEngine.hasHalfCollision(item.texture, cell.texture)) {
+                return cell;
+            }
+        }
+
+        return undefined;
     }
 
     #equip(equipment) {
@@ -98,21 +126,23 @@ export class Inventory {
         equipmentSlot.addToEquipmentSlot(equipment);
     }
 
-    #swap(eqAdd, eqRemove) {
+    #swapEquipment(eqAdd, eqRemove) {
+        if (eqAdd.typeId !== eqRemove.typeId) {
+            alert("Недопустимый тип оборудования для замены!")
+        }
         let currSlotId = eqAdd.slotId;
         this.#equip(eqAdd);
         this.addCargoBySlot(eqRemove, currSlotId);
     }
 
-    #unequip(equipment) {
-        if (this.#getFreeCargoCell() === undefined) {
-            alert("В трюме нет места, чтобы снять оборудование!")
-            return
+    #unequipTo(equipment, slotId) {
+        if (this.cargoCells[slotId].getCargo() !== undefined) {
+            alert("Выбранная ячейка занята!");
         }
 
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let removedEquipment = equipmentSlot.removeFromEquipmentSlot();
-        this.addCargo(removedEquipment);
+        this.addCargoBySlot(removedEquipment, slotId);
     }
 
     changeState() {
