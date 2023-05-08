@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 public class Item {
     private long id;
     private Integer slotId;
-    private int itemTypeId;
+    private int typeId;
     private Integer upgradeLevel;
     private Integer cost;
     private String name;

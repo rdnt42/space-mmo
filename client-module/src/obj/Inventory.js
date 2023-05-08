@@ -108,7 +108,7 @@ export class Inventory {
                 oldCell.swapCargo(newCell);
             } else if ((eqSlot = this.#getCollisionEquipmentSlot(item)) !== undefined && eqSlot.getEquipment() === undefined) {
                 this.#equip(item);
-            } else if (eqSlot.getEquipment() !== undefined) {
+            } else if (eqSlot !== undefined && eqSlot.getEquipment() !== undefined) {
                 this.#swapEquipment(item, eqSlot.getEquipment())
             } else {
                 oldCell.center();

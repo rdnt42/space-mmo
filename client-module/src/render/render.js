@@ -36,8 +36,6 @@ export function initEngine() {
         resizeTo: window
     });
     app.stage.hitArea = app.screen;
-    // app.stage.on('pointerup', onDragEnd);
-    // app.stage.on('pointerupoutside', onDragEnd);
 
     windowWidth = Math.floor(window.innerWidth / 2);
     windowHeight = Math.floor(window.innerHeight / 2);
@@ -263,14 +261,14 @@ export function initEquipmentSlot(equipmentType) {
     return sprite;
 }
 
-export function initItem(typeId, subTypeId) {
+export function initItem(typeId, equipmentType) {
     let url;
     switch (typeId) {
         case EquipmentSlotId.Engine:
-            url = "./images/engine" + subTypeId + ".png";
+            url = "./images/engine" + equipmentType + ".png";
             break;
         case EquipmentSlotId.FuelTank:
-            url = "./images/fuel_tank" + subTypeId + ".png";
+            url = "./images/fuel_tank" + equipmentType + ".png";
             break;
     }
     const texture = pixi.Texture.from(url);

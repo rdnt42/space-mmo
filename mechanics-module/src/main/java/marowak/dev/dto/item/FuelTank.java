@@ -8,4 +8,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class FuelTank extends Item {
+    private int capacity;
+    private int equipmentTypeId;
 }

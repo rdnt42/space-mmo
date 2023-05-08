@@ -1,4 +1,4 @@
-package marowak.dev.dto.item;
+package message;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +7,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class Engine extends Item {
-    private int speed;
-    private int jump;
+public class FuelTankMessage extends ItemMessage {
+    private int capacity;
+
     private int equipmentTypeId;
 }
+

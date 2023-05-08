@@ -6,21 +6,21 @@ export class Item {
 
     id;
     typeId;
-    subTypeId;
+    equipmentTypeId;
     slotId;
 
     constructor(item) {
         this.id = item.id;
-        this.typeId = item.itemTypeId;
-        this.subTypeId = item.subTypeId;
+        this.typeId = item.typeId;
+        this.equipmentTypeId = item.equipmentTypeId;
         this.slotId = item.slotId;
         this.additionalFields(item);
-        this.texture = renderEngine.initItem(this.typeId, this.subTypeId);
+        this.texture = renderEngine.initItem(this.typeId, this.equipmentTypeId);
         this.texture['textureParentObj'] = this;
     }
 
     additionalFields(item) {
-        if (item.itemTypeId === EquipmentSlotId.Engine) {
+        if (item.typeId === EquipmentSlotId.Engine) {
             this.maxSpeed = item.speed;
         }
     }

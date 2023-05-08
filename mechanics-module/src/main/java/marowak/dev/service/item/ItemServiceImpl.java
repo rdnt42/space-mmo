@@ -6,16 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
 import marowak.dev.dto.item.Engine;
+import marowak.dev.dto.item.FuelTank;
 import marowak.dev.dto.item.Item;
 import marowak.dev.request.CharacterInventoryItemRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
 import message.EngineMessage;
+import message.FuelTankMessage;
 import message.ItemMessage;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 
 @Slf4j
@@ -58,11 +59,17 @@ public class ItemServiceImpl implements ItemService {
         playerInventoryMap.putIfAbsent(message.getCharacterName(), createInventory());
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
+        Item item;
         if (message instanceof EngineMessage engine) {
-            Item item = engineMessageToItem.apply(engine);
-            inventory.items().put(item.getId(), item);
-            log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
+            item = BuilderHelper.engineMessageToItem.apply(engine);
+        } else if (message instanceof FuelTankMessage fuelTank) {
+            item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
+        } else {
+            throw new IllegalArgumentException("Unknown Item message, key: " + message.getKey());
         }
+
+        inventory.items().put(item.getId(), item);
+        log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
     }
 
     @Override
@@ -71,30 +78,23 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow();
         Item item = Optional.ofNullable(inventory.items().get(request.itemId()))
                 .orElseThrow();
+
+        Item newItem;
         if (item instanceof Engine engine) {
-            Item newItem = Engine.builder()
-                    .id(item.getId())
-                    .slotId(request.slotId())
-                    .itemTypeId(item.getItemTypeId())
-                    .upgradeLevel(item.getUpgradeLevel())
-                    .cost(item.getCost())
-                    .name(item.getName())
-                    .dsc(item.getDsc())
-                    .speed(engine.getSpeed())
-                    .jump(engine.getJump())
-                    .subTypeId(engine.getSubTypeId())
-                    .build();
-
-            playerInventoryMap.get(playerName)
-                    .items()
-                    .put(newItem.getId(), newItem);
-
-            sendItemUpdate(newItem);
-            log.info("updateInventory id: {}, slot: {}", request.itemId(), request.slotId());
-            return newItem;
+            newItem = BuilderHelper.engineToNewEngine.apply(engine, request);
+        } else if (item instanceof FuelTank fuelTank) {
+            newItem = BuilderHelper.tankToNewTank.apply(fuelTank, request);
+        } else {
+            throw new UnsupportedOperationException("Cannot convert item with id: " + item.getId() + ", and type: " + item.getTypeId());
         }
 
-        return null;
+        playerInventoryMap.get(playerName)
+                .items()
+                .put(newItem.getId(), newItem);
+        sendItemUpdate(newItem);
+        log.info("updateInventory id: {}, slot: {}", request.itemId(), request.slotId());
+
+        return newItem;
     }
 
     private CharacterInventory createInventory() {
@@ -103,20 +103,6 @@ public class ItemServiceImpl implements ItemService {
                 .items(new HashMap<>())
                 .build();
     }
-
-    private final Function<EngineMessage, Item> engineMessageToItem = message -> Engine.builder()
-            .id(message.getId())
-            .slotId(message.getSlotId())
-            .itemTypeId(message.getItemTypeId())
-            .upgradeLevel(message.getUpgradeLevel())
-            .cost(message.getCost())
-            .name(message.getName())
-            .dsc(message.getDsc())
-            .speed(message.getSpeed())
-            .jump(message.getJump())
-            .subTypeId(message.getEngineType())
-            .build();
-
 
     private void sendItemUpdate(Item item) {
         ItemMessage message = ItemMessage.builder()

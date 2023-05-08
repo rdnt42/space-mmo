@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = EngineMessage.class, name = "engine"),
+        @JsonSubTypes.Type(value = FuelTankMessage.class, name = "fuel_tank"),
 })
 @Getter
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class ItemMessage {
 
     private String characterName;
 
-    private int itemTypeId;
+    private int typeId;
 
     private Integer upgradeLevel;
 
