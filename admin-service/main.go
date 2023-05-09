@@ -27,6 +27,7 @@ func main() {
 	group := server.Group("/api")
 
 	initEngines(group)
+	initEngineTypes(group)
 
 	err := server.Run("localhost:8080")
 	if err != nil {
@@ -56,4 +57,11 @@ func initEngines(rg *gin.RouterGroup) {
 	router.GET("/:engineId", services.GetEngine)
 	router.PUT("/:engineId", services.UpdateEngine)
 	router.DELETE("/:engineId", services.DeleteEngine)
+}
+
+func initEngineTypes(rg *gin.RouterGroup) {
+	services.NewEngineController(DB)
+	router := rg.Group("engine_types")
+
+	router.GET("/", services.GetEngineTypes)
 }

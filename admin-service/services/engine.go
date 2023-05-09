@@ -25,14 +25,21 @@ func CreateEngine(ctx *gin.Context) {
 		return
 	}
 
+	var freeSlot int16
+	db.Raw(`select slot_id + 1 as gap from (
+         			select slot_id, lead(slot_id) over (order by slot_id) as next_nr
+         			from items
+         			where character_name = ?) nr 
+        		where slot_id + 1 <> next_nr`, req.CharacterName).Scan(&freeSlot)
+
 	equipment := &models.Item{
-		SlotId:        req.SlotId,
 		CharacterName: req.CharacterName,
 		ItemTypeId:    constants.EngineItemTypeId,
 		UpgradeLevel:  req.UpgradeLevel,
 		Cost:          req.Cost,
-		NameRu:        req.Name,
-		DscRu:         req.Dsc,
+		NameRu:        req.NameRu,
+		DscRu:         req.DscRu,
+		SlotId:        freeSlot,
 	}
 
 	newEngine := &models.Engine{
