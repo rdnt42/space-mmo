@@ -75,13 +75,14 @@ func UpdateEngine(ctx *gin.Context) {
 		return
 	}
 
-	engine.Item.CharacterName = req.CharacterName
 	engine.Item.UpgradeLevel = *req.UpgradeLevel
 	engine.Item.Cost = *req.Cost
+	engine.Item.DscRu = req.DscRu
+	engine.Item.NameRu = req.NameRu
 	engine.Speed = *req.Speed
 	engine.Jump = *req.Jump
 
-	result = db.Save(&engine)
+	result = db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&engine)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, result.Error.Error())
 		return

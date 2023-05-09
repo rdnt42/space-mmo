@@ -40,12 +40,15 @@ export const EngineEdit = () => (
         <SimpleForm>
             <ReferenceInput source="engineId" reference="engines"/>
             <NumberInput disabled source="id"/>
-            <TextInput source="characterName"/>
-            <NumberInput source="itemTypeId"/>
+            <TextInput source="characterName" disabled/>
+            <NumberInput source="itemTypeId" disabled/>
+            <NumberInput source="engineTypeId" disabled/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
             <NumberInput source="speed"/>
             <NumberInput source="jump"/>
+            <TextInput source="nameRu" fullWidth/>
+            <TextInput source="dscRu" fullWidth/>
         </SimpleForm>
     </Edit>
 );

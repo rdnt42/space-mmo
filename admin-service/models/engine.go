@@ -21,11 +21,10 @@ type CreateEngineRequest struct {
 }
 
 type UpdateEngineRequest struct {
-	CharacterName string `json:"characterName"`
-	UpgradeLevel  *int16 `json:"upgradeLevel" binding:"required"`
-	Cost          *int32 `json:"cost" binding:"required"`
-	Speed         *int16 `json:"speed" binding:"required"`
-	Jump          *int32 `json:"jump" binding:"required"`
-	Name          string `json:"name"`
-	Dsc           string `json:"dsc"`
+	UpgradeLevel *int16 `json:"upgradeLevel" binding:"required"`
+	Cost         *int32 `json:"cost" binding:"required"`
+	Speed        *int16 `json:"speed" binding:"required"`
+	Jump         *int32 `json:"jump" binding:"required"`
+	NameRu       string `json:"nameRu"`
+	DscRu        string `json:"dscRu"`
 }
