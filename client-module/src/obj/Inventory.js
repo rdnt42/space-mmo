@@ -89,28 +89,38 @@ export class Inventory {
     // TODO too lot branches
     moveItem(item) {
         if (item.slotId === null) { // unequip equipment
-            let equipmentSlot = this.equipmentSlots.get(item.typeId);
+            let eqSlot = this.equipmentSlots.get(item.typeId);
             let newCell = this.#getCollisionCell(item);
 
+            let success = true;
             if (newCell !== undefined && newCell.getCargo() !== undefined) {
-                this.#swapEquipment(newCell.getCargo(), item);
+                success = this.#swapEquipment(newCell.getCargo(), item);
             } else if (newCell !== undefined) {
-                this.#unequipTo(item, newCell.idx);
+                success = this.#unequipTo(item, newCell.idx);
             } else {
-                equipmentSlot.center();
+                eqSlot.center();
+            }
+
+            if (!success) {
+                eqSlot.center();
             }
         } else { // moving in hold
             let oldCell = this.#getCargoCell(item);
             let newCell = this.#getCollisionCell(item);
 
             let eqSlot;
+            let success = true;
             if (newCell !== undefined) {
                 oldCell.swapCargo(newCell);
             } else if ((eqSlot = this.#getCollisionEquipmentSlot(item)) !== undefined && eqSlot.getEquipment() === undefined) {
-                this.#equip(item);
+                success = this.#equip(item);
             } else if (eqSlot !== undefined && eqSlot.getEquipment() !== undefined) {
-                this.#swapEquipment(item, eqSlot.getEquipment())
+                success = this.#swapEquipment(item, eqSlot.getEquipment())
             } else {
+                oldCell.center();
+            }
+
+            if (!success) {
                 oldCell.center();
             }
         }
@@ -139,25 +149,33 @@ export class Inventory {
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         this.cargoCells[equipment.slotId].removeFromCargoCell();
         equipmentSlot.addToEquipmentSlot(equipment);
+
+        return true;
     }
 
     #swapEquipment(eqAdd, eqRemove) {
         if (eqAdd.typeId !== eqRemove.typeId) {
             alert("Недопустимый тип оборудования для замены!")
+            return false;
         }
         let currSlotId = eqAdd.slotId;
         this.#equip(eqAdd);
         this.addCargoBySlot(eqRemove, currSlotId);
+
+        return true;
     }
 
     #unequipTo(equipment, slotId) {
         if (this.cargoCells[slotId].getCargo() !== undefined) {
             alert("Выбранная ячейка занята!");
+            return false;
         }
 
         let equipmentSlot = this.equipmentSlots.get(equipment.typeId);
         let removedEquipment = equipmentSlot.removeFromEquipmentSlot();
         this.addCargoBySlot(removedEquipment, slotId);
+
+        return true;
     }
 
     changeState() {

@@ -238,7 +238,7 @@ export function initCargoCell(idx) {
 export function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
-    sprite.visible = true;
+    sprite.visible = false;
     sprite.width = 60;
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
@@ -256,7 +256,7 @@ export function initEquipmentSlot(equipmentType) {
             sprite.position.set(350, 335);
             break;
         case EquipmentSlotId.CargoHook:
-            sprite.position.set(200, 550);
+            sprite.position.set(217, 438);
             break;
     }
     INVENTORY_CONTAINER.addChild(sprite);
