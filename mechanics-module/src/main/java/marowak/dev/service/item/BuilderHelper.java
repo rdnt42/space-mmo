@@ -1,9 +1,11 @@
 package marowak.dev.service.item;
 
+import marowak.dev.dto.item.CargoHook;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.FuelTank;
 import marowak.dev.dto.item.Item;
 import marowak.dev.request.CharacterInventoryItemRequest;
+import message.CargoHookMessage;
 import message.EngineMessage;
 import message.FuelTankMessage;
 
@@ -65,5 +67,32 @@ public class BuilderHelper {
                     .dsc(fuelTank.getDsc())
                     .capacity(fuelTank.getCapacity())
                     .equipmentTypeId(fuelTank.getEquipmentTypeId())
+                    .build();
+
+    public static final Function<CargoHookMessage, Item> cargoHookMessageToItem = message -> CargoHook.builder()
+            .id(message.getId())
+            .slotId(message.getSlotId())
+            .typeId(message.getTypeId())
+            .upgradeLevel(message.getUpgradeLevel())
+            .cost(message.getCost())
+            .name(message.getName())
+            .dsc(message.getDsc())
+            .loadCapacity(message.getLoadCapacity())
+            .radius(message.getRadius())
+            .equipmentTypeId(message.getEquipmentTypeId())
+            .build();
+
+    public static final BiFunction<CargoHook, CharacterInventoryItemRequest, CargoHook> cargoHookToNewHook =
+            (cargoHook, request) -> CargoHook.builder()
+                    .id(cargoHook.getId())
+                    .slotId(request.slotId())
+                    .typeId(cargoHook.getTypeId())
+                    .upgradeLevel(cargoHook.getUpgradeLevel())
+                    .cost(cargoHook.getCost())
+                    .name(cargoHook.getName())
+                    .dsc(cargoHook.getDsc())
+                    .loadCapacity(cargoHook.getLoadCapacity())
+                    .radius(cargoHook.getRadius())
+                    .equipmentTypeId(cargoHook.getEquipmentTypeId())
                     .build();
 }

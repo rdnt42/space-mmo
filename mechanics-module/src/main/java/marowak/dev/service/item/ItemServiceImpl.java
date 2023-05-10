@@ -5,12 +5,14 @@ import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
+import marowak.dev.dto.item.CargoHook;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.FuelTank;
 import marowak.dev.dto.item.Item;
 import marowak.dev.request.CharacterInventoryItemRequest;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
+import message.CargoHookMessage;
 import message.EngineMessage;
 import message.FuelTankMessage;
 import message.ItemMessage;
@@ -30,7 +32,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void sendGetItems(ItemMessageKey key, String characterName) {
-        // TODO add other items type
         ItemMessage message = ItemMessage.builder()
                 .key(key)
                 .build();
@@ -60,10 +61,14 @@ public class ItemServiceImpl implements ItemService {
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
         Item item;
+        // TODO maybe polymorphism
         if (message instanceof EngineMessage engine) {
             item = BuilderHelper.engineMessageToItem.apply(engine);
         } else if (message instanceof FuelTankMessage fuelTank) {
             item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
+        } else if (message instanceof CargoHookMessage cargoHook) {
+            item = BuilderHelper.cargoHookMessageToItem.apply(cargoHook);
+
         } else {
             throw new IllegalArgumentException("Unknown Item message, key: " + message.getKey());
         }
@@ -84,6 +89,8 @@ public class ItemServiceImpl implements ItemService {
             newItem = BuilderHelper.engineToNewEngine.apply(engine, request);
         } else if (item instanceof FuelTank fuelTank) {
             newItem = BuilderHelper.tankToNewTank.apply(fuelTank, request);
+        } else if (item instanceof CargoHook cargoHook) {
+            newItem = BuilderHelper.cargoHookToNewHook.apply(cargoHook, request);
         } else {
             throw new UnsupportedOperationException("Cannot convert item with id: " + item.getId() + ", and type: " + item.getTypeId());
         }
@@ -124,6 +131,7 @@ public class ItemServiceImpl implements ItemService {
         baseConfig.add(2); // fuel tank
         baseConfig.add(3); // scanner
         baseConfig.add(4); // radar
+        baseConfig.add(6); // cargo hook
     }
 
 }

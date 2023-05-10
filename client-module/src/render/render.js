@@ -238,7 +238,7 @@ export function initCargoCell(idx) {
 export function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
-    sprite.visible = false;
+    sprite.visible = true;
     sprite.width = 60;
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
@@ -255,6 +255,9 @@ export function initEquipmentSlot(equipmentType) {
         case EquipmentSlotId.Radar:
             sprite.position.set(350, 335);
             break;
+        case EquipmentSlotId.CargoHook:
+            sprite.position.set(200, 550);
+            break;
     }
     INVENTORY_CONTAINER.addChild(sprite);
 
@@ -269,6 +272,9 @@ export function initItem(typeId, equipmentType) {
             break;
         case EquipmentSlotId.FuelTank:
             url = "./images/fuel_tank" + equipmentType + ".png";
+            break;
+        case EquipmentSlotId.CargoHook:
+            url = "./images/cargo_hook" + equipmentType + ".png";
             break;
     }
     const texture = pixi.Texture.from(url);
