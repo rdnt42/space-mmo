@@ -10,12 +10,6 @@ import (
 	"net/http"
 )
 
-var db *gorm.DB
-
-func NewEngineController(DB *gorm.DB) {
-	db = DB
-}
-
 func CreateEngine(ctx *gin.Context) {
 	var req *models.CreateEngineRequest
 
@@ -26,11 +20,7 @@ func CreateEngine(ctx *gin.Context) {
 	}
 
 	var freeSlot int16
-	db.Raw(`select slot_id + 1 as gap from (
-         			select slot_id, lead(slot_id) over (order by slot_id) as next_nr
-         			from items
-         			where character_name = ?) nr 
-        		where slot_id + 1 <> next_nr`, req.CharacterName).Scan(&freeSlot)
+	db.Raw(getFreeSlotSelect(), req.CharacterName, req.CharacterName).Scan(&freeSlot)
 
 	equipment := &models.Item{
 		CharacterName: req.CharacterName,
@@ -117,13 +107,19 @@ func GetEngine(ctx *gin.Context) {
 func DeleteEngine(ctx *gin.Context) {
 	engineId := ctx.Param("engineId")
 	var engine models.Engine
-	result := db.First(&engine, engineId)
+	result := db.Preload(clause.Associations).First(&engine, engineId)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, fmt.Sprintf("Engine with id: %s dosn't exists", engineId))
 		return
 	}
 
 	result = db.Delete(&engine)
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, result.Error)
+		return
+	}
+
+	result = db.Select(clause.Associations).Delete(&engine.Item)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, result.Error)
 		return

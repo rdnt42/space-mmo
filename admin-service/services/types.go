@@ -17,3 +17,14 @@ func GetEngineTypes(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, types)
 }
+
+func GetCargoHookTypes(ctx *gin.Context) {
+	var types []models.CargoHookType
+	results := db.Preload(clause.Associations).Find(&types)
+	if results.Error != nil {
+		ctx.JSON(http.StatusBadRequest, results.Error)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, types)
+}

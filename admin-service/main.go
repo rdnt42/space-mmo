@@ -7,6 +7,7 @@ import (
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 )
 
@@ -28,6 +29,8 @@ func main() {
 
 	initEngines(group)
 	initEngineTypes(group)
+	initCargoHooks(group)
+	initCargoHookTypes(group)
 
 	err := server.Run("localhost:8080")
 	if err != nil {
@@ -40,17 +43,19 @@ func initDb() {
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	DB, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(connStr), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("DB connected")
+	services.CreateDbLink(DB)
 }
 
 func initEngines(rg *gin.RouterGroup) {
-	services.NewEngineController(DB)
 	router := rg.Group("engines")
 	router.POST("/", services.CreateEngine)
 	router.GET("/", services.GetEngines)
@@ -60,8 +65,22 @@ func initEngines(rg *gin.RouterGroup) {
 }
 
 func initEngineTypes(rg *gin.RouterGroup) {
-	services.NewEngineController(DB)
 	router := rg.Group("engine_types")
 
 	router.GET("/", services.GetEngineTypes)
+}
+
+func initCargoHooks(rg *gin.RouterGroup) {
+	router := rg.Group("cargoHooks")
+	router.POST("/", services.CreateCargoHook)
+	router.GET("/", services.GetCargoHooks)
+	router.GET("/:cargoHookId", services.GetCargoHook)
+	router.PUT("/:cargoHookId", services.UpdateCargoHook)
+	router.DELETE("/:cargoHookId", services.DeleteCargoHook)
+}
+
+func initCargoHookTypes(rg *gin.RouterGroup) {
+	router := rg.Group("cargo_hook_types")
+
+	router.GET("/", services.GetCargoHookTypes)
 }
