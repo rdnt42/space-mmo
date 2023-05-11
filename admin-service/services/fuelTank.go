@@ -24,7 +24,7 @@ func CreateFuelTank(ctx *gin.Context) {
 
 	equipment := &models.Item{
 		CharacterName: req.CharacterName,
-		ItemTypeId:    constants.CargoHookItemTypeId,
+		ItemTypeId:    constants.FuelTankItemTypeId,
 		UpgradeLevel:  req.UpgradeLevel,
 		Cost:          req.Cost,
 		NameRu:        req.NameRu,
