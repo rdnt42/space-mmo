@@ -24,7 +24,7 @@ func CreateCargoHook(ctx *gin.Context) {
 
 	equipment := &models.Item{
 		CharacterName: req.CharacterName,
-		ItemTypeId:    constants.CargoHookTypeId,
+		ItemTypeId:    constants.CargoHookItemTypeId,
 		UpgradeLevel:  req.UpgradeLevel,
 		Cost:          req.Cost,
 		NameRu:        req.NameRu,

@@ -31,6 +31,8 @@ func main() {
 	initEngineTypes(group)
 	initCargoHooks(group)
 	initCargoHookTypes(group)
+	initFuelTanks(group)
+	initFuelTankTypes(group)
 
 	err := server.Run("localhost:8080")
 	if err != nil {
@@ -83,4 +85,19 @@ func initCargoHookTypes(rg *gin.RouterGroup) {
 	router := rg.Group("cargo_hook_types")
 
 	router.GET("/", services.GetCargoHookTypes)
+}
+
+func initFuelTanks(rg *gin.RouterGroup) {
+	router := rg.Group("fuelTanks")
+	router.POST("/", services.CreateFuelTank)
+	router.GET("/", services.GetFuelTanks)
+	router.GET("/:fuelTankId", services.GetFuelTank)
+	router.PUT("/:fuelTankId", services.UpdateFuelTank)
+	router.DELETE("/:fuelTankId", services.DeleteFuelTank)
+}
+
+func initFuelTankTypes(rg *gin.RouterGroup) {
+	router := rg.Group("fuel_tank_types")
+
+	router.GET("/", services.GetFuelTankTypes)
 }

@@ -1,6 +1,7 @@
 package constants
 
 const (
-	EngineItemTypeId = 1
-	CargoHookTypeId  = 6
+	EngineItemTypeId    = 1
+	FuelTankItemTypeId  = 2
+	CargoHookItemTypeId = 6
 )
