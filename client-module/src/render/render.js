@@ -37,8 +37,8 @@ export function initEngine() {
     });
     app.stage.hitArea = app.screen;
 
-    windowWidth = Math.floor(window.innerWidth / 2);
-    windowHeight = Math.floor(window.innerHeight / 2);
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
 
     document.body.appendChild(app.view);
     bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
@@ -97,11 +97,11 @@ function createSpritesContainer() {
 }
 
 function getX(currX, diffX) {
-    return currX - diffX + windowWidth;
+    return currX - diffX + windowWidth / 2;
 }
 
 function getY(currY, diffY) {
-    return currY - diffY + windowHeight;
+    return currY - diffY + windowHeight / 2;
 }
 
 function updateLocationText(posInfoLabel) {
@@ -144,9 +144,11 @@ function renderCharacters() {
 
 export function createCharacter(characterName, shipTypeId) {
     let textureArr = [];
-    for (let i = 0; i < shipsCfgMap.get(shipTypeId); i++) {
+    for (let i = 0; i <= shipsCfgMap.get(shipTypeId); i++) {
         let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
         const texture = pixi.Texture.from(img);
+        texture.zIndex = Sort.PLAYER;
+
         textureArr.push(texture);
     }
 
@@ -156,6 +158,8 @@ export function createCharacter(characterName, shipTypeId) {
     sprite.width = 0.75;
     sprite.height = 0.75;
     sprite.animationSpeed = 0.3;
+    sprite.zIndex = Sort.PLAYER;
+
     sprite.play();
 
     spritesContainer.addChild(sprite);

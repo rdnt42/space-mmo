@@ -41,7 +41,7 @@ export function updateOrCreateCharacters(data) {
     for (let playerMotion of data.playersMotions) {
         let character = charactersMap.get(playerMotion.playerName);
         if (character === undefined) {
-            createCharacter(playerMotion.playerName, playerMotion, 2);
+            createCharacter(playerMotion.playerName, playerMotion, 1);
         } else {
             updateCharacter(playerMotion.playerName, playerMotion);
         }
