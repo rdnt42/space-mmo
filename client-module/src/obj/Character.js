@@ -1,6 +1,7 @@
 import * as renderEngine from "../render/render.js";
 
 export class Character {
+    texture;
     characterName;
     movement;
 
@@ -11,7 +12,7 @@ export class Character {
     initCharacter(x, y, angle, speed, shipTypeId) {
         this.movement = new Movement(x, y, angle, speed);
         renderEngine.createCharacterLabel(this.characterName);
-        renderEngine.createCharacter(this.characterName, shipTypeId);
+        this.texture = renderEngine.createCharacter(this.characterName, shipTypeId);
     }
 
     updateCharacter(x, y, angle, speed) {

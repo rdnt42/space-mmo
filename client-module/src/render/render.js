@@ -52,7 +52,6 @@ export function initEngine() {
 
     posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
-
 }
 
 //TODO #24 window.addEventListener('resize', resize);
@@ -130,7 +129,7 @@ function renderCharacters() {
 
     for (let character of characters.values()) {
         let movement = character.movement;
-        let sprite = charactersMap.get(character.characterName);
+        let sprite = character.texture;
 
         let newX = getX(movement.x, x);
         let newY = getY(movement.y, y);
@@ -147,23 +146,21 @@ export function createCharacter(characterName, shipTypeId) {
     for (let i = 0; i <= shipsCfgMap.get(shipTypeId); i++) {
         let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
         const texture = pixi.Texture.from(img);
-        texture.zIndex = Sort.PLAYER;
-
         textureArr.push(texture);
     }
 
     const sprite = new pixi.AnimatedSprite(textureArr);
 
     sprite.anchor.set(0.5, 0.5);
-    sprite.width = 0.75;
-    sprite.height = 0.75;
     sprite.animationSpeed = 0.3;
+    sprite.scale.set(0.75);
     sprite.zIndex = Sort.PLAYER;
 
     sprite.play();
 
     spritesContainer.addChild(sprite);
-    charactersMap.set(characterName, sprite);
+
+    return sprite;
 }
 
 export function createCharacterLabel(characterName) {

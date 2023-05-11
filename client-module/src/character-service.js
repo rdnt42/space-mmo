@@ -16,7 +16,7 @@ export function sendGetInventory() {
 }
 
 export function initMyCharacter(characterName, playerMotion) {
-    createCharacter(characterName, playerMotion, 3);
+    createCharacter(characterName, playerMotion, 1);
     playerCharacterName = characterName;
 }
 
