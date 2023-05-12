@@ -33,11 +33,15 @@ export function getAllCharacters() {
     return charactersMap;
 }
 
+export function updateCharactersData(data) {
+    updateOrCreateCharacters(data);
+    removeUnusedCharacters(data);
+}
+
 export function updateOrCreateCharacters(data) {
     updateCharacter(data.playerMotion.playerName, data.playerMotion);
 
-    //TODO add cleaner for charactersMap who not in response
-    if(data.playersMotions === undefined) return;
+    if (data.playersMotions === undefined) return;
     for (let playerMotion of data.playersMotions) {
         let character = charactersMap.get(playerMotion.playerName);
         if (character === undefined) {
@@ -58,4 +62,22 @@ function createCharacter(characterName, playerMotion, shipTypeId) {
     character.initCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed, shipTypeId);
 
     charactersMap.set(characterName, character);
+}
+
+function removeUnusedCharacters(data) {
+    if (charactersMap.size - 1 === data.playersMotions.length) return;
+
+    let newChars = new Set();
+    for (let motion of data.playersMotions) {
+        newChars.add(motion.playerName);
+    }
+
+    for (let character of charactersMap.values()) {
+        if (character.characterName !== playerCharacterName && !newChars.has(character)) {
+            character.destroy();
+            charactersMap.delete(character.characterName);
+            console.log(`player ${character.characterName} deleted from map`)
+        }
+    }
+
 }

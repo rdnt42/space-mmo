@@ -11,7 +11,6 @@ export class Character {
 
     initCharacter(x, y, angle, speed, shipTypeId) {
         this.movement = new Movement(x, y, angle, speed);
-        renderEngine.createCharacterLabel(this.characterName);
         this.texture = renderEngine.createCharacter(this.characterName, shipTypeId);
     }
 
@@ -38,7 +37,7 @@ export class Character {
     }
 
     destroy() {
-        renderEngine.removeCharacter(this);
+        renderEngine.removeCharacter(this.characterName, this.texture);
     }
 
 }

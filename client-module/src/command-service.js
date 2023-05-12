@@ -1,4 +1,3 @@
-import * as render from "./render/render.js";
 import * as initService from "./init-service.js";
 import * as characterService from "./character-service.js";
 import {Commands} from "./const/MessageCommand.js";
@@ -23,11 +22,11 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateMotion:
-            characterService.updateOrCreateCharacters(socketResponse.data);
+            characterService.updateCharactersData(socketResponse.data);
             break;
 
         case Commands.LeavingPlayer:
-            render.removeCharacter(socketResponse.data);
+            console.log(`character ${socketResponse.data} disconnected`)
             break;
 
         default:

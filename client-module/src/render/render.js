@@ -20,7 +20,6 @@ let INVENTORY_CONTAINER;
 let INVENTORY;
 let CARGO;
 
-let charactersMap = new Map();
 let characterLabelsMap = new Map();
 
 let windowWidth;
@@ -159,6 +158,7 @@ export function createCharacter(characterName, shipTypeId) {
     sprite.play();
 
     spritesContainer.addChild(sprite);
+    createCharacterLabel(characterName);
 
     return sprite;
 }
@@ -172,10 +172,8 @@ export function createCharacterLabel(characterName) {
     characterLabelsMap.set(characterName, label);
 }
 
-export function removeCharacter(characterName) {
-    let sprite = charactersMap.get(characterName);
-    charactersMap.delete(characterName);
-    spritesContainer.removeChild(sprite);
+export function removeCharacter(characterName, sprite) {
+    sprite.destroy();
 
     let label = characterLabelsMap.get(characterName);
     characterLabelsMap.delete(characterName);
@@ -343,9 +341,7 @@ function onDragMove(event) {
     }
 }
 
-// TODO conflict with click
 let start;
-
 function onDragStart() {
     start = Date.now();
     dragTarget = this;
