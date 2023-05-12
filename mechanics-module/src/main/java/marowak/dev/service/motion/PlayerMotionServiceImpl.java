@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class PlayerMotionServiceImpl implements PlayerMotionService {
     private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
+    private final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     @Override
     public void leavingPlayer(String playerName) {
@@ -63,12 +64,6 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
 
         return new PlayersMotionListResponse(currPlayerMotion, motions);
     }
-
-    @Override
-    public boolean isPlayerInit(String playerName) {
-        return playerMotionMap.containsKey(playerName);
-    }
-
     private void updatePlayerMotion(String playerName, CharacterMotionRequest request) {
         PlayerMotion oldMotion = playerMotionMap.get(playerName);
 
@@ -98,10 +93,19 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     private Collection<PlayerMotion> getPlayersInRange(String playerName) {
-        // TODO added range filter
+        PlayerMotion player = playerMotionMap.get(playerName);
+
         return playerMotionMap.values().stream()
                 .filter(v -> !v.playerName().equals(playerName))
+                .filter(v -> isInRange(player, v))
                 .toList();
+    }
+
+    private boolean isInRange(PlayerMotion base, PlayerMotion target) {
+        double diffX = base.x() - target.x();
+        double diffY = base.y() - target.y();
+
+        return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
 }

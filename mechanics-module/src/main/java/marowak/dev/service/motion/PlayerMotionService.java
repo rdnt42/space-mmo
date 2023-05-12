@@ -25,6 +25,4 @@ public interface PlayerMotionService {
     PlayersMotionListResponse updateAndGetMotions(CharacterMotionRequest request, String playerName);
 
     PlayersMotionListResponse getMotions(String playerName);
-
-    boolean isPlayerInit(String playerName);
 }
