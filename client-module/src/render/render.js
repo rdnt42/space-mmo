@@ -21,10 +21,6 @@ let INVENTORY;
 let CARGO;
 
 let characterLabelsMap = new Map();
-
-let windowWidth;
-let windowHeight;
-
 let posInfoLabel;
 let speedLabel;
 let bgLast;
@@ -35,9 +31,6 @@ export function initEngine() {
         resizeTo: window
     });
     app.stage.hitArea = app.screen;
-
-    windowWidth = window.innerWidth;
-    windowHeight = window.innerHeight;
 
     document.body.appendChild(app.view);
     bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
@@ -51,9 +44,10 @@ export function initEngine() {
 
     posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
+
+    window.addEventListener('resize', resizeHandler);
 }
 
-//TODO #24 window.addEventListener('resize', resize);
 export function startEngineTimer() {
     app.ticker.add(() => {
         renderCharacters();
@@ -95,11 +89,11 @@ function createSpritesContainer() {
 }
 
 function getX(currX, diffX) {
-    return currX - diffX + windowWidth / 2;
+    return currX - diffX + window.innerWidth / 2;
 }
 
 function getY(currY, diffY) {
-    return currY - diffY + windowHeight / 2;
+    return currY - diffY + window.innerHeight / 2;
 }
 
 function updateLocationText(posInfoLabel) {
@@ -366,4 +360,13 @@ function onClick() {
         doubleClickCallback(this);
     }
     prevClickTime = Date.now();
+}
+
+function resizeHandler() {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+    app.renderer.render(app.stage);
+    bgLast.width = window.innerWidth;
+    bgLast.height = window.innerHeight;
+    bgFirst.width = window.innerWidth;
+    bgFirst.height = window.innerHeight;
 }
