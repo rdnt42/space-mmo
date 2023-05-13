@@ -8,8 +8,8 @@ export class CharacterMotionRequest {
 }
 
 export class CharacterItemRequest {
-    constructor(itemId, slotId) {
+    constructor(id, slotId) {
         this.command = Commands.UpdateInventoryItem;
-        this.data = {itemId, slotId}
+        this.data = {id, slotId}
     }
 }

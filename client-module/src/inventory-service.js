@@ -3,12 +3,14 @@ import {Item} from "./obj/Item.js";
 import {EquipmentSlotId} from "./const/EquipmentSlotId.js";
 
 let inventory;
+let itemsMap = new Map();
 
 export function initInventory(slots, items) {
     inventory = new Inventory(slots);
     for (const itemSrc of items) {
         let it = new Item(itemSrc);
         inventory.addInitItem(it);
+        itemsMap.set(it.id, it);
     }
 
     document.addEventListener("keydown", (event) => {
@@ -21,7 +23,7 @@ export function initInventory(slots, items) {
 
 export function doubleClickCallback(texture) {
     if (texture.textureParentObj instanceof Item) {
-        inventory.changeEquipmentSlot(texture.textureParentObj);
+        inventory.useItem(texture.textureParentObj);
     }
 }
 
@@ -31,6 +33,15 @@ export function dragEndCallback(texture) {
 
 
 export function getEngine() {
-    return inventory.getEquipment(EquipmentSlotId.Engine);
+    return inventory.getItem(EquipmentSlotId.Engine);
 }
 
+export function updateItemSlot(updateItem) {
+    let item = itemsMap.get(updateItem.id);
+
+    if (updateItem.slotId !== null) {
+        inventory.updateCargo(item, updateItem.slotId);
+    } else {
+        inventory.updateEquipmentSlot(item);
+    }
+}

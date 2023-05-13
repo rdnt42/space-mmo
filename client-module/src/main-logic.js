@@ -14,7 +14,7 @@ function worldTick() {
     let character = characterService.getPlayerCharacter();
 
     let engine = inventoryService.getEngine();
-    if (engine !== undefined) {
+    if (engine !== null) {
         let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
         characterService.sendMotion(move.speed, move.angle, true);
     }

@@ -4,7 +4,7 @@ import marowak.dev.dto.item.CargoHook;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.FuelTank;
 import marowak.dev.dto.item.Item;
-import marowak.dev.request.CharacterInventoryItemRequest;
+import marowak.dev.request.ItemUpdate;
 import message.CargoHookMessage;
 import message.EngineMessage;
 import message.FuelTankMessage;
@@ -30,7 +30,7 @@ public class BuilderHelper {
             .equipmentTypeId(message.getEquipmentTypeId())
             .build();
 
-    public static final BiFunction<Engine, CharacterInventoryItemRequest, Engine> engineToNewEngine =
+    public static final BiFunction<Engine, ItemUpdate, Engine> engineToNewEngine =
             (engine, request) -> Engine.builder()
                     .id(engine.getId())
                     .slotId(request.slotId())
@@ -56,7 +56,7 @@ public class BuilderHelper {
             .equipmentTypeId(message.getEquipmentTypeId())
             .build();
 
-    public static final BiFunction<FuelTank, CharacterInventoryItemRequest, FuelTank> tankToNewTank =
+    public static final BiFunction<FuelTank, ItemUpdate, FuelTank> tankToNewTank =
             (fuelTank, request) -> FuelTank.builder()
                     .id(fuelTank.getId())
                     .slotId(request.slotId())
@@ -82,7 +82,7 @@ public class BuilderHelper {
             .equipmentTypeId(message.getEquipmentTypeId())
             .build();
 
-    public static final BiFunction<CargoHook, CharacterInventoryItemRequest, CargoHook> cargoHookToNewHook =
+    public static final BiFunction<CargoHook, ItemUpdate, CargoHook> cargoHookToNewHook =
             (cargoHook, request) -> CargoHook.builder()
                     .id(cargoHook.getId())
                     .slotId(request.slotId())

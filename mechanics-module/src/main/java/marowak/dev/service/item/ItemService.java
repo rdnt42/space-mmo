@@ -1,8 +1,7 @@
 package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
-import marowak.dev.dto.item.Item;
-import marowak.dev.request.CharacterInventoryItemRequest;
+import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import message.ItemMessage;
 
@@ -13,5 +12,5 @@ public interface ItemService {
 
     void updateInventoryFromStorage(ItemMessage message);
 
-    Item updateInventoryFromClient(CharacterInventoryItemRequest request, String playerName);
+    ItemUpdate updateInventoryFromClient(ItemUpdate request, String playerName);
 }

@@ -1,11 +1,9 @@
 import * as render from "../render/render.js";
-import * as socket from "../websocket-service.js";
-import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 export class CargoCell {
     texture;
 
-    #cargo;
+    #cargo = null;
     idx;
 
     constructor(cargo, idx) {
@@ -14,36 +12,36 @@ export class CargoCell {
         this.texture = render.initCargoCell(idx);
     }
 
-    getCargo() {
+    getItem() {
         return this.#cargo;
     }
 
-    addToCargoCell(cargo) {
+    add(cargo) {
         this.#cargo = cargo;
 
-        if (cargo !== undefined) {
-            render.addToCargoCell(cargo.texture, this.texture);
+        if (cargo !== null) {
             cargo.slotId = this.idx;
-            socket.sendMessage(new CharacterItemRequest(cargo.id, cargo.slotId));
+            cargo.slot = this;
+            render.addToCargoCell(cargo.texture, this.texture);
         }
     }
 
-    removeFromCargoCell() {
-        if (this.#cargo === undefined) return undefined;
+    remove() {
+        if (this.#cargo === null) return null;
 
         let removedCargo = this.#cargo;
-        this.#cargo = undefined;
-        render.removeFromCargoCell(removedCargo.texture);
+        this.#cargo = null;
         removedCargo.slotId = null;
-
+        removedCargo.slot = null;
+        render.removeFromCargoCell(removedCargo.texture);
 
         return removedCargo;
     }
 
     swapCargo(newCell) {
-        let newItem = newCell.getCargo();
-        newCell.addToCargoCell(this.#cargo);
-        this.addToCargoCell(newItem);
+        let newItem = newCell.getItem();
+        newCell.add(this.#cargo);
+        this.add(newItem);
     }
 
     center() {

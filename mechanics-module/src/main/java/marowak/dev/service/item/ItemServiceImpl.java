@@ -9,7 +9,7 @@ import marowak.dev.dto.item.CargoHook;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.FuelTank;
 import marowak.dev.dto.item.Item;
-import marowak.dev.request.CharacterInventoryItemRequest;
+import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
 import message.CargoHookMessage;
@@ -78,10 +78,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateInventoryFromClient(CharacterInventoryItemRequest request, String playerName) {
+    public ItemUpdate updateInventoryFromClient(ItemUpdate request, String playerName) {
         CharacterInventory inventory = Optional.ofNullable(playerInventoryMap.get(playerName))
                 .orElseThrow();
-        Item item = Optional.ofNullable(inventory.items().get(request.itemId()))
+        Item item = Optional.ofNullable(inventory.items().get(request.id()))
                 .orElseThrow();
 
         Item newItem;
@@ -99,9 +99,12 @@ public class ItemServiceImpl implements ItemService {
                 .items()
                 .put(newItem.getId(), newItem);
         sendItemUpdate(newItem);
-        log.info("updateInventory id: {}, slot: {}", request.itemId(), request.slotId());
+        log.info("updateInventory id: {}, slot: {}", request.id(), request.slotId());
 
-        return newItem;
+        return ItemUpdate.builder()
+                .id(newItem.getId())
+                .slotId(newItem.getSlotId())
+                .build();
     }
 
     private CharacterInventory createInventory() {

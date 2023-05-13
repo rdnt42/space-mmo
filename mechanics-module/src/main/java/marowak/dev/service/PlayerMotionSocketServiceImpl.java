@@ -9,10 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
-import marowak.dev.dto.item.Item;
 import marowak.dev.enums.MessageCommand;
-import marowak.dev.request.CharacterInventoryItemRequest;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.response.player.PlayersMotionListResponse;
 import marowak.dev.service.character.CharacterService;
@@ -61,8 +60,8 @@ public class PlayerMotionSocketServiceImpl implements PlayerMotionSocketService 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, response);
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
-                CharacterInventoryItemRequest value = objectMapper.convertValue(request.data(), CharacterInventoryItemRequest.class);
-                Item item = itemService.updateInventoryFromClient(value, playerName);
+                ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
+                ItemUpdate item = itemService.updateInventoryFromClient(value, playerName);
 
                 socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item);
             }

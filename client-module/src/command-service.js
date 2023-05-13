@@ -1,5 +1,6 @@
 import * as initService from "./init-service.js";
 import * as characterService from "./character-service.js";
+import * as inventoryService from "./inventory-service.js";
 import {Commands} from "./const/MessageCommand.js";
 
 export function executeCommand(response) {
@@ -27,6 +28,10 @@ export function executeCommand(response) {
 
         case Commands.LeavingPlayer:
             console.log(`character ${socketResponse.data} disconnected`)
+            break;
+
+        case Commands.UpdateInventoryItem:
+            inventoryService.updateItemSlot(socketResponse.data);
             break;
 
         default:

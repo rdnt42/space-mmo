@@ -8,6 +8,7 @@ export class Item {
     typeId;
     equipmentTypeId;
     slotId;
+    slot = null;
 
     constructor(item) {
         this.id = item.id;
@@ -22,6 +23,12 @@ export class Item {
     additionalFields(item) {
         if (item.typeId === EquipmentSlotId.Engine) {
             this.maxSpeed = item.speed;
+        }
+    }
+
+    removeFromSlot() {
+        if (this.slot !== null && this.slot.getItem() !== null && this.slot.getItem().id === this.id) {
+            this.slot.remove();
         }
     }
 

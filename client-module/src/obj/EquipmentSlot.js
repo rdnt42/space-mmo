@@ -1,31 +1,31 @@
 import * as render from "../render/render.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
-import * as socket from "../websocket-service.js";
-import {CharacterItemRequest} from "../request/CharacterRequest.js";
 
 export class EquipmentSlot {
     texture;
-    #equipment;
+    #equipment = null;
 
     constructor(equipmentType) {
         this.texture = render.initEquipmentSlot(equipmentType);
     }
 
-    addToEquipmentSlot(equipment) {
+    add(equipment) {
         this.#equipment = equipment;
         this.#equipment.slotId = null;
+        this.#equipment.slot = this;
         render.addToEquipmentSlot(equipment.texture, this.texture);
         if (this.#equipment.typeId === EquipmentSlotId.Engine) {
             render.setSpeedLabel(this.#equipment.maxSpeed);
         }
-        socket.sendMessage(new CharacterItemRequest(equipment.id, equipment.slotId));
     }
 
-    removeFromEquipmentSlot() {
-        if (this.#equipment === undefined) return undefined;
+    remove() {
+        if (this.#equipment === null) return null;
 
         let removedEquipment = this.#equipment;
-        this.#equipment = undefined;
+        this.#equipment = null;
+        removedEquipment.slotId = null;
+        removedEquipment.slot = null;
         render.removeFromEquipmentSlot(removedEquipment.texture);
         // TODO maybe move to inventory
         if (removedEquipment.typeId === EquipmentSlotId.Engine) {
@@ -35,7 +35,7 @@ export class EquipmentSlot {
         return removedEquipment;
     }
 
-    getEquipment() {
+    getItem() {
         return this.#equipment;
     }
 
