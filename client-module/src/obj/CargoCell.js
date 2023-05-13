@@ -38,12 +38,6 @@ export class CargoCell {
         return removedCargo;
     }
 
-    swapCargo(newCell) {
-        let newItem = newCell.getItem();
-        newCell.add(this.#cargo);
-        this.add(newItem);
-    }
-
     center() {
         render.addToCargoCell(this.#cargo.texture, this.texture);
     }

@@ -180,7 +180,7 @@ export function createInventory() {
     app.stage.addChild(container);
     container.visible = false;
 
-    let inventory = pixi.Sprite.from("./images/inventory_empty.png");
+    let inventory = pixi.Sprite.from("./images/inventory_empty_center.png");
     inventory.position.set(container.width / 2, container.height / 2)
     container.addChild(inventory);
     inventory.width = 436;

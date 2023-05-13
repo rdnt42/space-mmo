@@ -3,5 +3,6 @@ export const EquipmentSlotId = {
     FuelTank: 2,
     Scanner: 3,
     Radar: 4,
-    CargoHook: 6
+    CargoHook: 6,
+    Hull: 8
 }
