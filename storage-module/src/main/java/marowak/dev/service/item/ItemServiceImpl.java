@@ -4,10 +4,7 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.repository.CargoHookR2Repository;
-import marowak.dev.repository.EngineR2Repository;
-import marowak.dev.repository.FuelTankR2Repository;
-import marowak.dev.repository.ItemR2Repository;
+import marowak.dev.repository.*;
 import message.ItemMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,6 +16,8 @@ public class ItemServiceImpl implements ItemService {
     private final EngineR2Repository engineR2Repository;
     private final FuelTankR2Repository fuelTankR2Repository;
     private final ItemR2Repository itemR2Repository;
+
+    private final HullR2Repository hullR2Repository;
 
     private final CargoHookR2Repository cargoHookR2Repository;
 
@@ -36,7 +35,11 @@ public class ItemServiceImpl implements ItemService {
                 .flatMap(cargoHook -> Flux.from(itemR2Repository.findById(cargoHook.id()))
                         .map(item -> BuilderHelper.cargoHookToMessage.apply(cargoHook, item, ItemMessageKey.ITEMS_GET_ALL)));
 
-        return Flux.concat(engineFlux, fuelTankFlux, cargoHookFlux);
+        Flux<ItemMessage> hullFlux = Flux.from(hullR2Repository.findAll())
+                .flatMap(hull -> Flux.from(itemR2Repository.findById(hull.id()))
+                        .map(item -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ALL)));
+
+        return Flux.concat(engineFlux, fuelTankFlux, cargoHookFlux, hullFlux);
     }
 
     @Override

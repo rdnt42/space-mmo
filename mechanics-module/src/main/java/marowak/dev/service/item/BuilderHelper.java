@@ -1,13 +1,11 @@
 package marowak.dev.service.item;
 
-import marowak.dev.dto.item.CargoHook;
-import marowak.dev.dto.item.Engine;
-import marowak.dev.dto.item.FuelTank;
-import marowak.dev.dto.item.Item;
+import marowak.dev.dto.item.*;
 import marowak.dev.request.ItemUpdate;
 import message.CargoHookMessage;
 import message.EngineMessage;
 import message.FuelTankMessage;
+import message.HullMessage;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -94,5 +92,34 @@ public class BuilderHelper {
                     .loadCapacity(cargoHook.getLoadCapacity())
                     .radius(cargoHook.getRadius())
                     .equipmentTypeId(cargoHook.getEquipmentTypeId())
+                    .build();
+
+    public static final Function<HullMessage, Item> hullMessageToItem = message -> Hull.builder()
+            .id(message.getId())
+            .slotId(message.getSlotId())
+            .typeId(message.getTypeId())
+            .upgradeLevel(message.getUpgradeLevel())
+            .cost(message.getCost())
+            .name(message.getName())
+            .dsc(message.getDsc())
+            .hp(message.getHp())
+            .evasion(message.getEvasion())
+            .armor(message.getArmor())
+            .equipmentTypeId(message.getEquipmentTypeId())
+            .build();
+
+    public static final BiFunction<Hull, ItemUpdate, Hull> hullToNewHull =
+            (hull, request) -> Hull.builder()
+                    .id(hull.getId())
+                    .slotId(request.slotId())
+                    .typeId(hull.getTypeId())
+                    .upgradeLevel(hull.getUpgradeLevel())
+                    .cost(hull.getCost())
+                    .name(hull.getName())
+                    .dsc(hull.getDsc())
+                    .hp(hull.getHp())
+                    .evasion(hull.getEvasion())
+                    .armor(hull.getArmor())
+                    .equipmentTypeId(hull.getEquipmentTypeId())
                     .build();
 }

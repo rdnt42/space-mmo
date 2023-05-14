@@ -8,6 +8,9 @@ let itemsMap = new Map();
 export function initInventory(slots, items) {
     inventory = new Inventory(slots);
     for (const itemSrc of items) {
+        if (!Object.values(EquipmentSlotId).includes(itemSrc.typeId)) {
+            continue;
+        }
         let it = new Item(itemSrc);
         inventory.addInitItem(it);
         itemsMap.set(it.id, it);

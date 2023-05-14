@@ -1,17 +1,15 @@
 package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
-import marowak.dev.entity.CargoHook;
-import marowak.dev.entity.Engine;
-import marowak.dev.entity.FuelTank;
-import marowak.dev.entity.Item;
+import marowak.dev.entity.*;
 import marowak.dev.service.TriFunction;
-import message.CargoHookMessage;
-import message.EngineMessage;
-import message.FuelTankMessage;
-import message.ItemMessage;
+import message.*;
 
 public class BuilderHelper {
+
+    private BuilderHelper() {
+    }
+
     public static final TriFunction<Engine, Item, ItemMessageKey, ItemMessage> engineToMessage =
             (engine, item, key) -> EngineMessage.builder()
                     .key(key)
@@ -57,5 +55,22 @@ public class BuilderHelper {
                     .loadCapacity(cargoHook.loadCapacity())
                     .radius(cargoHook.radius())
                     .equipmentTypeId(cargoHook.cargoHookTypeId())
+                    .build();
+
+    public static final TriFunction<Hull, Item, ItemMessageKey, ItemMessage> hullToMessage =
+            (hull, item, key) -> HullMessage.builder()
+                    .key(key)
+                    .id(hull.id())
+                    .slotId(item.slotId())
+                    .characterName(item.characterName())
+                    .typeId(item.itemTypeId())
+                    .upgradeLevel(item.upgradeLevel())
+                    .cost(item.cost())
+                    .name(item.nameRu())
+                    .dsc(item.dscRu())
+                    .hp(hull.hp())
+                    .evasion(hull.evasion())
+                    .armor(hull.armor())
+                    .equipmentTypeId(hull.hullTypeId())
                     .build();
 }

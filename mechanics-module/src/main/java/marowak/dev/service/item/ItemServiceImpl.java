@@ -5,17 +5,11 @@ import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
-import marowak.dev.dto.item.CargoHook;
-import marowak.dev.dto.item.Engine;
-import marowak.dev.dto.item.FuelTank;
-import marowak.dev.dto.item.Item;
+import marowak.dev.dto.item.*;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.player.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
-import message.CargoHookMessage;
-import message.EngineMessage;
-import message.FuelTankMessage;
-import message.ItemMessage;
+import message.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,16 +55,12 @@ public class ItemServiceImpl implements ItemService {
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
         Item item;
-        // TODO maybe polymorphism
-        if (message instanceof EngineMessage engine) {
-            item = BuilderHelper.engineMessageToItem.apply(engine);
-        } else if (message instanceof FuelTankMessage fuelTank) {
-            item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
-        } else if (message instanceof CargoHookMessage cargoHook) {
-            item = BuilderHelper.cargoHookMessageToItem.apply(cargoHook);
-
-        } else {
-            throw new IllegalArgumentException("Unknown Item message, key: " + message.getKey());
+        switch (message) {
+            case EngineMessage engine -> item = BuilderHelper.engineMessageToItem.apply(engine);
+            case FuelTankMessage fuelTank -> item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
+            case CargoHookMessage cargoHook -> item = BuilderHelper.cargoHookMessageToItem.apply(cargoHook);
+            case HullMessage hull -> item = BuilderHelper.hullMessageToItem.apply(hull);
+            default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
 
         inventory.items().put(item.getId(), item);
@@ -84,16 +74,14 @@ public class ItemServiceImpl implements ItemService {
         Item item = Optional.ofNullable(inventory.items().get(request.id()))
                 .orElseThrow();
 
-        Item newItem;
-        if (item instanceof Engine engine) {
-            newItem = BuilderHelper.engineToNewEngine.apply(engine, request);
-        } else if (item instanceof FuelTank fuelTank) {
-            newItem = BuilderHelper.tankToNewTank.apply(fuelTank, request);
-        } else if (item instanceof CargoHook cargoHook) {
-            newItem = BuilderHelper.cargoHookToNewHook.apply(cargoHook, request);
-        } else {
-            throw new UnsupportedOperationException("Cannot convert item with id: " + item.getId() + ", and type: " + item.getTypeId());
-        }
+        Item newItem = switch (item) {
+            case Engine engine -> BuilderHelper.engineToNewEngine.apply(engine, request);
+            case FuelTank fuelTank -> BuilderHelper.tankToNewTank.apply(fuelTank, request);
+            case CargoHook cargoHook -> BuilderHelper.cargoHookToNewHook.apply(cargoHook, request);
+            case Hull hull -> BuilderHelper.hullToNewHull.apply(hull, request);
+            case null, default ->
+                    throw new UnsupportedOperationException("Cannot convert item with id: " + item.getId() + ", and type: " + item.getTypeId());
+        };
 
         playerInventoryMap.get(playerName)
                 .items()
