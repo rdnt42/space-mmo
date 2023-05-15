@@ -1,4 +1,4 @@
-package marowak.dev.response.player;
+package marowak.dev.response.character;
 
 import lombok.Builder;
 import marowak.dev.dto.item.Item;

@@ -1,6 +1,6 @@
 import * as socket from "./websocket-service.js";
 import {PlayerEmptyRequest} from "./request/PlayerEmptyRequest.js";
-import {CharacterMotionRequest} from "./request/CharacterRequest.js";
+import {CharacterMotionRequest, CharacterResponse} from "./request/CharacterRequest.js";
 import {Character} from "./obj/Character.js";
 import {Commands} from "./const/MessageCommand.js";
 
@@ -15,9 +15,9 @@ export function sendGetInventory() {
     socket.sendMessage(new PlayerEmptyRequest(Commands.GetInventory));
 }
 
-export function initMyCharacter(characterName, playerMotion) {
-    createCharacter(characterName, playerMotion, 1);
-    playerCharacterName = characterName;
+export function initMyCharacter(response) {
+    createCharacter(response);
+    playerCharacterName = response.characterName;
 }
 
 export function getPlayerCharacter() {
@@ -34,37 +34,36 @@ export function getAllCharacters() {
 }
 
 export function updateCharactersData(data) {
-    updateOrCreateCharacters(data);
-    removeUnusedCharacters(data);
+    let response = new CharacterResponse(data);
+    updateOrCreateCharacters(response);
+    removeUnusedCharacters(response);
 }
 
-export function updateOrCreateCharacters(data) {
-    updateCharacter(data.playerMotion.playerName, data.playerMotion);
-
-    if (data.playersMotions === undefined) return;
-    for (let playerMotion of data.playersMotions) {
-        let character = charactersMap.get(playerMotion.playerName);
-        if (character === undefined) {
-            createCharacter(playerMotion.playerName, playerMotion, 1);
-        } else {
-            updateCharacter(playerMotion.playerName, playerMotion);
-        }
+export function updateOrCreateCharacters(response) {
+    let character = charactersMap.get(response.characterName);
+    if (character === undefined) {
+        createCharacter(response);
+    } else {
+        updateCharacter(response);
     }
 }
 
-function updateCharacter(characterName, playerMotion) {
-    let character = charactersMap.get(characterName);
-    character.updateCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed);
+function updateCharacter(response) {
+    let character = charactersMap.get(response.characterName);
+    character.updateCharacter(response.x, response.y, response.angle, response.speed);
 }
 
-function createCharacter(characterName, playerMotion, shipTypeId) {
-    let character = new Character(characterName);
-    character.initCharacter(playerMotion.x, playerMotion.y, playerMotion.angle, playerMotion.speed, shipTypeId);
+function createCharacter(response) {
+    let character = new Character(response.characterName);
+    character.initCharacter(response.x, response.y, response.angle, response.speed, response);
 
-    charactersMap.set(characterName, character);
+    charactersMap.set(response.characterName, character);
 }
 
 function removeUnusedCharacters(data) {
+    // it doesn't work in flux
+    return;
+
     if (charactersMap.size - 1 === data.playersMotions.length) return;
 
     let newChars = new Set();

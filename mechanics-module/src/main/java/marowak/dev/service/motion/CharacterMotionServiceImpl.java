@@ -1,10 +1,10 @@
 package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
-import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.response.player.PlayersMotionListResponse;
 import message.CharacterMessage;
+import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 0:08
  */
 @Singleton
-public class PlayerMotionServiceImpl implements PlayerMotionService {
-    private final Map<String, PlayerMotion> playerMotionMap = new ConcurrentHashMap<>();
+public class CharacterMotionServiceImpl implements CharacterMotionService {
+    private final Map<String, CharacterMotion> playerMotionMap = new ConcurrentHashMap<>();
     private final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     @Override
@@ -30,42 +30,21 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
     }
 
     @Override
-    public Collection<PlayerMotion> getAllMotions() {
+    public Collection<CharacterMotion> getAllMotions() {
         return playerMotionMap.values();
     }
 
     @Override
     public void addMotion(CharacterMessage character) {
-        PlayerMotion newMotion = new PlayerMotion(character.getCharacterName(), character.getX(), character.getY(),
+        CharacterMotion newMotion = new CharacterMotion(character.getCharacterName(), character.getX(), character.getY(),
                 character.getAngle(), 0, new Date().getTime());
 
         playerMotionMap.put(character.getCharacterName(), newMotion);
     }
 
     @Override
-    public PlayersMotionListResponse updateAndGetMotions(CharacterMotionRequest request, String playerName) {
-        if (request.isUpdate()) {
-            updatePlayerMotion(playerName, request);
-        }
-
-        PlayerMotion currPlayerMotion = playerMotionMap.get(playerName);
-        Collection<PlayerMotion> motions = getPlayersInRange(playerName);
-
-        return new PlayersMotionListResponse(currPlayerMotion, motions);
-    }
-
-    @Override
-    public PlayersMotionListResponse getMotions(String playerName) {
-        PlayerMotion currPlayerMotion = playerMotionMap.get(playerName);
-        if (currPlayerMotion == null) {
-            return null;
-        }
-        Collection<PlayerMotion> motions = getPlayersInRange(playerName);
-
-        return new PlayersMotionListResponse(currPlayerMotion, motions);
-    }
-    private void updatePlayerMotion(String playerName, CharacterMotionRequest request) {
-        PlayerMotion oldMotion = playerMotionMap.get(playerName);
+    public void updateMotion(CharacterMotionRequest request, String playerName) {
+        CharacterMotion oldMotion = playerMotionMap.get(playerName);
 
         long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
         if (diffTime < 0) return;
@@ -78,7 +57,7 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
         double newY = oldMotion.y() + getYShift(relativeSpeed, request.angle());
         BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
 
-        PlayerMotion newMotion = new PlayerMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
+        CharacterMotion newMotion = new CharacterMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
                 request.speed(), request.lastUpdateTime());
 
         playerMotionMap.put(playerName, newMotion);
@@ -92,16 +71,23 @@ public class PlayerMotionServiceImpl implements PlayerMotionService {
         return Math.sin(Math.toRadians(angle)) * speed;
     }
 
-    private Collection<PlayerMotion> getPlayersInRange(String playerName) {
-        PlayerMotion player = playerMotionMap.get(playerName);
+    @Override
+    public Flux<CharacterMotion> getCharactersInRange(String playerName) {
+        CharacterMotion player = playerMotionMap.get(playerName);
 
-        return playerMotionMap.values().stream()
-                .filter(v -> !v.playerName().equals(playerName))
-                .filter(v -> isInRange(player, v))
-                .toList();
+        return Flux.fromStream(playerMotionMap.values().stream())
+                .filter(v -> isInRange(player, v));
     }
+//    private Collection<CharacterMotion> getPlayersInRange(String characterName) {
+//        CharacterMotion player = playerMotionMap.get(characterName);
+//
+//        return playerMotionMap.values().stream()
+//                .filter(v -> !v.characterName().equals(characterName))
+//                .filter(v -> isInRange(player, v))
+//                .toList();
+//    }
 
-    private boolean isInRange(PlayerMotion base, PlayerMotion target) {
+    private boolean isInRange(CharacterMotion base, CharacterMotion target) {
         double diffX = base.x() - target.x();
         double diffY = base.y() - target.y();
 

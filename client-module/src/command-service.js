@@ -15,6 +15,7 @@ export function executeCommand(response) {
     let command = socketResponse.command;
     switch (command) {
         case Commands.GetMotions:
+            console.log(`get data:`, socketResponse.data);
             initService.tryInitMotions(socketResponse.data);
             break;
 

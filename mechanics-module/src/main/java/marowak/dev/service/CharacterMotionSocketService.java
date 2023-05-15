@@ -4,7 +4,7 @@ import io.micronaut.websocket.WebSocketSession;
 import marowak.dev.dto.SocketMessage;
 import org.reactivestreams.Publisher;
 
-public interface PlayerMotionSocketService {
+public interface CharacterMotionSocketService {
     void onOpen(String playerName);
 
     Publisher<SocketMessage<?>> onMessage(String playerName, SocketMessage<?> request, WebSocketSession session);

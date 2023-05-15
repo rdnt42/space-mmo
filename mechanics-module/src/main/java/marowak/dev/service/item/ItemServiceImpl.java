@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
 import marowak.dev.dto.item.*;
+import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.player.CharacterInventoryResponse;
+import marowak.dev.response.character.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
 import message.*;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,6 +96,16 @@ public class ItemServiceImpl implements ItemService {
                 .slotId(newItem.getSlotId())
                 .build();
     }
+
+    // TODO npe
+    @Override
+    public Mono<Item> getItem(String characterName, ItemTypes type) {
+        return Mono.justOrEmpty(playerInventoryMap.get(characterName)
+                .items().values().stream()
+                .filter(item -> item.getTypeId() == type.getTypeId())
+                .findFirst());
+    }
+
 
     private CharacterInventory createInventory() {
         return CharacterInventory.builder()

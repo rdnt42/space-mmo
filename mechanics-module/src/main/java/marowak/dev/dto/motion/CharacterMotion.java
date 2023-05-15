@@ -2,7 +2,7 @@ package marowak.dev.dto.motion;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public record PlayerMotion(
+public record CharacterMotion(
         String playerName,
         double x,
         double y,

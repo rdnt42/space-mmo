@@ -4,9 +4,9 @@ import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.service.broker.CharactersClient;
-import marowak.dev.service.motion.PlayerMotionService;
+import marowak.dev.service.motion.CharacterMotionService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 
@@ -18,16 +18,16 @@ import java.util.function.Function;
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
-    private final PlayerMotionService playerMotionService;
+    private final CharacterMotionService characterMotionService;
 
     @Override
     public void sendCharactersUpdate() {
-        Collection<PlayerMotion> motions = playerMotionService.getAllMotions();
+        Collection<CharacterMotion> motions = characterMotionService.getAllMotions();
         if (motions.isEmpty()) {
             return;
         }
 
-        Flux<PlayerMotion> motionFlux = Flux.fromIterable(motions);
+        Flux<CharacterMotion> motionFlux = Flux.fromIterable(motions);
         motionFlux
                 .map(motionToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
@@ -37,7 +37,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public void initCharacters(CharacterMessage message) {
-        playerMotionService.addMotion(message);
+        characterMotionService.addMotion(message);
         log.info("Character init successful, key: {}, character name: {}", message.getKey(), message.getCharacterName());
     }
 
@@ -68,7 +68,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .subscribe();
     }
 
-    private final Function<PlayerMotion, CharacterMessage> motionToMessage = motion -> CharacterMessage.builder()
+    private final Function<CharacterMotion, CharacterMessage> motionToMessage = motion -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
             .characterName(motion.playerName())
             .x(motion.x())

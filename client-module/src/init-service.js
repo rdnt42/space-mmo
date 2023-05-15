@@ -3,6 +3,7 @@ import * as inventoryService from "./inventory-service.js";
 import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
+import {CharacterResponse} from "./request/CharacterRequest.js";
 
 const timerInterval = 100;
 let timers = new Map();
@@ -49,7 +50,8 @@ export function tryInitMotions(data) {
     if (data == null) return;
 
     stopTimer(funcs.characters);
-    characterService.initMyCharacter(data.playerMotion.playerName, data.playerMotion);
+    let response = new CharacterResponse(data);
+    characterService.initMyCharacter(response);
     characterService.updateOrCreateCharacters(data);
     removeTimer(funcs.characters);
 }

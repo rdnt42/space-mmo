@@ -1,9 +1,12 @@
 package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
+import marowak.dev.dto.item.Item;
+import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.player.CharacterInventoryResponse;
+import marowak.dev.response.character.CharacterInventoryResponse;
 import message.ItemMessage;
+import reactor.core.publisher.Mono;
 
 public interface ItemService {
     void sendGetItems(ItemMessageKey key, String characterName);
@@ -13,4 +16,7 @@ public interface ItemService {
     void updateInventoryFromStorage(ItemMessage message);
 
     ItemUpdate updateInventoryFromClient(ItemUpdate request, String playerName);
+
+    // TODO npe
+    Mono<Item> getItem(String characterName, ItemTypes type);
 }

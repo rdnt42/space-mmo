@@ -1,9 +1,9 @@
 package marowak.dev.service.motion;
 
-import marowak.dev.dto.motion.PlayerMotion;
+import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.response.player.PlayersMotionListResponse;
 import message.CharacterMessage;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 
@@ -13,16 +13,16 @@ import java.util.Collection;
  * Date: 17.11.2022
  * Time: 0:21
  */
-public interface PlayerMotionService {
+public interface CharacterMotionService {
 
     // TODO all response to flux/mono
     void leavingPlayer(String playerName);
 
-    Collection<PlayerMotion> getAllMotions();
+    Collection<CharacterMotion> getAllMotions();
 
     void addMotion(CharacterMessage character);
 
-    PlayersMotionListResponse updateAndGetMotions(CharacterMotionRequest request, String playerName);
+    void updateMotion(CharacterMotionRequest request, String playerName);
 
-    PlayersMotionListResponse getMotions(String playerName);
+    Flux<CharacterMotion> getCharactersInRange(String playerName);
 }
