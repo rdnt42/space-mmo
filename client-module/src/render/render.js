@@ -13,12 +13,10 @@ const Sort = {
     INVENTORY: 100,
     EQUIPMENT: 110
 }
-
+const IS_DEBUG = false;
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
 let INVENTORY_CONTAINER;
-let INVENTORY;
-let CARGO;
 
 let characterLabelsMap = new Map();
 let posInfoLabel;
@@ -180,37 +178,44 @@ export function createInventory() {
     app.stage.addChild(container);
     container.visible = false;
 
-    let inventory = pixi.Sprite.from("./images/inventory_empty_center.png");
+    let inventory = pixi.Sprite.from("./images/inventory_empty.png");
     inventory.position.set(container.width / 2, container.height / 2)
     container.addChild(inventory);
-    inventory.width = 436;
-    inventory.height = 500;
-    inventory.position.set(0, 0);
-    INVENTORY = inventory;
+    inventory.width = 460;
+    inventory.height = 617;
 
-    let cargo = pixi.Sprite.from("./images/cargo_empty.png");
-    cargo.width = 336;
-    cargo.height = 76;
-    cargo.anchor.set(0.5, 0);
-    cargo.position.set(inventory.width / 2, inventory.height);
-    container.addChild(cargo);
-    CARGO = cargo;
+    let center = pixi.Sprite.from("./images/inventory_center.png");
+    center.anchor.set(0.5, 0.5);
+    center.position.set(inventory.width / 2, inventory.height / 2 - 10);
+    center.zIndex = inventory.zIndex - 1;
 
-    container.height = inventory.height + cargo.height;
+    container.addChild(center);
+
+    container.height = inventory.height;
     container.width = inventory.width;
     container.position.set(app.screen.width / 2, app.screen.height / 2);
     container.pivot.set(container.width / 2, container.height / 2);
     container.zIndex = Sort.INVENTORY;
 
-    speedLabel = new pixi.Text("0", {
+    const speedText = new pixi.Text("cкорость", {
         fill: 0x000000,
         fontSize: 20,
     });
-    speedLabel.x = 378;
-    speedLabel.y = 48;
+    speedText.anchor.set(0.5, 0.5);
+    speedText.x = 393;
+    speedText.y = 35;
+    container.addChild(speedText);
+
+    speedLabel = new pixi.Text("", {
+        fill: 0x000000,
+        fontSize: 20,
+    });
     speedLabel.anchor.set(0.5, 0.5);
+    speedLabel.x = 393;
+    speedLabel.y = 65;
 
     container.addChild(speedLabel);
+    container.sortChildren();
 
     INVENTORY_CONTAINER = container;
 }
@@ -218,10 +223,10 @@ export function createInventory() {
 export function initCargoCell(idx) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
-    sprite.visible = false;
-    sprite.width = 40;
+    sprite.visible = IS_DEBUG;
+    sprite.width = 38;
     sprite.height = 40;
-    sprite.position.set(91 + idx * (sprite.width + 3), INVENTORY.height + CARGO.height / 2 - 4);
+    sprite.position.set(164 + idx * (sprite.width + 5), 569);
     sprite.anchor.set(0, 0.5);
     INVENTORY_CONTAINER.addChild(sprite);
 
@@ -231,25 +236,28 @@ export function initCargoCell(idx) {
 export function initEquipmentSlot(equipmentType) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
-    sprite.visible = false;
+    sprite.visible = IS_DEBUG;
     sprite.width = 60;
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
     switch (equipmentType) {
         case EquipmentSlotId.Engine:
-            sprite.position.set(85, 235);
+            sprite.position.set(90, 245);
             break;
         case EquipmentSlotId.FuelTank:
-            sprite.position.set(85, 335);
+            sprite.position.set(90, 350);
             break;
         case EquipmentSlotId.Scanner:
-            sprite.position.set(350, 235);
+            sprite.position.set(365, 245);
             break;
         case EquipmentSlotId.Radar:
-            sprite.position.set(350, 335);
+            sprite.position.set(365, 350);
             break;
         case EquipmentSlotId.CargoHook:
-            sprite.position.set(217, 438);
+            sprite.position.set(230, 455);
+            break;
+        case EquipmentSlotId.Hull:
+            sprite.position.set(230, 295);
             break;
     }
     INVENTORY_CONTAINER.addChild(sprite);
@@ -261,13 +269,16 @@ export function initItem(typeId, equipmentType) {
     let url;
     switch (typeId) {
         case EquipmentSlotId.Engine:
-            url = "./images/engine" + equipmentType + ".png";
+            url = `./images/engine${equipmentType}.png`;
             break;
         case EquipmentSlotId.FuelTank:
-            url = "./images/fuel_tank" + equipmentType + ".png";
+            url = `./images/fuel_tank${equipmentType}.png`;
             break;
         case EquipmentSlotId.CargoHook:
-            url = "./images/cargo_hook" + equipmentType + ".png";
+            url = `./images/cargo_hook${equipmentType}.png`;
+            break;
+        case EquipmentSlotId.Hull:
+            url = `./images/ships/ship${equipmentType}/facade.png`;
             break;
     }
     const texture = pixi.Texture.from(url);
@@ -336,9 +347,12 @@ function onDragMove(event) {
 }
 
 let start;
+
 function onDragStart() {
     start = Date.now();
     dragTarget = this;
+    this.scale.set(0.75);
+
     app.stage.on('pointermove', onDragMove);
 }
 

@@ -123,6 +123,7 @@ public class ItemServiceImpl implements ItemService {
         baseConfig.add(3); // scanner
         baseConfig.add(4); // radar
         baseConfig.add(6); // cargo hook
+        baseConfig.add(8); // hull
     }
 
 }
