@@ -4,6 +4,7 @@ import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
@@ -22,7 +23,7 @@ public interface CharacterMotionService {
 
     void addMotion(CharacterMessage character);
 
-    Flux<Void> updateMotion(CharacterMotionRequest request, String playerName);
+    Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
     Flux<CharacterMotion> getCharactersInRange(String playerName);
 }

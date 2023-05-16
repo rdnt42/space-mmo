@@ -48,7 +48,6 @@ export function initEngine() {
 
 export function startEngineTimer() {
     app.ticker.add(() => {
-        renderCharacters();
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
@@ -112,24 +111,15 @@ export function changeStateInventory(state) {
 }
 
 /// Character
-function renderCharacters() {
-    let characters = characterService.getAllCharacters();
-    let playerCharacter = characterService.getPlayerCharacter();
-    let x = playerCharacter.movement.x;
-    let y = playerCharacter.movement.y;
+export function renderCharacter(characterName, sprite, x, y, angle) {
+    let abs = characterService.getPlayerCharacter().movement;
+    let newX = getX(x, abs.x);
+    let newY = getY(y, abs.y);
+    sprite.position.set(newX, newY);
+    sprite.angle = angle;
 
-    for (let character of characters.values()) {
-        let movement = character.movement;
-        let sprite = character.texture;
-
-        let newX = getX(movement.x, x);
-        let newY = getY(movement.y, y);
-        sprite.position.set(newX, newY);
-        sprite.angle = movement.angle;
-
-        let label = characterLabelsMap.get(character.characterName);
-        label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
-    }
+    let label = characterLabelsMap.get(characterName);
+    label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
 }
 
 export function createCharacter(characterName, shipTypeId) {

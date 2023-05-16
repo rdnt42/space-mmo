@@ -13,7 +13,6 @@ export function executeCommand(response) {
     }
 
     let command = socketResponse.command;
-    console.log(`get data:`, socketResponse.data);
 
     switch (command) {
         case Commands.GetMotions:
@@ -25,7 +24,7 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateMotion:
-            characterService.updateCharactersData(socketResponse.data);
+            characterService.updateCharacterData(socketResponse.data);
             break;
 
         case Commands.LeavingPlayer:

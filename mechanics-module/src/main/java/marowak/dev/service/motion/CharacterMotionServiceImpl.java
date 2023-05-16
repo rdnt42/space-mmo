@@ -5,6 +5,7 @@ import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,8 +44,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Flux<Void> updateMotion(CharacterMotionRequest request, String playerName) {
-        Flux<Void> result = Flux.empty();
+    public Mono<Void> updateMotion(CharacterMotionRequest request, String playerName) {
+        Mono<Void> result = Mono.empty();
         if (!request.isUpdate()) {
             return result;
         }

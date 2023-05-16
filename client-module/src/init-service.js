@@ -37,8 +37,11 @@ function initBefore(func, funcName) {
     timers.set(funcName, timerId);
 }
 
+let isInit = false;
 function initAfter() {
     if (timers.size > 0) return;
+    if (isInit) return;
+    isInit = true;
 
     main.mainLogicInit();
     keyboard.initKeyBoard();
@@ -52,7 +55,8 @@ export function tryInitMotions(data) {
     stopTimer(funcs.characters);
     let response = new CharacterResponse(data);
     characterService.initMyCharacter(response);
-    characterService.updateOrCreateCharacters(data);
+    characterService.updateCharacterData(data);
+
     removeTimer(funcs.characters);
 }
 

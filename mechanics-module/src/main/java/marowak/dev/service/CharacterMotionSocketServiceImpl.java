@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.MessageCommand;
+import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
@@ -52,15 +53,14 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
-//            case CMD_UPDATE_MOTION -> {
-//                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
-//                return characterMotionService.updateMotion(value, characterName)
-//                        .thenMany(characterInfoService.getCharactersInfo(characterName))
-//                        .map(info -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info))
-//                        .doOnNext(message -> log.info("{}", message.command()))
-//                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
-//
-//            }
+            case CMD_UPDATE_MOTION -> {
+                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
+                return characterMotionService.updateMotion(value, characterName)
+                        .thenMany(characterInfoService.getCharactersInfo(characterName))
+                        .map(info -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info))
+                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+
+            }
             default -> {
                 return null;
             }

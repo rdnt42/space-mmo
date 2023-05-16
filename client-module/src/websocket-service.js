@@ -24,8 +24,6 @@ function onOpen() {
 function onMessage() {
 
     return function (event) {
-        console.log("WebSocket onMessage opened, ", event);
-
         commandService.executeCommand(event.data);
     };
 }

@@ -21,6 +21,11 @@ export class Character {
         this.movement.y = y;
         this.movement.angle = angle;
         this.movement.speed = speed;
+        this.render();
+    }
+
+    render() {
+        renderEngine.renderCharacter(this.characterName, this.texture, this.movement.x, this.movement.y, this.movement.angle);
     }
 
     getDiffX() {

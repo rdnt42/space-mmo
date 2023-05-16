@@ -1,6 +1,6 @@
 import * as socket from "./websocket-service.js";
 import {PlayerEmptyRequest} from "./message/PlayerEmptyRequest.js";
-import {CharacterMotionRequest, CharacterResponse} from "./message/CharacterMessage.js";
+import {CharacterMotionRequest} from "./message/CharacterMessage.js";
 import {Character} from "./obj/Character.js";
 import {Commands} from "./const/MessageCommand.js";
 
@@ -16,8 +16,8 @@ export function sendGetInventory() {
 }
 
 export function initMyCharacter(response) {
-    createCharacter(response);
     playerCharacterName = response.characterName;
+    createCharacter(response);
 }
 
 export function getPlayerCharacter() {
@@ -33,24 +33,13 @@ export function getAllCharacters() {
     return charactersMap;
 }
 
-export function updateCharactersData(data) {
-    let response = new CharacterResponse(data);
-    updateOrCreateCharacters(response);
-    removeUnusedCharacters(response);
-}
-
-export function updateOrCreateCharacters(response) {
-    let character = charactersMap.get(response.characterName);
+export function updateCharacterData(data) {
+    let character = charactersMap.get(data.characterName);
     if (character === undefined) {
-        createCharacter(response);
+        createCharacter(data);
     } else {
-        updateCharacter(response);
+        character.updateCharacter(data.x, data.y, data.angle, data.speed);
     }
-}
-
-function updateCharacter(response) {
-    let character = charactersMap.get(response.characterName);
-    character.updateCharacter(response.x, response.y, response.angle, response.speed);
 }
 
 function createCharacter(response) {
@@ -58,6 +47,7 @@ function createCharacter(response) {
     character.initCharacter(response.x, response.y, response.angle, response.speed, response.shipTypeId);
 
     charactersMap.set(response.characterName, character);
+    console.log(`init another player ${character.characterName}`)
 }
 
 function removeUnusedCharacters(data) {
