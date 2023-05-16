@@ -2,8 +2,8 @@ import * as commandService from "./command-service.js"
 import * as initService from "./init-service.js";
 
 let webSocket;
-export function initSocketConnection(playerName) {
-    webSocket = new WebSocket("ws://localhost:8082/motion/" + playerName);
+export function initSocketConnection(characterName) {
+    webSocket = new WebSocket("ws://localhost:8082/motion/" + characterName);
     webSocket.onclose = onClose();
     webSocket.onopen = onOpen();
     webSocket.onmessage = onMessage();
@@ -22,7 +22,10 @@ function onOpen() {
 }
 
 function onMessage() {
+
     return function (event) {
+        console.log("WebSocket onMessage opened, ", event);
+
         commandService.executeCommand(event.data);
     };
 }

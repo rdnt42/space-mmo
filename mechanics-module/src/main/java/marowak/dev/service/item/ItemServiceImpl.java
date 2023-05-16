@@ -11,6 +11,7 @@ import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.character.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
 import message.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -46,7 +47,6 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return CharacterInventoryResponse.builder()
-                .slots(characterInventory.slots())
                 .items(characterInventory.items().values())
                 .build();
     }
@@ -95,6 +95,12 @@ public class ItemServiceImpl implements ItemService {
                 .id(newItem.getId())
                 .slotId(newItem.getSlotId())
                 .build();
+    }
+
+    @Override
+    public Flux<Item> getItems(String playerName) {
+        return Flux.fromStream(playerInventoryMap.get(playerName)
+                .items().values().stream());
     }
 
     // TODO npe

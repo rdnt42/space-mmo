@@ -13,33 +13,33 @@ import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
-@ServerWebSocket("/motion/{playerName}")
+@ServerWebSocket("/motion/{characterName}")
 public class PlayerMotionSocket {
     private final CharacterMotionSocketService characterMotionSocketService;
 
     @OnOpen
-    public void onOpen(String playerName, WebSocketSession session) {
-        debugLog("onOpen", playerName, session);
+    public void onOpen(String characterName, WebSocketSession session) {
+        debugLog("onOpen", characterName, session);
 
-        characterMotionSocketService.onOpen(playerName);
+        characterMotionSocketService.onOpen(characterName);
     }
 
     @OnMessage
-    public Publisher<SocketMessage<?>> onMessage(String playerName, SocketMessage<?> request,
-                                                                          WebSocketSession session) {
-        debugLog("onMessage", playerName, session);
+    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request,
+                                                 WebSocketSession session) {
+        debugLog("onMessage", characterName, session);
 
-        return characterMotionSocketService.onMessage(playerName, request, session);
+        return characterMotionSocketService.onMessage(characterName, request, session);
     }
 
     @OnClose
-    public Publisher<SocketMessage<String>> onClose(String playerName, WebSocketSession session) {
-        debugLog("onClose", playerName, session);
+    public Publisher<SocketMessage<String>> onClose(String characterName, WebSocketSession session) {
+        debugLog("onClose", characterName, session);
 
-        return characterMotionSocketService.onClose(playerName);
+        return characterMotionSocketService.onClose(characterName);
     }
 
-    private void debugLog(String event, String playerName, WebSocketSession session) {
-        log.debug("Event {}, session id: {}, characterName: {}", event, session.getId(), playerName);
+    private void debugLog(String event, String characterName, WebSocketSession session) {
+        log.debug("Event {}, session id: {}, characterName: {}", event, session.getId(), characterName);
     }
 }

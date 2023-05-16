@@ -70,7 +70,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private final Function<CharacterMotion, CharacterMessage> motionToMessage = motion -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
-            .characterName(motion.playerName())
+            .characterName(motion.characterName())
             .x(motion.x())
             .y(motion.y())
             .angle(motion.angle())

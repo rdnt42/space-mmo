@@ -3,7 +3,7 @@ import * as inventoryService from "./inventory-service.js";
 import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
-import {CharacterResponse} from "./request/CharacterRequest.js";
+import {CharacterResponse} from "./message/CharacterMessage.js";
 
 const timerInterval = 100;
 let timers = new Map();
@@ -60,7 +60,7 @@ export function tryInitInventory(data) {
     if (data == null) return;
 
     stopTimer(funcs.inventory);
-    inventoryService.initInventory(data.slots, data.items);
+    inventoryService.initInventory(data);
     removeTimer(funcs.inventory);
 }
 

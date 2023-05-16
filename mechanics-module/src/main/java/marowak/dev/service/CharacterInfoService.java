@@ -20,7 +20,7 @@ public class CharacterInfoService {
 
     public Flux<CharacterInfo> getCharactersInfo(String playerName) {
         return characterMotionService.getCharactersInRange(playerName)
-                .flatMap(motion -> itemService.getItem(motion.playerName(), ItemTypes.ITEM_TYPE_HULL)
+                .flatMap(motion -> itemService.getItem(motion.characterName(), ItemTypes.ITEM_TYPE_HULL)
                         .map(item -> toCharacterResponse.apply(motion, (Hull) item, playerName)));
     }
 

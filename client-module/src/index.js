@@ -15,7 +15,7 @@ function createConnectInfo() {
     btn.name = "formBtn";
     document.body.appendChild(btn);
     btn.onclick = function () {
-        console.log(`playerName: ${input.value}`)
+        console.log(`characterName: ${input.value}`)
         socket.initSocketConnection(input.value);
         input.remove();
         btn.remove();

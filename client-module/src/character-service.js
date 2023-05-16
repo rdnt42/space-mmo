@@ -1,6 +1,6 @@
 import * as socket from "./websocket-service.js";
-import {PlayerEmptyRequest} from "./request/PlayerEmptyRequest.js";
-import {CharacterMotionRequest, CharacterResponse} from "./request/CharacterRequest.js";
+import {PlayerEmptyRequest} from "./message/PlayerEmptyRequest.js";
+import {CharacterMotionRequest, CharacterResponse} from "./message/CharacterMessage.js";
 import {Character} from "./obj/Character.js";
 import {Commands} from "./const/MessageCommand.js";
 
@@ -55,7 +55,7 @@ function updateCharacter(response) {
 
 function createCharacter(response) {
     let character = new Character(response.characterName);
-    character.initCharacter(response.x, response.y, response.angle, response.speed, response);
+    character.initCharacter(response.x, response.y, response.angle, response.speed, response.shipTypeId);
 
     charactersMap.set(response.characterName, character);
 }

@@ -3,19 +3,21 @@ import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
-import {CharacterItemRequest} from "../request/CharacterRequest.js";
+import {CharacterItemRequest} from "../message/CharacterMessage.js";
 
 export class Inventory {
     isOpen = false;
     cargoCells = [];
     equipmentSlots = new Map();
 
-    constructor(slots) {
+    constructor() {
         renderEngine.createInventory();
         for (let i = 0; i < 6; i++) {
             let holdCell = new CargoCell(null, i);
             this.cargoCells.push(holdCell);
         }
+        let slots = []
+        slots.push(1, 2, 3, 4, 5, 6, 7, 8);
         this.loadConfig(slots);
     }
 
