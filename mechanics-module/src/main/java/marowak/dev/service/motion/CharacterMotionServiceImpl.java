@@ -43,11 +43,15 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public void updateMotion(CharacterMotionRequest request, String playerName) {
+    public Flux<Void> updateMotion(CharacterMotionRequest request, String playerName) {
+        Flux<Void> result = Flux.empty();
+        if (!request.isUpdate()) {
+            return result;
+        }
         CharacterMotion oldMotion = playerMotionMap.get(playerName);
 
         long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
-        if (diffTime < 0) return;
+        if (diffTime < 0) return result;
 
         float relativeSpeed = (request.speed() * diffTime) / 1000;
 
@@ -61,6 +65,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
                 request.speed(), request.lastUpdateTime());
 
         playerMotionMap.put(playerName, newMotion);
+
+        return result;
     }
 
     private double getXShift(float speed, int angle) {

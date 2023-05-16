@@ -45,7 +45,6 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
             case CMD_GET_MOTIONS -> {
                 return characterInfoService.getCharactersInfo(characterName)
                         .map(info -> new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, info))
-                        .doOnNext(resp -> log.info(""))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
@@ -53,18 +52,21 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
+//            case CMD_UPDATE_MOTION -> {
+//                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
+//                return characterMotionService.updateMotion(value, characterName)
+//                        .thenMany(characterInfoService.getCharactersInfo(characterName))
+//                        .map(info -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info))
+//                        .doOnNext(message -> log.info("{}", message.command()))
+//                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+//
+//            }
             default -> {
                 return null;
             }
         }
 
-//            case CMD_UPDATE_MOTION -> {
-//                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
-//                if (value.isUpdate()) {
-//                    characterMotionService.updateMotion(value, characterName);
-//                }
-////                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, response);
-//            }
+
 //            case CMD_UPDATE_INVENTORY_ITEM -> {
 //                ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
 //                ItemUpdate item = itemService.updateInventoryFromClient(value, characterName);

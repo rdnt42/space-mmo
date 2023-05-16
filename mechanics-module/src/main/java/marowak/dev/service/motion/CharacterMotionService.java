@@ -22,7 +22,7 @@ public interface CharacterMotionService {
 
     void addMotion(CharacterMessage character);
 
-    void updateMotion(CharacterMotionRequest request, String playerName);
+    Flux<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
     Flux<CharacterMotion> getCharactersInRange(String playerName);
 }
