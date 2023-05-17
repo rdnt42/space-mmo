@@ -75,13 +75,13 @@ function createBackground(texture) {
 }
 
 function createSpritesContainer() {
-    return new pixi.ParticleContainer(1000, {
+    return new pixi.Container(1000, {
         scale: true,
         position: true,
         rotation: true,
         uvs: true,
         alpha: true,
-        zIndex: Sort.OTHER_PLAYERS
+        zIndex: Sort.OTHER_PLAYERS,
     });
 }
 
@@ -138,18 +138,19 @@ export function createCharacter(characterName, shipTypeId) {
     sprite.zIndex = Sort.PLAYER;
 
     sprite.play();
+    app.stage.addChild(sprite);
 
-    spritesContainer.addChild(sprite);
     createCharacterLabel(characterName);
 
     return sprite;
 }
 
-export function createCharacterLabel(characterName) {
+function createCharacterLabel(characterName) {
     let label = new pixi.Text(characterName, {
         fill: 0xffffff,
     });
     label.zIndex = Sort.OTHER_PLAYERS;
+
     app.stage.addChild(label);
     characterLabelsMap.set(characterName, label);
 }
