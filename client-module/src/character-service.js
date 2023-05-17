@@ -29,10 +29,6 @@ export function sendMotion(speed, angle, isUpdate) {
     socket.sendMessage(request);
 }
 
-export function getAllCharacters() {
-    return charactersMap;
-}
-
 export function updateCharacterData(data) {
     let character = charactersMap.get(data.characterName);
     if (character === undefined) {
@@ -47,9 +43,10 @@ function createCharacter(response) {
     character.initCharacter(response.x, response.y, response.angle, response.speed, response.shipTypeId);
 
     charactersMap.set(response.characterName, character);
-    console.log(`init another player ${character.characterName}`)
+    console.log(`create character ${character.characterName}, ship: ${response.shipTypeId}`)
 }
 
+// TODO
 function removeUnusedCharacters(data) {
     // it doesn't work in flux
     return;

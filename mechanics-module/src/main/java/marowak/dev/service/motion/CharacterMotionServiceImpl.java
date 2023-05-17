@@ -85,14 +85,11 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
         return Flux.fromStream(playerMotionMap.values().stream())
                 .filter(v -> isInRange(player, v));
     }
-//    private Collection<CharacterMotion> getPlayersInRange(String characterName) {
-//        CharacterMotion player = playerMotionMap.get(characterName);
-//
-//        return playerMotionMap.values().stream()
-//                .filter(v -> !v.characterName().equals(characterName))
-//                .filter(v -> isInRange(player, v))
-//                .toList();
-//    }
+
+    @Override
+    public Mono<CharacterMotion> getCharacter(String playerName) {
+        return Mono.just(playerMotionMap.get(playerName));
+    }
 
     private boolean isInRange(CharacterMotion base, CharacterMotion target) {
         double diffX = base.x() - target.x();

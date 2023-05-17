@@ -10,6 +10,7 @@ import marowak.dev.enums.ItemTypes;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,10 +19,16 @@ public class CharacterInfoService {
     private final CharacterMotionService characterMotionService;
     private final ItemService itemService;
 
+    public Mono<CharacterInfo> getCharacterInfo(String playerName) {
+        return characterMotionService.getCharacter(playerName)
+                .flatMap(motion -> itemService.getItem(motion.characterName(), ItemTypes.ITEM_TYPE_HULL)
+                        .map(item -> toCharacterResponse.apply(motion, (Hull) item, motion.characterName())));
+    }
+
     public Flux<CharacterInfo> getCharactersInfo(String playerName) {
         return characterMotionService.getCharactersInRange(playerName)
                 .flatMap(motion -> itemService.getItem(motion.characterName(), ItemTypes.ITEM_TYPE_HULL)
-                        .map(item -> toCharacterResponse.apply(motion, (Hull) item, playerName)));
+                        .map(item -> toCharacterResponse.apply(motion, (Hull) item, motion.characterName())));
     }
 
     private final TriFunction<CharacterMotion, Hull, String, CharacterInfo> toCharacterResponse =

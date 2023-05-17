@@ -26,4 +26,6 @@ public interface CharacterMotionService {
     Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
     Flux<CharacterMotion> getCharactersInRange(String playerName);
+
+    Mono<CharacterMotion> getCharacter(String playerName);
 }

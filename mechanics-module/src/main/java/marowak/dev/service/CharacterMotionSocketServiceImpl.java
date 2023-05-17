@@ -44,9 +44,9 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                                                  WebSocketSession session) {
         switch (request.command()) {
             case CMD_GET_MOTIONS -> {
-                return characterInfoService.getCharactersInfo(characterName)
+                return characterInfoService.getCharacterInfo(characterName)
                         .map(info -> new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, info))
-                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
                 return itemService.getItems(characterName)
