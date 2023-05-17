@@ -8,6 +8,12 @@ let itemsMap = new Map();
 export function initInventory(response) {
     if (inventory === undefined) {
         inventory = new Inventory();
+        document.addEventListener("keydown", (event) => {
+            event.preventDefault();
+            if (event.key === "i") {
+                inventory.changeState();
+            }
+        });
     }
     if (!Object.values(EquipmentSlotId).includes(response.typeId)) {
         return;
@@ -15,13 +21,6 @@ export function initInventory(response) {
     let it = new Item(response);
     inventory.addInitItem(it);
     itemsMap.set(it.id, it);
-
-    document.addEventListener("keydown", (event) => {
-        event.preventDefault();
-        if (event.key === "i") {
-            inventory.changeState();
-        }
-    });
 }
 
 export function doubleClickCallback(texture) {

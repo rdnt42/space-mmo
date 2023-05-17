@@ -268,7 +268,7 @@ export function initItem(typeId, equipmentType) {
             url = `./images/cargo_hook${equipmentType}.png`;
             break;
         case EquipmentSlotId.Hull:
-            url = `./images/ships/ship${equipmentType}/facade.png`;
+            url = `./images/ships/ship${equipmentType}/preview.png`;
             break;
     }
     const texture = pixi.Texture.from(url);
