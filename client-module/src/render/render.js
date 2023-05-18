@@ -333,6 +333,7 @@ export function hasHalfCollision(r1, r2) {
 
 function onDragMove(event) {
     if (dragTarget) {
+        this.scale.set(0.75);
         dragTarget.parent.toLocal(event.global, null, dragTarget.position);
     }
 }
@@ -342,7 +343,6 @@ let start;
 function onDragStart() {
     start = Date.now();
     dragTarget = this;
-    this.scale.set(0.75);
 
     app.stage.on('pointermove', onDragMove);
 }

@@ -152,6 +152,11 @@ export class Inventory {
     }
 
     getItem(typeId) {
-        return this.equipmentSlots.get(typeId).getItem();
+        let slot = this.equipmentSlots.get(typeId);
+        if (slot === undefined) {
+            return null;
+        }
+
+        return slot.getItem();
     }
 }
