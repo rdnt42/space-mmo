@@ -5,13 +5,13 @@ import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.CharacterInventory;
+import marowak.dev.dto.InventoryInfo;
 import marowak.dev.dto.item.*;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.broker.ItemClient;
 import message.*;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -88,9 +88,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Flux<Item> getItems(String playerName) {
-        return Flux.fromStream(playerInventoryMap.get(playerName)
-                .items().values().stream());
+    public Mono<InventoryInfo> getItems(String playerName) {
+        CharacterInventory inventory = playerInventoryMap.get(playerName);
+        if (inventory == null) {
+            return Mono.empty();
+        }
+
+        // TODO rework when using storageId
+        Hull hull = (Hull) inventory.items().values().stream()
+                .filter(i -> i.getTypeId() == ItemTypes.ITEM_TYPE_HULL.getTypeId() && i.getSlotId() == null)
+                .findFirst()
+                .orElse(null);
+
+        return Mono.just(InventoryInfo.builder()
+                .items(inventory.items().values())
+                .config(hull == null ? 0 : hull.getConfig())
+                .build());
     }
 
     @Override

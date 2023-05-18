@@ -106,6 +106,7 @@ public class BuilderHelper {
             .evasion(message.getEvasion())
             .armor(message.getArmor())
             .equipmentTypeId(message.getEquipmentTypeId())
+            .config(message.getConfig())
             .build();
 
     public static final BiFunction<Hull, ItemUpdate, Hull> hullToNewHull =
@@ -121,5 +122,6 @@ public class BuilderHelper {
                     .evasion(hull.getEvasion())
                     .armor(hull.getArmor())
                     .equipmentTypeId(hull.getEquipmentTypeId())
+                    .config(hull.getConfig())
                     .build();
 }

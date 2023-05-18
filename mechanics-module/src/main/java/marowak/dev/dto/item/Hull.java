@@ -12,4 +12,5 @@ public class Hull extends Item {
     private int evasion;
     private int armor;
     private int equipmentTypeId;
+    private int config;
 }

@@ -15,4 +15,6 @@ public class HullMessage extends ItemMessage {
     private int armor;
 
     private int equipmentTypeId;
+
+    private int config;
 }

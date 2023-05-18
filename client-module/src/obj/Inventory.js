@@ -10,34 +10,37 @@ export class Inventory {
     cargoCells = [];
     equipmentSlots = new Map();
 
-    constructor() {
+    constructor(config) {
         renderEngine.createInventory();
         for (let i = 0; i < 6; i++) {
             let holdCell = new CargoCell(null, i);
             this.cargoCells.push(holdCell);
         }
-        let slots = []
-        slots.push(1, 2, 3, 4, 5, 6, 7, 8);
-        this.loadConfig(slots);
+
+        this.loadConfig(config);
     }
 
-    loadConfig(slots) {
-        for (let slot of slots) {
-            if (Object.values(EquipmentSlotId).includes(slot)) {
-                this.equipmentSlots.set(slot, new EquipmentSlot(slot));
+    loadConfig(config) {
+        let cfgArr = Array.from(config.toString(2)).reverse();
+        for (let i = 0; i < cfgArr.length; i++) {
+            if (cfgArr[i] && Object.values(EquipmentSlotId).includes(i)) {
+                this.equipmentSlots.set(i, new EquipmentSlot(i));
             }
         }
-        console.log(`init equipment slots: ${slots}`);
+        console.log(`init equipment slots: ${cfgArr}`);
     }
 
     addInitItem(item) {
         if (item.slotId === null) {
             let slot = this.equipmentSlots.get(item.typeId);
+            if (slot === undefined) return false;
             slot.add(item);
         } else {
             let cargoCell = this.cargoCells[item.slotId];
             cargoCell.add(item);
         }
+
+        return true;
     }
 
     updateCargo(item, newSlotId) {

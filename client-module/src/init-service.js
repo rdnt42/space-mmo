@@ -27,6 +27,7 @@ function initBefore(func, funcName) {
         console.log(`attempt: ${attempt} for function: ${funcName}`);
         if (attempt > maxAttempt) {
             console.log(`initialization for function: ${funcName} stopped due to exceeded retries`);
+            clearInterval(timerId);
         } else {
             console.log(`try init function: ${funcName}`);
             attempt++;
@@ -50,7 +51,7 @@ function initAfter() {
 }
 
 export function tryInitMotions(data) {
-    if (data == null) return;
+    if (data == null || timers.get(funcs.characters) === undefined) return;
 
     stopTimer(funcs.characters);
     let response = new CharacterResponse(data);
@@ -61,7 +62,7 @@ export function tryInitMotions(data) {
 }
 
 export function tryInitInventory(data) {
-    if (data == null) return;
+    if (data == null || timers.get(funcs.inventory) === undefined) return;
 
     stopTimer(funcs.inventory);
     inventoryService.initInventory(data);

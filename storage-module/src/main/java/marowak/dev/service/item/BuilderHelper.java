@@ -72,5 +72,6 @@ public class BuilderHelper {
                     .evasion(hull.evasion())
                     .armor(hull.armor())
                     .equipmentTypeId(hull.hullTypeId())
+                    .config(hull.config())
                     .build();
 }

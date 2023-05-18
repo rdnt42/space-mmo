@@ -22,6 +22,9 @@ public record Hull(
 
         int armor,
 
-        int hullTypeId
+        int hullTypeId,
+
+        int config
+
 ) {
 }

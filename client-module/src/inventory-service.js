@@ -6,21 +6,24 @@ let inventory;
 let itemsMap = new Map();
 
 export function initInventory(response) {
-    if (inventory === undefined) {
-        inventory = new Inventory();
-        document.addEventListener("keydown", (event) => {
-            event.preventDefault();
-            if (event.key === "i") {
-                inventory.changeState();
-            }
-        });
+    inventory = new Inventory(response.config);
+
+    for (const itemSrc of response.items) {
+        if (!Object.values(EquipmentSlotId).includes(itemSrc.typeId)) {
+            continue;
+        }
+        let item = new Item(itemSrc);
+        if (inventory.addInitItem(item)) {
+            itemsMap.set(item.id, item);
+        }
     }
-    if (!Object.values(EquipmentSlotId).includes(response.typeId)) {
-        return;
-    }
-    let it = new Item(response);
-    inventory.addInitItem(it);
-    itemsMap.set(it.id, it);
+
+    document.addEventListener("keydown", (event) => {
+        event.preventDefault();
+        if (event.key === "i") {
+            inventory.changeState();
+        }
+    });
 }
 
 export function doubleClickCallback(texture) {

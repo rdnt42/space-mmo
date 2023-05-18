@@ -52,7 +52,7 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
             case CMD_GET_INVENTORY -> {
                 return itemService.getItems(characterName)
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
-                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_MOTION -> {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
