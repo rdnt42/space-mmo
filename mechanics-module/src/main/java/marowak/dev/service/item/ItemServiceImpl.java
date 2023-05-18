@@ -8,13 +8,15 @@ import marowak.dev.dto.CharacterInventory;
 import marowak.dev.dto.item.*;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.character.CharacterInventoryResponse;
 import marowak.dev.service.broker.ItemClient;
 import message.*;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -24,35 +26,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ItemServiceImpl implements ItemService {
 
     private final Map<String, CharacterInventory> playerInventoryMap = new ConcurrentHashMap<>();
-    private static final Set<Integer> baseConfig = new HashSet<>();
     private final ItemClient itemClient;
 
     @Override
-    public void sendGetItems(ItemMessageKey key, String characterName) {
+    public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
         ItemMessage message = ItemMessage.builder()
                 .key(key)
                 .build();
 
-        itemClient.sendItems(message)
+        return itemClient.sendItems(message)
                 .doOnError(e -> log.error("Send getting Items init error, key{}, character: {}, error: {}", key, characterName, e.getMessage()))
-                .doOnSuccess(c -> log.info("Send getting Items init, key: {}, character: {}", key, characterName))
-                .subscribe();
+                .doOnSuccess(c -> log.info("Send getting Items init, key: {}, character: {}", key, characterName));
     }
 
     @Override
-    public CharacterInventoryResponse getInventory(String playerName) {
-        CharacterInventory characterInventory = playerInventoryMap.get(playerName);
-        if (characterInventory == null) {
-            return null;
-        }
-
-        return CharacterInventoryResponse.builder()
-                .items(characterInventory.items().values())
-                .build();
-    }
-
-    @Override
-    public void updateInventoryFromStorage(ItemMessage message) {
+    public Mono<Void> updateInventoryFromStorage(ItemMessage message) {
         playerInventoryMap.putIfAbsent(message.getCharacterName(), createInventory());
         CharacterInventory inventory = playerInventoryMap.get(message.getCharacterName());
 
@@ -67,6 +55,8 @@ public class ItemServiceImpl implements ItemService {
 
         inventory.items().put(item.getId(), item);
         log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
+
+        return Mono.empty();
     }
 
     @Override
@@ -103,7 +93,6 @@ public class ItemServiceImpl implements ItemService {
                 .items().values().stream());
     }
 
-    // TODO npe
     @Override
     public Mono<Item> getItem(String characterName, ItemTypes type) {
         return Mono.justOrEmpty(playerInventoryMap.get(characterName)
@@ -115,7 +104,6 @@ public class ItemServiceImpl implements ItemService {
 
     private CharacterInventory createInventory() {
         return CharacterInventory.builder()
-                .slots(baseConfig)
                 .items(new HashMap<>())
                 .build();
     }
@@ -131,17 +119,6 @@ public class ItemServiceImpl implements ItemService {
                 .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
                         message.getKey(), message.getCharacterName(), e.getMessage()))
                 .subscribe();
-    }
-
-
-    // TODO #62
-    static {
-        baseConfig.add(1); // engine
-        baseConfig.add(2); // fuel tank
-        baseConfig.add(3); // scanner
-        baseConfig.add(4); // radar
-        baseConfig.add(6); // cargo hook
-        baseConfig.add(8); // hull
     }
 
 }

@@ -20,6 +20,7 @@ public class CharacterInit {
     @EventListener
     public void initData(StartupEvent startupEvent) {
         characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ALL, "");
-        itemService.sendGetItems(ItemMessageKey.ITEMS_GET_ALL, "");
+        itemService.sendGetItems(ItemMessageKey.ITEMS_GET_ALL, "")
+                .subscribe();
     }
 }

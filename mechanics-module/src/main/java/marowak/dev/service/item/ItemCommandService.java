@@ -12,12 +12,9 @@ public class ItemCommandService {
     private final ItemService itemService;
 
     public Publisher<Void> executeCommand(ItemMessage message) {
-        switch (message.getKey()) {
+        return switch (message.getKey()) {
             case ITEMS_GET_ALL, ITEMS_GET_ONE -> itemService.updateInventoryFromStorage(message);
-            default -> { // Ignore other events
-            }
-        }
-
-        return Mono.empty();
+            default -> Mono.empty();
+        };
     }
 }

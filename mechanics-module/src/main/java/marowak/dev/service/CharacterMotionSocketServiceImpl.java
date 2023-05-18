@@ -70,7 +70,6 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
-
         }
     }
 

@@ -4,22 +4,19 @@ import keys.ItemMessageKey;
 import marowak.dev.dto.item.Item;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.character.CharacterInventoryResponse;
 import message.ItemMessage;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ItemService {
-    void sendGetItems(ItemMessageKey key, String characterName);
+    Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName);
 
-    CharacterInventoryResponse getInventory(String playerName);
-
-    void updateInventoryFromStorage(ItemMessage message);
+    Mono<Void> updateInventoryFromStorage(ItemMessage message);
 
     Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName);
 
     Flux<Item> getItems(String playerName);
 
-    // TODO npe
     Mono<Item> getItem(String characterName, ItemTypes type);
 }
