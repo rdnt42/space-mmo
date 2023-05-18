@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemUpdate updateInventoryFromClient(ItemUpdate request, String playerName) {
+    public Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName) {
         CharacterInventory inventory = Optional.ofNullable(playerInventoryMap.get(playerName))
                 .orElseThrow();
         Item item = Optional.ofNullable(inventory.items().get(request.id()))
@@ -91,10 +91,10 @@ public class ItemServiceImpl implements ItemService {
         sendItemUpdate(newItem);
         log.info("updateInventory id: {}, slot: {}", request.id(), request.slotId());
 
-        return ItemUpdate.builder()
+        return Mono.just(ItemUpdate.builder()
                 .id(newItem.getId())
                 .slotId(newItem.getSlotId())
-                .build();
+                .build());
     }
 
     @Override

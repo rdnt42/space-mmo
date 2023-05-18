@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
@@ -61,24 +62,16 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
 
             }
-            default -> {
-                return null;
+            case CMD_UPDATE_INVENTORY_ITEM -> {
+                ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
+                return itemService.updateInventoryFromClient(value, characterName)
+                        .map(item -> new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item))
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
+            default ->
+                    throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
+
         }
-
-
-//            case CMD_UPDATE_INVENTORY_ITEM -> {
-//                ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
-//                ItemUpdate item = itemService.updateInventoryFromClient(value, characterName);
-//
-////                socketResponse = new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item);
-//            }
-//            default ->
-//                    throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
-//
-//        }
-//
-//        return broadcaster.broadcast(socketResponse, filterOtherPlayers(session, characterName));
     }
 
     @Override

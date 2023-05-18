@@ -16,9 +16,9 @@ public interface ItemService {
 
     void updateInventoryFromStorage(ItemMessage message);
 
-    ItemUpdate updateInventoryFromClient(ItemUpdate request, String playerName);
+    Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName);
 
-    <T extends Item> Flux<T> getItems(String playerName);
+    Flux<Item> getItems(String playerName);
 
     // TODO npe
     Mono<Item> getItem(String characterName, ItemTypes type);
