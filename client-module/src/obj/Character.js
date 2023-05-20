@@ -1,7 +1,6 @@
-import * as renderEngine from "../render/render.js";
+import * as renderEngine from "../render/engine.js";
 
 export class Character {
-    texture;
     characterName;
     movement;
 
@@ -11,7 +10,7 @@ export class Character {
 
     initCharacter(x, y, angle, speed, shipTypeId) {
         this.movement = new Movement(x, y, angle, speed);
-        this.texture = renderEngine.createCharacter(this.characterName, shipTypeId);
+        renderEngine.createCharacter(this.characterName, shipTypeId);
     }
 
     updateCharacter(x, y, angle, speed) {
@@ -25,7 +24,7 @@ export class Character {
     }
 
     render() {
-        renderEngine.renderCharacter(this.characterName, this.texture, this.movement.x, this.movement.y, this.movement.angle);
+        renderEngine.renderCharacter(this.characterName, this.movement.x, this.movement.y, this.movement.angle);
     }
 
     getDiffX() {
@@ -42,7 +41,7 @@ export class Character {
     }
 
     destroy() {
-        renderEngine.removeCharacter(this.characterName, this.texture);
+        renderEngine.removeCharacter(this.characterName);
     }
 
 }

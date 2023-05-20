@@ -4,6 +4,7 @@ import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
 import {CharacterResponse} from "./message/CharacterMessage.js";
+import * as physicsService from "./render/physics.js";
 
 const timerInterval = 100;
 let timers = new Map();
@@ -14,6 +15,7 @@ const funcs = {
 
 export function startInitAll() {
     renderEngine.initEngine();
+    physicsService.initPhysics();
 
     initBefore(characterService.sendGetMotions, funcs.characters);
     initBefore(characterService.sendGetInventory, funcs.inventory);

@@ -85,14 +85,6 @@ function createSpritesContainer() {
     });
 }
 
-function getX(currX, diffX) {
-    return currX - diffX + window.innerWidth / 2;
-}
-
-function getY(currY, diffY) {
-    return currY - diffY + window.innerHeight / 2;
-}
-
 function updateLocationText(posInfoLabel) {
     let playerCharacter = characterService.getPlayerCharacter();
     posInfoLabel.text = playerCharacter.getLocation();
@@ -112,10 +104,7 @@ export function changeStateInventory(state) {
 
 /// Character
 export function renderCharacter(characterName, sprite, x, y, angle) {
-    let abs = characterService.getPlayerCharacter().movement;
-    let newX = getX(x, abs.x);
-    let newY = getY(y, abs.y);
-    sprite.position.set(newX, newY);
+    sprite.position.set(x, y);
     sprite.angle = angle;
 
     let label = characterLabelsMap.get(characterName);
