@@ -88,7 +88,7 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     @Override
     public Mono<CharacterMotion> getCharacter(String playerName) {
-        return Mono.just(playerMotionMap.get(playerName));
+        return Mono.justOrEmpty(playerMotionMap.get(playerName));
     }
 
     private boolean isInRange(CharacterMotion base, CharacterMotion target) {

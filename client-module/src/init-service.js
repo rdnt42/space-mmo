@@ -14,7 +14,7 @@ const funcs = {
 }
 
 export function startInitAll() {
-    renderEngine.initEngine();
+    renderEngine.initRender();
     physicsService.initPhysics();
 
     initBefore(characterService.sendGetMotions, funcs.characters);

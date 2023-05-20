@@ -4,6 +4,10 @@ import {doubleClickCallback, dragEndCallback} from "../inventory-service.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
+// const sceneContainer = document.querySelector(".scene");
+// const canvasWidth = sceneContainer.offsetWidth;
+// const canvasHeight = sceneContainer.offsetHeight;
+
 let app;
 let dragTarget = null;
 
@@ -13,7 +17,7 @@ const Sort = {
     INVENTORY: 100,
     EQUIPMENT: 110
 }
-const IS_DEBUG = false;
+const IS_DEBUG = true;
 // fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
 let INVENTORY_CONTAINER;
@@ -24,18 +28,19 @@ let speedLabel;
 let bgLast;
 let bgFirst;
 
-export function initEngine() {
+export function initRender() {
     app = new pixi.Application({
-        resizeTo: window
+        resizeTo: window,
+        // backgroundAlpha: 0.4,
     });
     app.stage.hitArea = app.screen;
 
     document.body.appendChild(app.view);
-    bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
-    app.stage.addChild(bgLast);
-
-    bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
-    app.stage.addChild(bgFirst);
+    // bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
+    // app.stage.addChild(bgLast);
+    //
+    // bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
+    // app.stage.addChild(bgFirst);
 
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
@@ -49,8 +54,8 @@ export function initEngine() {
 export function startEngineTimer() {
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
-        updateBackground(bgLast, 3);
-        updateBackground(bgFirst, 2);
+        // updateBackground(bgLast, 3);
+        // updateBackground(bgFirst, 2);
         app.stage.sortChildren();
     });
 }
@@ -113,7 +118,8 @@ export function renderCharacter(characterName, sprite, x, y, angle) {
 
 export function createCharacter(characterName, shipTypeId) {
     let textureArr = [];
-    for (let i = 0; i <= shipsCfgMap.get(shipTypeId); i++) {
+    let cfg = shipsCfgMap.get(shipTypeId);
+    for (let i = 0; i <= cfg.fragments; i++) {
         let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
         const texture = pixi.Texture.from(img);
         textureArr.push(texture);
@@ -123,11 +129,21 @@ export function createCharacter(characterName, shipTypeId) {
 
     sprite.anchor.set(0.5, 0.5);
     sprite.animationSpeed = 0.3;
-    sprite.scale.set(0.75);
+    sprite.scale.set(cfg.scale);
     sprite.zIndex = Sort.PLAYER;
 
     sprite.play();
     app.stage.addChild(sprite);
+
+    if (IS_DEBUG) {
+        let border = new pixi.Graphics();
+        border.lineStyle(2, 0xFF0000);
+        border.beginFill(0x0000FF, 0);
+        border.drawPolygon(cfg.polygons);
+        border.pivot.set(cfg.width / 2, cfg.height / 2);
+        border.endFill();
+        sprite.addChild(border);
+    }
 
     createCharacterLabel(characterName);
 

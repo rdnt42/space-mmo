@@ -24,7 +24,7 @@ export class Character {
     }
 
     render() {
-        renderEngine.renderCharacter(this.characterName, this.movement.x, this.movement.y, this.movement.angle);
+        // renderEngine.renderCharacter(this.characterName, this.movement.x, this.movement.y, this.movement.angle);
     }
 
     getDiffX() {
