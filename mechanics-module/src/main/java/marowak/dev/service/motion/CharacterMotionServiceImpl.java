@@ -1,14 +1,14 @@
 package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
+import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.service.WorldServiceJ;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -20,9 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date: 17.11.2022
  * Time: 0:08
  */
+
+@AllArgsConstructor
 @Singleton
 public class CharacterMotionServiceImpl implements CharacterMotionService {
     private final Map<String, CharacterMotion> playerMotionMap = new ConcurrentHashMap<>();
+    private final WorldServiceJ worldService;
     private final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     @Override
@@ -39,8 +42,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     public void addMotion(CharacterMessage character) {
         CharacterMotion newMotion = new CharacterMotion(character.getCharacterName(), character.getX(), character.getY(),
                 character.getAngle(), 0, new Date().getTime());
-
-        playerMotionMap.put(character.getCharacterName(), newMotion);
+        worldService.addShip(newMotion);
+//        playerMotionMap.put(character.getCharacterName(), newMotion);
     }
 
     @Override
@@ -49,25 +52,28 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
         if (!request.isUpdate()) {
             return result;
         }
-        CharacterMotion oldMotion = playerMotionMap.get(playerName);
 
-        long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
-        if (diffTime < 0) return result;
+        worldService.updateShip(request, playerName);
+        return Mono.empty();
 
-        float relativeSpeed = (request.speed() * diffTime) / 1000;
 
-        double newX = oldMotion.x() + getXShift(relativeSpeed, request.angle());
-        BigDecimal fx = BigDecimal.valueOf(newX).setScale(2, RoundingMode.HALF_UP);
-
-        double newY = oldMotion.y() + getYShift(relativeSpeed, request.angle());
-        BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
-
-        CharacterMotion newMotion = new CharacterMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
-                request.speed(), request.lastUpdateTime());
-
-        playerMotionMap.put(playerName, newMotion);
-
-        return result;
+//        CharacterMotion oldMotion = playerMotionMap.get(playerName);
+//
+//        long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
+//        if (diffTime < 0) return result;
+//
+//        float relativeSpeed = (request.speed() * diffTime) / 1000;
+//
+//        double newX = oldMotion.x() + getXShift(relativeSpeed, request.angle());
+//        BigDecimal fx = BigDecimal.valueOf(newX).setScale(2, RoundingMode.HALF_UP);
+//
+//        double newY = oldMotion.y() + getYShift(relativeSpeed, request.angle());
+//        BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
+//
+//        CharacterMotion newMotion = new CharacterMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
+//                request.speed(), request.lastUpdateTime());
+//
+//        playerMotionMap.put(playerName, newMotion);
     }
 
     private double getXShift(float speed, int angle) {
@@ -80,15 +86,13 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     @Override
     public Flux<CharacterMotion> getCharactersInRange(String playerName) {
-        CharacterMotion player = playerMotionMap.get(playerName);
-
-        return Flux.fromStream(playerMotionMap.values().stream())
-                .filter(v -> isInRange(player, v));
+//        CharacterMotion player = playerMotionMap.get(playerName);
+        return worldService.getShips(playerName);
     }
 
     @Override
     public Mono<CharacterMotion> getCharacter(String playerName) {
-        return Mono.justOrEmpty(playerMotionMap.get(playerName));
+        return worldService.getShip(playerName);
     }
 
     private boolean isInRange(CharacterMotion base, CharacterMotion target) {

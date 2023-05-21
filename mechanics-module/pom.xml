@@ -75,6 +75,17 @@
             <artifactId>micronaut-kafka</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dyn4j</groupId>
+            <artifactId>dyn4j</artifactId>
+            <version>5.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbox2d</groupId>
+            <artifactId>jbox2d-library</artifactId>
+            <version>2.2.1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

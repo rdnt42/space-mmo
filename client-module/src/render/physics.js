@@ -47,8 +47,9 @@ function createPoints(polygons) {
     return answer;
 }
 
-export function renderBody(body, x, y) {
-    Body.applyForce(body, body.position, {x: x, y: y});
+export function renderBody(body, x, y, angle) {
+    Body.setPosition(body, {x: x, y: y}, false);
+    Body.setAngle(body, angle, false)
 }
 
 export function removeBody(body) {

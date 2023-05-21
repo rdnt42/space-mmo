@@ -4,10 +4,6 @@ import {doubleClickCallback, dragEndCallback} from "../inventory-service.js";
 import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
-// const sceneContainer = document.querySelector(".scene");
-// const canvasWidth = sceneContainer.offsetWidth;
-// const canvasHeight = sceneContainer.offsetHeight;
-
 let app;
 let dragTarget = null;
 
@@ -18,7 +14,6 @@ const Sort = {
     EQUIPMENT: 110
 }
 const IS_DEBUG = true;
-// fast container for all spritesContainer (faster than Container in 3-5 times)
 let spritesContainer;
 let INVENTORY_CONTAINER;
 
@@ -36,11 +31,11 @@ export function initRender() {
     app.stage.hitArea = app.screen;
 
     document.body.appendChild(app.view);
-    // bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
-    // app.stage.addChild(bgLast);
-    //
-    // bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
-    // app.stage.addChild(bgFirst);
+    bgLast = createBackground(pixi.Texture.from("./images/background/bgLastLevel.jpg"));
+    app.stage.addChild(bgLast);
+
+    bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
+    app.stage.addChild(bgFirst);
 
     spritesContainer = createSpritesContainer();
     app.stage.addChild(spritesContainer);
@@ -54,8 +49,8 @@ export function initRender() {
 export function startEngineTimer() {
     app.ticker.add(() => {
         updateLocationText(posInfoLabel);
-        // updateBackground(bgLast, 3);
-        // updateBackground(bgFirst, 2);
+        updateBackground(bgLast, 3);
+        updateBackground(bgFirst, 2);
         app.stage.sortChildren();
     });
 }
@@ -116,7 +111,7 @@ export function renderCharacter(characterName, sprite, x, y, angle) {
     label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
 }
 
-export function createCharacter(characterName, shipTypeId) {
+export function createCharacter(characterName, shipTypeId, x, y, angle) {
     let textureArr = [];
     let cfg = shipsCfgMap.get(shipTypeId);
     for (let i = 0; i <= cfg.fragments; i++) {
@@ -131,6 +126,8 @@ export function createCharacter(characterName, shipTypeId) {
     sprite.animationSpeed = 0.3;
     sprite.scale.set(cfg.scale);
     sprite.zIndex = Sort.PLAYER;
+    sprite.position.set(x, y);
+    sprite.angle = angle;
 
     sprite.play();
     app.stage.addChild(sprite);

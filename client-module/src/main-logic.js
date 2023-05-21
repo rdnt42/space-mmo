@@ -3,7 +3,6 @@ import {Direction} from "./const/Direction.js";
 import * as characterService from "./character-service.js";
 import {FREQUENCY_TIME} from "./const/Common.js";
 import * as inventoryService from "./inventory-service.js";
-import * as renderEngine from "./render/engine.js";
 
 const accelerationTime = 1500;
 
@@ -17,8 +16,8 @@ function worldTick() {
     let engine = inventoryService.getEngine();
     if (engine !== null) {
         let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
-        // characterService.sendMotion(move.speed, move.angle, true);
-        renderEngine.moveCharacter(character, move.speed, move.angle)
+        characterService.sendMotion(move.speed, move.angle, true);
+        // renderEngine.moveCharacter(character, move.speed, move.angle)
     }
 }
 

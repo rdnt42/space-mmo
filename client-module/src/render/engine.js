@@ -6,30 +6,23 @@ import {shipsCfgMap} from "../cfg/images-cfg.js";
 let ships = new Map();
 
 export function createCharacter(characterName, shipTypeId) {
-    let sprite = render.createCharacter(characterName, shipTypeId);
-    sprite.position.set(250, 250);
-
     let cfg = shipsCfgMap.get(shipTypeId);
-    let body = physics.createCharacter(sprite.x, sprite.y, cfg.polygons, cfg.scale);
+    let sprite = render.createCharacter(characterName, shipTypeId);
+    // let body = physics.createCharacter(sprite.x, sprite.y, cfg.polygons, cfg.scale);
 
-    let staticCharSprite = render.createCharacter(characterName, 2);
-    staticCharSprite.position.set(500, 500);
-    let cfgStatic = shipsCfgMap.get(2);
-    let staticCharBody = physics.createCharacter(staticCharSprite.x, staticCharSprite.y, cfgStatic.polygons, cfgStatic.scale);
-
-    ships.set(characterName, [body, sprite]);
-    ships.set("test", [staticCharBody, staticCharSprite]);
+    ships.set(characterName, sprite);
 }
 
 export function renderCharacter(characterName, x, y, angle) {
-    let body = getBody(characterName);
-    let sprite = getSprite(characterName);
+    // let body = getBody(characterName);
+    let sprite = ships.get(characterName);
 
     let abs = characterService.getPlayerCharacter().movement;
     let newX = getX(x, abs.x);
     let newY = getY(y, abs.y);
 
-    physics.renderBody(body, newX, newY);
+    const angleInRadians = angle * (Math.PI / 180);
+    // physics.renderBody(body, newX, newY, angleInRadians);
     render.renderCharacter(characterName, sprite, newX, newY, angle);
 }
 
@@ -55,7 +48,7 @@ export function moveCharacter(character, speed, angle) {
     character.movement.y = body.position.y;
     character.movement.angle = angle;
     character.movement.speed = speed;
-    syncCoords();
+    // syncCoords();
 
     // renderCharacter(characterName, velX, velY, angle);
 }
