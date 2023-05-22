@@ -1,6 +1,7 @@
 package marowak.dev.service;
 
 import jakarta.inject.Singleton;
+import marowak.dev.cfg.PolygonShapeCfg;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -9,13 +10,13 @@ import org.jbox2d.dynamics.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class WorldServiceJ {
     private final World world;
-    private final Map<String, Body> ships = new ConcurrentHashMap<>();
+    private final Map<String, Body> ships = new HashMap<>();
 
     private final int VELOCITY_ITERATIONS = 6;
     private final int POSITION_ITERATIONS = 2;
@@ -35,18 +36,19 @@ public class WorldServiceJ {
         bodyDef.position.set((float) motion.x(), (float) motion.y());
         bodyDef.angle = (float) Math.toRadians(motion.angle());
         bodyDef.type = BodyType.DYNAMIC;
+        bodyDef.active = true;
 
-        Body body = world.createBody(bodyDef);
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(100, 100);
+        Vec2[] polygons = PolygonShapeCfg.getPolygons(1);
+        polygonShape.set(polygons, polygons.length);
 
         FixtureDef def = new FixtureDef();
         def.shape = polygonShape;
         def.density = 1;
         def.friction = 0.3f;
-        body.setUserData(motion.lastUpdateTime());
 
+        Body body = world.createBody(bodyDef);
         body.createFixture(def);
         ships.put(motion.characterName(), body);
     }
@@ -54,18 +56,14 @@ public class WorldServiceJ {
     public void updateShip(CharacterMotionRequest request, String characterName) {
         Body body = ships.get(characterName);
 
-        long diffTime = request.lastUpdateTime() - (long) body.getUserData();
-        if (diffTime < 0) return;
-
         float speed = request.speed();
         float angleInRadians = (float) Math.toRadians(request.angle());
         float xShift = getXShift(speed, angleInRadians);
         float yShift = getYShift(speed, angleInRadians);
 
+        Vec2 position = body.getPosition();
+        body.setTransform(position, angleInRadians);
         body.setLinearVelocity(new Vec2(xShift, yShift));
-        body.setTransform(body.getPosition(), angleInRadians);
-
-        body.setUserData(request.lastUpdateTime());
     }
 
     public Flux<CharacterMotion> getShips(String characterName) {

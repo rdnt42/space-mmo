@@ -2,6 +2,7 @@ package marowak.dev.service;
 
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.cfg.PolygonShapeCfg;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import org.dyn4j.dynamics.Body;
@@ -32,12 +33,13 @@ public class WorldService {
 
     public void addShip(CharacterMotion motion) {
         Body body = new Body();
-        body.addFixture(Geometry.createCircle(50));
+
+        body.addFixture(Geometry.createPolygon(PolygonShapeCfg.getPolygonsDyn(1)));
         body.translate(motion.x(), motion.y());
         double angleInRadians = Math.toRadians(motion.angle());
         body.getTransform().setRotation(angleInRadians);
         body.setMass(MassType.NORMAL);
-        body.setUserData(motion.lastUpdateTime());
+//        body.setUserData(motion.lastUpdateTime());
 
         ships.put(motion.characterName(), body);
         world.addBody(body);
@@ -46,8 +48,8 @@ public class WorldService {
     public void updateShip(CharacterMotionRequest request, String characterName) {
         Body body = ships.get(characterName);
 
-        long diffTime = request.lastUpdateTime() - (long) body.getUserData();
-        if (diffTime < 0) return;
+//        long diffTime = request.lastUpdateTime() - (long) body.getUserData();
+//        if (diffTime < 0) return;
 
         float speed = request.speed();
         double angleInRadians = Math.toRadians(request.angle());
@@ -57,8 +59,7 @@ public class WorldService {
         body.setLinearVelocity(xShift, yShift);
         body.getTransform().setRotation(angleInRadians);
 
-        body.setUserData(request.lastUpdateTime());
-
+//        body.setUserData(request.lastUpdateTime());
     }
 
     public Flux<CharacterMotion> getShips(String characterName) {

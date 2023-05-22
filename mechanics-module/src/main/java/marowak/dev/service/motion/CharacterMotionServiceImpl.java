@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.service.WorldServiceJ;
+import marowak.dev.service.WorldService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class CharacterMotionServiceImpl implements CharacterMotionService {
     private final Map<String, CharacterMotion> playerMotionMap = new ConcurrentHashMap<>();
-    private final WorldServiceJ worldService;
+    private final WorldService worldService;
     private final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     @Override
