@@ -17,7 +17,6 @@ function worldTick() {
     if (engine !== null) {
         let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
         characterService.sendMotion(move.speed, move.angle, true);
-        // renderEngine.moveCharacter(character, move.speed, move.angle)
     }
 }
 

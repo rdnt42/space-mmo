@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-public class WorldServiceJ {
+public class WorldServiceJ implements WorldService {
     private final World world;
     private final Map<String, Body> ships = new HashMap<>();
 
@@ -27,10 +27,12 @@ public class WorldServiceJ {
         world = new World(new Vec2());
     }
 
+    @Override
     public void updateWorld() {
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
     }
 
+    @Override
     public void addShip(CharacterMotion motion) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set((float) motion.x(), (float) motion.y());
@@ -53,6 +55,7 @@ public class WorldServiceJ {
         ships.put(motion.characterName(), body);
     }
 
+    @Override
     public void updateShip(CharacterMotionRequest request, String characterName) {
         Body body = ships.get(characterName);
 
@@ -66,6 +69,7 @@ public class WorldServiceJ {
         body.setLinearVelocity(new Vec2(xShift, yShift));
     }
 
+    @Override
     public Flux<CharacterMotion> getShips(String characterName) {
         return Flux.fromStream(ships.entrySet().stream())
                 .map(entry -> CharacterMotion.builder()
@@ -77,6 +81,7 @@ public class WorldServiceJ {
                         .build());
     }
 
+    @Override
     public Mono<CharacterMotion> getShip(String characterName) {
         return Mono.justOrEmpty(ships.get(characterName))
                 .map(body -> CharacterMotion.builder()
