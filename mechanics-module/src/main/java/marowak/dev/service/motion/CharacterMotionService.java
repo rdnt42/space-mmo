@@ -6,8 +6,6 @@ import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-
 /**
  * Created with IntelliJ IDEA.
  * User: marowak
@@ -19,7 +17,7 @@ public interface CharacterMotionService {
     // TODO all response to flux/mono
     void leavingPlayer(String playerName);
 
-    Collection<CharacterMotion> getAllMotions();
+    Flux<CharacterMotion> getAllMotions();
 
     void addMotion(CharacterMessage character);
 

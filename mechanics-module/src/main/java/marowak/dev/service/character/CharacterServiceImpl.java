@@ -8,9 +8,7 @@ import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.motion.CharacterMotionService;
 import message.CharacterMessage;
-import reactor.core.publisher.Flux;
 
-import java.util.Collection;
 import java.util.function.Function;
 
 @Slf4j
@@ -22,13 +20,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public void sendCharactersUpdate() {
-        Collection<CharacterMotion> motions = characterMotionService.getAllMotions();
-        if (motions.isEmpty()) {
-            return;
-        }
-
-        Flux<CharacterMotion> motionFlux = Flux.fromIterable(motions);
-        motionFlux
+        characterMotionService.getAllMotions()
                 .map(motionToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
                 .flatMap(charactersClient::sendCharacters)

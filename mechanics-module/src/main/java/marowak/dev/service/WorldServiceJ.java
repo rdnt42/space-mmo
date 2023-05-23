@@ -82,6 +82,11 @@ public class WorldServiceJ implements WorldService {
     }
 
     @Override
+    public Flux<CharacterMotion> getAllShips() {
+        return null;
+    }
+
+    @Override
     public Mono<CharacterMotion> getShip(String characterName) {
         return Mono.justOrEmpty(ships.get(characterName))
                 .map(body -> CharacterMotion.builder()

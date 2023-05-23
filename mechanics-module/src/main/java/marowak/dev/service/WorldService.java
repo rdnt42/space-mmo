@@ -14,5 +14,7 @@ public interface WorldService {
 
     Flux<CharacterMotion> getShips(String characterName);
 
+    Flux<CharacterMotion> getAllShips();
+
     Mono<CharacterMotion> getShip(String characterName);
 }

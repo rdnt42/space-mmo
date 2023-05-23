@@ -72,8 +72,21 @@ public class WorldServiceDyn implements WorldService {
         body.setAtRest(false);
     }
 
+    // TODO in range
     @Override
     public Flux<CharacterMotion> getShips(String characterName) {
+        return Flux.fromStream(ships.entrySet().stream())
+                .map(entry -> CharacterMotion.builder()
+                        .characterName(entry.getKey())
+                        .x(entry.getValue().getTransform().getTranslation().x)
+                        .y(entry.getValue().getTransform().getTranslation().y)
+                        .angle((int) Math.toDegrees(entry.getValue().getTransform().getRotationAngle()))
+                        .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().getRotationAngle()))
+                        .build());
+    }
+
+    @Override
+    public Flux<CharacterMotion> getAllShips() {
         return Flux.fromStream(ships.entrySet().stream())
                 .map(entry -> CharacterMotion.builder()
                         .characterName(entry.getKey())

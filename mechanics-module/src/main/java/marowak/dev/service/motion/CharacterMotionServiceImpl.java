@@ -9,7 +9,6 @@ import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +33,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Collection<CharacterMotion> getAllMotions() {
-        return playerMotionMap.values();
+    public Flux<CharacterMotion> getAllMotions() {
+        return worldService.getAllShips();
     }
 
     @Override
@@ -55,33 +54,6 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
         worldService.updateShip(request, playerName);
         return Mono.empty();
-
-
-//        CharacterMotion oldMotion = playerMotionMap.get(playerName);
-//
-//        long diffTime = request.lastUpdateTime() - oldMotion.lastUpdateTime();
-//        if (diffTime < 0) return result;
-//
-//        float relativeSpeed = (request.speed() * diffTime) / 1000;
-//
-//        double newX = oldMotion.x() + getXShift(relativeSpeed, request.angle());
-//        BigDecimal fx = BigDecimal.valueOf(newX).setScale(2, RoundingMode.HALF_UP);
-//
-//        double newY = oldMotion.y() + getYShift(relativeSpeed, request.angle());
-//        BigDecimal fy = BigDecimal.valueOf(newY).setScale(2, RoundingMode.HALF_UP);
-//
-//        CharacterMotion newMotion = new CharacterMotion(playerName, fx.doubleValue(), fy.doubleValue(), request.angle(),
-//                request.speed(), request.lastUpdateTime());
-//
-//        playerMotionMap.put(playerName, newMotion);
-    }
-
-    private double getXShift(float speed, int angle) {
-        return Math.cos(Math.toRadians(angle)) * speed;
-    }
-
-    private double getYShift(float speed, int angle) {
-        return Math.sin(Math.toRadians(angle)) * speed;
     }
 
     @Override
