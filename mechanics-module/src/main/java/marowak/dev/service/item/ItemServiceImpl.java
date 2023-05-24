@@ -108,10 +108,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Mono<Item> getItem(String characterName, ItemTypes type) {
-        return Mono.justOrEmpty(playerInventoryMap.get(characterName)
-                .items().values().stream()
-                .filter(item -> item.getTypeId() == type.getTypeId())
-                .findFirst());
+        return Mono.justOrEmpty(playerInventoryMap.get(characterName))
+                .flatMap(playerInventory -> Mono.justOrEmpty(playerInventory.items().values().stream()
+                        .filter(item -> item.getTypeId() == type.getTypeId())
+                        .findFirst()))
+                .switchIfEmpty(Mono.empty());
     }
 
 

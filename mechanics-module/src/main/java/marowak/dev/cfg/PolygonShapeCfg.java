@@ -39,9 +39,11 @@ public class PolygonShapeCfg {
 
         if (shipTypeId == 1) {
             return new Vector2[]{
-                    new Vector2(10, 16),
-                    new Vector2(125, 62),
-                    new Vector2(12, 114),
+                    new Vector2(1, 16),
+                    new Vector2(110, 16),
+                    new Vector2(127, 63),
+                    new Vector2(109, 111),
+                    new Vector2(1, 110),
             };
         } else if (shipTypeId == 2) {
             return new Vector2[]{

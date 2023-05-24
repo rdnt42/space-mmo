@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
+//@Primary
 @Singleton
 public class WorldServiceJ implements WorldService {
     private final World world;
@@ -47,10 +48,14 @@ public class WorldServiceJ implements WorldService {
 
         FixtureDef def = new FixtureDef();
         def.shape = polygonShape;
-        def.density = 1;
+        def.density = 1000;
         def.friction = 0.3f;
+        def.restitution = 0.5f;
 
-        Body body = world.createBody(bodyDef);
+        Body body = null;
+        while (body == null) {
+            body = world.createBody(bodyDef);
+        }
         body.createFixture(def);
         ships.put(motion.characterName(), body);
     }
@@ -77,13 +82,20 @@ public class WorldServiceJ implements WorldService {
                         .x(entry.getValue().getTransform().p.x)
                         .y(entry.getValue().getTransform().p.y)
                         .angle((int) Math.toDegrees(entry.getValue().getTransform().q.getAngle()))
-                        .speed((float) Math.hypot(entry.getValue().getLinearVelocity().x, entry.getValue().getLinearVelocity().y))
+                        .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().q.getAngle()))
                         .build());
     }
 
     @Override
     public Flux<CharacterMotion> getAllShips() {
-        return null;
+        return Flux.fromStream(ships.entrySet().stream())
+                .map(entry -> CharacterMotion.builder()
+                        .characterName(entry.getKey())
+                        .x(entry.getValue().getTransform().p.x)
+                        .y(entry.getValue().getTransform().p.y)
+                        .angle((int) Math.toDegrees(entry.getValue().getTransform().q.getAngle()))
+                        .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().q.getAngle()))
+                        .build());
     }
 
     @Override
@@ -94,7 +106,7 @@ public class WorldServiceJ implements WorldService {
                         .x(body.getTransform().p.x)
                         .y(body.getTransform().p.y)
                         .angle((int) Math.toDegrees(body.getTransform().q.getAngle()))
-                        .speed((float) Math.hypot(body.getLinearVelocity().x, body.getLinearVelocity().y))
+                        .speed(getSpeed(body.getLinearVelocity(), body.getTransform().q.getAngle()))
                         .build());
     }
 
@@ -104,6 +116,15 @@ public class WorldServiceJ implements WorldService {
 
     private float getYShift(float speed, float angle) {
         return (float) (Math.sin(angle) * speed);
+    }
+
+    private float getSpeed(Vec2 vector, double rotationAngle) {
+        double v = Math.atan2(vector.y, vector.x);
+        if (Math.signum(v) == Math.signum(rotationAngle)) {
+            return (float) Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+        }
+
+        return (float) Math.sqrt(vector.x * vector.x + vector.y * vector.y) * -1f;
     }
 
 }

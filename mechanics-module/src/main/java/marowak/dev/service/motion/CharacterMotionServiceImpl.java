@@ -42,7 +42,6 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
         CharacterMotion newMotion = new CharacterMotion(character.getCharacterName(), character.getX(), character.getY(),
                 character.getAngle(), 0, new Date().getTime());
         worldService.addShip(newMotion);
-//        playerMotionMap.put(character.getCharacterName(), newMotion);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     @Override
     public Flux<CharacterMotion> getCharactersInRange(String playerName) {
-//        CharacterMotion player = playerMotionMap.get(playerName);
         return worldService.getShips(playerName);
     }
 
