@@ -4,6 +4,7 @@ import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.enums.ForceType;
 import marowak.dev.request.CharacterMotionRequest;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
@@ -32,7 +33,7 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public void updateWorld() {
-        world.step(10);
+        world.step(1);
     }
 
     @Override
@@ -40,13 +41,12 @@ public class WorldServiceDyn implements WorldService {
         Body body = new Body();
 
 //        BodyFixture bodyFixture = body.addFixture(Geometry.createPolygon(PolygonShapeCfg.getPolygonsDyn(1)));
-        BodyFixture bodyFixture = body.addFixture(Geometry.createRectangle(128, 128));
-//        bodyFixture.setDensity(100);
-//        bodyFixture.setFriction(0.5);
-//        bodyFixture.setRestitution(0.1);
-//        bodyFixture.setRestitutionVelocity(0.001);
-//        body.setLinearDamping(0.8);
-//        body.setAngularDamping(0.8);
+        BodyFixture bodyFixture = body.addFixture(Geometry.createCircle(64));
+        bodyFixture.setDensity(1);
+        bodyFixture.setFriction(0.1);
+        bodyFixture.setRestitution(0.3);
+        bodyFixture.setRestitutionVelocity(0.001);
+        body.setLinearDamping(0.1);
         body.setMass(MassType.NORMAL);
         body.translate(motion.x(), motion.y());
         double angleInRadians = Math.toRadians(motion.angle());
@@ -60,15 +60,19 @@ public class WorldServiceDyn implements WorldService {
     @Override
     public void updateShip(CharacterMotionRequest request, String characterName) {
         Body body = ships.get(characterName);
-
-        float speed = request.speed();
         double angleInRadians = Math.toRadians(request.angle());
-        double xShift = getXShift(speed, angleInRadians);
-        double yShift = getYShift(speed, angleInRadians);
 
-        body.setLinearVelocity(xShift, yShift);
-        body.getTransform().setRotation(angleInRadians);
         body.setAtRest(false);
+        body.getTransform().setRotation(angleInRadians);
+        if (ForceType.POSITIVE.getId() == request.forceTypeId()) {
+            Vector2 r = new Vector2(body.getTransform().getRotationAngle());
+            Vector2 f = r.product(5000000);
+            body.applyForce(f);
+        } else if (ForceType.NEGATIVE.getId() == request.forceTypeId()) {
+            Vector2 r = new Vector2(body.getTransform().getRotationAngle());
+            Vector2 f = r.product(-5000000);
+            body.applyForce(f);
+        }
     }
 
     // TODO in range

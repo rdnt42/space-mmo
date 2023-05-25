@@ -16,25 +16,20 @@ function worldTick() {
     let engine = inventoryService.getEngine();
     if (engine !== null) {
         let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
-        characterService.sendMotion(move.speed, move.angle, true);
+        characterService.sendMotion(move.forceTypeId, move.angle, true);
     }
 }
 
 function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
-    let currSpeedDiff = (maxSpeed * FREQUENCY_TIME) / accelerationTime;
-
     let directions = keyboard.getDirections();
+    let forceTypeId = 0;
     for (const direction of directions) {
         if (direction === Direction.Stop) {
-            speed -= currSpeedDiff;
-            if(speed < 0) speed = 0;
-        } else if (direction === Direction.Up) {
-            speed += currSpeedDiff;
-            if (speed > maxSpeed) speed = maxSpeed;
-        } else if (direction === Direction.Down) {
-            speed -= currSpeedDiff;
-            let minSpeed = (maxSpeed / 2) * -1;
-            if (speed < minSpeed) speed = minSpeed;
+            forceTypeId = 2;
+        } else if (direction === Direction.Up && speed < maxSpeed) {
+            forceTypeId = 1;
+        } else if (direction === Direction.Down && speed > (maxSpeed / 2) * -1) {
+            forceTypeId = -1;
         }
 
         if (direction === Direction.Left && (angle -= 5) < 0) {
@@ -45,7 +40,7 @@ function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
     }
 
     return {
-        speed: speed,
+        forceTypeId: forceTypeId,
         angle: angle,
     }
 }
