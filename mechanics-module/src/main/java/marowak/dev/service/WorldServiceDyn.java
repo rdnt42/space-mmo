@@ -3,7 +3,6 @@ package marowak.dev.service;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.cfg.PolygonShapeCfg;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import org.dyn4j.dynamics.Body;
@@ -33,26 +32,25 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public void updateWorld() {
-        world.step(1);
+        world.step(10);
     }
 
     @Override
     public void addShip(CharacterMotion motion) {
         Body body = new Body();
 
-        BodyFixture bodyFixture = body.addFixture(Geometry.createPolygon(PolygonShapeCfg.getPolygonsDyn(1)));
-//        BodyFixture bodyFixture = body.addFixture(Geometry.createRectangle(100, 100));
-        bodyFixture.setDensity(100);
-        bodyFixture.setFriction(0.5);
-        bodyFixture.setRestitution(0.1);
+//        BodyFixture bodyFixture = body.addFixture(Geometry.createPolygon(PolygonShapeCfg.getPolygonsDyn(1)));
+        BodyFixture bodyFixture = body.addFixture(Geometry.createRectangle(128, 128));
+//        bodyFixture.setDensity(100);
+//        bodyFixture.setFriction(0.5);
+//        bodyFixture.setRestitution(0.1);
 //        bodyFixture.setRestitutionVelocity(0.001);
 //        body.setLinearDamping(0.8);
 //        body.setAngularDamping(0.8);
+        body.setMass(MassType.NORMAL);
         body.translate(motion.x(), motion.y());
         double angleInRadians = Math.toRadians(motion.angle());
         body.getTransform().setRotation(angleInRadians);
-        body.setMass(MassType.NORMAL);
-//        body.setBullet(true);
         body.setUserData(motion.speed());
 
         ships.put(motion.characterName(), body);

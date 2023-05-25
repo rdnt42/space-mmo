@@ -5,7 +5,8 @@ shipsCfgMap.set(1, {
     width: 128,
     height: 128,
     scale: 1,
-    polygons: [1, 16, 110, 16, 127, 63, 109, 111, 1, 110]
+    // polygons: [1, 16, 110, 16, 127, 63, 109, 111, 1, 110]
+    polygons: [0, 0, 128, 0, 128, 128, 0, 128]
 });
 shipsCfgMap.set(2, {
     fragments: 148,
