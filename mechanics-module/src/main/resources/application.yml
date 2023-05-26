@@ -10,3 +10,8 @@ kafka:
 
 jackson:
   serializationInclusion: ALWAYS
+
+
+physic:
+  speed:
+    limit: 1200

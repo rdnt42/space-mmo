@@ -1,6 +1,8 @@
 package marowak.dev.service;
 
 import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Value;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.CharacterMotion;
@@ -23,12 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Primary
 @Singleton
 public class WorldServiceDyn implements WorldService {
-    private final World<Body> world;
+
+    @Value("${physic.speed.limit}")
+    private int speedLimit;
+    private World<Body> world;
     private final Map<String, Body> ships = new ConcurrentHashMap<>();
 
-    public WorldServiceDyn() {
+    @PostConstruct
+    private void init() {
         world = new World<>();
         world.setGravity(PhysicsWorld.ZERO_GRAVITY);
+        world.getSettings().setMaximumTranslation(speedLimit / 60f); // meters per step
     }
 
     @Override
@@ -110,14 +117,6 @@ public class WorldServiceDyn implements WorldService {
                         .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
                         .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
                         .build());
-    }
-
-    private double getXShift(float speed, double angle) {
-        return Math.cos(angle) * speed;
-    }
-
-    private double getYShift(float speed, double angle) {
-        return Math.sin(angle) * speed;
     }
 
     private float getSpeed(Vector2 vector, double rotationAngle) {
