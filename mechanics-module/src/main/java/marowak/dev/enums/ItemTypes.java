@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ItemTypes {
+    ITEM_TYPE_ENGINE(1),
     ITEM_TYPE_HULL(8);
 
     ItemTypes(int typeId) {

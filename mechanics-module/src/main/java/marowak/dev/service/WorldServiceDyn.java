@@ -4,10 +4,14 @@ import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Value;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.enums.ForceType;
+import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
@@ -22,12 +26,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@RequiredArgsConstructor
 @Primary
 @Singleton
 public class WorldServiceDyn implements WorldService {
 
     @Value("${physic.speed.limit}")
     private int speedLimit;
+
+    private final ItemService itemService;
+
     private World<Body> world;
     private final Map<String, Body> ships = new ConcurrentHashMap<>();
 
@@ -67,19 +75,29 @@ public class WorldServiceDyn implements WorldService {
     @Override
     public void updateShip(CharacterMotionRequest request, String characterName) {
         Body body = ships.get(characterName);
-        double angleInRadians = Math.toRadians(request.angle());
 
-        body.setAtRest(false);
+        itemService.getItem(characterName, ItemTypes.ITEM_TYPE_ENGINE)
+                .flatMap(engine -> updateState(body, (Engine) engine, request.angle(), request.forceTypeId()))
+                .subscribe();
+
+    }
+
+    private Mono<Void> updateState(Body body, Engine engine, float angle, int forceType) {
+        double angleInRadians = Math.toRadians(angle);
+
         body.getTransform().setRotation(angleInRadians);
-        if (ForceType.POSITIVE.getId() == request.forceTypeId()) {
+        if (ForceType.POSITIVE.getId() == forceType) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(5000000);
+            Vector2 f = r.product(10000.0 * engine.getSpeed());
             body.applyForce(f);
-        } else if (ForceType.NEGATIVE.getId() == request.forceTypeId()) {
+        } else if (ForceType.NEGATIVE.getId() == forceType) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(-5000000);
+            Vector2 f = r.product(-10000.0 * engine.getSpeed());
             body.applyForce(f);
         }
+        body.setAtRest(false);
+
+        return Mono.empty();
     }
 
     // TODO in range
