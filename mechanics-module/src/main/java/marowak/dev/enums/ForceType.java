@@ -12,4 +12,8 @@ public enum ForceType {
     NEUTRAL(0);
 
     private final int id;
+
+    public boolean equalsId(int id) {
+        return this.id == id;
+    }
 }

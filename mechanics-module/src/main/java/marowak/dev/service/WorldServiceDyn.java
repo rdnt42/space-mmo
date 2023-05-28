@@ -22,8 +22,8 @@ import org.dyn4j.world.World;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class WorldServiceDyn implements WorldService {
     private final ItemService itemService;
 
     private World<Body> world;
-    private final Map<String, Body> ships = new ConcurrentHashMap<>();
+    private final Map<String, Body> ships = new HashMap<>();
 
     @PostConstruct
     private void init() {
@@ -86,13 +86,17 @@ public class WorldServiceDyn implements WorldService {
         double angleInRadians = Math.toRadians(angle);
 
         body.getTransform().setRotation(angleInRadians);
-        if (ForceType.POSITIVE.getId() == forceType) {
+        if (ForceType.POSITIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
             Vector2 f = r.product(10000.0 * engine.getSpeed());
             body.applyForce(f);
-        } else if (ForceType.NEGATIVE.getId() == forceType) {
+        } else if (ForceType.NEGATIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
             Vector2 f = r.product(-10000.0 * engine.getSpeed());
+            body.applyForce(f);
+        } else if (ForceType.REVERSE.equalsId(forceType)) {
+            Vector2 r = body.getLinearVelocity();
+            Vector2 f = r.product(-15000);
             body.applyForce(f);
         }
         body.setAtRest(false);
