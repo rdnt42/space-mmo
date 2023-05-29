@@ -21,6 +21,7 @@ export class Inventory {
     }
 
     loadConfig(config) {
+        // 0b1111001 where 1/0 - open/close slot
         let cfgArr = Array.from(config.toString(2)).reverse();
         for (let i = 0; i < cfgArr.length; i++) {
             if (cfgArr[i] && Object.values(EquipmentSlotId).includes(i)) {
