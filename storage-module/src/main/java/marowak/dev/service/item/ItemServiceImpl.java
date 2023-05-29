@@ -16,11 +16,12 @@ public class ItemServiceImpl implements ItemService {
     private final EngineR2Repository engineR2Repository;
     private final FuelTankR2Repository fuelTankR2Repository;
     private final ItemR2Repository itemR2Repository;
-
     private final HullR2Repository hullR2Repository;
+    private final WeaponR2Repository weaponR2Repository;
 
     private final CargoHookR2Repository cargoHookR2Repository;
 
+    // TODO generic
     @Override
     public Flux<ItemMessage> getAllOnline() {
         Flux<ItemMessage> engineFlux = Flux.from(engineR2Repository.findAll())
@@ -39,7 +40,11 @@ public class ItemServiceImpl implements ItemService {
                 .flatMap(hull -> Flux.from(itemR2Repository.findById(hull.id()))
                         .map(item -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ALL)));
 
-        return Flux.concat(engineFlux, fuelTankFlux, cargoHookFlux, hullFlux);
+        Flux<ItemMessage> weaponFlux = Flux.from(weaponR2Repository.findAll())
+                .flatMap(weapon -> Flux.from(itemR2Repository.findById(weapon.id()))
+                        .map(item -> BuilderHelper.weaponToMessage.apply(weapon, item, ItemMessageKey.ITEMS_GET_ALL)));
+
+        return Flux.concat(engineFlux, fuelTankFlux, cargoHookFlux, hullFlux, weaponFlux);
     }
 
     @Override

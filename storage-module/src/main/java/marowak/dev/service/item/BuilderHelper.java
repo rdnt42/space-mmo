@@ -74,4 +74,21 @@ public class BuilderHelper {
                     .equipmentTypeId(hull.hullTypeId())
                     .config(hull.config())
                     .build();
+
+    public static final TriFunction<Weapon, Item, ItemMessageKey, ItemMessage> weaponToMessage =
+            (weapon, item, key) -> WeaponMessage.builder()
+                    .key(key)
+                    .id(weapon.id())
+                    .slotId(item.slotId())
+                    .characterName(item.characterName())
+                    .typeId(item.itemTypeId())
+                    .upgradeLevel(item.upgradeLevel())
+                    .cost(item.cost())
+                    .name(item.nameRu())
+                    .dsc(item.dscRu())
+                    .damage(weapon.damage())
+                    .radius(weapon.radius())
+                    .damageTypeId(weapon.damageTypeId())
+                    .equipmentTypeId(weapon.weaponTypeId())
+                    .build();
 }
