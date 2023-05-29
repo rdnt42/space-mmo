@@ -11,6 +11,6 @@ kafka:
 jackson:
   serializationInclusion: ALWAYS
 
-physic:
+world:
   speed:
     limit: 1200

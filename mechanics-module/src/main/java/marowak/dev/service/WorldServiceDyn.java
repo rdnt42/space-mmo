@@ -31,8 +31,10 @@ import java.util.Map;
 @Singleton
 public class WorldServiceDyn implements WorldService {
 
-    @Value("${physic.speed.limit}")
+    @Value("${world.speed.limit}")
     private int speedLimit;
+
+    private static final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     private final ItemService itemService;
 
@@ -55,8 +57,7 @@ public class WorldServiceDyn implements WorldService {
     public void addShip(CharacterMotion motion) {
         Body body = new Body();
 
-//        BodyFixture bodyFixture = body.addFixture(Geometry.createPolygon(PolygonShapeCfg.getPolygonsDyn(1)));
-        BodyFixture bodyFixture = body.addFixture(Geometry.createCircle(64));
+        BodyFixture bodyFixture = body.addFixture(Geometry.createCircle(64 * 0.75));
         bodyFixture.setDensity(1);
         bodyFixture.setFriction(0.1);
         bodyFixture.setRestitution(0.3);
@@ -82,17 +83,25 @@ public class WorldServiceDyn implements WorldService {
 
     }
 
+    @Override
+    public void deleteShip(String characterName) {
+        Body body = ships.remove(characterName);
+        if (body != null) {
+            world.removeBody(body);
+        }
+    }
+
     private Mono<Void> updateState(Body body, Engine engine, float angle, int forceType) {
         double angleInRadians = Math.toRadians(angle);
 
         body.getTransform().setRotation(angleInRadians);
         if (ForceType.POSITIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(10000.0 * engine.getSpeed());
+            Vector2 f = r.product(5000.0 * engine.getSpeed());
             body.applyForce(f);
         } else if (ForceType.NEGATIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(-10000.0 * engine.getSpeed());
+            Vector2 f = r.product(-5000.0 * engine.getSpeed());
             body.applyForce(f);
         } else if (ForceType.REVERSE.equalsId(forceType)) {
             Vector2 r = body.getLinearVelocity();
@@ -104,10 +113,12 @@ public class WorldServiceDyn implements WorldService {
         return Mono.empty();
     }
 
-    // TODO in range
     @Override
-    public Flux<CharacterMotion> getShips(String characterName) {
+    public Flux<CharacterMotion> getShipsInRange(String characterName) {
+        Vector2 base = ships.get(characterName).getTransform().getTranslation();
+
         return Flux.fromStream(ships.entrySet().stream())
+                .filter(target -> isInRange(base, target.getValue().getTransform().getTranslation()))
                 .map(entry -> CharacterMotion.builder()
                         .characterName(entry.getKey())
                         .x(entry.getValue().getTransform().getTranslation().x)
@@ -147,5 +158,12 @@ public class WorldServiceDyn implements WorldService {
         }
 
         return (float) vector.getMagnitude() * -1f;
+    }
+
+    private boolean isInRange(Vector2 base, Vector2 target) {
+        double diffX = base.x - target.x;
+        double diffY = base.y - target.y;
+
+        return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 }

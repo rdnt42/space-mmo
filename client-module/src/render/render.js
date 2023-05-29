@@ -133,18 +133,11 @@ export function createCharacter(characterName, shipTypeId, x, y, angle) {
     app.stage.addChild(sprite);
 
     if (IS_DEBUG) {
-
         let border = new pixi.Graphics();
         border.lineStyle(1, 0xFF0000);
         border.drawCircle(sprite.x, sprite.y, 64);
         border.endFill();
         sprite.addChild(border);
-        // border.lineStyle(2, 0xFF0000);
-        // border.beginFill(0x0000FF, 0);
-        // border.drawPolygon(cfg.polygons);
-        // border.pivot.set(cfg.width / 2, cfg.height / 2);
-        // border.endFill();
-        // sprite.addChild(border);
     }
 
     createCharacterLabel(characterName);

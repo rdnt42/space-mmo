@@ -10,8 +10,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,13 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 @Singleton
 public class CharacterMotionServiceImpl implements CharacterMotionService {
-    private final Map<String, CharacterMotion> playerMotionMap = new ConcurrentHashMap<>();
     private final WorldService worldService;
-    private final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 
     @Override
     public void leavingPlayer(String playerName) {
-        playerMotionMap.remove(playerName);
+        worldService.deleteShip(playerName);
     }
 
     @Override
@@ -57,19 +53,12 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     @Override
     public Flux<CharacterMotion> getCharactersInRange(String playerName) {
-        return worldService.getShips(playerName);
+        return worldService.getShipsInRange(playerName);
     }
 
     @Override
     public Mono<CharacterMotion> getCharacter(String playerName) {
         return worldService.getShip(playerName);
-    }
-
-    private boolean isInRange(CharacterMotion base, CharacterMotion target) {
-        double diffX = base.x() - target.x();
-        double diffY = base.y() - target.y();
-
-        return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
 }

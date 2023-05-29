@@ -12,7 +12,9 @@ public interface WorldService {
 
     void updateShip(CharacterMotionRequest request, String characterName);
 
-    Flux<CharacterMotion> getShips(String characterName);
+    void deleteShip(String characterName);
+
+    Flux<CharacterMotion> getShipsInRange(String characterName);
 
     Flux<CharacterMotion> getAllShips();
 
