@@ -50,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
             case FuelTankMessage fuelTank -> item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
             case CargoHookMessage cargoHook -> item = BuilderHelper.cargoHookMessageToItem.apply(cargoHook);
             case HullMessage hull -> item = BuilderHelper.hullMessageToItem.apply(hull);
+            case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
 
@@ -71,6 +72,7 @@ public class ItemServiceImpl implements ItemService {
             case FuelTank fuelTank -> BuilderHelper.tankToNewTank.apply(fuelTank, request);
             case CargoHook cargoHook -> BuilderHelper.cargoHookToNewHook.apply(cargoHook, request);
             case Hull hull -> BuilderHelper.hullToNewHull.apply(hull, request);
+            case Weapon weapon -> BuilderHelper.weaponToNewWeapon.apply(weapon, request);
             case null, default ->
                     throw new UnsupportedOperationException("Cannot convert item with id: " + item.getId() + ", and type: " + item.getTypeId());
         };
