@@ -2,10 +2,7 @@ package marowak.dev.service.item;
 
 import marowak.dev.dto.item.*;
 import marowak.dev.request.ItemUpdate;
-import message.CargoHookMessage;
-import message.EngineMessage;
-import message.FuelTankMessage;
-import message.HullMessage;
+import message.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -15,18 +12,21 @@ public class BuilderHelper {
     private BuilderHelper() {
     }
 
-    public static final Function<EngineMessage, Item> engineMessageToItem = message -> Engine.builder()
-            .id(message.getId())
-            .slotId(message.getSlotId())
-            .typeId(message.getTypeId())
-            .upgradeLevel(message.getUpgradeLevel())
-            .cost(message.getCost())
-            .name(message.getName())
-            .dsc(message.getDsc())
-            .speed(message.getSpeed())
-            .jump(message.getJump())
-            .equipmentTypeId(message.getEquipmentTypeId())
-            .build();
+    public static final BiFunction<ItemMessage, Item.ItemBuilder<?, ?>, Item.ItemBuilder<?, ?>> itemToItemBuilder =
+            (message, baseBuilder) -> baseBuilder
+                    .id(message.getId())
+                    .slotId(message.getSlotId())
+                    .typeId(message.getTypeId())
+                    .upgradeLevel(message.getUpgradeLevel())
+                    .cost(message.getCost())
+                    .name(message.getName())
+                    .dsc(message.getDsc());
+    public static final Function<EngineMessage, Item> engineMessageToItem = message ->
+            ((Engine.EngineBuilder<?, ?>) itemToItemBuilder.apply(message, Engine.builder()))
+                    .speed(message.getSpeed())
+                    .jump(message.getJump())
+                    .equipmentTypeId(message.getEquipmentTypeId())
+                    .build();
 
     public static final BiFunction<Engine, ItemUpdate, Engine> engineToNewEngine =
             (engine, request) -> Engine.builder()
@@ -42,17 +42,11 @@ public class BuilderHelper {
                     .equipmentTypeId(engine.getEquipmentTypeId())
                     .build();
 
-    public static final Function<FuelTankMessage, Item> fuelTankMessageToItem = message -> FuelTank.builder()
-            .id(message.getId())
-            .slotId(message.getSlotId())
-            .typeId(message.getTypeId())
-            .upgradeLevel(message.getUpgradeLevel())
-            .cost(message.getCost())
-            .name(message.getName())
-            .dsc(message.getDsc())
-            .capacity(message.getCapacity())
-            .equipmentTypeId(message.getEquipmentTypeId())
-            .build();
+    public static final Function<FuelTankMessage, Item> fuelTankMessageToItem = message ->
+            ((FuelTank.FuelTankBuilder<?, ?>) itemToItemBuilder.apply(message, FuelTank.builder()))
+                    .capacity(message.getCapacity())
+                    .equipmentTypeId(message.getEquipmentTypeId())
+                    .build();
 
     public static final BiFunction<FuelTank, ItemUpdate, FuelTank> tankToNewTank =
             (fuelTank, request) -> FuelTank.builder()
@@ -110,6 +104,37 @@ public class BuilderHelper {
             .build();
 
     public static final BiFunction<Hull, ItemUpdate, Hull> hullToNewHull =
+            (hull, request) -> Hull.builder()
+                    .id(hull.getId())
+                    .slotId(request.slotId())
+                    .typeId(hull.getTypeId())
+                    .upgradeLevel(hull.getUpgradeLevel())
+                    .cost(hull.getCost())
+                    .name(hull.getName())
+                    .dsc(hull.getDsc())
+                    .hp(hull.getHp())
+                    .evasion(hull.getEvasion())
+                    .armor(hull.getArmor())
+                    .equipmentTypeId(hull.getEquipmentTypeId())
+                    .config(hull.getConfig())
+                    .build();
+
+    public static final Function<HullMessage, Item> weaponMessageToItem = message -> Hull.builder()
+            .id(message.getId())
+            .slotId(message.getSlotId())
+            .typeId(message.getTypeId())
+            .upgradeLevel(message.getUpgradeLevel())
+            .cost(message.getCost())
+            .name(message.getName())
+            .dsc(message.getDsc())
+            .hp(message.getHp())
+            .evasion(message.getEvasion())
+            .armor(message.getArmor())
+            .equipmentTypeId(message.getEquipmentTypeId())
+            .config(message.getConfig())
+            .build();
+
+    public static final BiFunction<Hull, ItemUpdate, Hull> weaponToNewWeapon =
             (hull, request) -> Hull.builder()
                     .id(hull.getId())
                     .slotId(request.slotId())
