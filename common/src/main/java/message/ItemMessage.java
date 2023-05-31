@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
         @JsonSubTypes.Type(value = FuelTankMessage.class, name = "fuel_tank"),
         @JsonSubTypes.Type(value = CargoHookMessage.class, name = "cargo_hook"),
         @JsonSubTypes.Type(value = HullMessage.class, name = "hull"),
+        @JsonSubTypes.Type(value = WeaponMessage.class, name = "weapon"),
 })
 @Getter
 @NoArgsConstructor
