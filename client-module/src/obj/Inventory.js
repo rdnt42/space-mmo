@@ -1,5 +1,5 @@
 import {CargoCell} from "./CargoCell.js";
-import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
+import {ItemTypeId} from "../const/ItemTypeId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
@@ -24,7 +24,7 @@ export class Inventory {
         // 0b1111001 where 1/0 - open/close slot
         let cfgArr = Array.from(config.toString(2)).reverse();
         for (let i = 0; i < cfgArr.length; i++) {
-            if (cfgArr[i] && Object.values(EquipmentSlotId).includes(i)) {
+            if (cfgArr[i] && Object.values(ItemTypeId).includes(i)) {
                 this.equipmentSlots.set(i, new EquipmentSlot(i));
             }
         }
@@ -81,6 +81,7 @@ export class Inventory {
         if (equipment.slot instanceof EquipmentSlot) {
             newSlot = this.#getFreeCargoCell();
         } else if (equipment.slot instanceof CargoCell) {
+            // TODO rework weapon slots 8-12, but item type just 8
             newSlot = this.equipmentSlots.get(equipment.typeId);
         }
 

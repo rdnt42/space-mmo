@@ -1,7 +1,7 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
 import {doubleClickCallback, dragEndCallback} from "../inventory-service.js";
-import {EquipmentSlotId} from "../const/EquipmentSlotId.js";
+import {ItemTypeId} from "../const/ItemTypeId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
 let app;
@@ -232,23 +232,27 @@ export function initEquipmentSlot(equipmentType) {
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
     switch (equipmentType) {
-        case EquipmentSlotId.Engine:
+        case ItemTypeId.Engine:
             sprite.position.set(90, 245);
             break;
-        case EquipmentSlotId.FuelTank:
+        case ItemTypeId.FuelTank:
             sprite.position.set(90, 350);
             break;
-        case EquipmentSlotId.Scanner:
+        case ItemTypeId.Scanner:
             sprite.position.set(365, 245);
             break;
-        case EquipmentSlotId.Radar:
+        case ItemTypeId.Radar:
             sprite.position.set(365, 350);
             break;
-        case EquipmentSlotId.CargoHook:
+        case ItemTypeId.CargoHook:
             sprite.position.set(230, 455);
             break;
-        case EquipmentSlotId.Hull:
+        case ItemTypeId.Hull:
             sprite.position.set(230, 295);
+            break;
+        case ItemTypeId.Weapon:
+            // TODO rework weapon
+            sprite.position.set(180, 60);
             break;
     }
     INVENTORY_CONTAINER.addChild(sprite);
@@ -259,17 +263,20 @@ export function initEquipmentSlot(equipmentType) {
 export function initItem(typeId, equipmentType) {
     let url;
     switch (typeId) {
-        case EquipmentSlotId.Engine:
+        case ItemTypeId.Engine:
             url = `./images/engine${equipmentType}.png`;
             break;
-        case EquipmentSlotId.FuelTank:
+        case ItemTypeId.FuelTank:
             url = `./images/fuel_tank${equipmentType}.png`;
             break;
-        case EquipmentSlotId.CargoHook:
+        case ItemTypeId.CargoHook:
             url = `./images/cargo_hook${equipmentType}.png`;
             break;
-        case EquipmentSlotId.Hull:
+        case ItemTypeId.Hull:
             url = `./images/ships/ship${equipmentType}/preview.png`;
+            break;
+        case ItemTypeId.Weapon:
+            url = `./images/weapon${equipmentType}.png`;
             break;
     }
     const texture = pixi.Texture.from(url);

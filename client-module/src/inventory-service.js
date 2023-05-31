@@ -1,6 +1,6 @@
 import {Inventory} from "./obj/Inventory.js";
 import {Item} from "./obj/Item.js";
-import {EquipmentSlotId} from "./const/EquipmentSlotId.js";
+import {ItemTypeId} from "./const/ItemTypeId.js";
 
 let inventory;
 let itemsMap = new Map();
@@ -9,7 +9,7 @@ export function initInventory(response) {
     inventory = new Inventory(response.config);
 
     for (const itemSrc of response.items) {
-        if (!Object.values(EquipmentSlotId).includes(itemSrc.typeId)) {
+        if (!Object.values(ItemTypeId).includes(itemSrc.typeId)) {
             continue;
         }
         let item = new Item(itemSrc);
@@ -38,7 +38,7 @@ export function dragEndCallback(texture) {
 
 
 export function getEngine() {
-    return inventory.getItem(EquipmentSlotId.Engine);
+    return inventory.getItem(ItemTypeId.Engine);
 }
 
 export function updateItemSlot(updateItem) {
