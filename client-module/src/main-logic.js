@@ -3,8 +3,7 @@ import {Direction} from "./const/Direction.js";
 import * as characterService from "./character-service.js";
 import {FREQUENCY_TIME} from "./const/Common.js";
 import * as inventoryService from "./inventory-service.js";
-
-const accelerationTime = 1500;
+import * as weaponService from "./weapon-service.js";
 
 export function mainLogicInit() {
     setInterval(worldTick, FREQUENCY_TIME);
@@ -17,6 +16,9 @@ function worldTick() {
     if (engine !== null) {
         let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
         characterService.sendMotion(move.forceTypeId, move.angle, true);
+    }
+    if (weaponService.isNeedShotUpdate()) {
+        characterService.sendShooting(true, 10);
     }
 }
 

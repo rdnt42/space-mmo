@@ -36,7 +36,6 @@ export function dragEndCallback(texture) {
     inventory.moveItem(texture.textureParentObj);
 }
 
-
 export function getEngine() {
     return inventory.getItem(ItemTypeId.Engine);
 }

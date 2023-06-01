@@ -1,6 +1,6 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
-import {doubleClickCallback, dragEndCallback} from "../inventory-service.js";
+import * as inventoryService from "../inventory-service.js";
 import {ItemTypeId} from "../const/ItemTypeId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
@@ -358,7 +358,7 @@ function onDragEnd() {
     if (dragTarget) {
         app.stage.off('pointermove', onDragMove);
         if ((Date.now() - start) > 250) {
-            dragEndCallback(dragTarget);
+            inventoryService.dragEndCallback(dragTarget);
         }
         dragTarget = null;
     }
@@ -369,7 +369,7 @@ let prevClickTime = Date.now();
 
 function onClick() {
     if ((Date.now() - prevClickTime) <= 500) {
-        doubleClickCallback(this);
+        inventoryService.doubleClickCallback(this);
     }
     prevClickTime = Date.now();
 }

@@ -7,6 +7,13 @@ export class CharacterMotionRequest {
     }
 }
 
+export class CharacterShootingRequest {
+    constructor(isShooting, angle, lastUpdateTime) {
+        this.command = Commands.UpdateShooting;
+        this.data = {isShooting, angle, lastUpdateTime}
+    }
+}
+
 export class CharacterItemRequest {
     constructor(id, slotId) {
         this.command = Commands.UpdateInventoryItem;

@@ -68,6 +68,10 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
+            case CMD_UPDATE_SHOOTING -> {
+                log.info("make shot");
+                return null;
+            }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());
         }

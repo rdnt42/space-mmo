@@ -4,5 +4,6 @@ export const Commands = {
     GetInventory: "CMD_GET_INVENTORY",
     UpdateMotion: "CMD_UPDATE_MOTION",
     LeavingPlayer: "CMD_LEAVING_PLAYER",
-    UpdateInventoryItem: "CMD_UPDATE_INVENTORY_ITEM"
+    UpdateInventoryItem: "CMD_UPDATE_INVENTORY_ITEM",
+    UpdateShooting: "CMD_UPDATE_SHOOTING",
 }
