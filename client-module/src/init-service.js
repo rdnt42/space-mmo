@@ -3,6 +3,7 @@ import * as inventoryService from "./inventory-service.js";
 import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
 import * as characterService from "./character-service.js";
+import * as weaponService from "./weapon-service.js";
 import {CharacterResponse} from "./message/CharacterMessage.js";
 import * as physicsService from "./render/physics.js";
 
@@ -49,6 +50,7 @@ function initAfter() {
     main.mainLogicInit();
     keyboard.initKeyBoard();
     renderEngine.startEngineTimer();
+    weaponService.initWeapons();
     console.log("Client init success");
 }
 

@@ -151,6 +151,8 @@ export class Inventory {
     changeState() {
         this.isOpen = !this.isOpen;
         renderEngine.changeStateInventory(this.isOpen);
+
+        return this.isOpen;
     }
 
     getItem(typeId) {

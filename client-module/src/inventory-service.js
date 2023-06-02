@@ -17,13 +17,6 @@ export function initInventory(response) {
             itemsMap.set(item.id, item);
         }
     }
-
-    document.addEventListener("keydown", (event) => {
-        event.preventDefault();
-        if (event.key === "i") {
-            inventory.changeState();
-        }
-    });
 }
 
 export function doubleClickCallback(texture) {
@@ -48,4 +41,8 @@ export function updateItemSlot(updateItem) {
     } else {
         inventory.updateEquipmentSlot(item);
     }
+}
+
+export function changeInventoryState() {
+    return inventory.changeState();
 }
