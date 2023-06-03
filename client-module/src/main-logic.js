@@ -5,14 +5,15 @@ import {FREQUENCY_TIME} from "./const/Common.js";
 import * as inventoryService from "./inventory-service.js";
 import * as weaponService from "./weapon-service.js";
 import {InteractiveState} from "./const/InteractiveState.js";
+import * as renderEngine from "./render/engine.js";
 
 let state;
-let mouseCoords;
+let mouseCoords = {};
 
 export function mainLogicInit() {
     state = InteractiveState.Space;
     setInterval(worldTick, FREQUENCY_TIME);
-    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
 
@@ -33,15 +34,18 @@ function worldTick() {
 
     let engine = inventoryService.getEngine();
     if (engine !== null) {
-        let move = getPlayerDirectionAndSpeed(character.movement.speed, engine.maxSpeed, character.movement.angle);
+        let move = getCharacterMotion(character.movement.speed, engine.maxSpeed, character.movement.angle);
         characterService.sendMotion(move.forceTypeId, move.angle, true);
     }
+
     if (weaponService.isNeedShotUpdate()) {
-        characterService.sendShooting(true, 10);
+        let angle = getCharacterAngleInRadians(mouseCoords.x, mouseCoords.y) + Math.PI;
+        characterService.sendShooting(weaponService.getShotState(), angle);
+        weaponService.setUpdated();
     }
 }
 
-function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
+function getCharacterMotion(speed, maxSpeed, angle) {
     let directions = keyboard.getDirections();
     let forceTypeId = 0;
     for (const direction of directions) {
@@ -67,9 +71,8 @@ function getPlayerDirectionAndSpeed(speed, maxSpeed, angle) {
 }
 
 function onMouseMove(event) {
-    console.log(`mouseX: ${event.pageX}, mouseY: ${event.pageY}`);
-    mouseCoords.x = event.pageX;
-    mouseCoords.y = event.pageY;
+    mouseCoords.x = event.offsetX;
+    mouseCoords.y = event.offsetY;
 }
 
 function onMouseDown() {
@@ -80,4 +83,11 @@ function onMouseDown() {
 function onMouseUp() {
     if (!state === InteractiveState.Space) return
     weaponService.stopWeapon();
+}
+
+function getCharacterAngleInRadians(x, y) {
+    let character = characterService.getPlayerCharacter();
+    let coords = renderEngine.getRenderCoords(character.characterName);
+
+    return Math.atan2(coords.y - y, coords.x - x);
 }

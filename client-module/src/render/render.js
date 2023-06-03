@@ -163,6 +163,13 @@ export function removeCharacter(characterName, sprite) {
     app.stage.removeChild(label);
 }
 
+export function getRenderCoords(sprite) {
+    return {
+        x: sprite.position.x,
+        y: sprite.position.y
+    }
+}
+
 /// Inventory
 export function createInventory() {
     let container = new pixi.Container();

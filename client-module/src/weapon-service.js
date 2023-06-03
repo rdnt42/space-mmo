@@ -1,21 +1,26 @@
-// TODO
 let shotState = false;
-let shotAngle;
+let isUpdated = false;
 
-export function initWeapons() {
-}
 
 export function isNeedShotUpdate() {
+    return !isUpdated;
+}
+
+export function getShotState() {
     return shotState;
+}
+
+export function setUpdated() {
+    isUpdated = true;
 }
 
 export function useWeapon() {
     shotState = true;
-    console.log("shot: " + shotState)
+    isUpdated = false;
 }
 
 export function stopWeapon() {
     shotState = false;
-    console.log("shot: " + shotState)
+    isUpdated = false;
 }
 

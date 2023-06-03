@@ -23,6 +23,11 @@ export function removeCharacter(characterName) {
     render.removeCharacter(characterName, sprite);
 }
 
+export function getRenderCoords(characterName) {
+    let sprite = ships.get(characterName);
+    return render.getRenderCoords(sprite);
+}
+
 function getX(currX, diffX) {
     return currX - diffX + window.innerWidth / 2;
 }

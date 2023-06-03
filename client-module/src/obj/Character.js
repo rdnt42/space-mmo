@@ -43,7 +43,6 @@ export class Character {
     destroy() {
         renderEngine.removeCharacter(this.characterName);
     }
-
 }
 
 class Movement {

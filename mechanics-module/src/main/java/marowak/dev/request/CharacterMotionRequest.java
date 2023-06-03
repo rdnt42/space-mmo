@@ -5,7 +5,6 @@ public record CharacterMotionRequest(
         float speed,
         int forceTypeId,
         int angle,
-        long lastUpdateTime,
-        boolean isShooting
+        long lastUpdateTime
 ) {
 }

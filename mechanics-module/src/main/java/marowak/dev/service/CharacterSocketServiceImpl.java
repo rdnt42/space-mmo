@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
@@ -22,7 +23,7 @@ import java.util.function.Predicate;
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
-public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketService {
+public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final CharacterMotionService characterMotionService;
 
     private final CharacterInfoService characterInfoService;
@@ -69,7 +70,8 @@ public class CharacterMotionSocketServiceImpl implements CharacterMotionSocketSe
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_SHOOTING -> {
-                log.info("make shot");
+                CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
+                log.info("make shot {}, angle {}", value.isShooting(), value.angle());
                 return null;
             }
             default ->

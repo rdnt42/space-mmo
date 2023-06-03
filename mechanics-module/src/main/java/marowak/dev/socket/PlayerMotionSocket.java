@@ -8,20 +8,20 @@ import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
-import marowak.dev.service.CharacterMotionSocketService;
+import marowak.dev.service.CharacterSocketService;
 import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
 @ServerWebSocket("/motion/{characterName}")
 public class PlayerMotionSocket {
-    private final CharacterMotionSocketService characterMotionSocketService;
+    private final CharacterSocketService characterSocketService;
 
     @OnOpen
     public void onOpen(String characterName, WebSocketSession session) {
         debugLog("onOpen", characterName, session);
 
-        characterMotionSocketService.onOpen(characterName);
+        characterSocketService.onOpen(characterName);
     }
 
     @OnMessage
@@ -29,14 +29,14 @@ public class PlayerMotionSocket {
                                                  WebSocketSession session) {
         debugLog("onMessage", characterName, session);
 
-        return characterMotionSocketService.onMessage(characterName, request, session);
+        return characterSocketService.onMessage(characterName, request, session);
     }
 
     @OnClose
     public Publisher<SocketMessage<String>> onClose(String characterName, WebSocketSession session) {
         debugLog("onClose", characterName, session);
 
-        return characterMotionSocketService.onClose(characterName);
+        return characterSocketService.onClose(characterName);
     }
 
     private void debugLog(String event, String characterName, WebSocketSession session) {

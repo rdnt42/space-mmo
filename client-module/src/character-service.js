@@ -30,7 +30,7 @@ export function sendMotion(forceTypeId, angle, isUpdate) {
 }
 
 export function sendShooting(isShooting, angle) {
-    const request = new CharacterShootingRequest(isShooting, angle, true);
+    const request = new CharacterShootingRequest(isShooting, angle, Date.now());
     socket.sendMessage(request);
 }
 
