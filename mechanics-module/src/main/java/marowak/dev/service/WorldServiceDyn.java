@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.BodyUserData;
+import marowak.dev.dto.world.Bullet;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
@@ -26,6 +27,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -43,6 +46,7 @@ public class WorldServiceDyn implements WorldService {
 
     private World<Body> world;
     private final Map<String, Body> ships = new HashMap<>();
+    private final List<Body> bullets = new LinkedList<>();
 
     @PostConstruct
     private void init() {
@@ -57,8 +61,15 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Async
-    public void calculateWorld() {
-
+    @Override
+    public void calculateObjects() {
+        for (Body body : ships.values()) {
+            BodyUserData data = (BodyUserData) body.getUserData();
+            if (data.isShooting()) {
+                Vector2 translation = body.getTransform().getTranslation();
+                createBullet(data.getShootAngle(), translation.x, translation.y);
+            }
+        }
     }
 
     @Override
@@ -77,8 +88,8 @@ public class WorldServiceDyn implements WorldService {
         body.getTransform().setRotation(angleInRadians);
         body.setUserData(new BodyUserData());
 
-        ships.put(motion.characterName(), body);
         world.addBody(body);
+        ships.put(motion.characterName(), body);
     }
 
     @Override
@@ -157,6 +168,19 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Override
+    public Flux<Bullet> getBulletsInRange(String characterName) {
+        Vector2 base = ships.get(characterName).getTransform().getTranslation();
+
+        return Flux.fromStream(bullets.stream())
+                .filter(target -> isInRange(base, target.getTransform().getTranslation()))
+                .map(bullet -> Bullet.builder()
+                        .x(bullet.getTransform().getTranslation().x)
+                        .y(bullet.getTransform().getTranslation().y)
+                        .angle(bullet.getTransform().getRotationAngle())
+                        .build());
+    }
+
+    @Override
     public Mono<CharacterMotion> getShip(String characterName) {
         return Mono.justOrEmpty(ships.get(characterName))
                 .map(body -> CharacterMotion.builder()
@@ -181,5 +205,27 @@ public class WorldServiceDyn implements WorldService {
         double diffY = base.y - target.y;
 
         return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
+    }
+
+    private void createBullet(double angle, double x, double y) {
+        Body body = new Body();
+
+        BodyFixture bodyFixture = body.addFixture(Geometry.createRectangle(5, 2));
+        bodyFixture.setDensity(0.1);
+        bodyFixture.setFriction(0.01);
+        bodyFixture.setRestitution(0.7);
+        bodyFixture.setRestitutionVelocity(0.001);
+        body.setLinearDamping(0.1);
+        body.setMass(MassType.NORMAL);
+        body.translate(x, y);
+        body.getTransform().setRotation(angle);
+        body.setBullet(true);
+
+        Vector2 direction = new Vector2(body.getTransform().getRotationAngle());
+        Vector2 force = direction.product(20000);
+        body.applyForce(force);
+
+        world.addBody(body);
+        bullets.add(body);
     }
 }
