@@ -41,7 +41,6 @@ function worldTick() {
     if (weaponService.isNeedShotUpdate()) {
         let angle = getCharacterAngleInRadians(mouseCoords.x, mouseCoords.y) + Math.PI;
         characterService.sendShooting(weaponService.getShotState(), angle);
-        weaponService.setUpdated();
     }
 }
 

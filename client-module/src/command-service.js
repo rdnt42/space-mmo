@@ -1,6 +1,7 @@
 import * as initService from "./init-service.js";
 import * as characterService from "./character-service.js";
 import * as inventoryService from "./inventory-service.js";
+import * as weaponService from "./weapon-service.js";
 import {Commands} from "./const/MessageCommand.js";
 
 export function executeCommand(response) {
@@ -13,7 +14,6 @@ export function executeCommand(response) {
     }
 
     let command = socketResponse.command;
-
     switch (command) {
         case Commands.GetMotions:
             initService.tryInitMotions(socketResponse.data);
@@ -33,6 +33,10 @@ export function executeCommand(response) {
 
         case Commands.UpdateInventoryItem:
             inventoryService.updateItemSlot(socketResponse.data);
+            break;
+
+        case Commands.UpdateShooting:
+            weaponService.setUpdated();
             break;
 
         default:

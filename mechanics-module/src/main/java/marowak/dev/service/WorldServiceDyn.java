@@ -2,15 +2,18 @@ package marowak.dev.service;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Value;
+import io.micronaut.scheduling.annotation.Async;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.world.BodyUserData;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
@@ -53,6 +56,11 @@ public class WorldServiceDyn implements WorldService {
         world.step(1);
     }
 
+    @Async
+    public void calculateWorld() {
+
+    }
+
     @Override
     public void addShip(CharacterMotion motion) {
         Body body = new Body();
@@ -67,10 +75,18 @@ public class WorldServiceDyn implements WorldService {
         body.translate(motion.x(), motion.y());
         double angleInRadians = Math.toRadians(motion.angle());
         body.getTransform().setRotation(angleInRadians);
-        body.setUserData(motion.speed());
+        body.setUserData(new BodyUserData());
 
         ships.put(motion.characterName(), body);
         world.addBody(body);
+    }
+
+    @Override
+    public void updateShooting(CharacterShootingRequest request, String characterName) {
+        Body body = ships.get(characterName);
+        BodyUserData data = (BodyUserData) body.getUserData();
+        data.setShooting(request.isShooting());
+        data.setShootAngle(request.angle());
     }
 
     @Override

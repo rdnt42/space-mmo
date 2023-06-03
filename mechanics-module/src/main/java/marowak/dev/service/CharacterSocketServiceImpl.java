@@ -17,6 +17,7 @@ import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
 
@@ -71,8 +72,9 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_SHOOTING -> {
                 CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
-                log.info("make shot {}, angle {}", value.isShooting(), value.angle());
-                return null;
+                return characterMotionService.updateShooting(value, characterName)
+                        .then(Mono.just(new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, null)))
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());

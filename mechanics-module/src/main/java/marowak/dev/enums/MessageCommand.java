@@ -6,6 +6,5 @@ public enum MessageCommand {
     CMD_UPDATE_MOTION,
     CMD_LEAVING_PLAYER,
     CMD_UPDATE_INVENTORY_ITEM,
-
     CMD_UPDATE_SHOOTING
 }
