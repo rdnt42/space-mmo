@@ -54,6 +54,7 @@ public class WorldServiceDyn implements WorldService {
         world = new World<>();
         world.setGravity(PhysicsWorld.ZERO_GRAVITY);
         world.getSettings().setMaximumTranslation(speedLimit / 60f); // meters per step
+        world.getSettings().setMaximumAtRestLinearVelocity(0.1);
     }
 
     @Override
@@ -69,6 +70,13 @@ public class WorldServiceDyn implements WorldService {
             if (data.isShooting()) {
                 Vector2 translation = body.getTransform().getTranslation();
                 createBullet(data.getShootAngle(), translation.x, translation.y);
+            }
+        }
+
+        for (Map.Entry<Long, Body> entry : bullets.entrySet()) {
+            if (entry.getValue().isAtRest()) {
+                bullets.remove(entry.getKey());
+                world.removeBody(entry.getValue());
             }
         }
     }
@@ -88,6 +96,7 @@ public class WorldServiceDyn implements WorldService {
         double angleInRadians = Math.toRadians(motion.angle());
         body.getTransform().setRotation(angleInRadians);
         body.setUserData(new BodyUserData());
+        body.setAtRestDetectionEnabled(false);
 
         world.addBody(body);
         ships.put(motion.characterName(), body);
@@ -226,6 +235,7 @@ public class WorldServiceDyn implements WorldService {
         Vector2 direction = new Vector2(body.getTransform().getRotationAngle());
         Vector2 force = direction.product(20000);
         body.applyForce(force);
+        body.setAtRestDetectionEnabled(true);
 
         bulletId.increment();
         long id = bulletId.longValue();
