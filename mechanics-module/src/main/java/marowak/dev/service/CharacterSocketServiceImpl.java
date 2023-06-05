@@ -16,8 +16,8 @@ import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
+import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
 
@@ -26,11 +26,10 @@ import java.util.function.Predicate;
 @Singleton
 public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final CharacterMotionService characterMotionService;
-
     private final CharacterInfoService characterInfoService;
-
     private final ItemService itemService;
     private final CharacterService characterService;
+    private final BodyService bodyService;
     private final WebSocketBroadcaster broadcaster;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -73,8 +72,9 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             case CMD_UPDATE_SHOOTING -> {
                 CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
                 return characterMotionService.updateShooting(value, characterName)
-                        .then(Mono.just(new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, null)))
-                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                        .thenMany(bodyService.getBullets(characterName))
+                        .map(bullets -> new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets))
+                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());

@@ -2,6 +2,7 @@ import * as render from "../render/render.js";
 import * as characterService from "../character-service.js";
 
 let ships = new Map();
+let bullets = new Map();
 
 export function createCharacter(characterName, shipTypeId) {
     let sprite = render.createCharacter(characterName, shipTypeId);
@@ -26,6 +27,19 @@ export function removeCharacter(characterName) {
 export function getRenderCoords(characterName) {
     let sprite = ships.get(characterName);
     return render.getRenderCoords(sprite);
+}
+
+export function createOrUpdateBullet(id, x, y, angle) {
+    let abs = characterService.getPlayerCharacter().movement;
+    let newX = getX(x, abs.x);
+    let newY = getY(y, abs.y);
+    let bullet = bullets.get(id);
+    if (bullet === undefined) {
+        bullet = render.createBullet(newX, newY, angle);
+        bullets.set(id, bullet);
+    }
+
+    render.renderBullet(bullet, newX, newY, angle);
 }
 
 function getX(currX, diffX) {

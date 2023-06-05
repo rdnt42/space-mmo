@@ -26,10 +26,9 @@ import org.dyn4j.world.World;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,8 +44,10 @@ public class WorldServiceDyn implements WorldService {
     private final ItemService itemService;
 
     private World<Body> world;
-    private final Map<String, Body> ships = new HashMap<>();
-    private final List<Body> bullets = new LinkedList<>();
+    private final Map<String, Body> ships = new ConcurrentHashMap<>();
+
+    private final LongAdder bulletId = new LongAdder();
+    private final Map<Long, Body> bullets = new ConcurrentHashMap<>();
 
     @PostConstruct
     private void init() {
@@ -171,12 +172,13 @@ public class WorldServiceDyn implements WorldService {
     public Flux<Bullet> getBulletsInRange(String characterName) {
         Vector2 base = ships.get(characterName).getTransform().getTranslation();
 
-        return Flux.fromStream(bullets.stream())
-                .filter(target -> isInRange(base, target.getTransform().getTranslation()))
-                .map(bullet -> Bullet.builder()
-                        .x(bullet.getTransform().getTranslation().x)
-                        .y(bullet.getTransform().getTranslation().y)
-                        .angle(bullet.getTransform().getRotationAngle())
+        return Flux.fromStream(bullets.entrySet().stream())
+                .filter(entry -> isInRange(base, entry.getValue().getTransform().getTranslation()))
+                .map(entry -> Bullet.builder()
+                        .id(entry.getKey())
+                        .x(entry.getValue().getTransform().getTranslation().x)
+                        .y(entry.getValue().getTransform().getTranslation().y)
+                        .angle(entry.getValue().getTransform().getRotationAngle())
                         .build());
     }
 
@@ -225,7 +227,9 @@ public class WorldServiceDyn implements WorldService {
         Vector2 force = direction.product(20000);
         body.applyForce(force);
 
+        bulletId.increment();
+        long id = bulletId.longValue();
         world.addBody(body);
-        bullets.add(body);
+        bullets.put(id, body);
     }
 }

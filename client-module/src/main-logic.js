@@ -38,10 +38,10 @@ function worldTick() {
         characterService.sendMotion(move.forceTypeId, move.angle, true);
     }
 
-    if (weaponService.isNeedShotUpdate()) {
+    // if (weaponService.isNeedShotUpdate()) { // TODO
         let angle = getCharacterAngleInRadians(mouseCoords.x, mouseCoords.y) + Math.PI;
         characterService.sendShooting(weaponService.getShotState(), angle);
-    }
+    // }
 }
 
 function getCharacterMotion(speed, maxSpeed, angle) {

@@ -8,6 +8,7 @@ let app;
 let dragTarget = null;
 
 const Sort = {
+    BULLETS: 29,
     OTHER_PLAYERS: 30,
     PLAYER: 90,
     INVENTORY: 100,
@@ -343,6 +344,24 @@ export function hasHalfCollision(r1, r2) {
         r1Bounds.x < r2Bounds.x + r2Bounds.width * 0.5 &&
         r1Bounds.y + r1Bounds.height * 0.5 > r2Bounds.y &&
         r1Bounds.y < r2Bounds.y + r2Bounds.height * 0.5;
+}
+
+/// Weapon
+export function createBullet(x, y, rotation) {
+    let bullet = new pixi.Graphics();
+    bullet.beginFill(0xFF0000);
+    bullet.drawRect(0, 0, 5, 2);
+    bullet.rotation = rotation;
+    bullet.endFill();
+    bullet.zIndex = Sort.BULLETS;
+    app.stage.addChild(bullet);
+
+    return bullet;
+}
+
+export function renderBullet(sprite, x, y, rotation) {
+    sprite.position.set(x, y);
+    sprite.rotation = rotation;
 }
 
 function onDragMove(event) {

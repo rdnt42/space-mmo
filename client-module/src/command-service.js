@@ -36,7 +36,8 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateShooting:
-            weaponService.setUpdated();
+            // weaponService.setUpdated(); TODO
+            weaponService.updateBulletData(socketResponse.data);
             break;
 
         default:
