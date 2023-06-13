@@ -13,26 +13,44 @@
 - CHARACTERS_GET_ONE - get one character (connected new player)
 - CHARACTERS_GET_ALL - get all online players (init all players)
 
-
 ## Backend to frontend contract
 
 ### CMD_UPDATE_MOTION
 
-#### response:
+send update and get updated result
+
+#### response flux
+
+shipTypeId - hull type for rendering
 
 ```json
 {
   "command": "CMD_UPDATE_MOTION",
   "data": {
-    "playerMotion": {
-      "playerName": "name",
-      "x": 100,
-      "y": 500,
-      "angle": 90,
-      "speed": 10
-    },
-    
-    "playersMotions": []
+    "characterName": "name",
+    "x": 100.00,
+    "y": 500.00,
+    "angle": 90,
+    "speed": 10,
+    "shipTypeId": 1,
+    "hp": 500,
+    "evasion": 2,
+    "armor": 5
+  }
+}
+```
+
+### CMD_UPDATE_INVENTORY_ITEM
+
+change item slot
+slotId - inventory slot in the hold
+
+```json
+{
+  "command": "CMD_UPDATE_INVENTORY_ITEM",
+  "data": {
+    "id": 1000000,
+    "slotId": 1
   }
 }
 ```
