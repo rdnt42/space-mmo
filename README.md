@@ -7,3 +7,4 @@
 - **Mechanics module**: This service responsible for game mechanics like calculate characters position, inventory state
   and world physics
 - **Client module**: Using JS with PixiJS for rendering objects. All other game logic uses Vanilla JS: Socket connection, keyboard events, calculating
+- **Admin service**: Backend for admin panel. Supports CRUD operations for storage entities
