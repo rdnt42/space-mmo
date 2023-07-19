@@ -50,25 +50,3 @@ function createCharacter(response) {
     charactersMap.set(response.characterName, character);
     console.log(`create character ${character.characterName}, ship: ${response.shipTypeId}`)
 }
-
-// TODO
-function removeUnusedCharacters(data) {
-    // it doesn't work in flux
-    return;
-
-    if (charactersMap.size - 1 === data.playersMotions.length) return;
-
-    let newChars = new Set();
-    for (let motion of data.playersMotions) {
-        newChars.add(motion.playerName);
-    }
-
-    for (let character of charactersMap.values()) {
-        if (character.characterName !== playerCharacterName && !newChars.has(character)) {
-            character.destroy();
-            charactersMap.delete(character.characterName);
-            console.log(`player ${character.characterName} deleted from map`)
-        }
-    }
-
-}

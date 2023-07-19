@@ -3,16 +3,8 @@ import * as renderEngine from "./render/engine.js";
 let shotState = false;
 let isUpdated = false;
 
-export function isNeedShotUpdate() {
-    return !isUpdated;
-}
-
 export function getShotState() {
     return shotState;
-}
-
-export function setUpdated() {
-    isUpdated = true;
 }
 
 export function useWeapon() {
