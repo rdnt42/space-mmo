@@ -15,3 +15,11 @@
 3) start mechanics module. After start it can receive socket connections
 4) open http://localhost:63342/space-mmo/client-module/index.html
 
+### How it works
+1) The user registers an account
+2) The user logs in to the client (normal authorization is disabled)
+3) a socket connection opens
+4) Data is requested from storage and fills the cache in mechanics
+5) location and iтventar data are requested by the client and sent by the stream
+6) location data is sent after a certain interval
+7) inventory data is collected according to their own
