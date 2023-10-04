@@ -2,6 +2,7 @@ package marowak.dev.service;
 
 import io.micronaut.scheduling.annotation.Async;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.motion.CharactersMotions;
 import marowak.dev.dto.world.Bullet;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
@@ -22,7 +23,7 @@ public interface WorldService {
 
     void deleteShip(String characterName);
 
-    Flux<CharacterMotion> getShipsInRange(String characterName);
+    CharactersMotions getShipsInRange(String characterName);
 
     Flux<CharacterMotion> getAllShips();
 

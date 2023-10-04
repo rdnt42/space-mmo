@@ -117,6 +117,15 @@ public class ItemServiceImpl implements ItemService {
                 .switchIfEmpty(Mono.empty());
     }
 
+    @Override
+    public Item getItemCommon(String characterName, ItemTypes type) {
+        CharacterInventory inventory = playerInventoryMap.get(characterName);
+        return inventory.items().values().stream()
+                .filter(item -> item.getTypeId() == type.getTypeId())
+                .findFirst()
+                .orElseThrow();
+    }
+
 
     private CharacterInventory createInventory() {
         return CharacterInventory.builder()

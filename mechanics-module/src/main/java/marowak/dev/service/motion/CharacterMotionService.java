@@ -1,6 +1,7 @@
 package marowak.dev.service.motion;
 
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.motion.CharactersMotions;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import message.CharacterMessage;
@@ -27,7 +28,7 @@ public interface CharacterMotionService {
     // TODO move to another service?
     Mono<Void> updateShooting(CharacterShootingRequest request, String playerName);
 
-    Flux<CharacterMotion> getCharactersInRange(String playerName);
+    CharactersMotions getCharactersInRange(String playerName);
 
     Mono<CharacterMotion> getCharacter(String playerName);
 }

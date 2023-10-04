@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.motion.CharactersMotions;
 import marowak.dev.dto.world.BodyUserData;
 import marowak.dev.dto.world.Bullet;
 import marowak.dev.enums.ForceType;
@@ -26,6 +27,7 @@ import org.dyn4j.world.World;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -151,10 +153,10 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Override
-    public Flux<CharacterMotion> getShipsInRange(String characterName) {
+    public CharactersMotions getShipsInRange(String characterName) {
         Vector2 base = ships.get(characterName).getTransform().getTranslation();
 
-        return Flux.fromStream(ships.entrySet().stream())
+        List<CharacterMotion> motions = ships.entrySet().stream()
                 .filter(target -> isInRange(base, target.getValue().getTransform().getTranslation()))
                 .map(entry -> CharacterMotion.builder()
                         .characterName(entry.getKey())
@@ -162,7 +164,10 @@ public class WorldServiceDyn implements WorldService {
                         .y(entry.getValue().getTransform().getTranslation().y)
                         .angle((int) Math.toDegrees(entry.getValue().getTransform().getRotationAngle()))
                         .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().getRotationAngle()))
-                        .build());
+                        .build())
+                .toList();
+
+        return new CharactersMotions(motions);
     }
 
     @Override

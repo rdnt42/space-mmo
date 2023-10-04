@@ -19,4 +19,6 @@ public interface ItemService {
     Mono<InventoryInfo> getItems(String playerName);
 
     Mono<Item> getItem(String characterName, ItemTypes type);
+
+    Item getItemCommon(String characterName, ItemTypes type);
 }

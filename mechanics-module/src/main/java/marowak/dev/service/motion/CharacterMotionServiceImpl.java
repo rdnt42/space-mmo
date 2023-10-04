@@ -3,6 +3,7 @@ package marowak.dev.service.motion;
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.motion.CharactersMotions;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.service.WorldService;
@@ -60,7 +61,7 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Flux<CharacterMotion> getCharactersInRange(String playerName) {
+    public CharactersMotions getCharactersInRange(String playerName) {
         return worldService.getShipsInRange(playerName);
     }
 
