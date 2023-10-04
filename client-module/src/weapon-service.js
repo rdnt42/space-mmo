@@ -18,6 +18,8 @@ export function stopWeapon() {
 }
 
 export function updateBulletData(data) {
-    renderEngine.createOrUpdateBullet(data.id, data.x, data.y, data.angle);
+    for (const bullet of data.bullets) {
+        renderEngine.createOrUpdateBullet(bullet.id, bullet.x, bullet.y, bullet.angle);
+    }
 }
 

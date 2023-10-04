@@ -44,14 +44,8 @@ export function updateCharacterData(data) {
 }
 
 export function updateCharactersData(data) {
-    console.log(data)
-    for (const info of data.charactersInfos) {
-        let character = charactersMap.get(info.characterName);
-        if (character === undefined) {
-            createCharacter(info);
-        } else {
-            character.updateCharacter(info.x, info.y, info.angle, info.speed);
-        }
+    for (const state of data.states) {
+        updateCharacterData(state);
     }
 }
 

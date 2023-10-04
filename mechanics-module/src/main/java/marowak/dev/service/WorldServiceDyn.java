@@ -183,29 +183,30 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Override
-    public Flux<Bullet> getBulletsInRange(String characterName) {
+    public List<Bullet> getBulletsInRange(String characterName) {
         Vector2 base = ships.get(characterName).getTransform().getTranslation();
 
-        return Flux.fromStream(bullets.entrySet().stream())
+        return bullets.entrySet().stream()
                 .filter(entry -> isInRange(base, entry.getValue().getTransform().getTranslation()))
                 .map(entry -> Bullet.builder()
                         .id(entry.getKey())
                         .x(entry.getValue().getTransform().getTranslation().x)
                         .y(entry.getValue().getTransform().getTranslation().y)
                         .angle(entry.getValue().getTransform().getRotationAngle())
-                        .build());
+                        .build())
+                .toList();
     }
 
     @Override
-    public Mono<CharacterMotion> getShip(String characterName) {
-        return Mono.justOrEmpty(ships.get(characterName))
-                .map(body -> CharacterMotion.builder()
-                        .characterName(characterName)
-                        .x(body.getTransform().getTranslation().x)
-                        .y(body.getTransform().getTranslation().y)
-                        .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
-                        .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
-                        .build());
+    public CharacterMotion getShip(String characterName) {
+        Body body = ships.get(characterName);
+        return CharacterMotion.builder()
+                .characterName(characterName)
+                .x(body.getTransform().getTranslation().x)
+                .y(body.getTransform().getTranslation().y)
+                .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
+                .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
+                .build();
     }
 
     private float getSpeed(Vector2 vector, double rotationAngle) {

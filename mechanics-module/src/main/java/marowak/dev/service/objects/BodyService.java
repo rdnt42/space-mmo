@@ -1,8 +1,7 @@
 package marowak.dev.service.objects;
 
-import marowak.dev.dto.world.Bullet;
-import reactor.core.publisher.Flux;
+import marowak.dev.response.character.BulletsResponse;
 
 public interface BodyService {
-    Flux<Bullet> getBullets(String characterName);
+    BulletsResponse getBullets(String characterName);
 }

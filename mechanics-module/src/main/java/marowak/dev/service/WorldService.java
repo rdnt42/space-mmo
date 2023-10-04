@@ -7,7 +7,8 @@ import marowak.dev.dto.world.Bullet;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public interface WorldService {
     void updateWorld();
@@ -27,7 +28,7 @@ public interface WorldService {
 
     Flux<CharacterMotion> getAllShips();
 
-    Flux<Bullet> getBulletsInRange(String characterName);
+    List<Bullet> getBulletsInRange(String characterName);
 
-    Mono<CharacterMotion> getShip(String characterName);
+    CharacterMotion getShip(String characterName);
 }

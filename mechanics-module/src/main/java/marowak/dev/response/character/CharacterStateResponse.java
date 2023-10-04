@@ -1,11 +1,11 @@
-package marowak.dev.dto;
+package marowak.dev.response.character;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record CharacterInfo(
+public record CharacterStateResponse(
         String characterName,
         double x,
         double y,

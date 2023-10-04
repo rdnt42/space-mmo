@@ -54,10 +54,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Mono<Void> updateShooting(CharacterShootingRequest request, String playerName) {
+    public void updateShooting(CharacterShootingRequest request, String playerName) {
         worldService.updateShooting(request, playerName);
-
-        return Mono.empty();
     }
 
     @Override
@@ -66,7 +64,7 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Mono<CharacterMotion> getCharacter(String playerName) {
+    public CharacterMotion getCharacterMotion(String playerName) {
         return worldService.getShip(playerName);
     }
 

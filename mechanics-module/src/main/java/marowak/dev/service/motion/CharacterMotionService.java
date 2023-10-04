@@ -26,9 +26,9 @@ public interface CharacterMotionService {
     Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
     // TODO move to another service?
-    Mono<Void> updateShooting(CharacterShootingRequest request, String playerName);
+    void updateShooting(CharacterShootingRequest request, String playerName);
 
     CharactersMotions getCharactersInRange(String playerName);
 
-    Mono<CharacterMotion> getCharacter(String playerName);
+    CharacterMotion getCharacterMotion(String playerName);
 }
