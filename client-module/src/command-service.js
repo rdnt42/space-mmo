@@ -24,7 +24,7 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateMotion:
-            characterService.updateCharacterData(socketResponse.data);
+            characterService.updateCharactersData(socketResponse.data);
             break;
 
         case Commands.LeavingPlayer:

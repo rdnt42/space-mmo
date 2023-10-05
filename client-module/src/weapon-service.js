@@ -17,7 +17,9 @@ export function stopWeapon() {
     isUpdated = false;
 }
 
-export function updateBulletData(data) {
-    renderEngine.createOrUpdateBullet(data.id, data.x, data.y, data.angle);
+export function updateBulletData(bullets) {
+    for (const bullet of bullets) {
+        renderEngine.createOrUpdateBullet(bullet.id, bullet.x, bullet.y, bullet.angle);
+    }
 }
 

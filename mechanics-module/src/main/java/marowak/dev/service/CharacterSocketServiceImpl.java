@@ -59,9 +59,9 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
                 return characterMotionService.updateMotion(value, characterName)
                         .thenMany(characterInfoService.getCharactersInfo(characterName))
-                        .map(info -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info))
+                        .buffer(50)
+                        .map(infoList -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, infoList))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
-
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
@@ -73,6 +73,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                 CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
                 return characterMotionService.updateShooting(value, characterName)
                         .thenMany(bodyService.getBullets(characterName))
+                        .buffer(200)
                         .map(bullets -> new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }

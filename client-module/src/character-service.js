@@ -34,12 +34,18 @@ export function sendShooting(isShooting, angle) {
     socket.sendMessage(request);
 }
 
-export function updateCharacterData(data) {
-    let character = charactersMap.get(data.characterName);
+export function updateCharacterData(state) {
+    let character = charactersMap.get(state.characterName);
     if (character === undefined) {
-        createCharacter(data);
+        createCharacter(state);
     } else {
-        character.updateCharacter(data.x, data.y, data.angle, data.speed);
+        character.updateCharacter(state.x, state.y, state.angle, state.speed);
+    }
+}
+
+export function updateCharactersData(states) {
+    for (const state of states) {
+        updateCharacterData(state)
     }
 }
 
