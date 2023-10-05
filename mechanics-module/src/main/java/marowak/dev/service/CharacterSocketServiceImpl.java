@@ -13,12 +13,13 @@ import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
+import marowak.dev.response.character.BulletsResponse;
+import marowak.dev.response.character.CharactersStateResponse;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
 
@@ -43,8 +44,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
 
     @SneakyThrows
     @Override
-    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request,
-                                                 WebSocketSession session) {
+    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request, WebSocketSession session) {
         switch (request.command()) {
             case CMD_GET_MOTIONS -> {
                 return characterInfoService.getCharacterInfo(characterName)
@@ -58,10 +58,12 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_MOTION -> {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
-                return characterMotionService.updateMotion(value, characterName)
-                        .thenMany(characterInfoService.getCharactersInfo(characterName))
-                        .map(info -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info))
-                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                characterMotionService.updateMotion(value, characterName);
+                CharactersStateResponse info = characterInfoService.getCharactersInfo(characterName);
+                SocketMessage<CharactersStateResponse> message = new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, info);
+
+                return broadcaster.broadcast(message, filterOtherPlayers(session, characterName));
+
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
@@ -72,9 +74,10 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             case CMD_UPDATE_SHOOTING -> {
                 CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
                 characterMotionService.updateShooting(value, characterName);
-                return Mono.just(bodyService.getBullets(characterName))
-                        .map(bullets -> new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets))
-                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                BulletsResponse bullets = bodyService.getBullets(characterName);
+                SocketMessage<BulletsResponse> message = new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets);
+
+                return broadcaster.broadcast(message, filterOtherPlayers(session, characterName));
             }
             default ->
                     throw new IllegalArgumentException("Unknown or not available message command: " + request.command());

@@ -25,8 +25,8 @@ public class PlayerMotionSocket {
     }
 
     @OnMessage
-    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request,
-                                                 WebSocketSession session) {
+    public SocketMessage<?> onMessage(String characterName, SocketMessage<?> request,
+                                      WebSocketSession session) {
         debugLog("onMessage", characterName, session);
 
         return characterSocketService.onMessage(characterName, request, session);

@@ -6,7 +6,6 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +22,7 @@ public interface CharacterMotionService {
 
     void addMotion(CharacterMessage character);
 
-    Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
+    void updateMotion(CharacterMotionRequest request, String playerName);
 
     // TODO move to another service?
     void updateShooting(CharacterShootingRequest request, String playerName);

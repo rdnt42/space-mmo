@@ -29,7 +29,7 @@ public class CharacterInfoService {
         return Mono.just(toCharacterResponse.apply(motion, (Hull) item, motion.characterName()));
     }
 
-    public Mono<CharactersStateResponse> getCharactersInfo(String playerName) {
+    public CharactersStateResponse getCharactersInfo(String playerName) {
         List<CharacterStateResponse> infos = characterMotionService.getCharactersInRange(playerName)
                 .motions().stream()
                 .map(motion -> {
@@ -39,7 +39,7 @@ public class CharacterInfoService {
                 })
                 .toList();
 
-        return Mono.just(new CharactersStateResponse(infos));
+        return new CharactersStateResponse(infos);
     }
 
     private final TriFunction<CharacterMotion, Hull, String, CharacterStateResponse> toCharacterResponse =

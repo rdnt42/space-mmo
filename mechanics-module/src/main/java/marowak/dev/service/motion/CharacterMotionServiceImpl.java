@@ -9,7 +9,6 @@ import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.service.WorldService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
@@ -43,14 +42,12 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     }
 
     @Override
-    public Mono<Void> updateMotion(CharacterMotionRequest request, String playerName) {
-        Mono<Void> result = Mono.empty();
+    public void updateMotion(CharacterMotionRequest request, String playerName) {
         if (!request.isUpdate()) {
-            return result;
+            return;
         }
 
         worldService.updateShip(request, playerName);
-        return Mono.empty();
     }
 
     @Override
