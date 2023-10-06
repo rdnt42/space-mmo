@@ -25,8 +25,10 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
     private final WorldService worldService;
 
     @Override
-    public void leavingPlayer(String playerName) {
+    public Mono<Void> leavingPlayer(String playerName) {
         worldService.deleteShip(playerName);
+
+        return Mono.empty();
     }
 
     @Override
@@ -36,8 +38,13 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     @Override
     public void addMotion(CharacterMessage character) {
-        CharacterMotion newMotion = new CharacterMotion(character.getCharacterName(), character.getX(), character.getY(),
-                character.getAngle(), 0, new Date().getTime());
+        CharacterMotion newMotion = new CharacterMotion(
+                character.getCharacterName(),
+                character.getX(),
+                character.getY(),
+                character.getAngle(),
+                0,
+                new Date().getTime());
         worldService.addShip(newMotion);
     }
 

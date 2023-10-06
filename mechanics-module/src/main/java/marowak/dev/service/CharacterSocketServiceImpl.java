@@ -85,11 +85,11 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     @Override
     public Publisher<SocketMessage<String>> onClose(String playerName) {
         characterService.sendCharacterState(playerName, false);
-        characterMotionService.leavingPlayer(playerName);
 
-        SocketMessage<String> socketResponse = new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName);
-
-        return broadcaster.broadcast(socketResponse);
+        return characterMotionService.leavingPlayer(playerName)
+                .thenReturn(new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName))
+                .doOnNext(message -> log.info("Player {} leaving", playerName))
+                .flatMapMany(broadcaster::broadcast);
     }
 
     private Predicate<WebSocketSession> filterOtherPlayers(WebSocketSession session, String playerName) {

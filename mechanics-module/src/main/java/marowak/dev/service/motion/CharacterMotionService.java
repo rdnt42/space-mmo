@@ -15,8 +15,7 @@ import reactor.core.publisher.Mono;
  */
 public interface CharacterMotionService {
 
-    // TODO all response to flux/mono
-    void leavingPlayer(String playerName);
+    Mono<Void> leavingPlayer(String playerName);
 
     Flux<CharacterMotion> getAllMotions();
 
