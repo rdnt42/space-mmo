@@ -23,7 +23,7 @@ export class CharacterItemRequest {
 
 export class CharacterResponse {
     constructor(data) {
-        this.characterName = data.characterName;
+        this.characterName = data.id;
         this.x = data.x;
         this.y = data.y;
         this.angle = data.angle;

@@ -35,7 +35,7 @@ export function sendShooting(isShooting, angle) {
 }
 
 export function updateCharacterData(state) {
-    let character = charactersMap.get(state.characterName);
+    let character = charactersMap.get(state.id);
     if (character === undefined) {
         createCharacter(state);
     } else {

@@ -9,12 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
-import marowak.dev.dto.world.Bullet;
+import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
+import marowak.dev.response.BodyInfo;
 import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
@@ -150,38 +151,33 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Override
-    public Flux<CharacterMotion> getShipsInRange(String characterName) {
+    public Flux<BodyInfo> getShipsInRange(String characterName) {
         Vector2 base = ships.get(characterName).getTransform().getTranslation();
 
         return Flux.fromStream(ships.entrySet().stream())
                 .filter(target -> isInRange(base, target.getValue().getTransform().getTranslation()))
-                .map(entry -> shipInfoToMotion.apply(entry.getValue(), entry.getKey()));
+                .map(entry -> bodyToBodyInfo.apply(entry.getValue(), entry.getKey()));
     }
 
     @Override
-    public Flux<CharacterMotion> getAllShips() {
+    public Flux<BodyInfo> getAllShips() {
         return Flux.fromStream(ships.entrySet().stream())
-                .map(entry -> shipInfoToMotion.apply(entry.getValue(), entry.getKey()));
+                .map(entry -> bodyToBodyInfo.apply(entry.getValue(), entry.getKey()));
     }
 
     @Override
-    public Flux<Bullet> getBulletsInRange(String characterName) {
+    public Flux<BodyInfo> getBulletsInRange(String characterName) {
         Vector2 base = ships.get(characterName).getTransform().getTranslation();
 
         return Flux.fromStream(bullets.entrySet().stream())
                 .filter(entry -> isInRange(base, entry.getValue().getTransform().getTranslation()))
-                .map(entry -> Bullet.builder()
-                        .id(entry.getKey())
-                        .x(entry.getValue().getTransform().getTranslation().x)
-                        .y(entry.getValue().getTransform().getTranslation().y)
-                        .angle(entry.getValue().getTransform().getRotationAngle())
-                        .build());
+                .map(entry -> bodyToBodyInfo.apply(entry.getValue(), entry.getKey().toString()));
     }
 
     @Override
-    public Mono<CharacterMotion> getShip(String characterName) {
+    public Mono<BodyInfo> getShip(String characterName) {
         return Mono.justOrEmpty(ships.get(characterName))
-                .map(ship -> shipInfoToMotion.apply(ship, characterName));
+                .map(ship -> bodyToBodyInfo.apply(ship, characterName));
     }
 
     private float getSpeed(Vector2 vector, double rotationAngle) {
@@ -200,36 +196,36 @@ public class WorldServiceDyn implements WorldService {
     }
 
     private void createBullet(double angle, double x, double y) {
-        Body body = new Body();
+        KineticBullet bullet = new KineticBullet();
 
-        BodyFixture bodyFixture = body.addFixture(Geometry.createRectangle(5, 2));
+        BodyFixture bodyFixture = bullet.addFixture(Geometry.createRectangle(5, 2));
         bodyFixture.setDensity(0.1);
         bodyFixture.setFriction(0.01);
         bodyFixture.setRestitution(0.7);
         bodyFixture.setRestitutionVelocity(0.001);
-        body.setLinearDamping(0.1);
-        body.setMass(MassType.NORMAL);
-        body.translate(x, y);
-        body.getTransform().setRotation(angle);
-        body.setBullet(true);
+        bullet.setLinearDamping(0.1);
+        bullet.setMass(MassType.NORMAL);
+        bullet.translate(x, y);
+        bullet.getTransform().setRotation(angle);
+        bullet.setBullet(true);
 
-        Vector2 direction = new Vector2(body.getTransform().getRotationAngle());
+        Vector2 direction = new Vector2(bullet.getTransform().getRotationAngle());
         Vector2 force = direction.product(20000);
-        body.applyForce(force);
-        body.setAtRestDetectionEnabled(true);
+        bullet.applyForce(force);
+        bullet.setAtRestDetectionEnabled(true);
 
         bulletId.increment();
         long id = bulletId.longValue();
-        world.addBody(body);
-        bullets.put(id, body);
+        world.addBody(bullet);
+        bullets.put(id, bullet);
     }
 
-    private final BiFunction<SpaceShip, String, CharacterMotion> shipInfoToMotion = (ship, characterName) ->
-            CharacterMotion.builder()
-                    .characterName(characterName)
-                    .x(ship.getTransform().getTranslation().x)
-                    .y(ship.getTransform().getTranslation().y)
-                    .angle((int) Math.toDegrees(ship.getTransform().getRotationAngle()))
-                    .speed(getSpeed(ship.getLinearVelocity(), ship.getTransform().getRotationAngle()))
+    private final BiFunction<Body, String, BodyInfo> bodyToBodyInfo = (body, id) ->
+            BodyInfo.builder()
+                    .id(id)
+                    .x(body.getTransform().getTranslation().x)
+                    .y(body.getTransform().getTranslation().y)
+                    .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
+                    .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
                     .build();
 }

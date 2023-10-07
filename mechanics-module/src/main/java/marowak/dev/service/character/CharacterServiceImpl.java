@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.response.BodyInfo;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.motion.CharacterMotionService;
 import message.CharacterMessage;
@@ -21,7 +21,7 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public void sendCharactersUpdate() {
         characterMotionService.getAllMotions()
-                .map(motionToMessage)
+                .map(bodyInfoToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
                 .flatMap(charactersClient::sendCharacters)
                 .subscribe();
@@ -60,9 +60,9 @@ public class CharacterServiceImpl implements CharacterService {
                 .subscribe();
     }
 
-    private final Function<CharacterMotion, CharacterMessage> motionToMessage = motion -> CharacterMessage.builder()
+    private final Function<BodyInfo, CharacterMessage> bodyInfoToMessage = motion -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
-            .characterName(motion.characterName())
+            .characterName(motion.id())
             .x(motion.x())
             .y(motion.y())
             .angle(motion.angle())

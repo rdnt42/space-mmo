@@ -2,7 +2,7 @@ package marowak.dev.service.objects;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.dto.world.Bullet;
+import marowak.dev.response.BodyInfo;
 import marowak.dev.service.world.WorldService;
 import reactor.core.publisher.Flux;
 
@@ -12,7 +12,7 @@ public class BodyServiceImpl implements BodyService {
     private final WorldService worldService;
 
     @Override
-    public Flux<Bullet> getBullets(String characterName) {
+    public Flux<BodyInfo> getBullets(String characterName) {
         return worldService.getBulletsInRange(characterName);
     }
 }
