@@ -1,4 +1,4 @@
-package marowak.dev.dto;
+package marowak.dev.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

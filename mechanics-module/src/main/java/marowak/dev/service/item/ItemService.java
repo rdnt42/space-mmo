@@ -1,10 +1,10 @@
 package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
-import marowak.dev.dto.InventoryInfo;
 import marowak.dev.dto.item.Item;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.ItemUpdate;
+import marowak.dev.response.InventoryInfo;
 import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;

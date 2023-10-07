@@ -1,4 +1,4 @@
-package marowak.dev.dto;
+package marowak.dev.response;
 
 import lombok.Builder;
 import marowak.dev.dto.item.Item;
