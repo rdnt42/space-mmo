@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.world;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Value;
@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
-import marowak.dev.dto.world.BodyUserData;
 import marowak.dev.dto.world.Bullet;
+import marowak.dev.dto.world.SpaceShip;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
@@ -29,6 +29,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.BiFunction;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class WorldServiceDyn implements WorldService {
     private final ItemService itemService;
 
     private World<Body> world;
-    private final Map<String, Body> ships = new ConcurrentHashMap<>();
+    private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
 
     private final LongAdder bulletId = new LongAdder();
     private final Map<Long, Body> bullets = new ConcurrentHashMap<>();
@@ -65,11 +66,11 @@ public class WorldServiceDyn implements WorldService {
     @Async
     @Override
     public void calculateObjects() {
-        for (Body body : ships.values()) {
-            BodyUserData data = (BodyUserData) body.getUserData();
-            if (data.isShooting()) {
-                Vector2 translation = body.getTransform().getTranslation();
-                createBullet(data.getShootAngle(), translation.x, translation.y);
+
+        for (SpaceShip ship : ships.values()) {
+            if (ship.isShooting()) {
+                Vector2 translation = ship.getTransform().getTranslation();
+                createBullet(ship.getShootAngle(), translation.x, translation.y);
             }
         }
 
@@ -83,62 +84,60 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public void addShip(CharacterMotion motion) {
-        Body body = new Body();
+        SpaceShip ship = new SpaceShip();
 
-        BodyFixture bodyFixture = body.addFixture(Geometry.createCircle(64 * 0.75));
+        BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
         bodyFixture.setDensity(1);
         bodyFixture.setFriction(0.1);
         bodyFixture.setRestitution(0.3);
         bodyFixture.setRestitutionVelocity(0.001);
-        body.setLinearDamping(0.1);
-        body.setMass(MassType.NORMAL);
-        body.translate(motion.x(), motion.y());
+        ship.setLinearDamping(0.1);
+        ship.setMass(MassType.NORMAL);
+        ship.translate(motion.x(), motion.y());
         double angleInRadians = Math.toRadians(motion.angle());
-        body.getTransform().setRotation(angleInRadians);
-        body.setUserData(new BodyUserData());
-        body.setAtRestDetectionEnabled(false);
+        ship.getTransform().setRotation(angleInRadians);
+        ship.setAtRestDetectionEnabled(false);
 
-        world.addBody(body);
-        ships.put(motion.characterName(), body);
+        world.addBody(ship);
+        ships.put(motion.characterName(), ship);
     }
 
     @Override
     public void updateShooting(CharacterShootingRequest request, String characterName) {
-        Body body = ships.get(characterName);
-        BodyUserData data = (BodyUserData) body.getUserData();
-        data.setShooting(request.isShooting());
-        data.setShootAngle(request.angle());
+        SpaceShip ship = ships.get(characterName);
+        ship.setShooting(request.isShooting());
+        ship.setShootAngle(request.angle());
     }
 
     @Override
     public void updateShip(CharacterMotionRequest request, String characterName) {
-        Body body = ships.get(characterName);
+        SpaceShip ship = ships.get(characterName);
 
         itemService.getItem(characterName, ItemTypes.ITEM_TYPE_ENGINE)
-                .flatMap(engine -> updateState(body, (Engine) engine, request.angle(), request.forceTypeId()))
+                .map(Engine.class::cast)
+                .flatMap(engine -> applyForce(ship, engine.getSpeed(), request.angle(), request.forceTypeId()))
                 .subscribe();
-
     }
 
     @Override
     public void deleteShip(String characterName) {
-        Body body = ships.remove(characterName);
-        if (body != null) {
-            world.removeBody(body);
+        SpaceShip ship = ships.remove(characterName);
+        if (ship != null) {
+            world.removeBody(ship);
         }
     }
 
-    private Mono<Void> updateState(Body body, Engine engine, float angle, int forceType) {
+    private Mono<Void> applyForce(Body body, int speed, float angle, int forceType) {
         double angleInRadians = Math.toRadians(angle);
 
         body.getTransform().setRotation(angleInRadians);
         if (ForceType.POSITIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(5000.0 * engine.getSpeed());
+            Vector2 f = r.product(5000.0 * speed);
             body.applyForce(f);
         } else if (ForceType.NEGATIVE.equalsId(forceType)) {
             Vector2 r = new Vector2(body.getTransform().getRotationAngle());
-            Vector2 f = r.product(-5000.0 * engine.getSpeed());
+            Vector2 f = r.product(-5000.0 * speed);
             body.applyForce(f);
         } else if (ForceType.REVERSE.equalsId(forceType)) {
             Vector2 r = body.getLinearVelocity();
@@ -156,25 +155,13 @@ public class WorldServiceDyn implements WorldService {
 
         return Flux.fromStream(ships.entrySet().stream())
                 .filter(target -> isInRange(base, target.getValue().getTransform().getTranslation()))
-                .map(entry -> CharacterMotion.builder()
-                        .characterName(entry.getKey())
-                        .x(entry.getValue().getTransform().getTranslation().x)
-                        .y(entry.getValue().getTransform().getTranslation().y)
-                        .angle((int) Math.toDegrees(entry.getValue().getTransform().getRotationAngle()))
-                        .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().getRotationAngle()))
-                        .build());
+                .map(entry -> shipInfoToMotion.apply(entry.getValue(), entry.getKey()));
     }
 
     @Override
     public Flux<CharacterMotion> getAllShips() {
         return Flux.fromStream(ships.entrySet().stream())
-                .map(entry -> CharacterMotion.builder()
-                        .characterName(entry.getKey())
-                        .x(entry.getValue().getTransform().getTranslation().x)
-                        .y(entry.getValue().getTransform().getTranslation().y)
-                        .angle((int) Math.toDegrees(entry.getValue().getTransform().getRotationAngle()))
-                        .speed(getSpeed(entry.getValue().getLinearVelocity(), entry.getValue().getTransform().getRotationAngle()))
-                        .build());
+                .map(entry -> shipInfoToMotion.apply(entry.getValue(), entry.getKey()));
     }
 
     @Override
@@ -194,13 +181,7 @@ public class WorldServiceDyn implements WorldService {
     @Override
     public Mono<CharacterMotion> getShip(String characterName) {
         return Mono.justOrEmpty(ships.get(characterName))
-                .map(body -> CharacterMotion.builder()
-                        .characterName(characterName)
-                        .x(body.getTransform().getTranslation().x)
-                        .y(body.getTransform().getTranslation().y)
-                        .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
-                        .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
-                        .build());
+                .map(ship -> shipInfoToMotion.apply(ship, characterName));
     }
 
     private float getSpeed(Vector2 vector, double rotationAngle) {
@@ -242,4 +223,13 @@ public class WorldServiceDyn implements WorldService {
         world.addBody(body);
         bullets.put(id, body);
     }
+
+    private final BiFunction<SpaceShip, String, CharacterMotion> shipInfoToMotion = (ship, characterName) ->
+            CharacterMotion.builder()
+                    .characterName(characterName)
+                    .x(ship.getTransform().getTranslation().x)
+                    .y(ship.getTransform().getTranslation().y)
+                    .angle((int) Math.toDegrees(ship.getTransform().getRotationAngle()))
+                    .speed(getSpeed(ship.getLinearVelocity(), ship.getTransform().getRotationAngle()))
+                    .build();
 }

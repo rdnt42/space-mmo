@@ -3,7 +3,7 @@ package marowak.dev.service.objects;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.world.Bullet;
-import marowak.dev.service.WorldService;
+import marowak.dev.service.world.WorldService;
 import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor

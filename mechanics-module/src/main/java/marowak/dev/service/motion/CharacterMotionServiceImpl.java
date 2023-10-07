@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
-import marowak.dev.service.WorldService;
+import marowak.dev.service.world.WorldService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

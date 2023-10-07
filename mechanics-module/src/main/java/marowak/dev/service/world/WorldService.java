@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.world;
 
 import io.micronaut.scheduling.annotation.Async;
 import marowak.dev.dto.motion.CharacterMotion;
