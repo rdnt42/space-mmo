@@ -28,6 +28,7 @@ import org.dyn4j.world.World;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -57,7 +58,9 @@ public class WorldServiceDyn implements WorldService {
         world = new World<>();
         world.setGravity(PhysicsWorld.ZERO_GRAVITY);
         world.getSettings().setMaximumTranslation(speedLimit / 60f); // meters per step
-        world.getSettings().setMaximumAtRestLinearVelocity(0.1);
+
+        world.getSettings().setMaximumAtRestLinearVelocity(50);
+        world.getSettings().setMaximumAtRestAngularVelocity(0.1);
     }
 
     @Override
@@ -68,10 +71,17 @@ public class WorldServiceDyn implements WorldService {
     @Async
     @Override
     public void calculateObjects() {
-        world.getBodies().stream()
-                .filter(IdentifiablePhysicalBody.class::isInstance)
-                .map(IdentifiablePhysicalBody.class::cast)
-                .forEach(this::calculateObject);
+        try {
+            List<IdentifiablePhysicalBody> bodies = world.getBodies().stream()
+                    .filter(IdentifiablePhysicalBody.class::isInstance)
+                    .map(IdentifiablePhysicalBody.class::cast)
+                    .toList();
+
+            bodies.forEach(this::calculateObject);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
+
     }
 
     @Override
@@ -187,28 +197,34 @@ public class WorldServiceDyn implements WorldService {
         return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
-    private void createBullet(double angle, double x, double y) {
+    private void createKineticBullet(double angle, double x, double y) {
         bulletId.increment();
         long id = bulletId.longValue();
         KineticBullet bullet = new KineticBullet(String.valueOf(id));
 
+        // Material
         BodyFixture bodyFixture = bullet.addFixture(Geometry.createRectangle(5, 2));
         bodyFixture.setDensity(0.1);
         bodyFixture.setFriction(0.01);
         bodyFixture.setRestitution(0.7);
         bodyFixture.setRestitutionVelocity(0.001);
-        bullet.setLinearDamping(0.1);
-        bullet.setMass(MassType.NORMAL);
+
+        // Coordinates and angle
         bullet.translate(x, y);
         bullet.getTransform().setRotation(angle);
-        bullet.setBullet(true);
 
+        // resistance and rest
+        bullet.setAtRestDetectionEnabled(true);
+        bullet.setMass(MassType.NORMAL);
+        bullet.setAngularDamping(10);
+        bullet.setLinearDamping(0.05);
+
+        // Force
         Vector2 direction = new Vector2(bullet.getTransform().getRotationAngle());
         Vector2 force = direction.product(20000);
         bullet.applyForce(force);
-        bullet.setAtRestDetectionEnabled(true);
 
-
+        // init
         world.addBody(bullet);
         bullets.put(bullet.getId(), bullet);
     }
@@ -233,7 +249,7 @@ public class WorldServiceDyn implements WorldService {
     private void calculateSpaceShip(SpaceShip ship) {
         if (ship.isShooting()) {
             Vector2 translation = ship.getTransform().getTranslation();
-            createBullet(ship.getShootAngleRadians(), translation.x, translation.y);
+            createKineticBullet(ship.getShootAngleRadians(), translation.x, translation.y);
         }
     }
 
