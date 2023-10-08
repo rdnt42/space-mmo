@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
 import marowak.dev.enums.ForceType;
@@ -49,7 +50,7 @@ public class WorldServiceDyn implements WorldService {
     private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
 
     private final LongAdder bulletId = new LongAdder();
-    private final Map<Long, Body> bullets = new ConcurrentHashMap<>();
+    private final Map<String, Body> bullets = new ConcurrentHashMap<>();
 
     @PostConstruct
     private void init() {
@@ -67,24 +68,15 @@ public class WorldServiceDyn implements WorldService {
     @Async
     @Override
     public void calculateObjects() {
-        for (SpaceShip ship : ships.values()) {
-            if (ship.isShooting()) {
-                Vector2 translation = ship.getTransform().getTranslation();
-                createBullet(ship.getShootAngleRadians(), translation.x, translation.y);
-            }
-        }
-
-        for (Map.Entry<Long, Body> entry : bullets.entrySet()) {
-            if (entry.getValue().isAtRest()) {
-                bullets.remove(entry.getKey());
-                world.removeBody(entry.getValue());
-            }
-        }
+        world.getBodies().stream()
+                .filter(IdentifiablePhysicalBody.class::isInstance)
+                .map(IdentifiablePhysicalBody.class::cast)
+                .forEach(this::calculateObject);
     }
 
     @Override
     public void addShip(CharacterMotion motion) {
-        SpaceShip ship = new SpaceShip();
+        SpaceShip ship = new SpaceShip(motion.characterName());
 
         BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
         bodyFixture.setDensity(1);
@@ -99,7 +91,7 @@ public class WorldServiceDyn implements WorldService {
         ship.setAtRestDetectionEnabled(false);
 
         world.addBody(ship);
-        ships.put(motion.characterName(), ship);
+        ships.put(ship.getId(), ship);
     }
 
     @Override
@@ -171,7 +163,7 @@ public class WorldServiceDyn implements WorldService {
 
         return Flux.fromStream(bullets.entrySet().stream())
                 .filter(entry -> isInRange(base, entry.getValue().getTransform().getTranslation()))
-                .map(entry -> bodyToBodyInfo.apply(entry.getValue(), entry.getKey().toString()));
+                .map(entry -> bodyToBodyInfo.apply(entry.getValue(), entry.getKey()));
     }
 
     @Override
@@ -196,7 +188,9 @@ public class WorldServiceDyn implements WorldService {
     }
 
     private void createBullet(double angle, double x, double y) {
-        KineticBullet bullet = new KineticBullet();
+        bulletId.increment();
+        long id = bulletId.longValue();
+        KineticBullet bullet = new KineticBullet(String.valueOf(id));
 
         BodyFixture bodyFixture = bullet.addFixture(Geometry.createRectangle(5, 2));
         bodyFixture.setDensity(0.1);
@@ -214,10 +208,9 @@ public class WorldServiceDyn implements WorldService {
         bullet.applyForce(force);
         bullet.setAtRestDetectionEnabled(true);
 
-        bulletId.increment();
-        long id = bulletId.longValue();
+
         world.addBody(bullet);
-        bullets.put(id, bullet);
+        bullets.put(bullet.getId(), bullet);
     }
 
     private final BiFunction<Body, String, BodyInfo> bodyToBodyInfo = (body, id) ->
@@ -228,4 +221,28 @@ public class WorldServiceDyn implements WorldService {
                     .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))
                     .speed(getSpeed(body.getLinearVelocity(), body.getTransform().getRotationAngle()))
                     .build();
+
+    private void calculateObject(IdentifiablePhysicalBody body) {
+        switch (body) {
+            case SpaceShip ship -> calculateSpaceShip(ship);
+            case KineticBullet bullet -> calculateBullet(bullet);
+            default -> log.warn("Unexpected value when calculating objects: {}", body.getClass());
+        }
+    }
+
+    private void calculateSpaceShip(SpaceShip ship) {
+        if (ship.isShooting()) {
+            Vector2 translation = ship.getTransform().getTranslation();
+            createBullet(ship.getShootAngleRadians(), translation.x, translation.y);
+        }
+    }
+
+    private void calculateBullet(KineticBullet bullet) {
+        if (bullet.isAtRest()) {
+            boolean removed = world.removeBody(bullet);
+            if (removed) {
+                bullets.remove(bullet.getId());
+            }
+        }
+    }
 }

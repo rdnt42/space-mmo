@@ -1,11 +1,7 @@
 package marowak.dev.dto.world;
 
-import marowak.dev.enums.PhysicalBodyType;
-import org.dyn4j.dynamics.Body;
-
-public class KineticBullet extends Body implements PhysicalBody {
-    @Override
-    public PhysicalBodyType getBodyType() {
-        return PhysicalBodyType.BULLET;
+public class KineticBullet extends IdentifiablePhysicalBody {
+    public KineticBullet(String id) {
+        super(id);
     }
 }

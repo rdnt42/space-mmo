@@ -2,17 +2,14 @@ package marowak.dev.dto.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import marowak.dev.enums.PhysicalBodyType;
-import org.dyn4j.dynamics.Body;
 
 @Getter
 @Setter
-public class SpaceShip extends Body implements PhysicalBody {
+public class SpaceShip extends IdentifiablePhysicalBody {
     private boolean isShooting;
     private float shootAngleRadians;
 
-    @Override
-    public PhysicalBodyType getBodyType() {
-        return PhysicalBodyType.SPACE_SHIP;
+    public SpaceShip(String id) {
+        super(id);
     }
 }
