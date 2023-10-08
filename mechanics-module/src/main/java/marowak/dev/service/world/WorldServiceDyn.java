@@ -28,7 +28,6 @@ import org.dyn4j.world.World;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -72,12 +71,11 @@ public class WorldServiceDyn implements WorldService {
     @Override
     public void calculateObjects() {
         try {
-            List<IdentifiablePhysicalBody> bodies = world.getBodies().stream()
+            world.getBodies().stream()
                     .filter(IdentifiablePhysicalBody.class::isInstance)
                     .map(IdentifiablePhysicalBody.class::cast)
-                    .toList();
-
-            bodies.forEach(this::calculateObject);
+                    .toList()
+                    .forEach(this::calculateObject);
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
