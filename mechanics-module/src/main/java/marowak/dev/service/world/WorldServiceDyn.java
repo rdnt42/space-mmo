@@ -64,7 +64,11 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public void updateWorld() {
-        world.step(1);
+        try {
+            world.step(1);
+        } catch (Exception e) {
+            log.error("Error when try to update world", e);
+        }
     }
 
     @Async
@@ -77,7 +81,7 @@ public class WorldServiceDyn implements WorldService {
                     .toList()
                     .forEach(this::calculateObject);
         } catch (Exception e) {
-            log.warn(e.getMessage());
+            log.error("Error when try to calculate objects", e);
         }
 
     }

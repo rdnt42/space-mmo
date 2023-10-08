@@ -15,9 +15,9 @@ export function sendGetInventory() {
     socket.sendMessage(new PlayerEmptyRequest(Commands.GetInventory));
 }
 
-export function initMyCharacter(response) {
-    playerCharacterName = response.characterName;
-    createCharacter(response);
+export function initMyCharacter(data) {
+    playerCharacterName = data.characterName;
+    createCharacter(data);
 }
 
 export function getPlayerCharacter() {
@@ -35,7 +35,7 @@ export function sendShooting(isShooting, angle) {
 }
 
 export function updateCharacterData(state) {
-    let character = charactersMap.get(state.id);
+    let character = charactersMap.get(state.characterName);
     if (character === undefined) {
         createCharacter(state);
     } else {
@@ -49,10 +49,10 @@ export function updateCharactersData(states) {
     }
 }
 
-function createCharacter(response) {
-    let character = new Character(response.characterName);
-    character.initCharacter(response.x, response.y, response.angle, response.speed, response.shipTypeId);
+function createCharacter(data) {
+    let character = new Character(data.characterName);
+    character.initCharacter(data.x, data.y, data.angle, data.speed, data.shipTypeId);
 
-    charactersMap.set(response.characterName, character);
-    console.log(`create character ${character.characterName}, ship: ${response.shipTypeId}`)
+    charactersMap.set(data.characterName, character);
+    console.log(`create character ${character.characterName}, ship: ${data.shipTypeId}`)
 }

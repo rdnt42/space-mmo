@@ -11,12 +11,12 @@ let state;
 let mouseCoords = {};
 
 export function mainLogicInit() {
-    state = InteractiveState.Space;
     setInterval(worldTick, FREQUENCY_TIME);
     setInterval(clearUnusedObjects, FREQUENCY_TIME * 2);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
+    state = InteractiveState.Space;
 
     document.addEventListener("keydown", (event) => {
         event.preventDefault();
