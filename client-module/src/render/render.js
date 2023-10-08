@@ -157,11 +157,15 @@ function createCharacterLabel(characterName) {
 }
 
 export function removeCharacter(characterName, sprite) {
-    sprite.destroy();
+    removeSprite(sprite);
 
     let label = characterLabelsMap.get(characterName);
     characterLabelsMap.delete(characterName);
     app.stage.removeChild(label);
+}
+
+export function removeSprite(sprite) {
+    sprite.destroy();
 }
 
 export function getRenderCoords(sprite) {

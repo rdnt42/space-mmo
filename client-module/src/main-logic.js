@@ -13,6 +13,7 @@ let mouseCoords = {};
 export function mainLogicInit() {
     state = InteractiveState.Space;
     setInterval(worldTick, FREQUENCY_TIME);
+    setInterval(clearUnusedObjects, FREQUENCY_TIME * 2);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
@@ -30,6 +31,11 @@ export function mainLogicInit() {
 }
 
 function worldTick() {
+    sendMotionInfo();
+    sendShootingInfo();
+}
+
+function sendMotionInfo() {
     let character = characterService.getPlayerCharacter();
 
     let engine = inventoryService.getEngine();
@@ -37,12 +43,18 @@ function worldTick() {
         let move = getCharacterMotion(character.movement.speed, engine.maxSpeed, character.movement.angle);
         characterService.sendMotion(move.forceTypeId, move.angle, true);
     }
+}
 
+function sendShootingInfo() {
     // if (weaponService.isNeedShotUpdate()) { // TODO
     // in client coordinates render from top left point, we need to invert it by 180 degrees
     let angle = getCharacterAngle(mouseCoords.x, mouseCoords.y) + 180;
     characterService.sendShooting(weaponService.getShotState(), angle);
     // }
+}
+
+function clearUnusedObjects() {
+    renderEngine.clearUnusedObjects()
 }
 
 function getCharacterMotion(speed, maxSpeed, angle) {

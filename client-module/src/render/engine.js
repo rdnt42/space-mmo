@@ -10,18 +10,20 @@ export function createCharacter(characterName, shipTypeId) {
 }
 
 export function renderCharacter(characterName, x, y, angle) {
-    let sprite = ships.get(characterName);
+    let ship = ships.get(characterName);
 
     let abs = characterService.getPlayerCharacter().movement;
     let newX = getX(x, abs.x);
     let newY = getY(y, abs.y);
 
-    render.renderCharacter(characterName, sprite, newX, newY, angle);
+    render.renderCharacter(characterName, ship, newX, newY, angle);
+    ship.isUpdated = true;
 }
 
 export function removeCharacter(characterName) {
     let sprite = ships.get(characterName);
     render.removeCharacter(characterName, sprite);
+    ships.delete(characterName)
 }
 
 export function getRenderCoords(characterName) {
@@ -40,6 +42,7 @@ export function createOrUpdateBullet(id, x, y, angle) {
     }
 
     render.renderBullet(bullet, newX, newY, angle);
+    bullet.isUpdated = true;
 }
 
 function getX(currX, diffX) {
@@ -48,5 +51,19 @@ function getX(currX, diffX) {
 
 function getY(currY, diffY) {
     return currY - diffY + window.innerHeight / 2;
+}
+
+export function clearUnusedObjects() {
+    removeOrMarkObjects(bullets);
+}
+
+function removeOrMarkObjects(map) {
+    map.forEach((value, key, map) => {
+        if (value.isUpdated === false) {
+            render.removeSprite(value);
+            map.delete(key);
+        }
+        value.isUpdated = false;
+    });
 }
 
