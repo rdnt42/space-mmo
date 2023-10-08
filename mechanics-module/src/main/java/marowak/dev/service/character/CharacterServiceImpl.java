@@ -60,12 +60,12 @@ public class CharacterServiceImpl implements CharacterService {
                 .subscribe();
     }
 
-    private final Function<BodyInfo, CharacterMessage> bodyInfoToMessage = motion -> CharacterMessage.builder()
+    private final Function<BodyInfo, CharacterMessage> bodyInfoToMessage = body -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
-            .characterName(motion.id())
-            .x(motion.x())
-            .y(motion.y())
-            .angle(motion.angle())
+            .characterName(body.id())
+            .x(body.x())
+            .y(body.y())
+            .angle(body.angle())
             .build();
 
 }

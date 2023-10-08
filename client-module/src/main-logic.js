@@ -39,8 +39,9 @@ function worldTick() {
     }
 
     // if (weaponService.isNeedShotUpdate()) { // TODO
-        let angle = getCharacterAngleInRadians(mouseCoords.x, mouseCoords.y) + Math.PI;
-        characterService.sendShooting(weaponService.getShotState(), angle);
+    // in client coordinates render from top left point, we need to invert it by 180 degrees
+    let angle = getCharacterAngle(mouseCoords.x, mouseCoords.y) + 180;
+    characterService.sendShooting(weaponService.getShotState(), angle);
     // }
 }
 
@@ -84,9 +85,9 @@ function onMouseUp() {
     weaponService.stopWeapon();
 }
 
-function getCharacterAngleInRadians(x, y) {
+function getCharacterAngle(x, y) {
     let character = characterService.getPlayerCharacter();
     let coords = renderEngine.getRenderCoords(character.characterName);
 
-    return Math.atan2(coords.y - y, coords.x - x);
+    return Math.atan2(coords.y - y, coords.x - x) * (180 / Math.PI);
 }

@@ -347,11 +347,11 @@ export function hasHalfCollision(r1, r2) {
 }
 
 /// Weapon
-export function createBullet(x, y, rotation) {
+export function createBullet(x, y, angle) {
     let bullet = new pixi.Graphics();
     bullet.beginFill(0xFF0000);
     bullet.drawRect(0, 0, 5, 2);
-    bullet.rotation = rotation;
+    bullet.angle = angle;
     bullet.endFill();
     bullet.zIndex = Sort.BULLETS;
     app.stage.addChild(bullet);
@@ -359,9 +359,9 @@ export function createBullet(x, y, rotation) {
     return bullet;
 }
 
-export function renderBullet(sprite, x, y, rotation) {
+export function renderBullet(sprite, x, y, angle) {
     sprite.position.set(x, y);
-    sprite.rotation = rotation;
+    sprite.angle = angle;
 }
 
 function onDragMove(event) {

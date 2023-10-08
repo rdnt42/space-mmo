@@ -9,7 +9,7 @@ import org.dyn4j.dynamics.Body;
 @Setter
 public class SpaceShip extends Body implements PhysicalBody {
     private boolean isShooting;
-    private float shootAngle;
+    private float shootAngleRadians;
 
     @Override
     public PhysicalBodyType getBodyType() {

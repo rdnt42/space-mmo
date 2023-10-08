@@ -67,11 +67,10 @@ public class WorldServiceDyn implements WorldService {
     @Async
     @Override
     public void calculateObjects() {
-
         for (SpaceShip ship : ships.values()) {
             if (ship.isShooting()) {
                 Vector2 translation = ship.getTransform().getTranslation();
-                createBullet(ship.getShootAngle(), translation.x, translation.y);
+                createBullet(ship.getShootAngleRadians(), translation.x, translation.y);
             }
         }
 
@@ -107,7 +106,8 @@ public class WorldServiceDyn implements WorldService {
     public void updateShooting(CharacterShootingRequest request, String characterName) {
         SpaceShip ship = ships.get(characterName);
         ship.setShooting(request.isShooting());
-        ship.setShootAngle(request.angle());
+        double angleInRadians = Math.toRadians(request.angle());
+        ship.setShootAngleRadians((float) angleInRadians);
     }
 
     @Override
