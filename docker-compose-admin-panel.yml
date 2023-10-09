@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  admin_backend:
+    container_name: admin_backend
+    build: ./admin-service
+    ports:
+      - "8080:8080"
+    network_mode: host
+
+  # TODO I tried network_mode, service name, links. web doesnt work with backend
+  admin_frontend:
+    container_name: admin_frontend
+    build: ./admin-client
+    ports:
+      - "3000:3000"
+    command: npm start
+    depends_on:
+      - "admin_backend"
