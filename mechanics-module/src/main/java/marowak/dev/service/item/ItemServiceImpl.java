@@ -15,6 +15,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +25,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 @Singleton
 public class ItemServiceImpl implements ItemService {
+
+    // TODO create settings
+    private static final int HULL_SLOT_ID = 8;
+    private static final int HULL_STORAGE_ID = 1;
+    private static final int HOLD_STORAGE_ID = 2;
 
     private final Map<String, CharacterInventory> playerInventoryMap = new ConcurrentHashMap<>();
     private final ItemClient itemClient;
@@ -90,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<InventoryInfo> getItems(String playerName) {
+    public Mono<InventoryInfo> getInventoryItems(String playerName) {
         CharacterInventory inventory = playerInventoryMap.get(playerName);
         if (inventory == null) {
             return Mono.empty();
@@ -98,14 +104,28 @@ public class ItemServiceImpl implements ItemService {
 
         // TODO rework when using storageId
         Hull hull = (Hull) inventory.items().values().stream()
-                .filter(i -> i.getTypeId() == ItemTypes.ITEM_TYPE_HULL.getTypeId() && i.getSlotId() == null)
+                .filter(this::equippedHull)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("Hull cannot be null, playerName: " + playerName));
+
+        List<Item> inventoryItems = inventory.items().values()
+                .stream()
+                .filter(this::isInventoryItem).toList();
 
         return Mono.just(InventoryInfo.builder()
-                .items(inventory.items().values())
+                .items(inventoryItems)
                 .config(hull == null ? 0 : hull.getConfig())
                 .build());
+    }
+
+    private boolean isInventoryItem(Item item) {
+        return item.getStorageId() == HULL_STORAGE_ID || item.getStorageId() == HOLD_STORAGE_ID;
+    }
+
+    private boolean equippedHull(Item item) {
+        return item.getTypeId() == ItemTypes.ITEM_TYPE_HULL.getTypeId() &&
+                item.getStorageId() == HULL_STORAGE_ID &&
+                item.getSlotId() == HULL_SLOT_ID;
     }
 
     @Override
@@ -129,6 +149,7 @@ public class ItemServiceImpl implements ItemService {
                 .key(ItemMessageKey.ITEMS_UPDATE)
                 .id(item.getId())
                 .slotId(item.getSlotId())
+                .storageId(item.getStorageId())
                 .build();
 
         itemClient.sendItems(message)

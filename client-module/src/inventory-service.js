@@ -1,14 +1,15 @@
 import {Inventory} from "./obj/Inventory.js";
 import {Item} from "./obj/Item.js";
 import {ItemTypeId} from "./const/ItemTypeId.js";
+import {HOLD_STORAGE_ID, HULL_STORAGE_ID} from "./const/Common.js";
 
 let inventory;
 let itemsMap = new Map();
 
-export function initInventory(response) {
-    inventory = new Inventory(response.config);
+export function initInventory(data) {
+    inventory = new Inventory(data.config);
 
-    for (const itemSrc of response.items) {
+    for (const itemSrc of data.items) {
         if (!Object.values(ItemTypeId).includes(itemSrc.typeId)) {
             continue;
         }
@@ -36,9 +37,9 @@ export function getEngine() {
 export function updateItemSlot(updateItem) {
     let item = itemsMap.get(updateItem.id);
 
-    if (updateItem.slotId !== null) {
+    if (updateItem.storageId === HOLD_STORAGE_ID) {
         inventory.updateCargo(item, updateItem.slotId);
-    } else {
+    } else if (updateItem.storageId === HULL_STORAGE_ID) {
         inventory.updateEquipmentSlot(item);
     }
 }

@@ -10,11 +10,13 @@ public class BuilderHelper {
     private BuilderHelper() {
     }
 
+    // TODO common builder for item like in mechanic -> builderHelper
     public static final TriFunction<Engine, Item, ItemMessageKey, ItemMessage> engineToMessage =
             (engine, item, key) -> EngineMessage.builder()
                     .key(key)
                     .id(engine.id())
                     .slotId(item.slotId())
+                    .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())
@@ -31,6 +33,7 @@ public class BuilderHelper {
                     .key(key)
                     .id(fuelTank.id())
                     .slotId(item.slotId())
+                    .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())
@@ -46,6 +49,7 @@ public class BuilderHelper {
                     .key(key)
                     .id(cargoHook.id())
                     .slotId(item.slotId())
+                    .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())
@@ -62,6 +66,7 @@ public class BuilderHelper {
                     .key(key)
                     .id(hull.id())
                     .slotId(item.slotId())
+                    .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())
@@ -80,6 +85,7 @@ public class BuilderHelper {
                     .key(key)
                     .id(weapon.id())
                     .slotId(item.slotId())
+                    .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
                     .upgradeLevel(item.upgradeLevel())

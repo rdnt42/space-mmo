@@ -28,6 +28,8 @@ public class ItemMessage {
 
     private Integer slotId;
 
+    private Integer storageId;
+
     private String characterName;
 
     private int typeId;

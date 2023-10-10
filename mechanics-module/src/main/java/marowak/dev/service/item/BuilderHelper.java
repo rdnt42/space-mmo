@@ -17,6 +17,7 @@ public class BuilderHelper {
             (message, baseBuilder) -> baseBuilder
                     .id(message.getId())
                     .slotId(message.getSlotId())
+                    .storageId(message.getStorageId())
                     .typeId(message.getTypeId())
                     .upgradeLevel(message.getUpgradeLevel())
                     .cost(message.getCost())
@@ -24,14 +25,15 @@ public class BuilderHelper {
                     .dsc(message.getDsc());
 
     public static final TriFunction<Item, ItemUpdate, Item.ItemBuilder<?, ?>, Item.ItemBuilder<?, ?>> itemToItemBuilder =
-            (engine, request, baseBuilder) -> baseBuilder
-                    .id(engine.getId())
+            (item, request, baseBuilder) -> baseBuilder
+                    .id(item.getId())
                     .slotId(request.slotId())
-                    .typeId(engine.getTypeId())
-                    .upgradeLevel(engine.getUpgradeLevel())
-                    .cost(engine.getCost())
-                    .name(engine.getName())
-                    .dsc(engine.getDsc());
+                    .storageId(request.storageId())
+                    .typeId(item.getTypeId())
+                    .upgradeLevel(item.getUpgradeLevel())
+                    .cost(item.getCost())
+                    .name(item.getName())
+                    .dsc(item.getDsc());
     public static final Function<EngineMessage, Item> engineMessageToItem = message ->
             ((Engine.EngineBuilder<?, ?>) messageToItemBuilder.apply(message, Engine.builder()))
                     .speed(message.getSpeed())

@@ -19,8 +19,8 @@ func CreateCargoHook(ctx *gin.Context) {
 		return
 	}
 
-	var gap int16
-	db.Raw(getFreeSlotSelect(), req.CharacterName, req.CharacterName).Scan(&gap)
+	var freeSlot int16
+	db.Raw(getFreeSlotSelect(), req.CharacterName, req.CharacterName).Scan(&freeSlot)
 
 	equipment := &models.Item{
 		CharacterName: req.CharacterName,
@@ -29,7 +29,8 @@ func CreateCargoHook(ctx *gin.Context) {
 		Cost:          req.Cost,
 		NameRu:        req.NameRu,
 		DscRu:         req.DscRu,
-		SlotId:        gap,
+		SlotId:        freeSlot,
+		StorageId:     2,
 	}
 
 	newCargoHook := &models.CargoHook{

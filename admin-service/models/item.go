@@ -3,6 +3,7 @@ package models
 type Item struct {
 	ItemId        int64  `gorm:"primary_key;auto_increment" json:"id"`
 	SlotId        int16  `json:"slotId"`
+	StorageId     int32  `json:"storageId"`
 	CharacterName string `json:"characterName"`
 	ItemTypeId    int16  `json:"itemTypeId"`
 	UpgradeLevel  int16  `json:"upgradeLevel"`

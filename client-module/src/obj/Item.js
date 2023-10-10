@@ -15,6 +15,7 @@ export class Item {
         this.typeId = item.typeId;
         this.equipmentTypeId = item.equipmentTypeId;
         this.slotId = item.slotId;
+        this.storageId = item.storageId;
         this.additionalFields(item);
         this.texture = renderEngine.initItem(this.typeId, this.equipmentTypeId);
         this.texture['textureParentObj'] = this;

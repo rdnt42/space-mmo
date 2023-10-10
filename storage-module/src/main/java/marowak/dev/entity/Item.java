@@ -1,6 +1,5 @@
 package marowak.dev.entity;
 
-import io.micronaut.core.annotation.Nullable;
 import lombok.Builder;
 
 import javax.persistence.Column;
@@ -16,8 +15,9 @@ public record Item(
         @Column(name = "item_id")
         Long id,
 
-        @Nullable
         Integer slotId,
+
+        Integer storageId,
 
         @Column(name = "character_name")
         String characterName,

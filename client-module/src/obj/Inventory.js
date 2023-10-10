@@ -4,6 +4,7 @@ import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../message/CharacterMessage.js";
+import {HOLD_STORAGE_ID, HULL_STORAGE_ID} from "../const/Common.js";
 
 export class Inventory {
     isOpen = false;
@@ -32,11 +33,11 @@ export class Inventory {
     }
 
     addInitItem(item) {
-        if (item.slotId === null) {
+        if (item.storageId === HULL_STORAGE_ID) {
             let slot = this.equipmentSlots.get(item.typeId);
             if (slot === undefined) return false;
             slot.add(item);
-        } else {
+        } else if (item.storageId === HOLD_STORAGE_ID) {
             let cargoCell = this.cargoCells[item.slotId];
             cargoCell.add(item);
         }

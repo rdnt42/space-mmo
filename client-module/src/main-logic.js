@@ -46,11 +46,9 @@ function sendMotionInfo() {
 }
 
 function sendShootingInfo() {
-    // if (weaponService.isNeedShotUpdate()) { // TODO
     // in client coordinates render from top left point, we need to invert it by 180 degrees
     let angle = getCharacterAngle(mouseCoords.x, mouseCoords.y) + 180;
     characterService.sendShooting(weaponService.getShotState(), angle);
-    // }
 }
 
 function clearUnusedObjects() {

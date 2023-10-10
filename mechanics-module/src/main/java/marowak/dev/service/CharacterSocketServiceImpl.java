@@ -51,7 +51,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
-                return itemService.getItems(characterName)
+                return itemService.getInventoryItems(characterName)
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }

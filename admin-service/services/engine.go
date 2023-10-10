@@ -30,6 +30,7 @@ func CreateEngine(ctx *gin.Context) {
 		NameRu:        req.NameRu,
 		DscRu:         req.DscRu,
 		SlotId:        freeSlot,
+		StorageId:     2,
 	}
 
 	newEngine := &models.Engine{
