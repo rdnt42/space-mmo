@@ -25,20 +25,25 @@ export class Inventory {
         // 0b1111001 where 1/0 - open/close slot
         let cfgArr = Array.from(config.toString(2)).reverse();
         for (let i = 0; i < cfgArr.length; i++) {
-            if (cfgArr[i] && Object.values(ItemTypeId).includes(i)) {
-                this.equipmentSlots.set(i, new EquipmentSlot(i));
+            const equipmentType = i + 1;
+            if (cfgArr[i] && Object.values(ItemTypeId).includes(equipmentType)) {
+                this.equipmentSlots.set(equipmentType, new EquipmentSlot(equipmentType));
             }
         }
         console.log(`init equipment slots: ${cfgArr}`);
     }
 
-    addInitItem(item) {
+    initAndAddItem(item) {
         if (item.storageId === HULL_STORAGE_ID) {
             let slot = this.equipmentSlots.get(item.typeId);
             if (slot === undefined) return false;
+
+            item.initItem();
             slot.add(item);
         } else if (item.storageId === HOLD_STORAGE_ID) {
             let cargoCell = this.cargoCells[item.slotId];
+
+            item.initItem();
             cargoCell.add(item);
         }
 

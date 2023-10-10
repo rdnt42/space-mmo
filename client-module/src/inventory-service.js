@@ -14,8 +14,10 @@ export function initInventory(data) {
             continue;
         }
         let item = new Item(itemSrc);
-        if (inventory.addInitItem(item)) {
+        if (inventory.initAndAddItem(item)) {
             itemsMap.set(item.id, item);
+        } else {
+            console.error(`Error when initAndAddItem item with id: ${item.id}`)
         }
     }
 }
