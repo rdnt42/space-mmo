@@ -92,6 +92,7 @@ public class ItemServiceImpl implements ItemService {
         return Mono.just(ItemUpdate.builder()
                 .id(newItem.getId())
                 .slotId(newItem.getSlotId())
+                .storageId(newItem.getStorageId())
                 .build());
     }
 
@@ -102,7 +103,6 @@ public class ItemServiceImpl implements ItemService {
             return Mono.empty();
         }
 
-        // TODO rework when using storageId
         Hull hull = (Hull) inventory.items().values().stream()
                 .filter(this::equippedHull)
                 .findFirst()

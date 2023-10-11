@@ -1,12 +1,16 @@
 import * as render from "../render/render.js";
 import {ItemTypeId} from "../const/ItemTypeId.js";
+import {HULL_STORAGE_ID} from "../const/Common.js";
 
 export class EquipmentSlot {
+    static storageId = HULL_STORAGE_ID;
+    id;
     texture;
     #equipment = null;
 
-    constructor(equipmentType) {
-        this.texture = render.initEquipmentSlot(equipmentType);
+    constructor(slotId) {
+        this.id = slotId;
+        this.texture = render.initEquipmentSlot(slotId);
     }
 
     add(equipment) {

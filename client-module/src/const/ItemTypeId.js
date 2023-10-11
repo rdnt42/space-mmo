@@ -5,5 +5,9 @@ export const ItemTypeId = {
     Radar: 4,
     CargoHook: 6,
     Hull: 8,
-    Weapon: 9,
+    Weapon1: 9,
+    Weapon2: 10,
+    Weapon3: 11,
+    Weapon4: 12,
+    Weapon5: 13,
 }

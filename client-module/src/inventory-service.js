@@ -1,7 +1,8 @@
 import {Inventory} from "./obj/Inventory.js";
 import {Item} from "./obj/Item.js";
 import {ItemTypeId} from "./const/ItemTypeId.js";
-import {HOLD_STORAGE_ID, HULL_STORAGE_ID} from "./const/Common.js";
+import {EquipmentSlot} from "./obj/EquipmentSlot.js";
+import {CargoCell} from "./obj/CargoCell.js";
 
 let inventory;
 let itemsMap = new Map();
@@ -37,12 +38,13 @@ export function getEngine() {
 }
 
 export function updateItemSlot(updateItem) {
+    console.log("get item update", updateItem);
     let item = itemsMap.get(updateItem.id);
 
-    if (updateItem.storageId === HOLD_STORAGE_ID) {
+    if (updateItem.storageId === CargoCell.storageId) {
         inventory.updateCargo(item, updateItem.slotId);
-    } else if (updateItem.storageId === HULL_STORAGE_ID) {
-        inventory.updateEquipmentSlot(item);
+    } else if (updateItem.storageId === EquipmentSlot.storageId) {
+        inventory.updateEquipmentSlot(item, updateItem.slotId);
     }
 }
 

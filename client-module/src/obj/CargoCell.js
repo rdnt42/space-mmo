@@ -1,15 +1,17 @@
 import * as render from "../render/render.js";
+import {HOLD_STORAGE_ID} from "../const/Common.js";
 
 export class CargoCell {
+    static storageId = HOLD_STORAGE_ID;
     texture;
 
     #cargo = null;
-    idx;
+    id;
 
-    constructor(cargo, idx) {
+    constructor(cargo, id) {
         this.#cargo = cargo;
-        this.idx = idx;
-        this.texture = render.initCargoCell(idx);
+        this.id = id;
+        this.texture = render.initCargoCell(id);
     }
 
     getItem() {
@@ -20,7 +22,7 @@ export class CargoCell {
         this.#cargo = cargo;
 
         if (cargo !== null) {
-            cargo.slotId = this.idx;
+            cargo.slotId = this.id;
             cargo.slot = this;
             render.addToCargoCell(cargo.texture, this.texture);
         }

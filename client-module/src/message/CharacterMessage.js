@@ -15,9 +15,9 @@ export class CharacterShootingRequest {
 }
 
 export class CharacterItemRequest {
-    constructor(id, slotId) {
+    constructor(id, slotId, storageId) {
         this.command = Commands.UpdateInventoryItem;
-        this.data = {id, slotId}
+        this.data = {id, slotId, storageId}
     }
 }
 

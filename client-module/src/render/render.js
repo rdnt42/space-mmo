@@ -223,13 +223,13 @@ export function createInventory() {
     INVENTORY_CONTAINER = container;
 }
 
-export function initCargoCell(idx) {
+export function initCargoCell(id) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.visible = IS_DEBUG;
     sprite.width = 38;
     sprite.height = 40;
-    sprite.position.set(164 + idx * (sprite.width + 5), 569);
+    sprite.position.set(164 + id * (sprite.width + 5), 569);
     sprite.anchor.set(0, 0.5);
     INVENTORY_CONTAINER.addChild(sprite);
 
@@ -262,9 +262,20 @@ export function initEquipmentSlot(equipmentType) {
         case ItemTypeId.Hull:
             sprite.position.set(230, 295);
             break;
-        case ItemTypeId.Weapon:
-            // TODO rework weapon
+        case ItemTypeId.Weapon1:
             sprite.position.set(180, 60);
+            break;
+        case ItemTypeId.Weapon2:
+            sprite.position.set(280, 60);
+            break;
+        case ItemTypeId.Weapon3:
+            sprite.position.set(130, 145);
+            break;
+        case ItemTypeId.Weapon4:
+            sprite.position.set(230, 145);
+            break;
+        case ItemTypeId.Weapon5:
+            sprite.position.set(320, 145);
             break;
     }
     INVENTORY_CONTAINER.addChild(sprite);
@@ -287,7 +298,7 @@ export function initItem(typeId, equipmentType) {
         case ItemTypeId.Hull:
             url = `./images/ships/ship${equipmentType}/preview.png`;
             break;
-        case ItemTypeId.Weapon:
+        case ItemTypeId.Weapon1:
             url = `./images/weapon${equipmentType}.png`;
             break;
     }

@@ -4,7 +4,7 @@ import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../message/CharacterMessage.js";
-import {HOLD_STORAGE_ID, HULL_STORAGE_ID} from "../const/Common.js";
+import {inCargo, inHull, isWeapon} from "../itemUtils.js";
 
 export class Inventory {
     isOpen = false;
@@ -25,22 +25,22 @@ export class Inventory {
         // 0b1111001 where 1/0 - open/close slot
         let cfgArr = Array.from(config.toString(2)).reverse();
         for (let i = 0; i < cfgArr.length; i++) {
-            const equipmentType = i + 1;
-            if (cfgArr[i] && Object.values(ItemTypeId).includes(equipmentType)) {
-                this.equipmentSlots.set(equipmentType, new EquipmentSlot(equipmentType));
+            const slotId = i + 1;
+            if (cfgArr[i] && Object.values(ItemTypeId).includes(slotId)) {
+                this.equipmentSlots.set(slotId, new EquipmentSlot(slotId));
             }
         }
         console.log(`init equipment slots: ${cfgArr}`);
     }
 
     initAndAddItem(item) {
-        if (item.storageId === HULL_STORAGE_ID) {
+        if (inHull(item)) {
             let slot = this.equipmentSlots.get(item.typeId);
             if (slot === undefined) return false;
 
             item.initItem();
             slot.add(item);
-        } else if (item.storageId === HOLD_STORAGE_ID) {
+        } else if (inCargo(item)) {
             let cargoCell = this.cargoCells[item.slotId];
 
             item.initItem();
@@ -56,8 +56,8 @@ export class Inventory {
         cell.add(item);
     }
 
-    updateEquipmentSlot(item) {
-        let equipmentSlot = this.equipmentSlots.get(item.typeId);
+    updateEquipmentSlot(item, slotId) {
+        let equipmentSlot = this.equipmentSlots.get(slotId);
         item.removeFromSlot();
         equipmentSlot.add(item);
     }
@@ -81,14 +81,41 @@ export class Inventory {
         return cell;
     }
 
+    #getEquipmentSlot(item) {
+        if (isWeapon(item)) {
+            let slot = this.#getEquipmentSlotWithState(true);
+            if (slot) return slot;
+
+            return this.#getEquipmentSlotWithState(false);
+        }
+
+        return this.equipmentSlots.get(item.typeId);
+    }
+
+    #getEquipmentSlotWithState(isFree) {
+        for (let i = ItemTypeId.Weapon1; i <= ItemTypeId.Weapon5; i++) {
+            let slot = this.equipmentSlots.get(i);
+            if (!slot) {
+                continue;
+            }
+
+            if (isFree && slot.getItem() == null) {
+                return slot;
+            }
+
+            if (!isFree && slot.getItem()) {
+                return slot;
+            }
+        }
+    }
+
     useItem(equipment) {
         let oldSlot = equipment.slot;
         let newSlot;
         if (equipment.slot instanceof EquipmentSlot) {
             newSlot = this.#getFreeCargoCell();
         } else if (equipment.slot instanceof CargoCell) {
-            // TODO rework weapon slots 8-12, but item type just 8
-            newSlot = this.equipmentSlots.get(equipment.typeId);
+            newSlot = this.#getEquipmentSlot(equipment);
         }
 
         this.#swapSlots(oldSlot, newSlot);
@@ -115,7 +142,22 @@ export class Inventory {
     }
 
     #getCollisionEquipmentSlot(item) {
-        let equipmentSlot = this.equipmentSlots.get(item.typeId);
+        if (isWeapon(item)) {
+            for (let i = ItemTypeId.Weapon1; i <= ItemTypeId.Weapon5; i++) {
+                let slot = this.#getCollisionBySlotId(item, i);
+                console.log(slot)
+
+                if (slot) return slot;
+            }
+
+            return null;
+        }
+
+        return this.#getCollisionBySlotId(item, item.typeId);
+    }
+
+    #getCollisionBySlotId(item, slotId) {
+        let equipmentSlot = this.equipmentSlots.get(slotId);
         if (renderEngine.hasHalfCollision(item.texture, equipmentSlot.texture)) {
             return equipmentSlot;
         }
@@ -125,9 +167,11 @@ export class Inventory {
 
     #addToSlot(slot, item) {
         if (slot instanceof EquipmentSlot && item) {
-            socket.sendMessage(new CharacterItemRequest(item.id, null));
+            console.log(`try add item, to equipment slot, id: ${item.id}, slotId: ${slot.id}`);
+            socket.sendMessage(new CharacterItemRequest(item.id, slot.id, EquipmentSlot.storageId));
         } else if (slot instanceof CargoCell) {
-            socket.sendMessage(new CharacterItemRequest(item.id, slot.idx));
+            console.log(`try add item, to cargo slot, id: ${item.id}, slotId: ${slot.id}`);
+            socket.sendMessage(new CharacterItemRequest(item.id, slot.id, CargoCell.storageId));
         }
     }
 
