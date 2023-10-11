@@ -20,6 +20,10 @@ docker compose -f docker-compose-admin-panel.yml up --force-recreate --build -d
 2) start mechanics module. After start it can receive socket connections
 3) open http://localhost:63342/space-mmo/client-module/index.html
 
+### Ship config
+
+![img.png](images/ship-config.png)
+
 ### Structure
 
 - **Storage module**: This service is responsible for saving all data and sending data by request when other services
