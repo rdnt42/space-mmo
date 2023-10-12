@@ -23,6 +23,7 @@ export function mainLogicInit() {
         if (event.key === "i") {
             if (inventoryService.changeInventoryState()) {
                 state = InteractiveState.InventoryOpen;
+                weaponService.stopWeapon();
             } else {
                 state = InteractiveState.Space;
             }
@@ -86,12 +87,13 @@ function onMouseMove(event) {
 }
 
 function onMouseDown() {
-    if (!state === InteractiveState.Space) return
+    if (state !== InteractiveState.Space) return
+
     weaponService.useWeapon();
 }
 
 function onMouseUp() {
-    if (!state === InteractiveState.Space) return
+    if (state !== InteractiveState.Space) return
     weaponService.stopWeapon();
 }
 
