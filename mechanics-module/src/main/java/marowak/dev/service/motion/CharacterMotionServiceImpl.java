@@ -4,9 +4,8 @@ import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
-import marowak.dev.service.world.WorldService;
+import marowak.dev.service.physic.ShipService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,22 +22,21 @@ import java.util.Date;
 @AllArgsConstructor
 @Singleton
 public class CharacterMotionServiceImpl implements CharacterMotionService {
-    private final WorldService worldService;
+
+    private final ShipService shipService;
 
     @Override
     public Mono<Void> leavingPlayer(String playerName) {
-        worldService.deleteShip(playerName);
-
-        return Mono.empty();
+        return shipService.deleteShip(playerName);
     }
 
     @Override
     public Flux<BodyInfo> getAllMotions() {
-        return worldService.getAllShips();
+        return shipService.getAllShips();
     }
 
     @Override
-    public void addMotion(CharacterMessage character) {
+    public Mono<Void> addMotion(CharacterMessage character) {
         CharacterMotion newMotion = new CharacterMotion(
                 character.getCharacterName(),
                 character.getX(),
@@ -46,7 +44,8 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
                 character.getAngle(),
                 0,
                 new Date().getTime());
-        worldService.addShip(newMotion);
+
+        return shipService.addShip(newMotion);
     }
 
     @Override
@@ -56,25 +55,17 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
             return result;
         }
 
-        worldService.updateShip(request, playerName);
-        return Mono.empty();
-    }
-
-    @Override
-    public Mono<Void> updateShooting(CharacterShootingRequest request, String playerName) {
-        worldService.updateShooting(request, playerName);
-
-        return Mono.empty();
+        return shipService.updateShip(request, playerName);
     }
 
     @Override
     public Flux<BodyInfo> getCharactersInRange(String playerName) {
-        return worldService.getShipsInRange(playerName);
+        return shipService.getShipsInRange(playerName);
     }
 
     @Override
     public Mono<BodyInfo> getCharacter(String playerName) {
-        return worldService.getShip(playerName);
+        return shipService.getShip(playerName);
     }
 
 }

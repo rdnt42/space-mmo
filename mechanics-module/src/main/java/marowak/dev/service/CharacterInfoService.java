@@ -21,14 +21,14 @@ public class CharacterInfoService {
 
     public Mono<CharacterInfo> getCharacterInfo(String playerName) {
         return characterMotionService.getCharacter(playerName)
-                .flatMap(info -> itemService.getItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
+                .flatMap(info -> itemService.getFirstEquippedItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
                         .map(Hull.class::cast)
                         .map(hull -> toCharacterResponse.apply(info, hull, info.id())));
     }
 
     public Flux<CharacterInfo> getCharactersInfo(String playerName) {
         return characterMotionService.getCharactersInRange(playerName)
-                .flatMap(info -> itemService.getItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
+                .flatMap(info -> itemService.getFirstEquippedItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
                         .map(item -> toCharacterResponse.apply(info, (Hull) item, info.id())));
     }
 

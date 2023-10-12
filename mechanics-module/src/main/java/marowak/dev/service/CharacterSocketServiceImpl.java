@@ -13,6 +13,7 @@ import marowak.dev.enums.MessageCommand;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
+import marowak.dev.service.bullet.BulletMotionService;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
@@ -26,6 +27,9 @@ import java.util.function.Predicate;
 @Singleton
 public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final CharacterMotionService characterMotionService;
+
+    private final BulletMotionService bulletMotionService;
+
     private final CharacterInfoService characterInfoService;
     private final ItemService itemService;
     private final CharacterService characterService;
@@ -71,7 +75,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_SHOOTING -> {
                 CharacterShootingRequest value = objectMapper.convertValue(request.data(), CharacterShootingRequest.class);
-                return characterMotionService.updateShooting(value, characterName)
+                return bulletMotionService.updateShooting(value, characterName)
                         .thenMany(bodyService.getBullets(characterName))
                         .buffer(200)
                         .map(bullets -> new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets))

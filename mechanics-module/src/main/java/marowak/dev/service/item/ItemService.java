@@ -7,6 +7,7 @@ import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.InventoryInfo;
 import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ItemService {
@@ -18,5 +19,7 @@ public interface ItemService {
 
     Mono<InventoryInfo> getInventoryItems(String playerName);
 
-    Mono<Item> getItem(String characterName, ItemTypes type);
+    Mono<Item> getFirstEquippedItem(String characterName, ItemTypes type);
+
+    Flux<Item> getEquippedItems(String characterName, ItemTypes type);
 }

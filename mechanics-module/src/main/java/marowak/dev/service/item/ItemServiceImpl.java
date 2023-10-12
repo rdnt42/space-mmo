@@ -12,6 +12,7 @@ import marowak.dev.response.InventoryInfo;
 import marowak.dev.service.broker.ItemClient;
 import message.*;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -129,12 +130,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<Item> getItem(String characterName, ItemTypes type) {
-        return Mono.justOrEmpty(playerInventoryMap.get(characterName))
-                .flatMap(playerInventory -> Mono.justOrEmpty(playerInventory.items().values().stream()
-                        .filter(item -> item.getTypeId() == type.getTypeId())
-                        .findFirst()))
-                .switchIfEmpty(Mono.empty());
+    public Mono<Item> getFirstEquippedItem(String characterName, ItemTypes type) {
+        return Mono.from(getEquippedItems(characterName, type));
+    }
+
+    @Override
+    public Flux<Item> getEquippedItems(String characterName, ItemTypes type) {
+        return Flux.fromStream(playerInventoryMap.get(characterName)
+                .items().values().stream()
+                .filter(item -> item.getStorageId() == HULL_STORAGE_ID && item.getTypeId() == type.getTypeId()));
     }
 
 
