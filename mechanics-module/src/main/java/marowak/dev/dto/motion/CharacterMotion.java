@@ -2,6 +2,7 @@ package marowak.dev.dto.motion;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import marowak.dev.dto.BodyCreator;
 
 @Builder
 public record CharacterMotion(
@@ -12,5 +13,5 @@ public record CharacterMotion(
         float speed,
         @JsonIgnore
         long lastUpdateTime
-) {
+) implements BodyCreator {
 }

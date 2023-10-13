@@ -15,6 +15,9 @@ import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Slf4j
 @RequiredArgsConstructor
 @Primary
@@ -24,6 +27,9 @@ public class WorldServiceDyn implements WorldService {
     @Value("${world.speed.limit}")
     private int speedLimit;
     private World<Body> world;
+
+    private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
+    private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
 
 
     @PostConstruct

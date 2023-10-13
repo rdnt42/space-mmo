@@ -1,12 +1,13 @@
 package marowak.dev.service.physic;
 
+import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.dto.bullet.BulletCreateRequest;
+import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.KineticBullet;
-import marowak.dev.enums.BulletType;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
-import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
@@ -20,13 +21,13 @@ import java.util.concurrent.atomic.LongAdder;
 
 @RequiredArgsConstructor
 @Singleton
-public class WeaponServiceImpl implements WeaponService {
+public class WeaponServiceImpl implements WeaponService, Calculable {
 
     private final WorldService worldService;
     private final ShipService shipService;
 
     private final LongAdder bulletId = new LongAdder();
-    private final Map<String, Body> bullets = new ConcurrentHashMap<>();
+    private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
 
     @Override
     public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
@@ -49,7 +50,7 @@ public class WeaponServiceImpl implements WeaponService {
     }
 
     @Override
-    public Mono<Void> createBullet(double angle, double x, double y, BulletType type) {
+    public Mono<Void> createBullet(BulletCreateRequest request) {
         bulletId.increment();
         long id = bulletId.longValue();
         KineticBullet bullet = new KineticBullet(String.valueOf(id));
@@ -62,8 +63,8 @@ public class WeaponServiceImpl implements WeaponService {
         bodyFixture.setRestitutionVelocity(0.001);
 
         // Coordinates and angle
-        bullet.translate(x, y);
-        bullet.getTransform().setRotation(angle);
+        bullet.translate(request.x(), request.y());
+        bullet.getTransform().setRotation(request.angle());
 
         // resistance and rest
         bullet.setAtRestDetectionEnabled(true);
@@ -81,5 +82,21 @@ public class WeaponServiceImpl implements WeaponService {
         bullets.put(bullet.getId(), bullet);
 
         return Mono.empty();
+    }
+
+    @Async
+    @Override
+    public void calculate() {
+        bullets.values()
+                .forEach(this::calculateBullet);
+    }
+
+    private void calculateBullet(IdentifiablePhysicalBody body) {
+        if (body.isAtRest()) {
+            boolean removed = worldService.removeBody(body);
+            if (removed) {
+                bullets.remove(body.getId());
+            }
+        }
     }
 }

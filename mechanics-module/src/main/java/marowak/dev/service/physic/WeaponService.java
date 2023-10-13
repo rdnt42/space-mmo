@@ -1,6 +1,6 @@
 package marowak.dev.service.physic;
 
-import marowak.dev.enums.BulletType;
+import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
 import reactor.core.publisher.Flux;
@@ -11,5 +11,5 @@ public interface WeaponService {
 
     Flux<BodyInfo> getBulletsInRange(String characterName);
 
-    Mono<Void> createBullet(double angle, double x, double y, BulletType type);
+    Mono<Void> createBullet(BulletCreateRequest request);
 }

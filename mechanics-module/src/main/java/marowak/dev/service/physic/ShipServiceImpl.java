@@ -1,10 +1,13 @@
 package marowak.dev.service.physic;
 
+import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.SpaceShip;
+import marowak.dev.enums.BulletType;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
@@ -23,10 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Singleton
-public class ShipServiceImpl implements ShipService {
+public class ShipServiceImpl implements ShipService, Calculable {
 
     private final WorldService worldService;
     private final ItemService itemService;
+    private final BodyFactory bodyFactory;
 
     private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
 
@@ -117,5 +121,21 @@ public class ShipServiceImpl implements ShipService {
         body.setAtRest(false);
 
         return Mono.empty();
+    }
+
+    @Async
+    @Override
+    public void calculate() {
+        ships.values()
+                .forEach(this::calculateSpaceShip);
+    }
+
+    private void calculateSpaceShip(SpaceShip ship) {
+        if (ship.isShooting()) {
+            Vector2 translation = ship.getTransform().getTranslation();
+            var request = new BulletCreateRequest(ship.getShootAngleRadians(), translation.x, translation.y, BulletType.KINETIC_BULLET);
+            bodyFactory.create(request)
+                    .subscribe();
+        }
     }
 }

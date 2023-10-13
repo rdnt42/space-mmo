@@ -15,6 +15,7 @@ public class WorldScheduler {
     @Scheduled(fixedRate = "16ms")
     public void updateWorld() {
         worldService.updateWorld();
+        // TODO добавить интерфейс сalculable
         worldService.calculateObjects();
     }
 }
