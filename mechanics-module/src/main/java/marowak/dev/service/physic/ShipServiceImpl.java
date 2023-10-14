@@ -30,8 +30,6 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
     private final WorldService worldService;
     private final ItemService itemService;
-    private final BodyFactory bodyFactory;
-
     private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
 
     @Override
@@ -134,8 +132,8 @@ public class ShipServiceImpl implements ShipService, Calculable {
         if (ship.isShooting()) {
             Vector2 translation = ship.getTransform().getTranslation();
             var request = new BulletCreateRequest(ship.getShootAngleRadians(), translation.x, translation.y, BulletType.KINETIC_BULLET);
-            bodyFactory.create(request)
-                    .subscribe();
+//            wo.create(request)
+//                    .subscribe();
         }
     }
 }

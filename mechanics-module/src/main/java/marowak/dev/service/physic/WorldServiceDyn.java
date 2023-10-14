@@ -15,6 +15,7 @@ import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,11 +70,26 @@ public class WorldServiceDyn implements WorldService {
     @Override
     public void createBody(Body body) {
         world.addBody(body);
+        switch (body) {
+            case SpaceShip ship -> ships.put(ship.getId(), ship);
+            case KineticBullet bullet -> bullets.put(bullet.getId(), bullet);
+            default -> throw new IllegalStateException("Unexpected value: " + body);
+        }
     }
 
     @Override
     public boolean removeBody(Body body) {
         return world.removeBody(body);
+    }
+
+    @Override
+    public <T extends Body> List<Body> getBodies(Class<T> tClass) {
+        return null;
+    }
+
+    @Override
+    public <T extends Body> Body getBody(Class<T> tClass, String id) {
+        return null;
     }
 
     private void calculateObject(IdentifiablePhysicalBody body) {
