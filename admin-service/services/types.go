@@ -39,3 +39,25 @@ func GetFuelTankTypes(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, types)
 }
+
+func GetWeaponTypes(ctx *gin.Context) {
+	var types []models.WeaponType
+	results := db.Preload(clause.Associations).Find(&types)
+	if results.Error != nil {
+		ctx.JSON(http.StatusBadRequest, results.Error)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, types)
+}
+
+func GetDamageTypes(ctx *gin.Context) {
+	var types []models.DamageType
+	results := db.Preload(clause.Associations).Find(&types)
+	if results.Error != nil {
+		ctx.JSON(http.StatusBadRequest, results.Error)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, types)
+}
