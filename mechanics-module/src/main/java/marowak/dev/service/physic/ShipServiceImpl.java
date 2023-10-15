@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
 import marowak.dev.enums.BulletType;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
 import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
@@ -21,8 +23,7 @@ import org.dyn4j.geometry.Vector2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Singleton
@@ -30,7 +31,6 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
     private final WorldService worldService;
     private final ItemService itemService;
-    private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
 
     @Override
     public Mono<Void> addShip(CharacterMotion motion) {
@@ -49,14 +49,13 @@ public class ShipServiceImpl implements ShipService, Calculable {
         ship.setAtRestDetectionEnabled(false);
 
         worldService.createBody(ship);
-        ships.put(ship.getId(), ship);
 
         return Mono.empty();
     }
 
     @Override
     public Mono<Void> updateShip(CharacterMotionRequest request, String characterName) {
-        SpaceShip ship = ships.get(characterName);
+        SpaceShip ship = worldService.getBody(SpaceShip.class, characterName);
 
         return itemService.getFirstEquippedItem(characterName, ItemTypes.ITEM_TYPE_ENGINE)
                 .map(Engine.class::cast)
@@ -64,39 +63,47 @@ public class ShipServiceImpl implements ShipService, Calculable {
     }
 
     @Override
+    public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
+        return Mono.just(worldService.getBody(SpaceShip.class, characterName))
+                .mapNotNull(ship -> {
+                    ship.setShooting(request.isShooting());
+                    double angleInRadians = Math.toRadians(request.angle());
+                    ship.setShootAngleRadians((float) angleInRadians);
+
+                    return null;
+                });
+    }
+
+    @Override
     public Mono<Void> deleteShip(String characterName) {
-        SpaceShip ship = ships.get(characterName);
-        if (worldService.removeBody(ship)) {
-            ships.remove(characterName);
-        }
+        SpaceShip ship = worldService.getBody(SpaceShip.class, characterName);
+        worldService.removeBody(ship);
 
         return Mono.empty();
     }
 
     @Override
     public Flux<BodyInfo> getShipsInRange(String characterName) {
-        Vector2 base = ships.get(characterName).getTransform().getTranslation();
+        Vector2 base = worldService.getBody(SpaceShip.class, characterName).getTransform().getTranslation();
+        List<SpaceShip> ships = worldService.getBodies(SpaceShip.class);
 
-        return Flux.fromStream(ships.entrySet().stream())
-                .filter(target -> Utils.isInRange(base, target.getValue().getTransform().getTranslation()))
-                .map(entry -> Utils.bodyToBodyInfo.apply(entry.getValue(), entry.getKey()));
+        return Flux.fromStream(ships.stream())
+                .filter(target -> Utils.isInRange(base, target.getTransform().getTranslation()))
+                .map(Utils.bodyToBodyInfo);
     }
 
     @Override
     public Flux<BodyInfo> getAllShips() {
-        return Flux.fromStream(ships.entrySet().stream())
-                .map(entry -> Utils.bodyToBodyInfo.apply(entry.getValue(), entry.getKey()));
+        List<SpaceShip> ships = worldService.getBodies(SpaceShip.class);
+
+        return Flux.fromStream(ships.stream())
+                .map(Utils.bodyToBodyInfo);
     }
 
     @Override
     public Mono<BodyInfo> getShip(String characterName) {
-        return Mono.justOrEmpty(ships.get(characterName))
-                .map(ship -> Utils.bodyToBodyInfo.apply(ship, characterName));
-    }
-
-    @Override
-    public Mono<SpaceShip> getShipBody(String characterName) {
-        return Mono.justOrEmpty(ships.get(characterName));
+        return Mono.justOrEmpty(worldService.getBody(SpaceShip.class, characterName))
+                .map(Utils.bodyToBodyInfo);
     }
 
     private Mono<Void> applyForce(Body body, int speed, float angle, int forceType) {
@@ -124,7 +131,7 @@ public class ShipServiceImpl implements ShipService, Calculable {
     @Async
     @Override
     public void calculate() {
-        ships.values()
+        worldService.getBodies(SpaceShip.class)
                 .forEach(this::calculateSpaceShip);
     }
 
@@ -132,8 +139,8 @@ public class ShipServiceImpl implements ShipService, Calculable {
         if (ship.isShooting()) {
             Vector2 translation = ship.getTransform().getTranslation();
             var request = new BulletCreateRequest(ship.getShootAngleRadians(), translation.x, translation.y, BulletType.KINETIC_BULLET);
-//            wo.create(request)
-//                    .subscribe();
+            KineticBullet bullet = FactoryUtils.createKineticBullet(request);
+            worldService.createBody(bullet);
         }
     }
 }

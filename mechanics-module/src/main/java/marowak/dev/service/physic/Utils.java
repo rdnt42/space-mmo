@@ -1,10 +1,10 @@
 package marowak.dev.service.physic;
 
+import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.response.BodyInfo;
-import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Vector2;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Utils {
 
@@ -18,9 +18,9 @@ public class Utils {
         return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
-    public static final BiFunction<Body, String, BodyInfo> bodyToBodyInfo = (body, id) ->
+    public static final Function<IdentifiablePhysicalBody, BodyInfo> bodyToBodyInfo = body ->
             BodyInfo.builder()
-                    .id(id)
+                    .id(body.getId())
                     .x(body.getTransform().getTranslation().x)
                     .y(body.getTransform().getTranslation().y)
                     .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))

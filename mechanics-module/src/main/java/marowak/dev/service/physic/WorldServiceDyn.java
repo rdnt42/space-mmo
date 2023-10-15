@@ -2,7 +2,6 @@ package marowak.dev.service.physic;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Value;
-import io.micronaut.scheduling.annotation.Async;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,21 +52,6 @@ public class WorldServiceDyn implements WorldService {
         }
     }
 
-    @Async
-    @Override
-    public void calculateObjects() {
-        try {
-            world.getBodies().stream()
-                    .filter(IdentifiablePhysicalBody.class::isInstance)
-                    .map(IdentifiablePhysicalBody.class::cast)
-                    .toList()
-                    .forEach(this::calculateObject);
-        } catch (Exception e) {
-            log.error("Error when try to calculate objects", e);
-        }
-
-    }
-
     @Override
     public void createBody(Body body) {
         world.addBody(body);
@@ -79,16 +64,42 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public boolean removeBody(Body body) {
-        return world.removeBody(body);
+        if (world.removeBody(body)) {
+            switch (body) {
+                case SpaceShip ship -> ships.remove(ship.getId());
+                case KineticBullet bullet -> bullets.remove(bullet.getId());
+                default -> throw new IllegalStateException("Unexpected value: " + body);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public <T extends Body> List<Body> getBodies(Class<T> tClass) {
-        return null;
+    public <T extends Body> List<T> getBodies(Class<T> tClass) {
+        if (tClass == SpaceShip.class) {
+            return ships.values().stream()
+                    .map(tClass::cast)
+                    .toList();
+        } else if (tClass == KineticBullet.class) {
+            return bullets.values().stream()
+                    .map(tClass::cast)
+                    .toList();
+        }
+
+        return Collections.emptyList();
     }
 
     @Override
-    public <T extends Body> Body getBody(Class<T> tClass, String id) {
+    public <T extends Body> T getBody(Class<T> tClass, String id) {
+        if (tClass == SpaceShip.class) {
+            return tClass.cast(ships.get(id));
+        } else if (tClass == KineticBullet.class) {
+            return tClass.cast(bullets.get(id));
+        }
+
         return null;
     }
 
