@@ -35,7 +35,7 @@ export class Inventory {
 
     initAndAddItem(item) {
         if (inHull(item)) {
-            let slot = this.equipmentSlots.get(item.typeId);
+            let slot = this.equipmentSlots.get(item.slotId);
             if (slot === undefined) return false;
 
             item.initItem();

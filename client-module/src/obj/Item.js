@@ -20,7 +20,12 @@ export class Item {
     }
 
     initItem() {
-        console.log(`init item id: ${this.id}, typeId: ${this.typeId}, equipmentTypeId: ${this.equipmentTypeId}`);
+        console.log(`init item id: ${this.id}`, {
+            typeId: this.typeId,
+            equipmentId: this.equipmentTypeId,
+            slotId: this.slotId,
+            storageId: this.storageId
+        });
         this.texture = renderEngine.initItem(this.typeId, this.equipmentTypeId);
         this.texture['textureParentObj'] = this;
     }
