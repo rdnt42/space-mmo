@@ -21,7 +21,6 @@ export const CargoHookList = () => (
             <TextField source="item.id" label="id"/>
             <TextField source="item.slotId" label="slot"/>
             <TextField source="item.characterName" label="character"/>
-            <TextField source="item.itemTypeId" label="item type"/>
             <TextField source="item.upgradeLevel" label="level"/>
             <TextField source="item.nameRu" label="name"/>
             <TextField source="item.dscRu" label="dsc"/>
@@ -41,8 +40,7 @@ export const CargoHookEdit = () => (
             <ReferenceInput source="cargoHookId" reference="cargoHooks"/>
             <NumberInput disabled source="id"/>
             <TextInput source="characterName" disabled/>
-            <NumberInput source="itemTypeId" disabled/>
-            <NumberInput source="cargoHookTypeId" disabled/>
+            <TextInput source="cargoHookType.nameRu" disabled/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
             <NumberInput source="loadCapacity"/>

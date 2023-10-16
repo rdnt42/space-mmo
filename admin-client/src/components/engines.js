@@ -41,8 +41,7 @@ export const EngineEdit = () => (
             <ReferenceInput source="engineId" reference="engines"/>
             <NumberInput disabled source="id"/>
             <TextInput source="characterName" disabled/>
-            <NumberInput source="itemTypeId" disabled/>
-            <NumberInput source="engineTypeId" disabled/>
+            <TextInput source="engineType.nameRu" disabled/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
             <NumberInput source="speed"/>

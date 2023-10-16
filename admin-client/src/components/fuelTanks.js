@@ -40,8 +40,7 @@ export const FuelTankEdit = () => (
             <ReferenceInput source="fuelTankId" reference="fuelTanks"/>
             <NumberInput disabled source="id"/>
             <TextInput source="characterName" disabled/>
-            <NumberInput source="itemTypeId" disabled/>
-            <NumberInput source="fuelTankTypeId" disabled/>
+            <TextInput source="fuelTankType.nameRu" disabled/>
             <NumberInput source="upgradeLevel"/>
             <NumberInput source="cost"/>
             <NumberInput source="capacity"/>
