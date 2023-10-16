@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 public class Weapon extends Item {
     private int damage;
     private int radius;
+    private int rate;
     private int damageTypeId;
     private int equipmentTypeId;
 }

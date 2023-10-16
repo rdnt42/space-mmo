@@ -19,6 +19,8 @@ public record Weapon(
 
         int radius,
 
+        int rate,
+
         int damageTypeId,
 
         int weaponTypeId

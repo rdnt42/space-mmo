@@ -28,6 +28,7 @@ export const WeaponList = () => (
             <TextField source="item.cost" label="cost"/>
             <TextField source="damage"/>
             <TextField source="radius"/>
+            <TextField source="rate"/>
             <TextField source="weaponTypeId"/>
             <TextField source="weaponType.nameRu" label="base name"/>
             <TextField source="damageTypeId"/>
@@ -49,6 +50,7 @@ export const WeaponEdit = () => (
             <NumberInput source="cost"/>
             <NumberInput source="damage"/>
             <NumberInput source="radius"/>
+            <NumberInput source="rate"/>
             <TextInput source="nameRu" fullWidth/>
             <TextInput source="dscRu" fullWidth/>
         </SimpleForm>
@@ -60,7 +62,7 @@ export const WeaponCreate = () => {
     const {data: typesData} = useGetList('weapon_types');
     const {data: damageData} = useGetList('damage_types');
     const [selectedType, setSelectedType] = useState({});
-    const [setSelectedDamageType] = useState({});
+    const [damageType, setSelectedDamageType] = useState({});
 
     if (!typesData) {
         return null;
@@ -120,6 +122,7 @@ const AddPropInput = (props) => {
         setValue('cost', props.type.cost);
         setValue('damage', props.type.damage);
         setValue('radius', props.type.radius);
+        setValue('rate', props.type.rate);
     }, [setValue, props]);
 
     return (
@@ -129,6 +132,7 @@ const AddPropInput = (props) => {
             <NumberInput source="cost"/>
             <NumberInput source="damage"/>
             <NumberInput source="radius"/>
+            <NumberInput source="rate"/>
         </div>
     );
 };

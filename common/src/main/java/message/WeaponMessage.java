@@ -12,6 +12,8 @@ public class WeaponMessage extends ItemMessage {
 
     private int radius;
 
+    private int rate;
+
     private int damageTypeId;
 
     private int equipmentTypeId;

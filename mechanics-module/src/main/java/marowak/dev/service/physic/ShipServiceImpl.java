@@ -3,6 +3,7 @@ package marowak.dev.service.physic;
 import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.motion.CharacterMotion;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Singleton
 public class ShipServiceImpl implements ShipService, Calculable {
@@ -140,6 +142,7 @@ public class ShipServiceImpl implements ShipService, Calculable {
             Vector2 translation = ship.getTransform().getTranslation();
             var request = new BulletCreateRequest(ship.getShootAngleRadians(), translation.x, translation.y, BulletType.KINETIC_BULLET);
             KineticBullet bullet = FactoryUtils.createKineticBullet(request);
+            log.info("create: " + bullet.getId());
             worldService.createBody(bullet);
         }
     }

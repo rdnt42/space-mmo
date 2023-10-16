@@ -37,6 +37,7 @@ func CreateWeapon(ctx *gin.Context) {
 		Item:         *equipment,
 		Damage:       req.Damage,
 		Radius:       req.Radius,
+		Rate:         req.Rate,
 		DamageTypeId: req.DamageTypeId,
 		WeaponTypeId: req.WeaponTypeId,
 	}
@@ -73,6 +74,7 @@ func UpdateWeapon(ctx *gin.Context) {
 	weapon.Item.NameRu = req.NameRu
 	weapon.Damage = *req.Damage
 	weapon.Radius = *req.Radius
+	weapon.Rate = *req.Rate
 
 	result = db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&weapon)
 	if result.Error != nil {

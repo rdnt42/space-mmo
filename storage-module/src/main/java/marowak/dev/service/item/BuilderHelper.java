@@ -94,6 +94,7 @@ public class BuilderHelper {
                     .dsc(item.dscRu())
                     .damage(weapon.damage())
                     .radius(weapon.radius())
+                    .rate(weapon.rate())
                     .damageTypeId(weapon.damageTypeId())
                     .equipmentTypeId(weapon.weaponTypeId())
                     .build();

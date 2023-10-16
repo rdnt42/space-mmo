@@ -5,6 +5,7 @@ type Weapon struct {
 	Item         Item       `gorm:"references:ItemId" json:"item"`
 	Damage       int16      `json:"damage"`
 	Radius       int16      `json:"radius"`
+	Rate         int16      `json:"rate"`
 	DamageTypeId int32      `json:"damageTypeId"`
 	DamageType   DamageType `gorm:"references:DamageTypeId" json:"damageType"`
 	WeaponTypeId int32      `json:"weaponTypeId"`
@@ -16,7 +17,8 @@ type CreateWeaponRequest struct {
 	UpgradeLevel  int16  `json:"upgradeLevel"`
 	Cost          int32  `json:"cost"`
 	Damage        int16  `json:"damage"`
-	Radius        int16  `json:"Radius"`
+	Radius        int16  `json:"radius"`
+	Rate          int16  `json:"rate"`
 	DamageTypeId  int32  `json:"damageTypeId" binding:"required"`
 	WeaponTypeId  int32  `json:"weaponTypeId" binding:"required"`
 	NameRu        string `json:"nameRu"`
@@ -28,6 +30,7 @@ type UpdateWeaponRequest struct {
 	Cost         *int32 `json:"cost" binding:"required"`
 	Damage       *int16 `json:"damage" binding:"required"`
 	Radius       *int16 `json:"radius" binding:"required"`
+	Rate         *int16 `json:"rate" binding:"required"`
 	NameRu       string `json:"nameRu"`
 	DscRu        string `json:"dscRu"`
 }

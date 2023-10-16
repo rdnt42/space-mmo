@@ -96,6 +96,7 @@ public class BuilderHelper {
             ((Weapon.WeaponBuilder<?, ?>) messageToItemBuilder.apply(message, Weapon.builder()))
                     .damage(message.getDamage())
                     .radius(message.getRadius())
+                    .rate(message.getRate())
                     .damageTypeId(message.getDamageTypeId())
                     .equipmentTypeId(message.getEquipmentTypeId())
                     .build();
