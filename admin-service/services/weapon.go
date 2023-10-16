@@ -95,7 +95,7 @@ func GetWeapons(ctx *gin.Context) {
 }
 
 func GetWeapon(ctx *gin.Context) {
-	weaponId := ctx.Param("weaponID")
+	weaponId := ctx.Param("weaponId")
 	var weapon models.Weapon
 	result := db.Preload(clause.Associations).First(&weapon, weaponId)
 	if result.Error != nil {

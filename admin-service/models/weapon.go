@@ -5,10 +5,10 @@ type Weapon struct {
 	Item         Item       `gorm:"references:ItemId" json:"item"`
 	Damage       int16      `json:"damage"`
 	Radius       int16      `json:"radius"`
-	DamageTypeId int32      `json:"damage_type_id"`
-	DamageType   DamageType `gorm:"references:DamageType" json:"damageType"`
-	WeaponTypeId int32      `json:"weapon_type_id"`
-	WeaponType   WeaponType `gorm:"references:WeaponType" json:"weaponType"`
+	DamageTypeId int32      `json:"damageTypeId"`
+	DamageType   DamageType `gorm:"references:DamageTypeId" json:"damageType"`
+	WeaponTypeId int32      `json:"weaponTypeId"`
+	WeaponType   WeaponType `gorm:"references:WeaponTypeId" json:"weaponType"`
 }
 
 type CreateWeaponRequest struct {

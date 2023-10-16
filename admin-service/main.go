@@ -109,9 +109,9 @@ func initWeapons(rg *gin.RouterGroup) {
 	router := rg.Group("weapons")
 	router.POST("/", services.CreateWeapon)
 	router.GET("/", services.GetWeapons)
-	router.GET("/:fuelTankId", services.GetWeapon)
-	router.PUT("/:fuelTankId", services.UpdateWeapon)
-	router.DELETE("/:fuelTankId", services.DeleteWeapon)
+	router.GET("/:weaponId", services.GetWeapon)
+	router.PUT("/:weaponId", services.UpdateWeapon)
+	router.DELETE("/:weaponId", services.DeleteWeapon)
 }
 
 func initWeaponTypes(rg *gin.RouterGroup) {
