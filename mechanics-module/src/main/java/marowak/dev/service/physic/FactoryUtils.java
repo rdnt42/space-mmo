@@ -1,7 +1,9 @@
 package marowak.dev.service.physic;
 
 import marowak.dev.dto.bullet.BulletCreateRequest;
+import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.KineticBullet;
+import marowak.dev.dto.world.SpaceShip;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
@@ -10,6 +12,9 @@ import org.dyn4j.geometry.Vector2;
 import java.util.concurrent.atomic.LongAdder;
 
 public class FactoryUtils {
+    private FactoryUtils() {
+    }
+
     private static final LongAdder bulletId = new LongAdder();
 
     public static KineticBullet createKineticBullet(BulletCreateRequest request) {
@@ -40,5 +45,23 @@ public class FactoryUtils {
         bullet.applyForce(force);
 
         return bullet;
+    }
+
+    public static SpaceShip createShip(CharacterMotion motion) {
+        SpaceShip ship = new SpaceShip(motion.characterName());
+
+        BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
+        bodyFixture.setDensity(1);
+        bodyFixture.setFriction(0.1);
+        bodyFixture.setRestitution(0.3);
+        bodyFixture.setRestitutionVelocity(0.001);
+        ship.setLinearDamping(0.1);
+        ship.setMass(MassType.NORMAL);
+        ship.translate(motion.x(), motion.y());
+        double angleInRadians = Math.toRadians(motion.angle());
+        ship.getTransform().setRotation(angleInRadians);
+        ship.setAtRestDetectionEnabled(false);
+
+        return ship;
     }
 }

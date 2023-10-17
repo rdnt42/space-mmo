@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.item.Engine;
+import marowak.dev.dto.item.Weapon;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
-import marowak.dev.enums.BulletType;
 import marowak.dev.enums.ForceType;
 import marowak.dev.enums.ItemTypes;
 import marowak.dev.request.CharacterMotionRequest;
@@ -17,9 +17,6 @@ import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
 import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
-import org.dyn4j.dynamics.BodyFixture;
-import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,20 +33,7 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
     @Override
     public Mono<Void> addShip(CharacterMotion motion) {
-        SpaceShip ship = new SpaceShip(motion.characterName());
-
-        BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
-        bodyFixture.setDensity(1);
-        bodyFixture.setFriction(0.1);
-        bodyFixture.setRestitution(0.3);
-        bodyFixture.setRestitutionVelocity(0.001);
-        ship.setLinearDamping(0.1);
-        ship.setMass(MassType.NORMAL);
-        ship.translate(motion.x(), motion.y());
-        double angleInRadians = Math.toRadians(motion.angle());
-        ship.getTransform().setRotation(angleInRadians);
-        ship.setAtRestDetectionEnabled(false);
-
+        SpaceShip ship = FactoryUtils.createShip(motion);
         worldService.createBody(ship);
 
         return Mono.empty();
@@ -140,10 +124,26 @@ public class ShipServiceImpl implements ShipService, Calculable {
     private void calculateSpaceShip(SpaceShip ship) {
         if (ship.isShooting()) {
             Vector2 translation = ship.getTransform().getTranslation();
-            var request = new BulletCreateRequest(ship.getShootAngleRadians(), translation.x, translation.y, BulletType.KINETIC_BULLET);
-            KineticBullet bullet = FactoryUtils.createKineticBullet(request);
-            log.info("create: " + bullet.getId());
-            worldService.createBody(bullet);
+
+            itemService.getEquippedItems(ship.getId(), ItemTypes.ITEM_TYPE_WEAPON)
+                    .map(Weapon.class::cast)
+                    .mapNotNull(weapon -> {
+                        BulletCreateRequest request =
+                                getNewBullet(ship.getShootAngleRadians(), translation.x, translation.y, weapon);
+                        KineticBullet bullet = FactoryUtils.createKineticBullet(request);
+                        worldService.createBody(bullet);
+
+                        return null;
+                    }).subscribe()
+            ;
         }
+    }
+
+    // TODO template
+    private BulletCreateRequest getNewBullet(double angle, double baseX, double baseY, Weapon weapon) {
+        int shiftX = 0;
+        int shiftY = 0;
+
+        return new BulletCreateRequest(angle, baseX + shiftX, baseY + shiftY);
     }
 }
