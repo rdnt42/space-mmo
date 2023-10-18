@@ -134,15 +134,41 @@ public class ShipServiceImpl implements ShipService, Calculable {
                         worldService.createBody(bullet);
 
                         return null;
-                    }).subscribe()
-            ;
+                    }).subscribe();
         }
     }
 
     // TODO template
     private BulletCreateRequest getNewBullet(double angle, double baseX, double baseY, Weapon weapon) {
-        int shiftX = 0;
-        int shiftY = 0;
+        int shiftX;
+        int shiftY;
+
+        switch (weapon.getSlotId()) {
+            case 9 -> {
+                shiftX = -20;
+                shiftY = 20;
+            }
+            case 10 -> {
+                shiftX = 20;
+                shiftY = 20;
+            }
+            case 11 -> {
+                shiftX = -32;
+                shiftY = -20;
+            }
+            case 12 -> {
+                shiftX = 0;
+                shiftY = -20;
+            }
+            case 13 -> {
+                shiftX = 32;
+                shiftY = -20;
+            }
+            default -> {
+                shiftX = 0;
+                shiftY = 0;
+            }
+        }
 
         return new BulletCreateRequest(angle, baseX + shiftX, baseY + shiftY);
     }
