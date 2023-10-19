@@ -146,23 +146,23 @@ public class ShipServiceImpl implements ShipService, Calculable {
         switch (weapon.getSlotId()) {
             case 9 -> {
                 shiftX = -20;
-                shiftY = 20;
+                shiftY = -20;
             }
             case 10 -> {
                 shiftX = 20;
-                shiftY = 20;
+                shiftY = -20;
             }
             case 11 -> {
                 shiftX = -32;
-                shiftY = -20;
+                shiftY = 20;
             }
             case 12 -> {
                 shiftX = 0;
-                shiftY = -20;
+                shiftY = 20;
             }
             case 13 -> {
                 shiftX = 32;
-                shiftY = -20;
+                shiftY = 20;
             }
             default -> {
                 shiftX = 0;

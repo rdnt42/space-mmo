@@ -10,12 +10,15 @@ import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.SpaceShip;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.world.BroadphaseCollisionDataFilter;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -40,6 +43,19 @@ public class WorldServiceDyn implements WorldService {
 
         world.getSettings().setMaximumAtRestLinearVelocity(50);
         world.getSettings().setMaximumAtRestAngularVelocity(0.1);
+
+        // filter self shooting
+        BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2) -> {
+            if (body1 instanceof SpaceShip && body2 instanceof BulletBody) {
+                return !Objects.equals(((SpaceShip) body1).getId(), ((BulletBody) body2).getCreatorId());
+            } else if (body2 instanceof SpaceShip && body1 instanceof BulletBody) {
+                return !Objects.equals(((SpaceShip) body2).getId(), ((BulletBody) body1).getCreatorId());
+            }
+
+            return true;
+        });
+
+        world.setBroadphaseCollisionDataFilter(filter);
     }
 
     @Override
