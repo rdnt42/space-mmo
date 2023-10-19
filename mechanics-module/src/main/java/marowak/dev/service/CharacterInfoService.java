@@ -4,9 +4,10 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Hull;
-import marowak.dev.enums.ItemTypes;
+import marowak.dev.enums.ItemType;
 import marowak.dev.response.BodyInfo;
 import marowak.dev.response.CharacterInfo;
+import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
 import reactor.core.publisher.Flux;
@@ -18,17 +19,15 @@ import reactor.core.publisher.Mono;
 public class CharacterInfoService {
     private final CharacterMotionService characterMotionService;
     private final ItemService itemService;
+    private final CharacterShipService characterShipService;
 
     public Mono<CharacterInfo> getCharacterInfo(String playerName) {
-        return characterMotionService.getCharacter(playerName)
-                .flatMap(info -> itemService.getFirstEquippedItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
-                        .map(Hull.class::cast)
-                        .map(hull -> toCharacterResponse.apply(info, hull, info.id())));
+        return characterShipService.getCharacter(playerName);
     }
 
     public Flux<CharacterInfo> getCharactersInfo(String playerName) {
         return characterMotionService.getCharactersInRange(playerName)
-                .flatMap(info -> itemService.getFirstEquippedItem(info.id(), ItemTypes.ITEM_TYPE_HULL)
+                .flatMap(info -> itemService.getFirstEquippedItem(info.id(), ItemType.ITEM_TYPE_HULL)
                         .map(item -> toCharacterResponse.apply(info, (Hull) item, info.id())));
     }
 

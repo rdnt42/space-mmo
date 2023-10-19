@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.BodyInfo;
+import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.physic.ShipService;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
@@ -24,6 +25,7 @@ import java.util.Date;
 public class CharacterMotionServiceImpl implements CharacterMotionService {
 
     private final ShipService shipService;
+    private final CharacterShipService characterShipService;
 
     @Override
     public Mono<Void> leavingPlayer(String playerName) {
@@ -45,7 +47,7 @@ public class CharacterMotionServiceImpl implements CharacterMotionService {
                 0,
                 new Date().getTime());
 
-        return shipService.addShip(newMotion);
+        return characterShipService.addShip(newMotion);
     }
 
     @Override

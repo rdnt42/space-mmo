@@ -16,4 +16,13 @@ public class Item {
     private Integer cost;
     private String name;
     private String dsc;
+
+    public void init() {
+        // base init method
+    }
+
+    public void updatePosition(int slotId, int storageId) {
+        this.slotId = slotId;
+        this.storageId = storageId;
+    }
 }

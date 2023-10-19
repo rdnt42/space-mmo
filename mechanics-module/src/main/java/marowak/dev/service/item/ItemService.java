@@ -2,7 +2,7 @@ package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
 import marowak.dev.dto.item.Item;
-import marowak.dev.enums.ItemTypes;
+import marowak.dev.enums.ItemType;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.InventoryInfo;
 import message.ItemMessage;
@@ -19,7 +19,9 @@ public interface ItemService {
 
     Mono<InventoryInfo> getInventoryItems(String playerName);
 
-    Mono<Item> getFirstEquippedItem(String characterName, ItemTypes type);
+    Mono<Item> getFirstEquippedItem(String characterName, ItemType type);
 
-    Flux<Item> getEquippedItems(String characterName, ItemTypes type);
+    Flux<Item> getEquippedItems(String characterName, ItemType type);
+
+    Flux<Item> getEquippedItems(ItemType type);
 }

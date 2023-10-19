@@ -4,23 +4,22 @@ import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.dto.bullet.BulletCreateRequest;
-import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Weapon;
 import marowak.dev.dto.motion.CharacterMotion;
-import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
 import marowak.dev.enums.ForceType;
-import marowak.dev.enums.ItemTypes;
+import marowak.dev.enums.ItemType;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.BodyInfo;
+import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.item.ItemService;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Vector2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.awt.*;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +29,8 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
     private final WorldService worldService;
     private final ItemService itemService;
+
+    private final CharacterShipService characterShipService;
 
     @Override
     public Mono<Void> addShip(CharacterMotion motion) {
@@ -41,23 +42,18 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
     @Override
     public Mono<Void> updateShip(CharacterMotionRequest request, String characterName) {
-        SpaceShip ship = worldService.getBody(SpaceShip.class, characterName);
+        SpaceShip body = worldService.getBody(SpaceShip.class, characterName);
 
-        return itemService.getFirstEquippedItem(characterName, ItemTypes.ITEM_TYPE_ENGINE)
-                .map(Engine.class::cast)
-                .flatMap(engine -> applyForce(ship, engine.getSpeed(), request.angle(), request.forceTypeId()));
+        return characterShipService.getCharacter(characterName)
+                .flatMap(ship -> applyForce(body, ship.shipTypeId().getSpeed(), request.angle(), request.forceTypeId()));
     }
 
     @Override
     public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
-        return Mono.just(worldService.getBody(SpaceShip.class, characterName))
-                .mapNotNull(ship -> {
-                    ship.setShooting(request.isShooting());
-                    double angleInRadians = Math.toRadians(request.angle());
-                    ship.setShootAngleRadians((float) angleInRadians);
-
-                    return null;
-                });
+        return itemService.getEquippedItems(characterName, ItemType.ITEM_TYPE_WEAPON)
+                .ofType(Weapon.class)
+                .doOnNext(weapon -> weapon.changeShootState(request, new Point()))
+                .then();
     }
 
     @Override
@@ -122,56 +118,8 @@ public class ShipServiceImpl implements ShipService, Calculable {
     }
 
     private void calculateSpaceShip(SpaceShip ship) {
-        if (ship.isShooting()) {
-            Vector2 translation = ship.getTransform().getTranslation();
-
-            itemService.getEquippedItems(ship.getId(), ItemTypes.ITEM_TYPE_WEAPON)
-                    .map(Weapon.class::cast)
-                    .filter(Weapon::isReadyForShoot)
-                    .mapNotNull(weapon -> {
-                        BulletCreateRequest request =
-                                getNewBullet(ship.getId(), ship.getShootAngleRadians(), translation.x, translation.y, weapon);
-                        KineticBullet bullet = FactoryUtils.createKineticBullet(request);
-                        worldService.createBody(bullet);
-                        weapon.updateShoot();
-
-                        return null;
-                    }).subscribe();
-        }
+        characterShipService.getCharacter(ship.getId())
+                .doOnNext(ship -> ship)
     }
 
-    // TODO template
-    private BulletCreateRequest getNewBullet(String creatorId, double angle, double baseX, double baseY, Weapon weapon) {
-        int shiftX;
-        int shiftY;
-
-        switch (weapon.getSlotId()) {
-            case 9 -> {
-                shiftX = -20;
-                shiftY = -20;
-            }
-            case 10 -> {
-                shiftX = 20;
-                shiftY = -20;
-            }
-            case 11 -> {
-                shiftX = -32;
-                shiftY = 20;
-            }
-            case 12 -> {
-                shiftX = 0;
-                shiftY = 20;
-            }
-            case 13 -> {
-                shiftX = 32;
-                shiftY = 20;
-            }
-            default -> {
-                shiftX = 0;
-                shiftY = 0;
-            }
-        }
-
-        return new BulletCreateRequest(angle, baseX + shiftX, baseY + shiftY, creatorId);
-    }
 }
