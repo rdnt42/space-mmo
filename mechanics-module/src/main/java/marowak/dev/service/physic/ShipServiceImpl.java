@@ -127,11 +127,13 @@ public class ShipServiceImpl implements ShipService, Calculable {
 
             itemService.getEquippedItems(ship.getId(), ItemTypes.ITEM_TYPE_WEAPON)
                     .map(Weapon.class::cast)
+                    .filter(Weapon::isReadyForShoot)
                     .mapNotNull(weapon -> {
                         BulletCreateRequest request =
                                 getNewBullet(ship.getId(), ship.getShootAngleRadians(), translation.x, translation.y, weapon);
                         KineticBullet bullet = FactoryUtils.createKineticBullet(request);
                         worldService.createBody(bullet);
+                        weapon.updateShoot();
 
                         return null;
                     }).subscribe();

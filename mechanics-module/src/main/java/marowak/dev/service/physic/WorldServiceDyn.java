@@ -34,7 +34,6 @@ public class WorldServiceDyn implements WorldService {
     private final Map<String, SpaceShip> ships = new ConcurrentHashMap<>();
     private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
 
-
     @PostConstruct
     private void init() {
         world = new World<>();
