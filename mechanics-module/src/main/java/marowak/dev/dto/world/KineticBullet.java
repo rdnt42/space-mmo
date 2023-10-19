@@ -1,7 +1,7 @@
 package marowak.dev.dto.world;
 
-public class KineticBullet extends IdentifiablePhysicalBody {
-    public KineticBullet(String id) {
-        super(id);
+public class KineticBullet extends BulletBody {
+    public KineticBullet(String id, String creatorId) {
+        super(id, creatorId);
     }
 }

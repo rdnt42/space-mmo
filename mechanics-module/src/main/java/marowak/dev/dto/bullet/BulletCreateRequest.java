@@ -1,4 +1,4 @@
 package marowak.dev.dto.bullet;
 
-public record BulletCreateRequest(double angle, double x, double y) {
+public record BulletCreateRequest(double angle, double x, double y, String creatorId) {
 }

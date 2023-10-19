@@ -10,6 +10,6 @@ public class SpaceShip extends IdentifiablePhysicalBody {
     private float shootAngleRadians;
 
     public SpaceShip(String id) {
-        super(id);
+        super(id, id);
     }
 }

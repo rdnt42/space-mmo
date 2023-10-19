@@ -129,7 +129,7 @@ public class ShipServiceImpl implements ShipService, Calculable {
                     .map(Weapon.class::cast)
                     .mapNotNull(weapon -> {
                         BulletCreateRequest request =
-                                getNewBullet(ship.getShootAngleRadians(), translation.x, translation.y, weapon);
+                                getNewBullet(ship.getId(), ship.getShootAngleRadians(), translation.x, translation.y, weapon);
                         KineticBullet bullet = FactoryUtils.createKineticBullet(request);
                         worldService.createBody(bullet);
 
@@ -139,7 +139,7 @@ public class ShipServiceImpl implements ShipService, Calculable {
     }
 
     // TODO template
-    private BulletCreateRequest getNewBullet(double angle, double baseX, double baseY, Weapon weapon) {
+    private BulletCreateRequest getNewBullet(String creatorId, double angle, double baseX, double baseY, Weapon weapon) {
         int shiftX;
         int shiftY;
 
@@ -170,6 +170,6 @@ public class ShipServiceImpl implements ShipService, Calculable {
             }
         }
 
-        return new BulletCreateRequest(angle, baseX + shiftX, baseY + shiftY);
+        return new BulletCreateRequest(angle, baseX + shiftX, baseY + shiftY, creatorId);
     }
 }

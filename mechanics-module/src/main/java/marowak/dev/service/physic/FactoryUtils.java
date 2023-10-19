@@ -20,7 +20,7 @@ public class FactoryUtils {
     public static KineticBullet createKineticBullet(BulletCreateRequest request) {
         bulletId.increment();
         long id = bulletId.longValue();
-        KineticBullet bullet = new KineticBullet(String.valueOf(id));
+        KineticBullet bullet = new KineticBullet(String.valueOf(id), request.creatorId());
 
         // Material
         BodyFixture bodyFixture = bullet.addFixture(Geometry.createRectangle(5, 2));

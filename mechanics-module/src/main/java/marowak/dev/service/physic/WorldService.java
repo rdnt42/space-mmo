@@ -9,7 +9,7 @@ public interface WorldService {
 
     void createBody(Body body);
 
-    boolean removeBody(Body body);
+    void removeBody(Body body);
 
     <T extends Body> List<T> getBodies(Class<T> tClass);
 

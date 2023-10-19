@@ -6,11 +6,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.IdentifiablePhysicalBody;
-import marowak.dev.dto.world.KineticBullet;
 import marowak.dev.dto.world.SpaceShip;
 import org.dyn4j.dynamics.Body;
-import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
@@ -57,24 +56,20 @@ public class WorldServiceDyn implements WorldService {
         world.addBody(body);
         switch (body) {
             case SpaceShip ship -> ships.put(ship.getId(), ship);
-            case KineticBullet bullet -> bullets.put(bullet.getId(), bullet);
+            case BulletBody bullet -> bullets.put(bullet.getId(), bullet);
             default -> throw new IllegalStateException("Unexpected value: " + body);
         }
     }
 
     @Override
-    public boolean removeBody(Body body) {
+    public void removeBody(Body body) {
         if (world.removeBody(body)) {
             switch (body) {
                 case SpaceShip ship -> ships.remove(ship.getId());
-                case KineticBullet bullet -> bullets.remove(bullet.getId());
+                case BulletBody bullet -> bullets.remove(bullet.getId());
                 default -> throw new IllegalStateException("Unexpected value: " + body);
             }
-
-            return true;
         }
-
-        return false;
     }
 
     @Override
@@ -83,7 +78,7 @@ public class WorldServiceDyn implements WorldService {
             return ships.values().stream()
                     .map(tClass::cast)
                     .toList();
-        } else if (tClass == KineticBullet.class) {
+        } else if (tClass == BulletBody.class) {
             return bullets.values().stream()
                     .map(tClass::cast)
                     .toList();
@@ -96,34 +91,11 @@ public class WorldServiceDyn implements WorldService {
     public <T extends Body> T getBody(Class<T> tClass, String id) {
         if (tClass == SpaceShip.class) {
             return tClass.cast(ships.get(id));
-        } else if (tClass == KineticBullet.class) {
+        } else if (tClass == BulletBody.class) {
             return tClass.cast(bullets.get(id));
         }
 
         return null;
     }
 
-    private void calculateObject(IdentifiablePhysicalBody body) {
-        switch (body) {
-            case SpaceShip ship -> calculateSpaceShip(ship);
-            case KineticBullet bullet -> calculateBullet(bullet);
-            default -> log.warn("Unexpected value when calculating objects: {}", body.getClass());
-        }
-    }
-
-    private void calculateSpaceShip(SpaceShip ship) {
-        if (ship.isShooting()) {
-            Vector2 translation = ship.getTransform().getTranslation();
-//            createKineticBullet(ship.getShootAngleRadians(), translation.x, translation.y);
-        }
-    }
-
-    private void calculateBullet(KineticBullet bullet) {
-        if (bullet.isAtRest()) {
-            boolean removed = world.removeBody(bullet);
-            if (removed) {
-//                bullets.remove(bullet.getId());
-            }
-        }
-    }
 }
