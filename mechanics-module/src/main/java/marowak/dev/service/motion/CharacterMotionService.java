@@ -1,6 +1,5 @@
 package marowak.dev.service.motion;
 
-import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import reactor.core.publisher.Mono;
 
@@ -11,12 +10,6 @@ import reactor.core.publisher.Mono;
  * Time: 0:21
  */
 public interface CharacterMotionService {
-
-    Mono<Void> leavingPlayer(String playerName);
-
-
-    Mono<Void> addMotion(CharacterMotion request);
-
     Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
 }

@@ -7,16 +7,13 @@ import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.response.BodyInfo;
-import marowak.dev.service.item.ItemService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Singleton
 public class WeaponServiceImpl implements WeaponService, Calculable {
-
     private final WorldService worldService;
-    private final ItemService itemService;
 
     @Override
     public Flux<BodyInfo> getBulletsInRange(String characterName) {
@@ -32,10 +29,6 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
     public void calculate() {
         worldService.getBodies(BulletBody.class)
                 .forEach(this::calculateBullet);
-//        itemService.getEquippedItems(ItemType.ITEM_TYPE_WEAPON)
-//                .ofType(Weapon.class)
-//                .filter(weapon -> weapon.isShooting() && weapon.isReadyForShoot())
-//                .doOnNext(this::makeShot);
     }
 
     private void calculateBullet(IdentifiablePhysicalBody body) {
@@ -43,21 +36,4 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
             worldService.removeBody(body);
         }
     }
-
-//    private Mono<Void> makeShot(Weapon weapon) {
-//        Vector2 translation = ship.getTransform().getTranslation();
-//
-//        itemService.getEquippedItems(ship.getId(), ItemType.ITEM_TYPE_WEAPON)
-//                .map(Weapon.class::cast)
-//                .filter(Weapon::isReadyForShoot)
-//                .mapNotNull(weapon -> {
-//                    BulletCreateRequest request =
-//                            getNewBullet(ship.getId(), ship.getShootAngleRadians(), translation.x, translation.y, weapon);
-//                    KineticBullet bullet = FactoryUtils.createKineticBullet(request);
-//                    worldService.createBody(bullet);
-//                    weapon.updateShoot();
-//
-//                    return null;
-//                }).subscribe();
-//    }
 }

@@ -19,12 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static marowak.dev.service.item.ItemServiceImpl.HOLD_STORAGE_ID;
-import static marowak.dev.service.item.ItemServiceImpl.HULL_STORAGE_ID;
 
 @Getter
 public class CharacterShip {
-    private String id;
+    public static final int HULL_STORAGE_ID = 1;
+    public static final int HOLD_STORAGE_ID = 2;
+    private final String id;
     private Engine engine;
     private Hull hull;
     private Weapon weapon1;

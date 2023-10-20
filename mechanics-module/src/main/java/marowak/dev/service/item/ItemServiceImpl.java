@@ -18,11 +18,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Singleton
 public class ItemServiceImpl implements ItemService {
-
-    // TODO create settings
-    public static final int HULL_STORAGE_ID = 1;
-    public static final int HOLD_STORAGE_ID = 2;
-
     private final ItemClient itemClient;
     private final CharacterShipService characterShipService;
 

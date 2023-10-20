@@ -19,6 +19,7 @@ import marowak.dev.service.item.ItemService;
 import marowak.dev.service.motion.CharacterMotionService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
 
@@ -27,9 +28,7 @@ import java.util.function.Predicate;
 @Singleton
 public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final CharacterMotionService characterMotionService;
-
     private final BulletMotionService bulletMotionService;
-
     private final CharacterInfoService characterInfoService;
     private final ItemService itemService;
     private final CharacterService characterService;
@@ -40,8 +39,10 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
 
     @Override
     public void onOpen(String playerName) {
-        characterService.sendCharacterState(playerName, true);
-        characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ONE, playerName);
+        Mono.when(
+                characterService.sendCharacterState(playerName, true),
+                characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ONE, playerName)
+        ).subscribe();
     }
 
     @SneakyThrows
@@ -88,10 +89,9 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
 
     @Override
     public Publisher<SocketMessage<String>> onClose(String playerName) {
-        characterService.sendCharacterState(playerName, false);
-
-        return characterMotionService.leavingPlayer(playerName)
-                .thenReturn(new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName))
+        return characterService.sendCharacterState(playerName, false)
+                .then(characterService.leavingPlayer(playerName))
+                .then(Mono.just(new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName)))
                 .doOnNext(message -> log.info("Player {} leaving", playerName))
                 .flatMapMany(broadcaster::broadcast);
     }

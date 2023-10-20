@@ -2,7 +2,6 @@ package marowak.dev.service.motion;
 
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
-import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.service.character.CharacterShipService;
 import reactor.core.publisher.Mono;
@@ -18,17 +17,6 @@ import reactor.core.publisher.Mono;
 @Singleton
 public class CharacterMotionServiceImpl implements CharacterMotionService {
     private final CharacterShipService characterShipService;
-
-    @Override
-    public Mono<Void> leavingPlayer(String characterName) {
-        return characterShipService.removeCharacter(characterName);
-    }
-
-
-    @Override
-    public Mono<Void> addMotion(CharacterMotion request) {
-        return characterShipService.addCharacter(request);
-    }
 
     @Override
     public Mono<Void> updateMotion(CharacterMotionRequest request, String characterName) {

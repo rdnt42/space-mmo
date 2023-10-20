@@ -2,13 +2,16 @@ package marowak.dev.service.character;
 
 import keys.CharacterMessageKey;
 import message.CharacterMessage;
+import reactor.core.publisher.Mono;
 
 public interface CharacterService {
-    void sendCharactersUpdate();
+    Mono<Void> sendCharactersUpdate();
 
-    void initCharacters(CharacterMessage message);
+    Mono<Void> initCharacter(CharacterMessage message);
 
-    void sendCharacterState(String characterName, boolean isOnline);
+    Mono<Void> leavingPlayer(String characterName);
 
-    void sendInitCharacter(CharacterMessageKey key, String characterName);
+    Mono<Void> sendCharacterState(String characterName, boolean isOnline);
+
+    Mono<Void> sendInitCharacter(CharacterMessageKey key, String characterName);
 }

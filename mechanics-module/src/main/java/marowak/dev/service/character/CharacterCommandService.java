@@ -12,15 +12,9 @@ public class CharacterCommandService {
     private final CharacterService characterService;
 
     public Publisher<Void> executeCommand(CharacterMessage message) {
-        switch (message.getKey()) {
-            case CHARACTERS_GET_ONE, CHARACTERS_GET_ALL -> characterService.initCharacters(message);
-            case CHARACTER_MOTION_UPDATE, CHARACTER_STATE_UPDATE -> {
-                // TODO add map updating
-            }
-            default -> { // Ignore other events
-            }
-        }
-
-        return Mono.empty();
+        return switch (message.getKey()) {
+            case CHARACTERS_GET_ONE, CHARACTERS_GET_ALL -> characterService.initCharacter(message);
+            default -> Mono.empty();
+        };
     }
 }
