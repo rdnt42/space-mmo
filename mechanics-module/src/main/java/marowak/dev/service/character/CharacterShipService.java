@@ -1,38 +1,44 @@
 package marowak.dev.service.character;
 
+import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.CharacterInfo;
+import marowak.dev.response.InventoryInfo;
+import marowak.dev.service.physic.Calculable;
 import marowak.dev.service.physic.ShipService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Singleton
-public class CharacterShipService {
-
+public class CharacterShipService implements Calculable {
     private final ShipService shipService;
 
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
-    public Mono<Void> addShip(CharacterMotion motion) {
-        charactersMap.putIfAbsent(motion.characterName(), new CharacterShip(motion.characterName()));
-        CharacterShip ship = charactersMap.get(motion.characterName());
-        ship.updateCoords(motion.x(), motion.y());
+    public Mono<Void> addCharacter(CharacterMotion motion) {
+        return shipService.addShip(motion)
+                .mapNotNull(body -> charactersMap.putIfAbsent(motion.characterName(), new CharacterShip(motion.characterName(), body)))
+                .then();
+    }
 
-        return shipService.addShip(motion);
+    public Mono<Void> removeCharacter(String characterName) {
+        return shipService.removeShip(characterName)
+                .mapNotNull(empty -> charactersMap.remove(characterName))
+                .then();
     }
 
     public Mono<Void> addItem(String characterName, Item item) {
-        charactersMap.putIfAbsent(characterName, new CharacterShip(characterName));
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
@@ -50,23 +56,47 @@ public class CharacterShipService {
 
     public Mono<CharacterInfo> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
-        return Mono.just(toCharacterResponse.apply(ship));
+
+        return Mono.just(ship.getView());
     }
 
-    public Flux<Item> getInventoryItems(String characterName) {
-        CharacterShip ship = charactersMap.get(characterName);
-        return Flux.fromIterable(ship.getItemsMap().values());
+    public Flux<CharacterInfo> getAllCharacters() {
+        return Flux.fromStream(charactersMap.values().stream())
+                .map(CharacterShip::getView);
     }
 
-    private final Function<CharacterShip, CharacterInfo> toCharacterResponse =
-            ship -> CharacterInfo.builder()
-                    .characterName(ship.getId())
-                    .x(ship.getX())
-                    .y(ship.getY())
-                    .angle(ship.getAngle())
-                    .speed(ship.getSpeed())
-                    .shipTypeId(ship.getHull().getTypeId())
-                    .hp(ship.getHull().getHp())
-                    .build();
 
+    public Flux<CharacterInfo> getCharactersInRange(String characterName) {
+        CharacterShip curr = charactersMap.get(characterName);
+
+        return Flux.fromStream(charactersMap.values().stream())
+                .filter(other -> other.isInRange(curr))
+                .map(CharacterShip::getView);
+    }
+
+    public Mono<InventoryInfo> getInventoryInfo(String characterName) {
+        CharacterShip curr = charactersMap.get(characterName);
+
+        return Mono.just(curr.getInventoryView());
+    }
+
+    public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
+        CharacterShip curr = charactersMap.get(characterName);
+        curr.updateShootingState(request);
+
+        return Mono.empty();
+    }
+
+    public Mono<Void> updateShipPosition(CharacterMotionRequest request, String characterName) {
+        CharacterShip curr = charactersMap.get(characterName);
+        curr.updateShipPosition(request);
+
+        return Mono.empty();
+    }
+
+    @Async
+    @Override
+    public void calculate() {
+        // TODO make shoots
+    }
 }

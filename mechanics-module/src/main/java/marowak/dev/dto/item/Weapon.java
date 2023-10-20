@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import marowak.dev.request.CharacterShootingRequest;
 
 import java.awt.*;
 
@@ -28,9 +27,6 @@ public class Weapon extends Item {
     private Point coord;
     @JsonIgnore
     private double angle;
-    @JsonIgnore
-    private boolean isShooting;
-
 
     @Override
     public void init() {
@@ -51,11 +47,6 @@ public class Weapon extends Item {
 
     public void updateShoot() {
         lastShoot = System.currentTimeMillis();
-    }
-
-    public void changeShootState(CharacterShootingRequest request, Point base) {
-        isShooting = request.isShooting();
-        angle = request.angle();
     }
 
 }

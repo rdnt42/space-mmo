@@ -2,11 +2,19 @@ package marowak.dev.character;
 
 
 import lombok.Getter;
+import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.item.Weapon;
+import marowak.dev.dto.world.SpaceShipBody;
+import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.request.CharacterShootingRequest;
+import marowak.dev.response.BodyInfo;
+import marowak.dev.response.CharacterInfo;
+import marowak.dev.response.InventoryInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +25,6 @@ import static marowak.dev.service.item.ItemServiceImpl.HULL_STORAGE_ID;
 @Getter
 public class CharacterShip {
     private String id;
-    private double x;
-    private double y;
-    private int angle;
-    private float speed;
     private Engine engine;
     private Hull hull;
     private Weapon weapon1;
@@ -31,10 +35,29 @@ public class CharacterShip {
 
     private List<Item> cargo;
 
+    private final SpaceShipBody shipBody;
+
+    private boolean isShooting;
+    // TODO make cursor point
+    private int shootAngle;
+
     private final Map<Long, Item> itemsMap = new HashMap<>();
 
-    public CharacterShip(String id) {
+    public CharacterShip(String id, SpaceShipBody shipBody) {
         this.id = id;
+        this.shipBody = shipBody;
+    }
+
+    private Point getCoord() {
+        return shipBody.getCoords();
+    }
+
+    private int getAngle() {
+        return shipBody.getAngle();
+    }
+
+    private float getSpeed() {
+        return shipBody.getSpeed();
     }
 
     public void addItem(Item item) {
@@ -48,11 +71,6 @@ public class CharacterShip {
         itemsMap.put(item.getId(), item);
     }
 
-    public void updateCoords(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
     public void updateItem(long id, int slotId, int storageId) {
         Item item = this.itemsMap.get(id);
         if (storageId == HULL_STORAGE_ID) {
@@ -64,14 +82,18 @@ public class CharacterShip {
     }
 
     private void addToHull(Item item) {
-        switch (item.getSlotId()) {
-            case 1 -> engine = item;
-            case 8 -> hull = item;
-            case 9 -> weapon1 = item;
-            case 10 -> weapon2 = item;
-            case 11 -> weapon3 = item;
-            case 12 -> weapon4 = item;
-            case 13 -> weapon5 = item;
+        switch (item) {
+            case Engine e -> this.engine = e;
+            case Hull h -> this.hull = h;
+            case Weapon w -> {
+                switch (w.getSlotId()) {
+                    case 9 -> weapon1 = w;
+                    case 10 -> weapon2 = w;
+                    case 11 -> weapon3 = w;
+                    case 12 -> weapon4 = w;
+                    case 13 -> weapon5 = w;
+                }
+            }
             default -> throw new IllegalStateException();
         }
     }
@@ -88,4 +110,62 @@ public class CharacterShip {
             default -> throw new IllegalStateException();
         }
     }
+
+    public boolean isInRange(CharacterShip other) {
+        return shipBody.isInRange(other.getShipBody());
+    }
+
+    public CharacterInfo getView() {
+        Point coords = this.getCoord();
+
+        return CharacterInfo.builder()
+                .characterName(id)
+                .x(coords.x())
+                .y(coords.y())
+                .angle(getAngle())
+                .speed(getSpeed())
+                .shipTypeId(hull.getTypeId())
+                .hp(hull.getHp())
+                .build();
+    }
+
+    // TODO
+    public BodyInfo getShortView() {
+        Point coords = this.getCoord();
+
+        return BodyInfo.builder()
+                .id(getId())
+                .x(coords.x())
+                .y(coords.y())
+                .angle(getAngle())
+                .speed(getSpeed())
+                .build();
+    }
+
+    public InventoryInfo getInventoryView() {
+        // TODO
+        var items = new ArrayList<>(cargo);
+        items.add(hull);
+        items.add(engine);
+        items.add(weapon1);
+        items.add(weapon2);
+        items.add(weapon3);
+        items.add(weapon4);
+        items.add(weapon5);
+
+        return InventoryInfo.builder()
+                .items(items)
+                .config(hull.getConfig())
+                .build();
+    }
+
+    public void updateShootingState(CharacterShootingRequest request) {
+        this.isShooting = request.isShooting();
+        this.shootAngle = request.angle();
+    }
+
+    public void updateShipPosition(CharacterMotionRequest request) {
+        shipBody.updatePosition(request.speed(), request.angle(), request.forceTypeId());
+    }
+
 }

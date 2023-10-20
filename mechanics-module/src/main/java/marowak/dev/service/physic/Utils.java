@@ -8,6 +8,9 @@ import java.util.function.Function;
 
 public class Utils {
 
+    private Utils() {
+    }
+
     // TODO radar
     private static final int DOUBLED_PLAYERS_IN_RANGE = 1000 * 1000;
 

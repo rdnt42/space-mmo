@@ -3,7 +3,7 @@ package marowak.dev.service.physic;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.KineticBullet;
-import marowak.dev.dto.world.SpaceShip;
+import marowak.dev.dto.world.SpaceShipBody;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
@@ -47,8 +47,8 @@ public class FactoryUtils {
         return bullet;
     }
 
-    public static SpaceShip createShip(CharacterMotion motion) {
-        SpaceShip ship = new SpaceShip(motion.characterName());
+    public static SpaceShipBody createShip(CharacterMotion motion) {
+        SpaceShipBody ship = new SpaceShipBody(motion.characterName());
 
         BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
         bodyFixture.setDensity(1);

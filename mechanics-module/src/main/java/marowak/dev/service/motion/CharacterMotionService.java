@@ -1,9 +1,7 @@
 package marowak.dev.service.motion;
 
+import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.response.BodyInfo;
-import message.CharacterMessage;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -16,13 +14,9 @@ public interface CharacterMotionService {
 
     Mono<Void> leavingPlayer(String playerName);
 
-    Flux<BodyInfo> getAllMotions();
 
-    Mono<Void> addMotion(CharacterMessage character);
+    Mono<Void> addMotion(CharacterMotion request);
 
     Mono<Void> updateMotion(CharacterMotionRequest request, String playerName);
 
-    Flux<BodyInfo> getCharactersInRange(String playerName);
-
-    Mono<BodyInfo> getCharacter(String playerName);
 }

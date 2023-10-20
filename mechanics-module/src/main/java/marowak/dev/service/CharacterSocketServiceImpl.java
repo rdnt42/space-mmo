@@ -62,7 +62,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             case CMD_UPDATE_MOTION -> {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
                 return characterMotionService.updateMotion(value, characterName)
-                        .thenMany(characterInfoService.getCharactersInfo(characterName))
+                        .thenMany(characterInfoService.getCharactersInRangeInfo(characterName))
                         .buffer(50)
                         .map(infoList -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, infoList))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));

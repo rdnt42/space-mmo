@@ -12,8 +12,6 @@ public record CharacterInfo(
         Integer angle,
         Float speed,
         Integer shipTypeId,
-        Integer hp,
-        Integer evasion,
-        Integer armor
+        Integer hp
 ) {
 }

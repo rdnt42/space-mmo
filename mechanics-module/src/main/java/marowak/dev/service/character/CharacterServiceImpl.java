@@ -4,11 +4,14 @@ import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.response.BodyInfo;
+import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.response.CharacterInfo;
+import marowak.dev.service.CharacterInfoService;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.motion.CharacterMotionService;
 import message.CharacterMessage;
 
+import java.util.Date;
 import java.util.function.Function;
 
 @Slf4j
@@ -18,10 +21,12 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
     private final CharacterMotionService characterMotionService;
 
+    private final CharacterInfoService characterInfoService;
+
     @Override
     public void sendCharactersUpdate() {
-        characterMotionService.getAllMotions()
-                .map(bodyInfoToMessage)
+        characterInfoService.getAllMotions()
+                .map(infoToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
                 .flatMap(charactersClient::sendCharacters)
                 .subscribe();
@@ -29,8 +34,15 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public void initCharacters(CharacterMessage message) {
-        characterMotionService.addMotion(message);
+        CharacterMotion newMotion = new CharacterMotion(
+                message.getCharacterName(),
+                message.getX(),
+                message.getY(),
+                message.getAngle(),
+                0,
+                new Date().getTime());
         log.info("Character init successful, key: {}, character name: {}", message.getKey(), message.getCharacterName());
+        characterMotionService.addMotion(newMotion).subscribe();
     }
 
     @Override
@@ -60,12 +72,12 @@ public class CharacterServiceImpl implements CharacterService {
                 .subscribe();
     }
 
-    private final Function<BodyInfo, CharacterMessage> bodyInfoToMessage = body -> CharacterMessage.builder()
+    private final Function<CharacterInfo, CharacterMessage> infoToMessage = info -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
-            .characterName(body.id())
-            .x(body.x())
-            .y(body.y())
-            .angle(body.angle())
+            .characterName(info.characterName())
+            .x(info.x())
+            .y(info.y())
+            .angle(info.angle())
             .build();
 
 }
