@@ -10,14 +10,11 @@ import marowak.dev.dto.item.Weapon;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
-import marowak.dev.response.BodyInfo;
 import marowak.dev.response.CharacterInfo;
 import marowak.dev.response.InventoryInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -124,21 +121,8 @@ public class CharacterShip {
                 .y(coords.y())
                 .angle(getAngle())
                 .speed(getSpeed())
-                .shipTypeId(hull.getTypeId())
+                .shipTypeId(hull.getEquipmentTypeId())
                 .hp(hull.getHp())
-                .build();
-    }
-
-    // TODO
-    public BodyInfo getShortView() {
-        Point coords = this.getCoord();
-
-        return BodyInfo.builder()
-                .id(getId())
-                .x(coords.x())
-                .y(coords.y())
-                .angle(getAngle())
-                .speed(getSpeed())
                 .build();
     }
 
@@ -154,7 +138,7 @@ public class CharacterShip {
         items.add(weapon5);
 
         return InventoryInfo.builder()
-                .items(items)
+                .items(items.stream().filter(Objects::nonNull).collect(Collectors.toList()))
                 .config(hull.getConfig())
                 .build();
     }
@@ -165,7 +149,7 @@ public class CharacterShip {
     }
 
     public void updateShipPosition(CharacterMotionRequest request) {
-        shipBody.updatePosition(request.speed(), request.angle(), request.forceTypeId());
+        shipBody.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
     }
 
 }

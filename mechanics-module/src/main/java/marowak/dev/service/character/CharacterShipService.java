@@ -62,7 +62,7 @@ public class CharacterShipService implements Calculable {
     public Mono<CharacterInfo> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
 
-        return Mono.just(ship.getView());
+        return Mono.justOrEmpty(ship == null ? null : ship.getView());
     }
 
     public Flux<CharacterInfo> getAllCharacters() {

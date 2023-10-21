@@ -1,9 +1,9 @@
 import {Commands} from "../const/MessageCommand.js";
 
 export class CharacterMotionRequest {
-    constructor(isUpdate, forceTypeId, angle, lastUpdateTime) {
+    constructor(isUpdate, forceTypeId, angle) {
         this.command = Commands.UpdateMotion;
-        this.data = {isUpdate, forceTypeId, angle, lastUpdateTime}
+        this.data = {isUpdate, forceTypeId, angle}
     }
 }
 

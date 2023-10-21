@@ -24,7 +24,6 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
     private final CharacterShipService characterShipService;
     private final CharacterInfoService characterInfoService;
-
     private final ItemService itemService;
 
     @Override

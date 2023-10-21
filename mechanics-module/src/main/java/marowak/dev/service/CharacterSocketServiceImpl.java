@@ -50,11 +50,13 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
         switch (request.command()) {
             case CMD_GET_MOTIONS -> {
                 return characterInfoService.getCharacterInfo(characterName)
+                        .doOnNext(c -> log.info("New character {} get characters info", characterName))
                         .map(info -> new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, info))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
                 return itemService.getInventoryItems(characterName)
+                        .doOnNext(c -> log.info("New character {} get inventory info", characterName))
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }

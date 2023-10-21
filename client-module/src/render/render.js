@@ -114,8 +114,8 @@ export function renderCharacter(characterName, sprite, x, y, angle) {
 
 export function createCharacter(characterName, shipTypeId, x, y, angle) {
     let textureArr = [];
-    let cfg = shipsCfgMap.get(shipTypeId);
-    for (let i = 0; i <= cfg.fragments; i++) {
+    let shipCfg = shipsCfgMap.get(shipTypeId);
+    for (let i = 0; i <= shipCfg.fragments; i++) {
         let img = ('./images/ships/ship' + shipTypeId + '/' + i.toString().padStart(3, '0') + '.png');
         const texture = pixi.Texture.from(img);
         textureArr.push(texture);
@@ -125,7 +125,7 @@ export function createCharacter(characterName, shipTypeId, x, y, angle) {
 
     sprite.anchor.set(0.5, 0.5);
     sprite.animationSpeed = 0.3;
-    sprite.scale.set(cfg.scale);
+    sprite.scale.set(shipCfg.scale);
     sprite.zIndex = Sort.PLAYER;
     sprite.position.set(x, y);
     sprite.angle = angle;

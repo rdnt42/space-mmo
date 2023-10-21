@@ -68,7 +68,6 @@ public class ItemServiceImpl implements ItemService {
         return characterShipService.getInventoryInfo(characterName);
     }
 
-
     private Mono<Void> sendItemUpdate(Item item) {
         ItemMessage message = ItemMessage.builder()
                 .key(ItemMessageKey.ITEMS_UPDATE)

@@ -15,8 +15,10 @@ function onClose() {
     };
 }
 function onOpen() {
-    return function (event) {
+    return async function (event) {
         console.log("WebSocket connection opened", event);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log("Try init character", event);
         initService.startInitAll();
     };
 }
