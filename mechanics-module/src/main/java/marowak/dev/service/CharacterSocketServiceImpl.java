@@ -16,7 +16,6 @@ import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.bullet.BulletMotionService;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
-import marowak.dev.service.motion.CharacterMotionService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -27,7 +26,6 @@ import java.util.function.Predicate;
 @RequiredArgsConstructor
 @Singleton
 public class CharacterSocketServiceImpl implements CharacterSocketService {
-    private final CharacterMotionService characterMotionService;
     private final BulletMotionService bulletMotionService;
     private final CharacterInfoService characterInfoService;
     private final ItemService itemService;
@@ -62,7 +60,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_MOTION -> {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
-                return characterMotionService.updateMotion(value, characterName)
+                return characterService.updateCharacterPosition(value, characterName)
                         .thenMany(characterInfoService.getCharactersInRangeInfo(characterName))
                         .buffer(50)
                         .map(infoList -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, infoList))

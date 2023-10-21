@@ -49,7 +49,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Flux<ItemMessage> getForCharacter(String characterName) {
-        return Flux.empty();
+        return itemR2Repository.findByCharacterName(characterName)
+                .flatMap(item -> switch (item.itemTypeId()) {
+                    case 1 -> Flux.from(engineR2Repository.findById(item.id()))
+                            .map(engine -> BuilderHelper.engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_ONE));
+                    case 2 -> Flux.from(fuelTankR2Repository.findById(item.id()))
+                            .map(fuel -> BuilderHelper.fuelTankToMessage.apply(fuel, item, ItemMessageKey.ITEMS_GET_ONE));
+                    case 6 -> Flux.from(cargoHookR2Repository.findById(item.id()))
+                            .map(hook -> BuilderHelper.cargoHookToMessage.apply(hook, item, ItemMessageKey.ITEMS_GET_ONE));
+                    case 8 -> Flux.from(hullR2Repository.findById(item.id()))
+                            .map(hull -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ONE));
+                    case 9, 10, 11, 12, 13 -> Flux.from(weaponR2Repository.findById(item.id()))
+                            .map(hull -> BuilderHelper.weaponToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ONE));
+
+                    default -> Flux.error(new IllegalStateException("Unexpected value: " + item.itemTypeId()));
+                });
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CharacterShip {
     private Weapon weapon4;
     private Weapon weapon5;
 
-    private List<Item> cargo;
+    private final List<Item> cargo = new ArrayList<>();
 
     private final SpaceShipBody shipBody;
 

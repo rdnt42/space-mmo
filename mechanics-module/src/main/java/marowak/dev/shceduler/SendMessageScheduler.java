@@ -12,7 +12,6 @@ public class SendMessageScheduler {
 
     @Scheduled(fixedDelay = "1s", initialDelay = "5s")
     void sendCharactersUpdate() {
-        characterService.sendCharactersUpdate()
-                .subscribe();
+        characterService.sendCharactersUpdate();
     }
 }

@@ -16,5 +16,6 @@ public class CharacterCommandService {
             case CHARACTERS_GET_ONE, CHARACTERS_GET_ALL -> characterService.initCharacter(message);
             default -> Mono.empty();
         };
+
     }
 }

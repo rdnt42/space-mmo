@@ -3,6 +3,7 @@ package marowak.dev.service.character;
 import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @RequiredArgsConstructor
 @Singleton
 public class CharacterShipService implements Calculable {
@@ -26,10 +28,14 @@ public class CharacterShipService implements Calculable {
 
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
-    public Mono<Void> addCharacter(CharacterMotion motion) {
+    public Mono<CharacterShip> addCharacter(CharacterMotion motion) {
         return shipService.addShip(motion)
-                .mapNotNull(body -> charactersMap.putIfAbsent(motion.characterName(), new CharacterShip(motion.characterName(), body)))
-                .then();
+                .mapNotNull(body -> {
+                    CharacterShip ship = new CharacterShip(motion.characterName(), body);
+                    charactersMap.put(motion.characterName(), ship);
+
+                    return ship;
+                });
     }
 
     public Mono<Void> removeCharacter(String characterName) {
@@ -38,12 +44,11 @@ public class CharacterShipService implements Calculable {
                 .then();
     }
 
-    public Mono<Void> addItem(String characterName, Item item) {
+    public Mono<Item> addItem(String characterName, Item item) {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
-
-        return Mono.empty();
+        return Mono.just(item);
     }
 
     public Mono<Item> updateItem(String characterName, ItemUpdate request) {

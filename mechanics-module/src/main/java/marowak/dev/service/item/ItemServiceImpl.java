@@ -25,6 +25,7 @@ public class ItemServiceImpl implements ItemService {
     public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
         ItemMessage message = ItemMessage.builder()
                 .key(key)
+                .characterName(characterName)
                 .build();
 
         return itemClient.sendItems(message)
@@ -43,16 +44,17 @@ public class ItemServiceImpl implements ItemService {
             case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
-        log.info("Inventory update successful, character name: {}, item id: {}", message.getCharacterName(), item.getId());
 
-        return characterShipService.addItem(message.getCharacterName(), item);
+        return characterShipService.addItem(message.getCharacterName(), item)
+                .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
+                        message.getCharacterName(), item.getId()))
+                .then();
     }
 
     @Override
     public Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName) {
-        log.info("updateInventory id: {}, slot: {}", request.id(), request.slotId());
-
         return characterShipService.updateItem(playerName, request)
+                .doOnNext(item -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
                 .flatMap(item -> sendItemUpdate(item)
                         .then(Mono.just(ItemUpdate.builder()
                                 .id(item.getId())

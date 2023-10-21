@@ -3,6 +3,7 @@ package marowak.dev.service.character;
 import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import marowak.dev.entity.Character;
 import marowak.dev.repository.CharacterR2Repository;
 import message.CharacterMessage;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.BiFunction;
 
+@Slf4j
 @RequiredArgsConstructor
 @Singleton
 public class CharacterServiceImpl implements CharacterService {
@@ -41,12 +43,14 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public Flux<CharacterMessage> getAllOnline() {
         return characterR2Repository.findByOnline(true)
+                .doOnNext(character -> log.info("Getting character: {}", character.characterName()))
                 .map(character -> characterToMessage.apply(character, CharacterMessageKey.CHARACTERS_GET_ALL));
     }
 
     @Override
     public Mono<CharacterMessage> get(String characterName) {
         return Mono.from(characterR2Repository.findById(characterName))
+                .doOnNext(character -> log.info("Getting character: {}", character.characterName()))
                 .map(character -> characterToMessage.apply(character, CharacterMessageKey.CHARACTERS_GET_ONE));
     }
 
