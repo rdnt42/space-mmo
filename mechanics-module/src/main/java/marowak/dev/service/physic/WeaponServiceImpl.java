@@ -24,6 +24,13 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
                         .map(Utils.bodyToBodyInfo));
     }
 
+    @Override
+    public Mono<Void> createBullet(BulletBody bullet) {
+        worldService.createBody(bullet);
+
+        return Mono.empty();
+    }
+
     @Async
     @Override
     public void calculate() {

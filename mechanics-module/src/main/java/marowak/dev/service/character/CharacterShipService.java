@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.world.BulletBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
@@ -14,9 +15,11 @@ import marowak.dev.response.CharacterInfo;
 import marowak.dev.response.InventoryInfo;
 import marowak.dev.service.physic.Calculable;
 import marowak.dev.service.physic.ShipService;
+import marowak.dev.service.physic.WeaponService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class CharacterShipService implements Calculable {
     private final ShipService shipService;
+    private final WeaponService weaponService;
 
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
@@ -102,6 +106,15 @@ public class CharacterShipService implements Calculable {
     @Async
     @Override
     public void calculate() {
-        // TODO make shoots
+        List<CharacterShip> ships = charactersMap.values().stream()
+                .toList();
+        for (CharacterShip ship : ships) {
+            if (!ship.isShooting()) continue;
+            
+            List<BulletBody> bulletBodies = ship.useWeapons();
+            if (bulletBodies.isEmpty()) continue;
+
+            bulletBodies.forEach(bullet -> weaponService.createBullet(bullet).subscribe());
+        }
     }
 }

@@ -7,6 +7,7 @@ import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.item.Weapon;
+import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
@@ -150,6 +151,27 @@ public class CharacterShip {
 
     public void updateShipPosition(CharacterMotionRequest request) {
         shipBody.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
+    }
+
+    public List<BulletBody> useWeapons() {
+        // todo get weapons
+        List<BulletBody> bullets = new ArrayList<>();
+        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+
+        return bullets;
+    }
+
+    private BulletBody useWeapon(Weapon weapon, String creatorId, double angle, Point baseCoords) {
+        if (weapon == null) return null;
+        if (weapon.isReadyForShoot()) {
+            return weapon.makeShootRequest(creatorId, angle, baseCoords);
+        }
+
+        return null;
     }
 
 }

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import marowak.dev.dto.Point;
+import marowak.dev.dto.bullet.BulletCreateRequest;
+import marowak.dev.dto.world.BulletBody;
+import marowak.dev.service.physic.FactoryUtils;
 
-import java.awt.*;
 
 @Getter
 @NoArgsConstructor
@@ -23,10 +26,6 @@ public class Weapon extends Item {
     private int shotFreq;
     @JsonIgnore
     private Point slotShift;
-    @JsonIgnore
-    private Point coord;
-    @JsonIgnore
-    private double angle;
 
     @Override
     public void init() {
@@ -45,8 +44,13 @@ public class Weapon extends Item {
         return System.currentTimeMillis() > (lastShoot + shotFreq);
     }
 
-    public void updateShoot() {
+    public BulletBody makeShootRequest(String creatorId, double angle, Point baseCoords) {
+        var shiftX = baseCoords.x() + slotShift.x();
+        var shiftY = baseCoords.y() + slotShift.y();
+        var request = new BulletCreateRequest(angle, shiftX, shiftY, creatorId);
         lastShoot = System.currentTimeMillis();
+
+        return FactoryUtils.createKineticBullet(request);
     }
 
 }
