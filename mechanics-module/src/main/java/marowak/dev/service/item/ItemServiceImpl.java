@@ -54,8 +54,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName) {
         return characterShipService.updateItem(playerName, request)
-                .doOnNext(item -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
                 .flatMap(item -> sendItemUpdate(item)
+                        .doOnNext(c -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
                         .then(Mono.just(ItemUpdate.builder()
                                 .id(item.getId())
                                 .slotId(item.getSlotId())

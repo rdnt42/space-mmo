@@ -58,9 +58,9 @@ public class CharacterShipService implements Calculable {
     public Mono<Item> updateItem(String characterName, ItemUpdate request) {
         CharacterShip ship = charactersMap.get(characterName);
 
-        ship.updateItem(request.id(), request.slotId(), request.storageId());
+        Item item = ship.updateItem(request.id(), request.slotId(), request.storageId());
 
-        return Mono.empty();
+        return Mono.just(item);
     }
 
     public Mono<CharacterInfo> getCharacter(String characterName) {
@@ -109,8 +109,6 @@ public class CharacterShipService implements Calculable {
         List<CharacterShip> ships = charactersMap.values().stream()
                 .toList();
         for (CharacterShip ship : ships) {
-            if (!ship.isShooting()) continue;
-            
             List<BulletBody> bulletBodies = ship.useWeapons();
             if (bulletBodies.isEmpty()) continue;
 

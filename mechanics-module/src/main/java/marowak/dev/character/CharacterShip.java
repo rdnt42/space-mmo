@@ -69,14 +69,18 @@ public class CharacterShip {
         itemsMap.put(item.getId(), item);
     }
 
-    public void updateItem(long id, int slotId, int storageId) {
+    public Item updateItem(long id, int slotId, int storageId) {
         Item item = this.itemsMap.get(id);
+        var prevItemStorage = item.getStorageId();
+        var prevSlot = item.getSlotId();
+        item.updatePosition(slotId, storageId);
         if (storageId == HULL_STORAGE_ID) {
             addToHull(item);
-        } else if (storageId == HOLD_STORAGE_ID && item.getStorageId() == HULL_STORAGE_ID) {
-            removeFromHull(item);
+        } else if (storageId == HOLD_STORAGE_ID && prevItemStorage == HULL_STORAGE_ID) {
+            removeFromHull(prevSlot);
         }
-        item.updatePosition(slotId, storageId);
+
+        return item;
     }
 
     private void addToHull(Item item) {
@@ -96,8 +100,8 @@ public class CharacterShip {
         }
     }
 
-    private void removeFromHull(Item item) {
-        switch (item.getSlotId()) {
+    private void removeFromHull(int slotId) {
+        switch (slotId) {
             case 1 -> engine = null;
             case 8 -> hull = null;
             case 9 -> weapon1 = null;
@@ -151,24 +155,30 @@ public class CharacterShip {
 
     public void updateShipPosition(CharacterMotionRequest request) {
         shipBody.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
+        if (weapon1 != null) weapon1.updateCoords(getCoord(), getAngle());
+        if (weapon2 != null) weapon2.updateCoords(getCoord(), getAngle());
+        if (weapon3 != null) weapon3.updateCoords(getCoord(), getAngle());
+        if (weapon4 != null) weapon4.updateCoords(getCoord(), getAngle());
+        if (weapon5 != null) weapon5.updateCoords(getCoord(), getAngle());
     }
 
     public List<BulletBody> useWeapons() {
+        if (!isShooting) return Collections.emptyList();
         // todo get weapons
         List<BulletBody> bullets = new ArrayList<>();
-        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle(), getCoord())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle())).ifPresent(bullets::add);
 
         return bullets;
     }
 
-    private BulletBody useWeapon(Weapon weapon, String creatorId, double angle, Point baseCoords) {
+    private BulletBody useWeapon(Weapon weapon, String creatorId, double angle) {
         if (weapon == null) return null;
         if (weapon.isReadyForShoot()) {
-            return weapon.makeShootRequest(creatorId, angle, baseCoords);
+            return weapon.makeShootRequest(creatorId, angle);
         }
 
         return null;

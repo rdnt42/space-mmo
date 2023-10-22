@@ -2,11 +2,9 @@ package marowak.dev.dto.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import marowak.dev.enums.ForceType;
 import org.dyn4j.geometry.Vector2;
 
-@Slf4j
 @Getter
 @Setter
 public class SpaceShipBody extends IdentifiablePhysicalBody {
@@ -15,7 +13,6 @@ public class SpaceShipBody extends IdentifiablePhysicalBody {
     }
 
     public void updatePosition(float speed, float angle, int forceType) {
-        log.info("speed: {}, angle: {}, forceType: {}", speed, angle, forceType);
         double angleInRadians = Math.toRadians(angle);
 
         this.getTransform().setRotation(angleInRadians);
