@@ -362,13 +362,21 @@ export function hasHalfCollision(r1, r2) {
 }
 
 /// Weapon
-export function createBullet(x, y, angle) {
-    let bullet = new pixi.Graphics();
-    bullet.beginFill(0xFF0000);
-    bullet.drawRect(0, 0, 5, 2);
+export function createBullet(x, y, angle, type) {
+    let url;
+    switch (type) {
+        case "KINETIC":
+            url = "images/bullets/kinetic/shot4_asset.png"
+            break;
+    }
+    let bullet = pixi.Sprite.from(url);
     bullet.angle = angle;
-    bullet.endFill();
+    bullet.position.set(x, y);
+    bullet.width = 64;
+    bullet.height = 64;
+    bullet.anchor.set(0.5, 0.5);
     bullet.zIndex = Sort.BULLETS;
+    bullet.scale.set(2)
     app.stage.addChild(bullet);
 
     return bullet;

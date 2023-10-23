@@ -1,7 +1,7 @@
 package marowak.dev.service.physic;
 
-import marowak.dev.dto.world.IdentifiablePhysicalBody;
-import marowak.dev.response.BodyInfo;
+import marowak.dev.dto.world.BulletBody;
+import marowak.dev.response.BulletBodyInfo;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.function.Function;
@@ -21,9 +21,11 @@ public class Utils {
         return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
-    public static final Function<IdentifiablePhysicalBody, BodyInfo> bodyToBodyInfo = body ->
-            BodyInfo.builder()
+    public static final Function<BulletBody, BulletBodyInfo> bulletToBodyInfo = body ->
+            BulletBodyInfo.builder()
                     .id(body.getId())
+                    .creatorId(body.getCreatorId())
+                    .type(body.getType())
                     .x(body.getTransform().getTranslation().x)
                     .y(body.getTransform().getTranslation().y)
                     .angle((int) Math.toDegrees(body.getTransform().getRotationAngle()))

@@ -19,7 +19,7 @@ export function stopWeapon() {
 
 export function updateBulletData(bullets) {
     for (const bullet of bullets) {
-        renderEngine.createOrUpdateBullet(bullet.id, bullet.x, bullet.y, bullet.angle);
+        renderEngine.createOrUpdateBullet(bullet.id, bullet.x, bullet.y, bullet.angle, bullet.type);
     }
 }
 

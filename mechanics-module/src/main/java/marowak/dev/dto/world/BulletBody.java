@@ -1,7 +1,11 @@
 package marowak.dev.dto.world;
 
-public class BulletBody extends IdentifiablePhysicalBody {
+import marowak.dev.enums.BulletType;
+
+public abstract class BulletBody extends IdentifiablePhysicalBody {
     protected BulletBody(String id, String creatorId) {
         super(id, creatorId);
     }
+
+    public abstract BulletType getType();
 }

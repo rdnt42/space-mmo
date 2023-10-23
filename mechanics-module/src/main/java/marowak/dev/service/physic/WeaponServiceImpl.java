@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.SpaceShipBody;
-import marowak.dev.response.BodyInfo;
+import marowak.dev.response.BulletBodyInfo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,12 +16,12 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
     private final WorldService worldService;
 
     @Override
-    public Flux<BodyInfo> getBulletsInRange(String characterName) {
+    public Flux<BulletBodyInfo> getBulletsInRange(String characterName) {
         return Mono.just(worldService.getBody(SpaceShipBody.class, characterName))
                 .map(ship -> ship.getTransform().getTranslation())
                 .flatMapMany(base -> Flux.fromStream(worldService.getBodies(BulletBody.class).stream())
                         .filter(body -> Utils.isInRange(base, body.getTransform().getTranslation()))
-                        .map(Utils.bodyToBodyInfo));
+                        .map(Utils.bulletToBodyInfo));
     }
 
     @Override

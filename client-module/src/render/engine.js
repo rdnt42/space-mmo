@@ -31,13 +31,13 @@ export function getRenderCoords(characterName) {
     return render.getRenderCoords(sprite);
 }
 
-export function createOrUpdateBullet(id, x, y, angle) {
+export function createOrUpdateBullet(id, x, y, angle, type) {
     let abs = characterService.getPlayerCharacter().movement;
     let newX = getX(x, abs.x);
     let newY = getY(y, abs.y);
     let bullet = bullets.get(id);
     if (bullet === undefined) {
-        bullet = render.createBullet(newX, newY, angle);
+        bullet = render.createBullet(newX, newY, angle, type);
         bullets.set(id, bullet);
     }
 
