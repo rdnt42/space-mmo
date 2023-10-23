@@ -30,7 +30,7 @@ public class FactoryUtils {
         bodyFixture.setRestitutionVelocity(0.001);
 
         // Coordinates and angle
-        bullet.translate(request.x(), request.y());
+        bullet.translate(request.coords().x(), request.coords().y());
         bullet.getTransform().setRotation(request.angle());
 
         // resistance and rest
@@ -43,6 +43,8 @@ public class FactoryUtils {
         Vector2 direction = new Vector2(bullet.getTransform().getRotationAngle());
         Vector2 force = direction.product(20000);
         bullet.applyForce(force);
+        Vector2 impulse = new Vector2(request.impulse().x(), request.impulse().y());
+        bullet.applyImpulse(impulse);
 
         return bullet;
     }

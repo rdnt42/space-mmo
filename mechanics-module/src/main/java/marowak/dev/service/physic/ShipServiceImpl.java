@@ -21,7 +21,6 @@ public class ShipServiceImpl implements ShipService {
         return Mono.just(ship);
     }
 
-
     @Override
     public Mono<Void> removeShip(String characterName) {
         SpaceShipBody ship = worldService.getBody(SpaceShipBody.class, characterName);

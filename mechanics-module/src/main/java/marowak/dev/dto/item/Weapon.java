@@ -72,9 +72,9 @@ public class Weapon extends Item {
         init();
     }
 
-    public BulletBody makeShootRequest(String creatorId, double angle) {
-        double angleInRadians = Math.toRadians(angle);
-        var request = new BulletCreateRequest(angleInRadians, coords.x(), coords.y(), creatorId);
+    public BulletBody makeShootRequest(String creatorId, double angle, Point impulse) {
+        var angleInRadians = Math.toRadians(angle);
+        var request = new BulletCreateRequest(angleInRadians, coords, impulse, creatorId);
         lastShoot = System.currentTimeMillis();
 
         return FactoryUtils.createKineticBullet(request);

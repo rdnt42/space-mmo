@@ -1,4 +1,6 @@
 package marowak.dev.dto.bullet;
 
-public record BulletCreateRequest(double angle, double x, double y, String creatorId) {
+import marowak.dev.dto.Point;
+
+public record BulletCreateRequest(double angle, Point coords, Point impulse, String creatorId) {
 }

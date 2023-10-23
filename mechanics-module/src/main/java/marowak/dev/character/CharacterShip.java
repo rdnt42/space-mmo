@@ -13,6 +13,7 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.CharacterInfo;
 import marowak.dev.response.InventoryInfo;
+import org.dyn4j.geometry.Vector2;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +58,13 @@ public class CharacterShip {
     private float getSpeed() {
         return shipBody.getSpeed();
     }
+
+    private Point getImpulse() {
+        Vector2 linearVelocity = shipBody.getLinearVelocity();
+
+        return new Point(linearVelocity.x, linearVelocity.y);
+    }
+
 
     public void addItem(Item item) {
         if (item.getStorageId() == HOLD_STORAGE_ID) {
@@ -166,19 +174,19 @@ public class CharacterShip {
         if (!isShooting) return Collections.emptyList();
         // todo get weapons
         List<BulletBody> bullets = new ArrayList<>();
-        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
 
         return bullets;
     }
 
-    private BulletBody useWeapon(Weapon weapon, String creatorId, double angle) {
+    private BulletBody useWeapon(Weapon weapon, String creatorId, double angle, Point impulse) {
         if (weapon == null) return null;
         if (weapon.isReadyForShoot()) {
-            return weapon.makeShootRequest(creatorId, angle);
+            return weapon.makeShootRequest(creatorId, angle, impulse);
         }
 
         return null;
