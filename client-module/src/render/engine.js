@@ -37,12 +37,24 @@ export function createOrUpdateBullet(id, x, y, angle, type) {
     let newY = getY(y, abs.y);
     let bullet = bullets.get(id);
     if (bullet === undefined) {
-        bullet = render.createBullet(newX, newY, angle, type);
+        bullet = render.createBullet(newX, newY, angle, type, id);
         bullets.set(id, bullet);
     }
 
     render.renderBullet(bullet, newX, newY, angle);
     bullet.isUpdated = true;
+}
+
+export function callbackFinishedCreateBullet(id) {
+    // TODO
+    return;
+    let bullet = bullets.get(id);
+    let {x, y, angle} = bullet;
+
+    const newBullet = render.flightBullet(x, y, angle);
+    bullets.set(id, newBullet);
+
+    render.removeSprite(bullet);
 }
 
 function getX(currX, diffX) {

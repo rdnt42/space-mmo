@@ -1,6 +1,7 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
 import * as inventoryService from "../inventory-service.js";
+import * as engineService from "./engine.js";
 import {ItemTypeId} from "../const/ItemTypeId.js";
 import {shipsCfgMap} from "../cfg/images-cfg.js";
 
@@ -362,7 +363,34 @@ export function hasHalfCollision(r1, r2) {
 }
 
 /// Weapon
-export function createBullet(x, y, angle, type) {
+export function createBullet(x, y, angle, type, id) {
+    let textureArr = [];
+    for (let i = 1; i <= 5; i++) {
+        let img = ('./images/bullets/kinetic/shot4_' + i + '.png');
+        const texture = pixi.Texture.from(img);
+        textureArr.push(texture);
+    }
+
+    let sprite = new pixi.AnimatedSprite(textureArr);
+
+    sprite.anchor.set(0.5, 0.5);
+    sprite.animationSpeed = 0.3;
+    sprite.scale.set(1);
+    sprite.zIndex = Sort.BULLETS;
+    sprite.position.set(x, y);
+    sprite.angle = angle;
+    sprite.loop = false;
+
+    sprite.play();
+    sprite.onComplete = () => {
+        engineService.callbackFinishedCreateBullet(id);
+    };
+    app.stage.addChild(sprite);
+
+    return sprite;
+}
+
+export function flightBullet(x, y, angle, type) {
     let url;
     switch (type) {
         case "KINETIC":
@@ -376,7 +404,6 @@ export function createBullet(x, y, angle, type) {
     bullet.height = 64;
     bullet.anchor.set(0.5, 0.5);
     bullet.zIndex = Sort.BULLETS;
-    bullet.scale.set(2)
     app.stage.addChild(bullet);
 
     return bullet;
