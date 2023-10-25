@@ -1,9 +1,9 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
 import * as inventoryService from "../inventory-service.js";
-import * as engineService from "./engine.js";
 import {ItemTypeId} from "../const/ItemTypeId.js";
-import {shipsCfgMap} from "../cfg/images-cfg.js";
+import {shipsCfgMap} from "../cfg/ship-images-cfg.js";
+import {bulletsCfgMap} from "../cfg/bullets-images-cfg.js";
 
 let app;
 let dragTarget = null;
@@ -363,10 +363,11 @@ export function hasHalfCollision(r1, r2) {
 }
 
 /// Weapon
-export function createBullet(x, y, angle, type, id) {
+export function createBullet(x, y, angle, type) {
     let textureArr = [];
-    for (let i = 1; i <= 5; i++) {
-        let img = ('./images/bullets/kinetic/shot4_' + i + '.png');
+    let cfg = bulletsCfgMap.get(type);
+    for (let i = 0; i < cfg.fly; i++) {
+        let img = ('./images/bullets/' + type.toLowerCase() + '/shot' + i + '.png');
         const texture = pixi.Texture.from(img);
         textureArr.push(texture);
     }
@@ -374,39 +375,22 @@ export function createBullet(x, y, angle, type, id) {
     let sprite = new pixi.AnimatedSprite(textureArr);
 
     sprite.anchor.set(0.5, 0.5);
-    sprite.animationSpeed = 0.3;
-    sprite.scale.set(1);
+    sprite.animationSpeed = cfg.speed;
+    sprite.scale.set(cfg.scale);
     sprite.zIndex = Sort.BULLETS;
     sprite.position.set(x, y);
     sprite.angle = angle;
     sprite.loop = false;
 
     sprite.play();
-    sprite.onComplete = () => {
-        engineService.callbackFinishedCreateBullet(id);
+    sprite.onFrameChange = () => {
+        if (sprite.currentFrame === cfg.fly) {
+            sprite.stop();
+        }
     };
     app.stage.addChild(sprite);
 
     return sprite;
-}
-
-export function flightBullet(x, y, angle, type) {
-    let url;
-    switch (type) {
-        case "KINETIC":
-            url = "images/bullets/kinetic/shot4_asset.png"
-            break;
-    }
-    let bullet = pixi.Sprite.from(url);
-    bullet.angle = angle;
-    bullet.position.set(x, y);
-    bullet.width = 64;
-    bullet.height = 64;
-    bullet.anchor.set(0.5, 0.5);
-    bullet.zIndex = Sort.BULLETS;
-    app.stage.addChild(bullet);
-
-    return bullet;
 }
 
 export function renderBullet(sprite, x, y, angle) {
