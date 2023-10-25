@@ -1,3 +1,5 @@
 export const BulletType = {
-    Kinetic: 'KINETIC'
+    Kinetic: 'KINETIC',
+    Electric: 'ELECTRIC',
+    Thermal: 'THERMAL'
 }

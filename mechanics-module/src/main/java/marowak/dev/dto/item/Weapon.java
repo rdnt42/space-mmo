@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.world.BulletBody;
+import marowak.dev.enums.BulletType;
 import marowak.dev.service.physic.FactoryUtils;
 
 import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
@@ -77,7 +78,11 @@ public class Weapon extends Item {
         var request = new BulletCreateRequest(angleInRadians, coords, impulse, creatorId);
         lastShoot = System.currentTimeMillis();
 
-        return FactoryUtils.createKineticBullet(request);
+        return switch (BulletType.from(damageTypeId)) {
+            case KINETIC -> FactoryUtils.createKineticBullet(request);
+            case ELECTRIC -> FactoryUtils.createElectricBullet(request);
+            case THERMAL -> FactoryUtils.createThermalBullet(request);
+        };
     }
 
 }
