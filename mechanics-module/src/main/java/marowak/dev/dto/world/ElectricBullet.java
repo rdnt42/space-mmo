@@ -3,8 +3,8 @@ package marowak.dev.dto.world;
 import marowak.dev.enums.BulletType;
 
 public class ElectricBullet extends BulletBody {
-    public ElectricBullet(String id, String creatorId) {
-        super(id, creatorId);
+    public ElectricBullet(String id, String creatorId, int damage) {
+        super(id, creatorId, damage);
     }
 
     @Override

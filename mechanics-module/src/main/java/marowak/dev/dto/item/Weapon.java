@@ -75,7 +75,7 @@ public class Weapon extends Item {
 
     public BulletBody makeShootRequest(String creatorId, double angle, Point impulse) {
         var angleInRadians = Math.toRadians(angle);
-        var request = new BulletCreateRequest(angleInRadians, coords, impulse, creatorId);
+        var request = new BulletCreateRequest(angleInRadians, this.coords, impulse, creatorId, this.damage);
         lastShoot = System.currentTimeMillis();
 
         return switch (BulletType.from(damageTypeId)) {

@@ -36,7 +36,7 @@ public class CharacterShipService implements Calculable {
         return shipService.addShip(motion)
                 .mapNotNull(body -> {
                     CharacterShip ship = new CharacterShip(motion.characterName(), body);
-                    charactersMap.put(motion.characterName(), ship);
+                    charactersMap.put(ship.getId(), ship);
 
                     return ship;
                 });
@@ -109,10 +109,15 @@ public class CharacterShipService implements Calculable {
         List<CharacterShip> ships = charactersMap.values().stream()
                 .toList();
         for (CharacterShip ship : ships) {
-            List<BulletBody> bulletBodies = ship.useWeapons();
-            if (bulletBodies.isEmpty()) continue;
-
-            bulletBodies.forEach(bullet -> weaponService.createBullet(bullet).subscribe());
+            calculateSHooting(ship);
         }
     }
+
+    private void calculateSHooting(CharacterShip ship) {
+        List<BulletBody> bulletBodies = ship.useWeapons();
+        if (bulletBodies.isEmpty()) return;
+
+        bulletBodies.forEach(bullet -> weaponService.createBullet(bullet).subscribe());
+    }
+
 }

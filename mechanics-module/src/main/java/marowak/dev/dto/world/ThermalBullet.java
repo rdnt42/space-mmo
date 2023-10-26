@@ -3,8 +3,8 @@ package marowak.dev.dto.world;
 import marowak.dev.enums.BulletType;
 
 public class ThermalBullet extends BulletBody {
-    public ThermalBullet(String id, String creatorId) {
-        super(id, creatorId);
+    public ThermalBullet(String id, String creatorId, int damage) {
+        super(id, creatorId, damage);
     }
 
     @Override

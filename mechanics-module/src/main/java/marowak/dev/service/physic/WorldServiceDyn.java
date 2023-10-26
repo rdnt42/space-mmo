@@ -44,10 +44,11 @@ public class WorldServiceDyn implements WorldService {
 
         // filter no need collision objects
         BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2)
-                -> !isOwnBullet(body1, body2) && !isBullets(body1, body2)
+                -> isOwnBullet(body1, body2) || isBullets(body1, body2)
         );
 
         world.setBroadphaseCollisionDataFilter(filter);
+        world.addCollisionListener(new ShipCollisionListener());
     }
 
     @Override

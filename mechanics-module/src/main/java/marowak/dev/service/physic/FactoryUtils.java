@@ -12,7 +12,6 @@ import org.dyn4j.geometry.Vector2;
 import java.util.concurrent.atomic.LongAdder;
 
 public class FactoryUtils {
-    // TODO create config
     private static final BulletConfig kineticCfg = new BulletConfig(
             5,
             6,
@@ -51,22 +50,22 @@ public class FactoryUtils {
     }
 
     public static KineticBullet createKineticBullet(BulletCreateRequest request) {
-        return updateBulletParams(request, kineticCfg, KineticBullet.class);
+        return createBullet(request, kineticCfg, KineticBullet.class);
     }
 
     public static ElectricBullet createElectricBullet(BulletCreateRequest request) {
-        return updateBulletParams(request, electricCfg, ElectricBullet.class);
+        return createBullet(request, electricCfg, ElectricBullet.class);
     }
 
     public static ThermalBullet createThermalBullet(BulletCreateRequest request) {
-        return updateBulletParams(request, thermalCfg, ThermalBullet.class);
+        return createBullet(request, thermalCfg, ThermalBullet.class);
     }
 
 
-    private static <T extends BulletBody> T updateBulletParams(BulletCreateRequest request, BulletConfig cfg, Class<T> tClass) {
+    private static <T extends BulletBody> T createBullet(BulletCreateRequest request, BulletConfig cfg, Class<T> tClass) {
         try {
-            T bullet = tClass.getConstructor(String.class, String.class)
-                    .newInstance(getNewId(), request.creatorId());
+            T bullet = tClass.getConstructor(String.class, String.class, int.class)
+                    .newInstance(getNewId(), request.creatorId(), request.damage());
             // Material
             BodyFixture bodyFixture = bullet.addFixture(
                     Geometry.createRectangle(cfg.getWidth(), cfg.getHeight()));
