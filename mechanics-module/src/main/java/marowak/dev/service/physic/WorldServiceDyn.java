@@ -18,7 +18,6 @@ import org.dyn4j.world.World;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -43,16 +42,10 @@ public class WorldServiceDyn implements WorldService {
         world.getSettings().setMaximumAtRestLinearVelocity(50);
         world.getSettings().setMaximumAtRestAngularVelocity(0.1);
 
-        // filter self shooting
-        BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2) -> {
-            if (body1 instanceof SpaceShipBody && body2 instanceof BulletBody) {
-                return !Objects.equals(((SpaceShipBody) body1).getId(), ((BulletBody) body2).getCreatorId());
-            } else if (body2 instanceof SpaceShipBody && body1 instanceof BulletBody) {
-                return !Objects.equals(((SpaceShipBody) body2).getId(), ((BulletBody) body1).getCreatorId());
-            }
-
-            return true;
-        });
+        // filter no need collision objects
+        BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2)
+                -> !isOwnBullet(body1, body2) && !isBullets(body1, body2)
+        );
 
         world.setBroadphaseCollisionDataFilter(filter);
     }
@@ -111,6 +104,15 @@ public class WorldServiceDyn implements WorldService {
         }
 
         return null;
+    }
+
+    private boolean isOwnBullet(Body body1, Body body2) {
+        return (body1 instanceof SpaceShipBody && body2 instanceof BulletBody) ||
+                (body2 instanceof SpaceShipBody && body1 instanceof BulletBody);
+    }
+
+    private boolean isBullets(Body body1, Body body2) {
+        return body1 instanceof BulletBody && body2 instanceof BulletBody;
     }
 
 }

@@ -59,7 +59,7 @@ public class FactoryUtils {
     }
 
     public static ThermalBullet createThermalBullet(BulletCreateRequest request) {
-        return updateBulletParams(request, electricCfg, ThermalBullet.class);
+        return updateBulletParams(request, thermalCfg, ThermalBullet.class);
     }
 
 
