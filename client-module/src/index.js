@@ -1,23 +1,34 @@
 import * as socket from "./websocket-service.js";
 
+let input;
+let btn;
 createConnectInfo();
 
 function createConnectInfo() {
-    let input = document.createElement("input");
+    input = document.createElement("input");
     input.innerHTML = "InputText";
     input.type = "text";
     input.name = "inputText";
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            init();
+        }
+    })
     document.body.appendChild(input);
 
-    let btn = document.createElement("button");
+    btn = document.createElement("button");
     btn.innerHTML = "Submit";
     btn.type = "submit";
     btn.name = "formBtn";
     document.body.appendChild(btn);
     btn.onclick = function () {
-        console.log(`characterName: ${input.value}`)
-        socket.initSocketConnection(input.value);
-        input.remove();
-        btn.remove();
+        init();
     };
+}
+
+function init() {
+    console.log(`characterName: ${input.value}`)
+    socket.initSocketConnection(input.value);
+    input.remove();
+    btn.remove();
 }
