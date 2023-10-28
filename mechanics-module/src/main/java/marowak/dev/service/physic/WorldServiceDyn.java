@@ -15,6 +15,7 @@ import org.dyn4j.world.BroadphaseCollisionDataFilter;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class WorldServiceDyn implements WorldService {
 
     private final Map<String, SpaceShipBody> ships = new ConcurrentHashMap<>();
     private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
+
+    private final List<Body> bodiesForRemove = new ArrayList<>();
 
     @PostConstruct
     private void init() {
@@ -55,6 +58,8 @@ public class WorldServiceDyn implements WorldService {
     public void updateWorld() {
         try {
             world.step(1);
+            bodiesForRemove.forEach(body -> world.removeBody(body));
+            bodiesForRemove.clear();
         } catch (Exception e) {
             log.error("Error when try to update world", e);
         }
@@ -72,13 +77,12 @@ public class WorldServiceDyn implements WorldService {
 
     @Override
     public void removeBody(Body body) {
-        if (world.removeBody(body)) {
-            switch (body) {
-                case SpaceShipBody ship -> ships.remove(ship.getId());
-                case BulletBody bullet -> bullets.remove(bullet.getId());
-                default -> throw new IllegalStateException("Unexpected value: " + body);
-            }
+        switch (body) {
+            case SpaceShipBody ship -> ships.remove(ship.getId());
+            case BulletBody bullet -> bullets.remove(bullet.getId());
+            default -> throw new IllegalStateException("Unexpected value: " + body);
         }
+        bodiesForRemove.add(body);
     }
 
     @Override
