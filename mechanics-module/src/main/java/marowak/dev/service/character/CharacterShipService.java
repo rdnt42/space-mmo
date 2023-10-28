@@ -110,6 +110,7 @@ public class CharacterShipService implements Calculable {
                 .toList();
         for (CharacterShip ship : ships) {
             calculateSHooting(ship);
+            calculateDamage(ship);
         }
     }
 
@@ -118,6 +119,12 @@ public class CharacterShipService implements Calculable {
         if (bulletBodies.isEmpty()) return;
 
         bulletBodies.forEach(bullet -> weaponService.createBullet(bullet).subscribe());
+    }
+
+    private void calculateDamage(CharacterShip ship) {
+        if (!ship.getShipBody().getAccumulatedDamage().isEmpty()) {
+            log.info("Ship {} got damage {}", ship.getId(), ship.getShipBody().getDamage().damage());
+        }
     }
 
 }

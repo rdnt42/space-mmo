@@ -43,9 +43,8 @@ public class WorldServiceDyn implements WorldService {
         world.getSettings().setMaximumAtRestAngularVelocity(0.1);
 
         // filter no need collision objects
-        // проверить валидацию столкновения кораблей
         BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2)
-                -> isOwnBullet(body1, body2) || isBullets(body1, body2)
+                -> !isOwnBullet(body1, body2) && !isBullets(body1, body2)
         );
 
         world.setBroadphaseCollisionDataFilter(filter);
@@ -109,8 +108,10 @@ public class WorldServiceDyn implements WorldService {
     }
 
     private boolean isOwnBullet(Body body1, Body body2) {
-        return (body1 instanceof SpaceShipBody && body2 instanceof BulletBody) ||
-                (body2 instanceof SpaceShipBody && body1 instanceof BulletBody);
+        return ((body1 instanceof SpaceShipBody ship && body2 instanceof BulletBody bullet) &&
+                bullet.getCreatorId().equals(ship.getId())) ||
+                ((body2 instanceof SpaceShipBody ship2 && body1 instanceof BulletBody bullet2) &&
+                        bullet2.getCreatorId().equals(ship2.getId()));
     }
 
     private boolean isBullets(Body body1, Body body2) {

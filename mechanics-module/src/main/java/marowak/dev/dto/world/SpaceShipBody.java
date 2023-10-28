@@ -2,12 +2,19 @@ package marowak.dev.dto.world;
 
 import lombok.Getter;
 import lombok.Setter;
+import marowak.dev.dto.bullet.DamageCreator;
 import marowak.dev.enums.ForceType;
 import org.dyn4j.geometry.Vector2;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 @Getter
 @Setter
 public class SpaceShipBody extends IdentifiablePhysicalBody {
+
+    private Queue<DamageCreator> accumulatedDamage = new ArrayDeque<>();
+
     public SpaceShipBody(String id) {
         super(id, id);
     }
@@ -30,6 +37,14 @@ public class SpaceShipBody extends IdentifiablePhysicalBody {
             this.applyForce(f);
         }
         this.setAtRest(false);
+    }
+
+    public void addDamage(DamageCreator damage) {
+        accumulatedDamage.add(damage);
+    }
+
+    public DamageCreator getDamage() {
+        return accumulatedDamage.poll();
     }
 
 }
