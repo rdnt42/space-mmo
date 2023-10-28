@@ -10,9 +10,12 @@ public abstract class IdentifiablePhysicalBody extends Body {
     private final String id;
     private final String creatorId;
 
+    private boolean needDestroy;
+
     protected IdentifiablePhysicalBody(String id, String creatorId) {
         this.id = id;
         this.creatorId = creatorId;
+        this.needDestroy = false;
     }
 
     public Point getCoords() {
@@ -36,5 +39,13 @@ public abstract class IdentifiablePhysicalBody extends Body {
 
     public boolean isInRange(Body other) {
         return Utils.isInRange(this.getTransform().getTranslation(), other.getTransform().getTranslation());
+    }
+
+    public boolean getNeedDestroy() {
+        return needDestroy;
+    }
+
+    public void setNeedDestroy(boolean needDestroy) {
+        this.needDestroy = needDestroy;
     }
 }

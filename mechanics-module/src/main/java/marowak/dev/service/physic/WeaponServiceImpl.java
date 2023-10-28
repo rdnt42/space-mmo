@@ -4,7 +4,6 @@ import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.dto.world.BulletBody;
-import marowak.dev.dto.world.IdentifiablePhysicalBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.response.BulletBodyInfo;
 import reactor.core.publisher.Flux;
@@ -38,8 +37,12 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
                 .forEach(this::calculateBullet);
     }
 
-    private void calculateBullet(IdentifiablePhysicalBody body) {
-        if (body.isAtRest()) {
+    private void calculateBullet(BulletBody body) {
+        calculateLifeCycle(body);
+    }
+
+    private void calculateLifeCycle(BulletBody body) {
+        if (body.isAtRest() || body.getNeedDestroy()) {
             worldService.removeBody(body);
         }
     }

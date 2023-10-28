@@ -43,6 +43,7 @@ public class WorldServiceDyn implements WorldService {
         world.getSettings().setMaximumAtRestAngularVelocity(0.1);
 
         // filter no need collision objects
+        // проверить валидацию столкновения кораблей
         BroadphaseCollisionDataFilter<Body, BodyFixture> filter = ((body1, fixture1, body2, fixture2)
                 -> isOwnBullet(body1, body2) || isBullets(body1, body2)
         );
