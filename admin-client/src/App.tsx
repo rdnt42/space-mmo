@@ -4,6 +4,7 @@ import {EngineCreate, EngineEdit, EngineList} from "./components/engines";
 import {CargoHookCreate, CargoHookEdit, CargoHookList} from "./components/cargoHooks";
 import {FuelTankCreate, FuelTankEdit, FuelTankList} from "./components/fuelTanks";
 import {WeaponCreate, WeaponEdit, WeaponList} from "./components/weapons";
+import {HullCreate, HullEdit, HullList} from "./components/hulls";
 
 const App = () => (
     <Admin dataProvider={dataProvider}>
@@ -11,6 +12,7 @@ const App = () => (
         <Resource name="cargoHooks" list={CargoHookList} edit={CargoHookEdit} create={CargoHookCreate}/>
         <Resource name="fuelTanks" list={FuelTankList} edit={FuelTankEdit} create={FuelTankCreate}/>
         <Resource name="weapons" list={WeaponList} edit={WeaponEdit} create={WeaponCreate}/>
+        <Resource name="hulls" list={HullList} edit={HullEdit} create={HullCreate}/>
     </Admin>
 );
 

@@ -61,3 +61,14 @@ func GetDamageTypes(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, types)
 }
+
+func GetHullTypes(ctx *gin.Context) {
+	var types []models.HullType
+	results := db.Preload(clause.Associations).Find(&types)
+	if results.Error != nil {
+		ctx.JSON(http.StatusBadRequest, results.Error)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, types)
+}

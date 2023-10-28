@@ -36,6 +36,8 @@ func main() {
 	initWeapons(group)
 	initWeaponTypes(group)
 	initDamageTypes(group)
+	initHulls(group)
+	initHullTypes(group)
 
 	err := server.Run("localhost:8080")
 	if err != nil {
@@ -71,7 +73,6 @@ func initEngines(rg *gin.RouterGroup) {
 
 func initEngineTypes(rg *gin.RouterGroup) {
 	router := rg.Group("engine_types")
-
 	router.GET("/", services.GetEngineTypes)
 }
 
@@ -86,7 +87,6 @@ func initCargoHooks(rg *gin.RouterGroup) {
 
 func initCargoHookTypes(rg *gin.RouterGroup) {
 	router := rg.Group("cargo_hook_types")
-
 	router.GET("/", services.GetCargoHookTypes)
 }
 
@@ -101,7 +101,6 @@ func initFuelTanks(rg *gin.RouterGroup) {
 
 func initFuelTankTypes(rg *gin.RouterGroup) {
 	router := rg.Group("fuel_tank_types")
-
 	router.GET("/", services.GetFuelTankTypes)
 }
 
@@ -116,12 +115,24 @@ func initWeapons(rg *gin.RouterGroup) {
 
 func initWeaponTypes(rg *gin.RouterGroup) {
 	router := rg.Group("weapon_types")
-
 	router.GET("/", services.GetWeaponTypes)
 }
 
 func initDamageTypes(rg *gin.RouterGroup) {
 	router := rg.Group("damage_types")
-
 	router.GET("/", services.GetDamageTypes)
+}
+
+func initHulls(rg *gin.RouterGroup) {
+	router := rg.Group("hulls")
+	router.POST("/", services.CreateHull)
+	router.GET("/", services.GetHulls)
+	router.GET("/:hullId", services.GetHull)
+	router.PUT("/:hullId", services.UpdateHull)
+	router.DELETE("/:hullId", services.DeleteHull)
+}
+
+func initHullTypes(rg *gin.RouterGroup) {
+	router := rg.Group("hull_types")
+	router.GET("/", services.GetHullTypes)
 }
