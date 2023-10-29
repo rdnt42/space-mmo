@@ -5,8 +5,10 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.character.CharacterShip;
+import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
@@ -33,13 +37,10 @@ public class CharacterShipService implements Calculable {
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
     public Mono<CharacterShip> addCharacter(CharacterMotion motion) {
-        return shipService.addShip(motion)
-                .mapNotNull(body -> {
-                    CharacterShip ship = new CharacterShip(motion.characterName(), body);
-                    charactersMap.put(ship.getId(), ship);
+        CharacterShip ship = new CharacterShip(motion.characterName());
+        charactersMap.put(ship.getId(), ship);
 
-                    return ship;
-                });
+        return Mono.just(ship);
     }
 
     public Mono<Void> removeCharacter(String characterName) {
@@ -52,6 +53,14 @@ public class CharacterShipService implements Calculable {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
+        if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull hull) {
+            ShipCreateRequest request = new ShipCreateRequest(
+                    ship.getId(), ship.getShipBody().getCoords(), ship.getShipBody().getAngle(), hull.getEquipmentTypeId());
+            return shipService.createShip(request)
+                    .doOnNext(ship::setShipBody)
+                    .then(Mono.just(item));
+
+        }
         return Mono.just(item);
     }
 

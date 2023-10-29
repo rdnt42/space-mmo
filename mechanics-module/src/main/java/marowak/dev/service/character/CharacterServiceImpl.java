@@ -14,7 +14,6 @@ import marowak.dev.service.item.ItemService;
 import message.CharacterMessage;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
 import java.util.function.Function;
 
 @Slf4j
@@ -42,8 +41,7 @@ public class CharacterServiceImpl implements CharacterService {
                 message.getX(),
                 message.getY(),
                 message.getAngle(),
-                0,
-                new Date().getTime());
+                0);
 
         return characterShipService.addCharacter(request)
                 .doOnNext(character -> log.info("Character init successful, key: {}, character name: {}", message.getKey(), character.getId()))

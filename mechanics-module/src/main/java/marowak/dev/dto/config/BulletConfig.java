@@ -1,4 +1,4 @@
-package marowak.dev.dto;
+package marowak.dev.dto.config;
 
 import lombok.Getter;
 

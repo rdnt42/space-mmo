@@ -2,6 +2,7 @@ package marowak.dev.character;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Hull;
@@ -13,6 +14,7 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.CharacterInfo;
 import marowak.dev.response.InventoryInfo;
+import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.*;
@@ -34,7 +36,8 @@ public class CharacterShip {
 
     private final List<Item> cargo = new ArrayList<>();
 
-    private final SpaceShipBody shipBody;
+    @Setter
+    private SpaceShipBody shipBody;
 
     private boolean isShooting;
     // TODO make cursor point
@@ -42,9 +45,8 @@ public class CharacterShip {
 
     private final Map<Long, Item> itemsMap = new HashMap<>();
 
-    public CharacterShip(String id, SpaceShipBody shipBody) {
+    public CharacterShip(String id) {
         this.id = id;
-        this.shipBody = shipBody;
     }
 
     private Point getCoord() {
@@ -128,6 +130,12 @@ public class CharacterShip {
     public CharacterInfo getView() {
         Point coords = this.getCoord();
 
+        Polygon shape = (Polygon) shipBody.getFixture(0).getShape();
+        Vector2 center = shape.getCenter();
+        int[] polygon = Arrays.stream(shape.getVertices())
+                .flatMapToInt(point -> Arrays.stream(new int[]{(int) (point.x - center.x), (int) (point.y - center.y)}))
+                .toArray();
+
         return CharacterInfo.builder()
                 .characterName(id)
                 .x(coords.x())
@@ -136,6 +144,7 @@ public class CharacterShip {
                 .speed(getSpeed())
                 .shipTypeId(hull.getEquipmentTypeId())
                 .hp(hull.getHp())
+                .polygon(polygon)
                 .build();
     }
 

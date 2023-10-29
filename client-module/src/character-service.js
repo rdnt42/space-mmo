@@ -51,7 +51,7 @@ export function updateCharactersData(states) {
 
 function createCharacter(data) {
     let character = new Character(data.characterName);
-    character.initCharacter(data.x, data.y, data.angle, data.speed, data.shipTypeId);
+    character.initCharacter(data.x, data.y, data.angle, data.speed, data.shipTypeId, data.polygon);
 
     charactersMap.set(data.characterName, character);
     console.log(`create character ${character.characterName}, ship: ${data.shipTypeId}`)

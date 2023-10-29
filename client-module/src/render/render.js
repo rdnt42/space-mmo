@@ -113,7 +113,7 @@ export function renderCharacter(characterName, sprite, x, y, angle) {
     label.position.set(sprite.x - sprite.width / 2, sprite.y - sprite.height - 5);
 }
 
-export function createCharacter(characterName, shipTypeId, x, y, angle) {
+export function createCharacter(characterName, shipTypeId, x, y, angle, polygonArr) {
     let textureArr = [];
     let shipCfg = shipsCfgMap.get(shipTypeId);
     for (let i = 0; i <= shipCfg.fragments; i++) {
@@ -137,7 +137,7 @@ export function createCharacter(characterName, shipTypeId, x, y, angle) {
     if (IS_DEBUG) {
         let border = new pixi.Graphics();
         border.lineStyle(1, 0xFF0000);
-        border.drawCircle(sprite.x, sprite.y, 64);
+        border.drawPolygon(polygonArr);
         border.endFill();
         sprite.addChild(border);
     }

@@ -4,8 +4,8 @@ import * as characterService from "../character-service.js";
 let ships = new Map();
 let bullets = new Map();
 
-export function createCharacter(characterName, shipTypeId) {
-    let sprite = render.createCharacter(characterName, shipTypeId);
+export function createCharacter(characterName, shipTypeId, x, y, angle, polygon) {
+    let sprite = render.createCharacter(characterName, shipTypeId, x, y, angle, polygon);
     ships.set(characterName, sprite);
 }
 

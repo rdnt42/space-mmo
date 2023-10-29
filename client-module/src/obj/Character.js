@@ -8,9 +8,9 @@ export class Character {
         this.characterName = characterName;
     };
 
-    initCharacter(x, y, angle, speed, shipTypeId) {
+    initCharacter(x, y, angle, speed, shipTypeId, polygon) {
         this.movement = new Movement(x, y, angle, speed);
-        renderEngine.createCharacter(this.characterName, shipTypeId);
+        renderEngine.createCharacter(this.characterName, shipTypeId, x, y, angle, polygon);
     }
 
     updateCharacter(x, y, angle, speed) {

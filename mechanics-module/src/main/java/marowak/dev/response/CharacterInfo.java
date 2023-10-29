@@ -12,6 +12,7 @@ public record CharacterInfo(
         Integer angle,
         Float speed,
         Integer shipTypeId,
-        Integer hp
+        Integer hp,
+        int[] polygon
 ) {
 }

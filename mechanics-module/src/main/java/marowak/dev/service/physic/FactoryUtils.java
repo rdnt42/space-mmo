@@ -1,44 +1,19 @@
 package marowak.dev.service.physic;
 
-import marowak.dev.dto.BulletConfig;
 import marowak.dev.dto.bullet.BulletCreateRequest;
-import marowak.dev.dto.motion.CharacterMotion;
+import marowak.dev.dto.config.BulletConfig;
+import marowak.dev.dto.config.ShipConfig;
+import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.*;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
+import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.concurrent.atomic.LongAdder;
 
 public class FactoryUtils {
-    private static final BulletConfig kineticCfg = new BulletConfig(
-            5,
-            6,
-            0.1,
-            400,
-            70,
-            10,
-            0.05);
-
-    private static final BulletConfig electricCfg = new BulletConfig(
-            10,
-            3,
-            0.05,
-            800,
-            90,
-            100,
-            0.5);
-
-    private static final BulletConfig thermalCfg = new BulletConfig(
-            10,
-            3,
-            0.05,
-            600,
-            90,
-            100,
-            0.5);
-
     private static final LongAdder bulletId = new LongAdder();
 
     private FactoryUtils() {
@@ -50,15 +25,15 @@ public class FactoryUtils {
     }
 
     public static KineticBullet createKineticBullet(BulletCreateRequest request) {
-        return createBullet(request, kineticCfg, KineticBullet.class);
+        return createBullet(request, FactoryConfig.kineticCfg, KineticBullet.class);
     }
 
     public static ElectricBullet createElectricBullet(BulletCreateRequest request) {
-        return createBullet(request, electricCfg, ElectricBullet.class);
+        return createBullet(request, FactoryConfig.electricCfg, ElectricBullet.class);
     }
 
     public static ThermalBullet createThermalBullet(BulletCreateRequest request) {
-        return createBullet(request, thermalCfg, ThermalBullet.class);
+        return createBullet(request, FactoryConfig.thermalCfg, ThermalBullet.class);
     }
 
 
@@ -97,18 +72,24 @@ public class FactoryUtils {
         }
     }
 
-    public static SpaceShipBody createShip(CharacterMotion motion) {
-        SpaceShipBody ship = new SpaceShipBody(motion.characterName());
+    public static SpaceShipBody createShip(ShipCreateRequest request) {
+        SpaceShipBody ship = new SpaceShipBody(request.id());
+        ShipConfig shipConfig = FactoryConfig.shipsCfg.get(request.shipTypeId());
+        Vector2[] polygonPoints = shipConfig.polygon().stream()
+                .map(p -> new Vector2(p.x() * shipConfig.scale(), p.y() * shipConfig.scale()))
+                .toArray(Vector2[]::new);
 
-        BodyFixture bodyFixture = ship.addFixture(Geometry.createCircle(64 * 0.75));
+        Polygon polygon = Geometry.createPolygon(polygonPoints);
+        polygon.translate(-polygon.getCenter().x, -polygon.getCenter().y);
+        BodyFixture bodyFixture = ship.addFixture(polygon);
         bodyFixture.setDensity(1);
         bodyFixture.setFriction(0.1);
         bodyFixture.setRestitution(0.3);
         bodyFixture.setRestitutionVelocity(0.001);
         ship.setLinearDamping(0.1);
         ship.setMass(MassType.NORMAL);
-        ship.translate(motion.x(), motion.y());
-        double angleInRadians = Math.toRadians(motion.angle());
+        ship.translate(request.coords().x(), request.coords().y());
+        double angleInRadians = Math.toRadians(request.angle());
         ship.getTransform().setRotation(angleInRadians);
         ship.setAtRestDetectionEnabled(false);
 
