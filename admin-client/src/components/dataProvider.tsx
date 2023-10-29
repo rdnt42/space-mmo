@@ -39,6 +39,7 @@ export const dataProvider: DataProvider = {
         body: JSON.stringify(params.data),
     }).then(({json}) => ({data: json})),
 
+    //@ts-ignore
     create: (resource, params) => httpClient(`${apiUrl}/${resource}`, {
         method: 'POST',
         body: JSON.stringify(params.data),

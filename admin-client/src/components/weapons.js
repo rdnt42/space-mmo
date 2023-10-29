@@ -59,8 +59,8 @@ export const WeaponEdit = () => (
 
 
 export const WeaponCreate = () => {
-    const {data: typesData} = useGetList('weapon_types');
-    const {data: damageData} = useGetList('damage_types');
+    const {data: typesData = []} = useGetList('weapon_types');
+    const {data: damageData = []} = useGetList('damage_types');
     const [selectedType, setSelectedType] = useState({});
     const [damageType, setSelectedDamageType] = useState({});
 
