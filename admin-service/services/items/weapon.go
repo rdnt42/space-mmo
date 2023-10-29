@@ -1,4 +1,4 @@
-package services
+package items
 
 import (
 	"admin-service/constants"

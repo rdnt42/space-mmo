@@ -1,7 +1,8 @@
 package main
 
 import (
-	"admin-service/services"
+	"admin-service/services/items"
+	"admin-service/services/kafka"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -38,6 +39,7 @@ func main() {
 	initDamageTypes(group)
 	initHulls(group)
 	initHullTypes(group)
+	initCharactersRefresh(group)
 
 	err := server.Run("localhost:8080")
 	if err != nil {
@@ -59,80 +61,85 @@ func initDb() {
 	}
 
 	fmt.Println("DB connected")
-	services.CreateDbLink(DB)
+	items.CreateDbLink(DB)
+}
+
+func initCharactersRefresh(rg *gin.RouterGroup) {
+	router := rg.Group("characters")
+	router.POST("/refresh", kafka.ProduceRefreshCharacters)
 }
 
 func initEngines(rg *gin.RouterGroup) {
 	router := rg.Group("engines")
-	router.POST("/", services.CreateEngine)
-	router.GET("/", services.GetEngines)
-	router.GET("/:engineId", services.GetEngine)
-	router.PUT("/:engineId", services.UpdateEngine)
-	router.DELETE("/:engineId", services.DeleteEngine)
+	router.POST("/", items.CreateEngine)
+	router.GET("/", items.GetEngines)
+	router.GET("/:engineId", items.GetEngine)
+	router.PUT("/:engineId", items.UpdateEngine)
+	router.DELETE("/:engineId", items.DeleteEngine)
 }
 
 func initEngineTypes(rg *gin.RouterGroup) {
 	router := rg.Group("engine_types")
-	router.GET("/", services.GetEngineTypes)
+	router.GET("/", items.GetEngineTypes)
 }
 
 func initCargoHooks(rg *gin.RouterGroup) {
 	router := rg.Group("cargoHooks")
-	router.POST("/", services.CreateCargoHook)
-	router.GET("/", services.GetCargoHooks)
-	router.GET("/:cargoHookId", services.GetCargoHook)
-	router.PUT("/:cargoHookId", services.UpdateCargoHook)
-	router.DELETE("/:cargoHookId", services.DeleteCargoHook)
+	router.POST("/", items.CreateCargoHook)
+	router.GET("/", items.GetCargoHooks)
+	router.GET("/:cargoHookId", items.GetCargoHook)
+	router.PUT("/:cargoHookId", items.UpdateCargoHook)
+	router.DELETE("/:cargoHookId", items.DeleteCargoHook)
 }
 
 func initCargoHookTypes(rg *gin.RouterGroup) {
 	router := rg.Group("cargo_hook_types")
-	router.GET("/", services.GetCargoHookTypes)
+	router.GET("/", items.GetCargoHookTypes)
 }
 
 func initFuelTanks(rg *gin.RouterGroup) {
 	router := rg.Group("fuelTanks")
-	router.POST("/", services.CreateFuelTank)
-	router.GET("/", services.GetFuelTanks)
-	router.GET("/:fuelTankId", services.GetFuelTank)
-	router.PUT("/:fuelTankId", services.UpdateFuelTank)
-	router.DELETE("/:fuelTankId", services.DeleteFuelTank)
+	router.POST("/", items.CreateFuelTank)
+	router.GET("/", items.GetFuelTanks)
+	router.GET("/:fuelTankId", items.GetFuelTank)
+	router.PUT("/:fuelTankId", items.UpdateFuelTank)
+	router.DELETE("/:fuelTankId", items.DeleteFuelTank)
 }
 
 func initFuelTankTypes(rg *gin.RouterGroup) {
 	router := rg.Group("fuel_tank_types")
-	router.GET("/", services.GetFuelTankTypes)
+	router.GET("/", items.GetFuelTankTypes)
 }
 
 func initWeapons(rg *gin.RouterGroup) {
 	router := rg.Group("weapons")
-	router.POST("/", services.CreateWeapon)
-	router.GET("/", services.GetWeapons)
-	router.GET("/:weaponId", services.GetWeapon)
-	router.PUT("/:weaponId", services.UpdateWeapon)
-	router.DELETE("/:weaponId", services.DeleteWeapon)
+	router.POST("/", items.CreateWeapon)
+	router.GET("/", items.GetWeapons)
+	router.GET("/:weaponId", items.GetWeapon)
+	router.PUT("/:weaponId", items.UpdateWeapon)
+	router.DELETE("/:weaponId", items.DeleteWeapon)
 }
 
 func initWeaponTypes(rg *gin.RouterGroup) {
 	router := rg.Group("weapon_types")
-	router.GET("/", services.GetWeaponTypes)
+	router.GET("/", items.GetWeaponTypes)
 }
 
 func initDamageTypes(rg *gin.RouterGroup) {
 	router := rg.Group("damage_types")
-	router.GET("/", services.GetDamageTypes)
+	router.GET("/", items.GetDamageTypes)
 }
 
 func initHulls(rg *gin.RouterGroup) {
 	router := rg.Group("hulls")
-	router.POST("/", services.CreateHull)
-	router.GET("/", services.GetHulls)
-	router.GET("/:hullId", services.GetHull)
-	router.PUT("/:hullId", services.UpdateHull)
-	router.DELETE("/:hullId", services.DeleteHull)
+	router.POST("/", items.CreateHull)
+	router.GET("/", items.GetHulls)
+	router.GET("/:hullId", items.GetHull)
+	router.PUT("/:hullId", items.UpdateHull)
+	router.DELETE("/:hullId", items.DeleteHull)
 }
 
 func initHullTypes(rg *gin.RouterGroup) {
 	router := rg.Group("hull_types")
-	router.GET("/", services.GetHullTypes)
+	router.GET("/", items.GetHullTypes)
 }
