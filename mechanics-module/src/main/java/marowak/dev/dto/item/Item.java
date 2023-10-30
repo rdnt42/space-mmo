@@ -3,6 +3,7 @@ package marowak.dev.dto.item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import marowak.dev.response.item.ItemView;
 
 @Getter
 @NoArgsConstructor
@@ -19,6 +20,23 @@ public class Item {
 
     public void init() {
         // base init method
+    }
+
+    protected ItemView.ItemViewBuilder<?, ?> getItemBuilder(ItemView.ItemViewBuilder<?, ?> builder) {
+        return builder
+                .id(id)
+                .slotId(slotId)
+                .storageId(storageId)
+                .typeId(typeId)
+                .upgradeLevel(upgradeLevel)
+                .cost(cost)
+                .name(name)
+                .dsc(dsc);
+    }
+
+    public ItemView getView() {
+        return getItemBuilder(ItemView.builder())
+                .build();
     }
 
     public void updatePosition(int slotId, int storageId) {

@@ -1,6 +1,5 @@
 package marowak.dev.dto.item;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -9,6 +8,8 @@ import marowak.dev.dto.Point;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.enums.BulletType;
+import marowak.dev.response.item.ItemView;
+import marowak.dev.response.item.WeaponView;
 import marowak.dev.service.physic.FactoryUtils;
 
 import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
@@ -25,15 +26,11 @@ public class Weapon extends Item {
     private int damageTypeId;
     private int equipmentTypeId;
 
-    @JsonIgnore
+    // internal
     private long lastShoot;
-    @JsonIgnore
     private int shotFreq;
-    @JsonIgnore
     private double shiftAngle;
-    @JsonIgnore
     private double shiftLength;
-    @JsonIgnore
     private Point coords;
 
     @Override
@@ -54,6 +51,19 @@ public class Weapon extends Item {
         shiftAngle = Math.toDegrees(Math.atan(slotShift.y() / slotShift.x()));
         if (getSlotId() >= 11) shiftAngle -= 180;
         log.info("change weapon slot: {}, angle: {}, length: {}", getSlotId(), shiftAngle, shiftLength);
+    }
+
+    @Override
+    public ItemView getView() {
+        WeaponView.WeaponViewBuilder<?, ?> builder = WeaponView.builder()
+                .damage(damage)
+                .radius(radius)
+                .rate(rate)
+                .damageTypeId(damageTypeId)
+                .equipmentTypeId(equipmentTypeId);
+
+        return super.getItemBuilder(builder)
+                .build();
     }
 
     public boolean isReadyForShoot() {

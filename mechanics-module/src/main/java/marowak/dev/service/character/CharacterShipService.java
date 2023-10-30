@@ -13,8 +13,8 @@ import marowak.dev.dto.world.BulletBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.CharacterInfo;
-import marowak.dev.response.InventoryInfo;
+import marowak.dev.response.CharacterView;
+import marowak.dev.response.InventoryView;
 import marowak.dev.service.physic.Calculable;
 import marowak.dev.service.physic.ShipService;
 import marowak.dev.service.physic.WeaponService;
@@ -72,19 +72,19 @@ public class CharacterShipService implements Calculable {
         return Mono.just(item);
     }
 
-    public Mono<CharacterInfo> getCharacter(String characterName) {
+    public Mono<CharacterView> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
 
         return Mono.justOrEmpty(ship == null ? null : ship.getView());
     }
 
-    public Flux<CharacterInfo> getAllCharacters() {
+    public Flux<CharacterView> getAllCharacters() {
         return Flux.fromStream(charactersMap.values().stream())
                 .map(CharacterShip::getView);
     }
 
 
-    public Flux<CharacterInfo> getCharactersInRange(String characterName) {
+    public Flux<CharacterView> getCharactersInRange(String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
 
         return Flux.fromStream(charactersMap.values().stream())
@@ -92,7 +92,7 @@ public class CharacterShipService implements Calculable {
                 .map(CharacterShip::getView);
     }
 
-    public Mono<InventoryInfo> getInventoryInfo(String characterName) {
+    public Mono<InventoryView> getInventoryInfo(String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
 
         return Mono.just(curr.getInventoryView());

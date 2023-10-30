@@ -12,13 +12,15 @@ import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
-import marowak.dev.response.CharacterInfo;
-import marowak.dev.response.InventoryInfo;
+import marowak.dev.response.CharacterView;
+import marowak.dev.response.InventoryView;
+import marowak.dev.response.item.ItemView;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Getter
@@ -127,16 +129,16 @@ public class CharacterShip {
         return shipBody.isInRange(other.getShipBody());
     }
 
-    public CharacterInfo getView() {
+    public CharacterView getView() {
         Point coords = this.getCoord();
 
         Polygon shape = (Polygon) shipBody.getFixture(0).getShape();
         Vector2 center = shape.getCenter();
-        int[] polygon = Arrays.stream(shape.getVertices())
-                .flatMapToInt(point -> Arrays.stream(new int[]{(int) (point.x - center.x), (int) (point.y - center.y)}))
-                .toArray();
+        List<Integer> polygon = Arrays.stream(shape.getVertices())
+                .flatMap(point -> Stream.of((int) (point.x - center.x), (int) (point.y - center.y)))
+                .toList();
 
-        return CharacterInfo.builder()
+        return CharacterView.builder()
                 .characterName(id)
                 .x(coords.x())
                 .y(coords.y())
@@ -148,20 +150,22 @@ public class CharacterShip {
                 .build();
     }
 
-    public InventoryInfo getInventoryView() {
+    public InventoryView getInventoryView() {
         // TODO
-        var items = new ArrayList<>(cargo);
-        items.add(hull);
-        items.add(engine);
-        items.add(weapon1);
-        items.add(weapon2);
-        items.add(weapon3);
-        items.add(weapon4);
-        items.add(weapon5);
+        List<ItemView> items = cargo.stream()
+                .map(Item::getView)
+                .collect(Collectors.toList());
+        items.add(hull == null ? null : hull.getView());
+        items.add(engine == null ? null : engine.getView());
+        items.add(weapon1 == null ? null : weapon1.getView());
+        items.add(weapon2 == null ? null : weapon2.getView());
+        items.add(weapon3 == null ? null : weapon3.getView());
+        items.add(weapon4 == null ? null : weapon4.getView());
+        items.add(weapon5 == null ? null : weapon5.getView());
 
-        return InventoryInfo.builder()
+        return InventoryView.builder()
                 .items(items.stream().filter(Objects::nonNull).collect(Collectors.toList()))
-                .config(hull.getConfig())
+                .config(hull == null ? 0 : hull.getConfig())
                 .build();
     }
 
@@ -200,5 +204,6 @@ public class CharacterShip {
 
         return null;
     }
+
 
 }

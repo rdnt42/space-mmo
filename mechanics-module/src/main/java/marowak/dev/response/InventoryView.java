@@ -1,13 +1,13 @@
 package marowak.dev.response;
 
 import lombok.Builder;
-import marowak.dev.dto.item.Item;
+import marowak.dev.response.item.ItemView;
 
 import java.util.Collection;
 
 @Builder
-public record InventoryInfo(
-        Collection<Item> items,
+public record InventoryView(
+        Collection<ItemView> items,
         int config
 ) {
 }

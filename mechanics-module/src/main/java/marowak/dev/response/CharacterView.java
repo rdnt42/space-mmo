@@ -3,9 +3,11 @@ package marowak.dev.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record CharacterInfo(
+public record CharacterView(
         String characterName,
         double x,
         double y,
@@ -13,6 +15,6 @@ public record CharacterInfo(
         Float speed,
         Integer shipTypeId,
         Integer hp,
-        int[] polygon
+        List<Integer> polygon
 ) {
 }

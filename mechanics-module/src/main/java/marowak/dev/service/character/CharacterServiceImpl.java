@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.response.CharacterInfo;
+import marowak.dev.response.CharacterView;
 import marowak.dev.service.CharacterInfoService;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.item.ItemService;
@@ -92,7 +92,7 @@ public class CharacterServiceImpl implements CharacterService {
         return characterShipService.updateShipPosition(request, characterName);
     }
 
-    private final Function<CharacterInfo, CharacterMessage> infoToMessage = info -> CharacterMessage.builder()
+    private final Function<CharacterView, CharacterMessage> infoToMessage = info -> CharacterMessage.builder()
             .key(CharacterMessageKey.CHARACTER_MOTION_UPDATE)
             .characterName(info.characterName())
             .x(info.x())

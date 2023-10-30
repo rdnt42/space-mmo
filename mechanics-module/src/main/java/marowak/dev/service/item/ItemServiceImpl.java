@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.Item;
 import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.InventoryInfo;
+import marowak.dev.response.InventoryView;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.character.CharacterShipService;
 import message.*;
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<InventoryInfo> getInventoryItems(String characterName) {
+    public Mono<InventoryView> getInventoryItems(String characterName) {
         return characterShipService.getInventoryInfo(characterName);
     }
 
