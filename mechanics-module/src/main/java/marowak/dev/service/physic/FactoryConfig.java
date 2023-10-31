@@ -40,36 +40,40 @@ public class FactoryConfig {
 
     private static final ShipConfig pilgrimCfg = new ShipConfig(
             Arrays.asList(
-                    new Point(1, 16),
-                    new Point(110, 16),
-                    new Point(127, 63),
-                    new Point(109, 111),
-                    new Point(1, 110)),
-            0.75f
+                    new Point(10, 10),
+                    new Point(85, 10),
+                    new Point(115, 30),
+                    new Point(125, 60),
+                    new Point(115, 90),
+                    new Point(85, 115),
+                    new Point(10, 115)),
+            1f
     );
 
     private static final ShipConfig aggressorCfg = new ShipConfig(
             Arrays.asList(
-                    new Point(127, 62),
-                    new Point(119, 26),
-                    new Point(45, 1),
-                    new Point(23, 9),
-                    new Point(8, 48),
-                    new Point(9, 82),
-                    new Point(19, 112),
-                    new Point(44, 126),
-                    new Point(119, 99)),
-            0.75f
+                    new Point(10, 45),
+                    new Point(25, 10),
+                    new Point(40, 5),
+                    new Point(110, 30),
+                    new Point(120, 60),
+                    new Point(110, 90),
+                    new Point(40, 120),
+                    new Point(25, 115),
+                    new Point(10, 90)),
+            1f
     );
 
     private static final ShipConfig defenderCfg = new ShipConfig(
             Arrays.asList(
-                    new Point(1, 16),
-                    new Point(110, 16),
-                    new Point(127, 63),
-                    new Point(109, 111),
-                    new Point(1, 110)),
-            0.75f
+                    new Point(10, 10),
+                    new Point(85, 10),
+                    new Point(115, 30),
+                    new Point(125, 60),
+                    new Point(115, 90),
+                    new Point(85, 115),
+                    new Point(10, 115)),
+            1f
     );
 
     public static final Map<Integer, ShipConfig> shipsCfg = Map.of(

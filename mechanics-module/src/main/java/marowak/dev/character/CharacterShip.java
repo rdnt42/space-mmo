@@ -8,6 +8,7 @@ import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.item.Weapon;
+import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.request.CharacterMotionRequest;
@@ -15,6 +16,7 @@ import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.response.CharacterView;
 import marowak.dev.response.InventoryView;
 import marowak.dev.response.item.ItemView;
+import marowak.dev.service.physic.FactoryUtils;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
@@ -38,6 +40,9 @@ public class CharacterShip {
 
     private final List<Item> cargo = new ArrayList<>();
 
+    // TODO refactor
+    private final Point startCoords;
+    private final int startAngle;
     @Setter
     private SpaceShipBody shipBody;
 
@@ -47,8 +52,10 @@ public class CharacterShip {
 
     private final Map<Long, Item> itemsMap = new HashMap<>();
 
-    public CharacterShip(String id) {
+    public CharacterShip(String id, Point startCoords, int startAngle) {
         this.id = id;
+        this.startCoords = startCoords;
+        this.startAngle = startAngle;
     }
 
     private Point getCoord() {
@@ -69,7 +76,6 @@ public class CharacterShip {
         return new Point(linearVelocity.x, linearVelocity.y);
     }
 
-
     public void addItem(Item item) {
         if (item.getStorageId() == HOLD_STORAGE_ID) {
             cargo.add(item);
@@ -79,6 +85,12 @@ public class CharacterShip {
         }
 
         itemsMap.put(item.getId(), item);
+    }
+
+    public SpaceShipBody addShipBody(int shipTypeId) {
+        ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, shipTypeId);
+
+        return FactoryUtils.createShip(request);
     }
 
     public Item updateItem(long id, int slotId, int storageId) {
@@ -130,6 +142,7 @@ public class CharacterShip {
     }
 
     public CharacterView getView() {
+        if (shipBody == null) return null;
         Point coords = this.getCoord();
 
         Polygon shape = (Polygon) shipBody.getFixture(0).getShape();

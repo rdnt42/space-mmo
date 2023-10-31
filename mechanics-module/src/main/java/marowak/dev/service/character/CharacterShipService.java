@@ -5,11 +5,12 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.character.CharacterShip;
+import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
-import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.BulletBody;
+import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
@@ -37,7 +38,7 @@ public class CharacterShipService implements Calculable {
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
     public Mono<CharacterShip> addCharacter(CharacterMotion motion) {
-        CharacterShip ship = new CharacterShip(motion.characterName());
+        CharacterShip ship = new CharacterShip(motion.characterName(), new Point(motion.x(), motion.y()), motion.angle());
         charactersMap.put(ship.getId(), ship);
 
         return Mono.just(ship);
@@ -54,9 +55,8 @@ public class CharacterShipService implements Calculable {
 
         ship.addItem(item);
         if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull hull) {
-            ShipCreateRequest request = new ShipCreateRequest(
-                    ship.getId(), ship.getShipBody().getCoords(), ship.getShipBody().getAngle(), hull.getEquipmentTypeId());
-            return shipService.createShip(request)
+            SpaceShipBody body = ship.addShipBody(hull.getEquipmentTypeId());
+            return shipService.createShip(body)
                     .doOnNext(ship::setShipBody)
                     .then(Mono.just(item));
 
@@ -75,12 +75,12 @@ public class CharacterShipService implements Calculable {
     public Mono<CharacterView> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
 
-        return Mono.justOrEmpty(ship == null ? null : ship.getView());
+        return Mono.justOrEmpty(ship.getView());
     }
 
     public Flux<CharacterView> getAllCharacters() {
         return Flux.fromStream(charactersMap.values().stream())
-                .map(CharacterShip::getView);
+                .mapNotNull(CharacterShip::getView);
     }
 
 
@@ -89,7 +89,7 @@ public class CharacterShipService implements Calculable {
 
         return Flux.fromStream(charactersMap.values().stream())
                 .filter(other -> other.isInRange(curr))
-                .map(CharacterShip::getView);
+                .mapNotNull(CharacterShip::getView);
     }
 
     public Mono<InventoryView> getInventoryInfo(String characterName) {
@@ -131,7 +131,7 @@ public class CharacterShipService implements Calculable {
     }
 
     private void calculateDamage(CharacterShip ship) {
-        if (!ship.getShipBody().getAccumulatedDamage().isEmpty()) {
+        if (ship.getShipBody() != null && !ship.getShipBody().getAccumulatedDamage().isEmpty()) {
             log.info("Ship {} got damage {}", ship.getId(), ship.getShipBody().getDamage().damage());
         }
     }
