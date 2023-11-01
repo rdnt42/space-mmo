@@ -11,6 +11,8 @@ public interface WorldService {
 
     void removeBody(Body body);
 
+    void removeBodies(List<Body> bodies);
+
     <T extends Body> List<T> getBodies(Class<T> tClass);
 
     <T extends Body> T getBody(Class<T> tClass, String id);

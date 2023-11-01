@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.socket;
 
 import io.micronaut.websocket.WebSocketSession;
 import marowak.dev.dto.SocketMessage;

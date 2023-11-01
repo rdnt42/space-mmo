@@ -4,6 +4,7 @@ package marowak.dev.character;
 import lombok.Getter;
 import lombok.Setter;
 import marowak.dev.dto.Point;
+import marowak.dev.dto.calculate.CalculateShipDamageResult;
 import marowak.dev.dto.item.Engine;
 import marowak.dev.dto.item.Hull;
 import marowak.dev.dto.item.Item;
@@ -17,6 +18,7 @@ import marowak.dev.response.CharacterView;
 import marowak.dev.response.InventoryView;
 import marowak.dev.response.item.ItemView;
 import marowak.dev.service.physic.FactoryUtils;
+import org.dyn4j.dynamics.Body;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,10 +79,12 @@ public class CharacterShip {
         itemsMap.put(item.getId(), item);
     }
 
-    public SpaceShipBody addShipBody(int shipTypeId) {
-        ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, shipTypeId);
+    public SpaceShipBody createShipBody() {
+        ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, hull.getEquipmentTypeId());
+        SpaceShipBody body = FactoryUtils.createShip(request);
+        hull.setShipBody(body);
 
-        return FactoryUtils.createShip(request);
+        return body;
     }
 
     public Item updateItem(long id, int slotId, int storageId) {
@@ -98,6 +102,7 @@ public class CharacterShip {
     }
 
     private void addToHull(Item item) {
+        // TODO check if slot is busy
         switch (item) {
             case Engine e -> this.engine = e;
             case Hull h -> this.hull = h;
@@ -148,7 +153,7 @@ public class CharacterShip {
     }
 
     public InventoryView getInventoryView() {
-        // TODO
+        // TODO #95
         List<ItemView> items = cargo.stream()
                 .map(Item::getView)
                 .collect(Collectors.toList());
@@ -202,8 +207,18 @@ public class CharacterShip {
         return null;
     }
 
-    public void calculateDamage() {
-        if (hull == null) return;
+    public CalculateShipDamageResult calculateDamage() {
+        if (hull == null) return null;
+
+        return hull.calculateDamage();
+    }
+
+    public List<Body> destroy() {
+        List<Body> bodies = new ArrayList<>();
+        // TODO #95
+        if (hull != null) bodies.add(hull.getShipBody());
+
+        return bodies;
     }
 
 }

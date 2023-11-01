@@ -45,8 +45,8 @@ public abstract class IdentifiablePhysicalBody extends Body {
         return needDestroy;
     }
 
-    public void setNeedDestroy(boolean needDestroy) {
-        this.needDestroy = needDestroy;
+    public void setNeedDestroy() {
+        this.needDestroy = true;
     }
 
 }

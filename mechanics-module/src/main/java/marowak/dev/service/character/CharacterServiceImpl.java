@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.response.CharacterView;
-import marowak.dev.service.CharacterInfoService;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.item.ItemService;
 import message.CharacterMessage;

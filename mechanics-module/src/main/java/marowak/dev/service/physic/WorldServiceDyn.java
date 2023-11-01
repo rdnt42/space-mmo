@@ -34,6 +34,7 @@ public class WorldServiceDyn implements WorldService {
     private final Map<String, SpaceShipBody> ships = new ConcurrentHashMap<>();
     private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
 
+    // TODO copy list and delete elements after removing
     private final List<Body> bodiesForRemove = new ArrayList<>();
 
     @PostConstruct
@@ -83,6 +84,11 @@ public class WorldServiceDyn implements WorldService {
             default -> throw new IllegalStateException("Unexpected value: " + body);
         }
         bodiesForRemove.add(body);
+    }
+
+    @Override
+    public void removeBodies(List<Body> bodies) {
+        bodies.forEach(this::removeBody);
     }
 
     @Override

@@ -43,8 +43,4 @@ public class SpaceShipBody extends IdentifiablePhysicalBody {
         accumulatedDamage.add(damage);
     }
 
-    public DamageCreator getDamage() {
-        return accumulatedDamage.poll();
-    }
-
 }

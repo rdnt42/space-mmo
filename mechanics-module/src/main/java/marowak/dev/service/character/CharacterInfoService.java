@@ -1,10 +1,9 @@
-package marowak.dev.service;
+package marowak.dev.service.character;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.response.CharacterView;
-import marowak.dev.service.character.CharacterShipService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

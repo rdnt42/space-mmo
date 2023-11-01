@@ -55,9 +55,9 @@ public class CharacterShipService implements Calculable {
 
         ship.addItem(item);
         if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull hull) {
-            SpaceShipBody body = ship.addShipBody(hull.getEquipmentTypeId());
-            return shipService.createShip(body)
-                    .doOnNext(hull::setShipBody)
+            SpaceShipBody shipBody = ship.createShipBody();
+            return shipService.createShip(shipBody)
+                    .doOnError(e -> hull.setShipBody(null))
                     .then(Mono.just(item));
         }
         return Mono.just(item);
@@ -130,7 +130,12 @@ public class CharacterShipService implements Calculable {
     }
 
     private void calculateDamage(CharacterShip ship) {
-        ship.calculateDamage();
+        var result = ship.calculateDamage();
+        if (result != null && result.isDead()) {
+            log.info("Character '{}' was killed by '{}'", ship.getId(), result.killerId());
+            shipService.removeShipBodies(ship.destroy()).subscribe();
+            charactersMap.remove(ship.getId());
+        }
     }
 
 }

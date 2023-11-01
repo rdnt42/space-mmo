@@ -1,4 +1,4 @@
-package marowak.dev.service;
+package marowak.dev.service.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.websocket.WebSocketBroadcaster;
@@ -14,6 +14,7 @@ import marowak.dev.request.CharacterMotionRequest;
 import marowak.dev.request.CharacterShootingRequest;
 import marowak.dev.request.ItemUpdate;
 import marowak.dev.service.bullet.BulletMotionService;
+import marowak.dev.service.character.CharacterInfoService;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.objects.BodyService;

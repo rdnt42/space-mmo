@@ -1,4 +1,4 @@
-package marowak.dev.socket;
+package marowak.dev.service.socket;
 
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.OnClose;
@@ -8,13 +8,12 @@ import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.SocketMessage;
-import marowak.dev.service.CharacterSocketService;
 import org.reactivestreams.Publisher;
 
 @Slf4j
 @RequiredArgsConstructor
 @ServerWebSocket("/motion/{characterName}")
-public class PlayerMotionSocket {
+public class CharacterEventSocketService {
     private final CharacterSocketService characterSocketService;
 
     @OnOpen

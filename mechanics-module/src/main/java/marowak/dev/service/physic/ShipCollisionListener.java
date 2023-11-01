@@ -25,7 +25,7 @@ public class ShipCollisionListener extends CollisionListenerAdapter<Body, BodyFi
 
         if (!bullet.getCreatorId().equals(ship.getId())) {
             ship.addDamage(new DamageCreator(bullet.getCreatorId(), bullet.getDamage()));
-            bullet.setNeedDestroy(true);
+            bullet.setEnabled(false);
         }
 
         return true;

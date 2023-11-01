@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import marowak.dev.dto.Point;
+import marowak.dev.dto.bullet.DamageCreator;
+import marowak.dev.dto.calculate.CalculateShipDamageResult;
 import marowak.dev.dto.world.SpaceShipBody;
 import marowak.dev.response.item.HullView;
 import marowak.dev.response.item.ItemView;
@@ -82,5 +84,20 @@ public class Hull extends Item {
 
     public void updatePosition(int speed, int angle, int forceTypeId) {
         shipBody.updatePosition(speed, angle, forceTypeId);
+    }
+
+    public CalculateShipDamageResult calculateDamage() {
+        var damageQueue = shipBody.getAccumulatedDamage();
+        if (damageQueue.isEmpty()) return null;
+
+        while (!damageQueue.isEmpty() && currHp > 0) {
+            DamageCreator damageCreator = damageQueue.poll();
+            currHp -= damageCreator.damage();
+            if (currHp <= 0) {
+                return new CalculateShipDamageResult(true, damageCreator.creatorId());
+            }
+        }
+
+        return null;
     }
 }

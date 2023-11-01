@@ -24,7 +24,6 @@ function onOpen() {
 }
 
 function onMessage() {
-
     return function (event) {
         commandService.executeCommand(event.data);
     };

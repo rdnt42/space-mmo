@@ -42,7 +42,7 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
     }
 
     private void calculateLifeCycle(BulletBody body) {
-        if (body.isAtRest() || body.getNeedDestroy()) {
+        if (body.isAtRest() || !body.isEnabled()) {
             worldService.removeBody(body);
         }
     }
