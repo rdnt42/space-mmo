@@ -39,7 +39,7 @@ public class Item {
                 .build();
     }
 
-    public void updatePosition(int slotId, int storageId) {
+    public void updateStorage(int slotId, int storageId) {
         this.slotId = slotId;
         this.storageId = storageId;
     }

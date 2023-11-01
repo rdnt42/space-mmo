@@ -78,8 +78,8 @@ public class Weapon extends Item {
     }
 
     @Override
-    public void updatePosition(int slotId, int storageId) {
-        super.updatePosition(slotId, storageId);
+    public void updateStorage(int slotId, int storageId) {
+        super.updateStorage(slotId, storageId);
         init();
     }
 

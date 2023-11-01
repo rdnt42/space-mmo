@@ -17,12 +17,9 @@ import marowak.dev.response.CharacterView;
 import marowak.dev.response.InventoryView;
 import marowak.dev.response.item.ItemView;
 import marowak.dev.service.physic.FactoryUtils;
-import org.dyn4j.geometry.Polygon;
-import org.dyn4j.geometry.Vector2;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Getter
@@ -44,7 +41,6 @@ public class CharacterShip {
     private final Point startCoords;
     private final int startAngle;
     @Setter
-    private SpaceShipBody shipBody;
 
     private boolean isShooting;
     // TODO make cursor point
@@ -59,21 +55,15 @@ public class CharacterShip {
     }
 
     private Point getCoord() {
-        return shipBody.getCoords();
+        return hull.getCoords();
     }
 
     private int getAngle() {
-        return shipBody.getAngle();
+        return hull.getAngle();
     }
 
     private float getSpeed() {
-        return shipBody.getSpeed();
-    }
-
-    private Point getImpulse() {
-        Vector2 linearVelocity = shipBody.getLinearVelocity();
-
-        return new Point(linearVelocity.x, linearVelocity.y);
+        return hull.getSpeed();
     }
 
     public void addItem(Item item) {
@@ -97,7 +87,7 @@ public class CharacterShip {
         Item item = this.itemsMap.get(id);
         var prevItemStorage = item.getStorageId();
         var prevSlot = item.getSlotId();
-        item.updatePosition(slotId, storageId);
+        item.updateStorage(slotId, storageId);
         if (storageId == HULL_STORAGE_ID) {
             addToHull(item);
         } else if (storageId == HOLD_STORAGE_ID && prevItemStorage == HULL_STORAGE_ID) {
@@ -138,18 +128,12 @@ public class CharacterShip {
     }
 
     public boolean isInRange(CharacterShip other) {
-        return shipBody.isInRange(other.getShipBody());
+        return hull.isInRange(other.getHull());
     }
 
     public CharacterView getView() {
-        if (shipBody == null) return null;
+        if (hull == null) return null;
         Point coords = this.getCoord();
-
-        Polygon shape = (Polygon) shipBody.getFixture(0).getShape();
-        Vector2 center = shape.getCenter();
-        List<Integer> polygon = Arrays.stream(shape.getVertices())
-                .flatMap(point -> Stream.of((int) (point.x - center.x), (int) (point.y - center.y)))
-                .toList();
 
         return CharacterView.builder()
                 .characterName(id)
@@ -159,7 +143,7 @@ public class CharacterShip {
                 .speed(getSpeed())
                 .shipTypeId(hull.getEquipmentTypeId())
                 .hp(hull.getHp())
-                .polygon(polygon)
+                .polygon(hull.getPolygonCoords())
                 .build();
     }
 
@@ -188,7 +172,7 @@ public class CharacterShip {
     }
 
     public void updateShipPosition(CharacterMotionRequest request) {
-        shipBody.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
+        hull.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
         if (weapon1 != null) weapon1.updateCoords(getCoord(), getAngle());
         if (weapon2 != null) weapon2.updateCoords(getCoord(), getAngle());
         if (weapon3 != null) weapon3.updateCoords(getCoord(), getAngle());
@@ -198,13 +182,13 @@ public class CharacterShip {
 
     public List<BulletBody> useWeapons() {
         if (!isShooting) return Collections.emptyList();
-        // todo get weapons
+        // TODO use coords from hull instead of weapon coords
         List<BulletBody> bullets = new ArrayList<>();
-        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
-        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle(), getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon1, id, getShootAngle(), hull.getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon2, id, getShootAngle(), hull.getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon3, id, getShootAngle(), hull.getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon4, id, getShootAngle(), hull.getImpulse())).ifPresent(bullets::add);
+        Optional.ofNullable(useWeapon(weapon5, id, getShootAngle(), hull.getImpulse())).ifPresent(bullets::add);
 
         return bullets;
     }
@@ -218,5 +202,8 @@ public class CharacterShip {
         return null;
     }
 
+    public void calculateDamage() {
+        if (hull == null) return;
+    }
 
 }
