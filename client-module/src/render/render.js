@@ -176,6 +176,41 @@ export function getRenderCoords(sprite) {
     }
 }
 
+export function blowUpCharacter(sprite) {
+    let id = getRandomIntInclusive(1, 3);
+    let textureArr = [];
+    for (let i = 0; i <= 10; i++) {
+        let img = (`./images/ships/explosion/explosion${id}/explosion${i}.png`);
+        const texture = pixi.Texture.from(img);
+        textureArr.push(texture);
+    }
+
+    const newSprite = new pixi.AnimatedSprite(textureArr);
+    newSprite.anchor.set(0.5, 0.5);
+    newSprite.animationSpeed = 0.2;
+    newSprite.zIndex = Sort.PLAYER + 1;
+    newSprite.position.set(sprite.x, sprite.y);
+    newSprite.angle = sprite.angle;
+    newSprite.scale.set(2);
+
+    newSprite.play();
+    app.stage.addChild(newSprite);
+
+    newSprite.loop = false;
+
+    newSprite.play();
+    newSprite.onComplete = () => {
+        removeSprite(newSprite)
+    };
+}
+
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
 /// Inventory
 export function createInventory() {
     let container = new pixi.Container();
@@ -367,7 +402,7 @@ export function createBullet(x, y, angle, type) {
     let textureArr = [];
     let cfg = bulletsCfgMap.get(type);
     for (let i = 0; i < cfg.fly; i++) {
-        let img = ('./images/bullets/' + type.toLowerCase() + '/shot' + i + '.png');
+        let img = (`./images/bullets/${type.toLowerCase()}/shot${i}.png`);
         const texture = pixi.Texture.from(img);
         textureArr.push(texture);
     }

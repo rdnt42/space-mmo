@@ -56,3 +56,9 @@ function createCharacter(data) {
     charactersMap.set(data.characterName, character);
     console.log(`create character ${character.characterName}, ship: ${data.shipTypeId}`)
 }
+
+export function characterExplosion(characterName) {
+    const character = charactersMap.get(characterName);
+    character.blowUp();
+    charactersMap.delete(characterName);
+}

@@ -87,6 +87,7 @@ public class Hull extends Item {
     }
 
     public CalculateShipDamageResult calculateDamage() {
+        if (shipBody == null) return null;
         var damageQueue = shipBody.getAccumulatedDamage();
         if (damageQueue.isEmpty()) return null;
 

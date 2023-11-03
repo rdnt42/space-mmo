@@ -43,6 +43,10 @@ export class Character {
     destroy() {
         renderEngine.removeCharacter(this.characterName);
     }
+
+    blowUp() {
+        renderEngine.blowUpCharacter(this.characterName);
+    }
 }
 
 class Movement {

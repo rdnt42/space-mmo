@@ -39,6 +39,10 @@ export function executeCommand(response) {
             weaponService.updateBulletData(socketResponse.data);
             break;
 
+        case Commands.BlowUpCharacter:
+            characterService.characterExplosion(socketResponse.data);
+            break;
+
         default:
             console.error("Unexpected command: " + command);
     }

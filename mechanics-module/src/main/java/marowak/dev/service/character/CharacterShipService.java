@@ -17,8 +17,10 @@ import marowak.dev.request.ItemUpdate;
 import marowak.dev.response.CharacterView;
 import marowak.dev.response.InventoryView;
 import marowak.dev.service.physic.Calculable;
-import marowak.dev.service.physic.ShipService;
 import marowak.dev.service.physic.WeaponService;
+import marowak.dev.service.physic.WorldService;
+import marowak.dev.service.socket.CharacterInformerSocketService;
+import org.dyn4j.dynamics.Body;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,8 +34,10 @@ import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
 @RequiredArgsConstructor
 @Singleton
 public class CharacterShipService implements Calculable {
-    private final ShipService shipService;
     private final WeaponService weaponService;
+    private final WorldService worldService;
+    private final CharacterInformerSocketService characterInformerSocketService;
+
 
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
@@ -45,20 +49,20 @@ public class CharacterShipService implements Calculable {
     }
 
     public Mono<Void> removeCharacter(String characterName) {
-        return shipService.removeShip(characterName)
-                .mapNotNull(empty -> charactersMap.remove(characterName))
-                .then();
+        CharacterShip ship = charactersMap.remove(characterName);
+        List<Body> bodiesToDestroy = ship.destroy();
+        worldService.removeBodies(bodiesToDestroy);
+
+        return Mono.empty();
     }
 
     public Mono<Item> addItem(String characterName, Item item) {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
-        if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull hull) {
+        if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull) {
             SpaceShipBody shipBody = ship.createShipBody();
-            return shipService.createShip(shipBody)
-                    .doOnError(e -> hull.setShipBody(null))
-                    .then(Mono.just(item));
+            worldService.createBody(shipBody);
         }
         return Mono.just(item);
     }
@@ -133,8 +137,10 @@ public class CharacterShipService implements Calculable {
         var result = ship.calculateDamage();
         if (result != null && result.isDead()) {
             log.info("Character '{}' was killed by '{}'", ship.getId(), result.killerId());
-            shipService.removeShipBodies(ship.destroy()).subscribe();
+            worldService.removeBodies(ship.destroy());
             charactersMap.remove(ship.getId());
+            
+            characterInformerSocketService.sendExplosionToAll(ship.getId()).subscribe();
         }
     }
 

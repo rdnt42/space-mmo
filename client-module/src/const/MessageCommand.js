@@ -6,4 +6,5 @@ export const Commands = {
     LeavingPlayer: "CMD_LEAVING_PLAYER",
     UpdateInventoryItem: "CMD_UPDATE_INVENTORY_ITEM",
     UpdateShooting: "CMD_UPDATE_SHOOTING",
+    BlowUpCharacter: "CMD_BLOW_UP_CHARACTER",
 }
