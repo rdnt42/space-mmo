@@ -3,6 +3,8 @@ micronaut:
     name: playerModule
   server:
     port: 8082
+  packages:
+    - marowak
 
 kafka:
   bootstrap:
@@ -14,3 +16,5 @@ jackson:
 world:
   speed:
     limit: 1200
+
+mock-state-enabled: true
