@@ -1,5 +1,5 @@
 import {CargoCell} from "./CargoCell.js";
-import {ItemTypeId} from "../const/ItemTypeId.js";
+import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
@@ -11,7 +11,11 @@ export class Inventory {
     cargoCells = [];
     equipmentSlots = new Map();
 
-    constructor(config) {
+    constructor(configRaw) {
+        // 0b1111001 where 1/0 - open/close slot
+        const rawString = configRaw.toString(2).padStart(13, "0");
+        let config = Array.from(rawString).reverse();
+        console.log(`raw string: ${rawString}`)
         renderEngine.createInventory();
         for (let i = 0; i < 6; i++) {
             let holdCell = new CargoCell(null, i);
@@ -22,15 +26,15 @@ export class Inventory {
     }
 
     loadConfig(config) {
-        // 0b1111001 where 1/0 - open/close slot
-        let cfgArr = Array.from(config.toString(2)).reverse();
-        for (let i = 0; i < cfgArr.length; i++) {
+        for (let i = 0; i < config.length; i++) {
             const slotId = i + 1;
-            if (cfgArr[i] && Object.values(ItemTypeId).includes(slotId)) {
+            if (config[i] === "1" && Object.values(EquipmentTypeId).includes(slotId)) {
                 this.equipmentSlots.set(slotId, new EquipmentSlot(slotId));
+            } else {
+                renderEngine.addClosedSlot(slotId);
             }
         }
-        console.log(`init equipment slots: ${cfgArr}`);
+        console.log(`init equipment slots: ${config}`);
     }
 
     initAndAddItem(item) {
@@ -93,7 +97,7 @@ export class Inventory {
     }
 
     #getEquipmentSlotWithState(isFree) {
-        for (let i = ItemTypeId.Weapon1; i <= ItemTypeId.Weapon5; i++) {
+        for (let i = EquipmentTypeId.Weapon1; i <= EquipmentTypeId.Weapon5; i++) {
             let slot = this.equipmentSlots.get(i);
             if (!slot) {
                 continue;
@@ -143,7 +147,7 @@ export class Inventory {
 
     #getCollisionEquipmentSlot(item) {
         if (isWeapon(item)) {
-            for (let i = ItemTypeId.Weapon1; i <= ItemTypeId.Weapon5; i++) {
+            for (let i = EquipmentTypeId.Weapon1; i <= EquipmentTypeId.Weapon5; i++) {
                 let slot = this.#getCollisionBySlotId(item, i);
                 console.log(slot)
 
@@ -153,11 +157,12 @@ export class Inventory {
             return null;
         }
 
-        return this.#getCollisionBySlotId(item, item.typeId);
+        return this.#getCollisionBySlotId(item, item.slotId);
     }
 
-    #getCollisionBySlotId(item, slotId) {
-        let equipmentSlot = this.equipmentSlots.get(slotId);
+    #getCollisionBySlotId(item, defaultSlot) {
+        let equipmentSlot = this.equipmentSlots.get(defaultSlot);
+        if (equipmentSlot == null) return null;
         if (renderEngine.hasHalfCollision(item.texture, equipmentSlot.texture)) {
             return equipmentSlot;
         }

@@ -1,9 +1,11 @@
-export const ItemTypeId = {
+export const EquipmentTypeId = {
     Engine: 1,
     FuelTank: 2,
     Scanner: 3,
     Radar: 4,
+    Droid: 5,
     CargoHook: 6,
+    Shield: 7,
     Hull: 8,
     Weapon1: 9,
     Weapon2: 10,

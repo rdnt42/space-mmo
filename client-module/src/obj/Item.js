@@ -1,5 +1,5 @@
 import * as renderEngine from "../render/render.js";
-import {ItemTypeId} from "../const/ItemTypeId.js";
+import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 
 export class Item {
     texture;
@@ -31,7 +31,7 @@ export class Item {
     }
 
     additionalFields(item) {
-        if (item.typeId === ItemTypeId.Engine) {
+        if (item.typeId === EquipmentTypeId.Engine) {
             this.maxSpeed = item.speed;
         }
     }

@@ -100,7 +100,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .cost(10000)
                 .name("Корпус рейнджера")
                 .dsc(dsc)
-                .config(8191)
+                .config(0b1001110000001)
                 .hp(700)
                 .evasion(2)
                 .armor(2)

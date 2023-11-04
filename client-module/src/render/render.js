@@ -1,9 +1,10 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as characterService from "../character-service.js";
 import * as inventoryService from "../inventory-service.js";
-import {ItemTypeId} from "../const/ItemTypeId.js";
+import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {shipsCfgMap} from "../cfg/ship-images-cfg.js";
 import {bulletsCfgMap} from "../cfg/bullets-images-cfg.js";
+import {slotsCfgMap} from "../cfg/slot-cfg.js";
 
 let app;
 let dragTarget = null;
@@ -242,13 +243,13 @@ export function createInventory() {
     app.stage.addChild(container);
     container.visible = false;
 
-    let inventory = pixi.Sprite.from("./images/inventory_empty.png");
+    let inventory = pixi.Sprite.from("./images/inventory/inventory_empty.png");
     inventory.position.set(container.width / 2, container.height / 2)
     container.addChild(inventory);
     inventory.width = 460;
     inventory.height = 617;
 
-    let center = pixi.Sprite.from("./images/inventory_center.png");
+    let center = pixi.Sprite.from("./images/inventory/inventory_center.png");
     center.anchor.set(0.5, 0.5);
     center.position.set(inventory.width / 2, inventory.height / 2 - 10);
     center.zIndex = inventory.zIndex - 1;
@@ -297,69 +298,48 @@ export function initCargoCell(id) {
     return sprite;
 }
 
-export function initEquipmentSlot(equipmentType) {
+export function initEquipmentSlot(slotId) {
     const texture = pixi.Texture.WHITE;
     const sprite = new pixi.Sprite(texture);
     sprite.visible = IS_DEBUG;
     sprite.width = 60;
     sprite.height = 60;
     sprite.anchor.set(0.5, 0.5);
-    switch (equipmentType) {
-        case ItemTypeId.Engine:
-            sprite.position.set(90, 245);
-            break;
-        case ItemTypeId.FuelTank:
-            sprite.position.set(90, 350);
-            break;
-        case ItemTypeId.Scanner:
-            sprite.position.set(365, 245);
-            break;
-        case ItemTypeId.Radar:
-            sprite.position.set(365, 350);
-            break;
-        case ItemTypeId.CargoHook:
-            sprite.position.set(230, 455);
-            break;
-        case ItemTypeId.Hull:
-            sprite.position.set(230, 295);
-            break;
-        case ItemTypeId.Weapon1:
-            sprite.position.set(180, 60);
-            break;
-        case ItemTypeId.Weapon2:
-            sprite.position.set(280, 60);
-            break;
-        case ItemTypeId.Weapon3:
-            sprite.position.set(130, 145);
-            break;
-        case ItemTypeId.Weapon4:
-            sprite.position.set(230, 145);
-            break;
-        case ItemTypeId.Weapon5:
-            sprite.position.set(320, 145);
-            break;
-    }
+
+    const cfg = slotsCfgMap.get(slotId);
+    sprite.position.set(cfg.x, cfg.y);
     INVENTORY_CONTAINER.addChild(sprite);
 
     return sprite;
 }
 
+export function addClosedSlot(slotId) {
+    let cfg = slotsCfgMap.get(slotId);
+    const texture = pixi.Texture.from(cfg.closedUrl);
+    const sprite = new pixi.Sprite(texture);
+    sprite.width = 99;
+    sprite.height = 77;
+    sprite.anchor.set(0.5, 0.5);
+    sprite.position.set(cfg.x, cfg.y);
+    INVENTORY_CONTAINER.addChild(sprite);
+}
+
 export function initItem(typeId, equipmentType) {
     let url;
     switch (typeId) {
-        case ItemTypeId.Engine:
+        case EquipmentTypeId.Engine:
             url = `./images/engine${equipmentType}.png`;
             break;
-        case ItemTypeId.FuelTank:
+        case EquipmentTypeId.FuelTank:
             url = `./images/fuel_tank${equipmentType}.png`;
             break;
-        case ItemTypeId.CargoHook:
+        case EquipmentTypeId.CargoHook:
             url = `./images/cargo_hook${equipmentType}.png`;
             break;
-        case ItemTypeId.Hull:
+        case EquipmentTypeId.Hull:
             url = `./images/ships/ship${equipmentType}/preview.png`;
             break;
-        case ItemTypeId.Weapon1:
+        case EquipmentTypeId.Weapon1:
             url = `./images/weapon${equipmentType}.png`;
             break;
     }

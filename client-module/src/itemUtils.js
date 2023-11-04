@@ -1,4 +1,4 @@
-import {ItemTypeId} from "./const/ItemTypeId.js";
+import {EquipmentTypeId} from "./const/EquipmentTypeId.js";
 import {EquipmentSlot} from "./obj/EquipmentSlot.js";
 import {CargoCell} from "./obj/CargoCell.js";
 
@@ -11,5 +11,5 @@ export function inCargo(item) {
 }
 
 export function isWeapon(item) {
-    return item.typeId >= ItemTypeId.Weapon1 && item.typeId <= ItemTypeId.Weapon5;
+    return item.typeId >= EquipmentTypeId.Weapon1 && item.typeId <= EquipmentTypeId.Weapon5;
 }
