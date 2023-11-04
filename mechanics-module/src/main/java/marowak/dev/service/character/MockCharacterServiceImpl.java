@@ -117,7 +117,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .cost(10000)
                 .name("Двигатель")
                 .dsc(dsc)
-                .speed(300)
+                .speed(500)
                 .jump(20)
                 .equipmentTypeId(1)
                 .build();

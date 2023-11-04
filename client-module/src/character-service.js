@@ -24,6 +24,10 @@ export function getPlayerCharacter() {
     return charactersMap.get(playerCharacterName);
 }
 
+export function getCharacter(characterName) {
+    return charactersMap.get(characterName);
+}
+
 export function sendMotion(forceTypeId, angle, isUpdate) {
     const request = new CharacterMotionRequest(isUpdate, forceTypeId, angle);
     socket.sendMessage(request);

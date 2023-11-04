@@ -69,7 +69,8 @@ function removeOrMarkObjects(map) {
 
 export function blowUpCharacter(characterName) {
     let sprite = ships.get(characterName);
-    render.blowUpCharacter(sprite);
+    let movement = characterService.getCharacter(characterName).movement;
+    render.blowUpCharacter(sprite, movement.x, movement.y);
     removeCharacter(characterName);
 }
 

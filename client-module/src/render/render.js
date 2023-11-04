@@ -20,6 +20,7 @@ let spritesContainer;
 let INVENTORY_CONTAINER;
 
 let characterLabelsMap = new Map();
+let blowUpCharacters = new Map();
 let posInfoLabel;
 let speedLabel;
 let bgLast;
@@ -53,6 +54,7 @@ export function startEngineTimer() {
         updateLocationText(posInfoLabel);
         updateBackground(bgLast, 3);
         updateBackground(bgFirst, 2);
+        updateExplosion();
         app.stage.sortChildren();
     });
 }
@@ -98,6 +100,15 @@ function updateBackground(bg, div) {
     let addY = parseFloat(playerCharacter.getDiffY() / div);
     bg.tilePosition.x -= addX;
     bg.tilePosition.y -= addY;
+}
+
+function updateExplosion() {
+    let movement = characterService.getPlayerCharacter().movement;
+    for (let ship of blowUpCharacters.values()) {
+        let x = getX(ship.x, movement.x);
+        let y = getY(ship.y, movement.y);
+        ship.sprite.position.set(x, y);
+    }
 }
 
 export function changeStateInventory(state) {
@@ -176,7 +187,15 @@ export function getRenderCoords(sprite) {
     }
 }
 
-export function blowUpCharacter(sprite) {
+function getX(currX, diffX) {
+    return currX - diffX + window.innerWidth / 2;
+}
+
+function getY(currY, diffY) {
+    return currY - diffY + window.innerHeight / 2;
+}
+
+export function blowUpCharacter(sprite, baseX, baseY, characterName) {
     let id = getRandomIntInclusive(1, 3);
     let textureArr = [];
     for (let i = 0; i <= 10; i++) {
@@ -199,7 +218,13 @@ export function blowUpCharacter(sprite) {
     newSprite.loop = false;
 
     newSprite.play();
+    blowUpCharacters.set(characterName, {
+        x: baseX,
+        y: baseY,
+        sprite: newSprite
+    });
     newSprite.onComplete = () => {
+        blowUpCharacters.delete(characterName);
         removeSprite(newSprite)
     };
 }
