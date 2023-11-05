@@ -12,7 +12,7 @@ import marowak.dev.response.item.ItemView;
 import marowak.dev.response.item.WeaponView;
 import marowak.dev.service.physic.FactoryUtils;
 
-import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
+import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
 
 
 @Slf4j
@@ -36,7 +36,7 @@ public class Weapon extends Item {
     @Override
     public void init() {
         shotFreq = 60_000 / rate;
-        if (getStorageId() != HULL_STORAGE_ID) return;
+        if (getStorageId() != STORAGE_TYPE_HULL.getStorageId()) return;
 
         var slotShift = switch (getSlotId()) {
             case 9 -> new Point(20, -20);

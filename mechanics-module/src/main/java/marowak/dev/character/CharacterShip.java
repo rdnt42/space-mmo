@@ -23,11 +23,12 @@ import org.dyn4j.dynamics.Body;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static marowak.dev.enums.StorageType.STORAGE_TYPE_HOLD;
+import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
+
 
 @Getter
 public class CharacterShip {
-    public static final int HULL_STORAGE_ID = 1;
-    public static final int HOLD_STORAGE_ID = 2;
     private final String id;
     private Engine engine;
     private Hull hull;
@@ -69,9 +70,9 @@ public class CharacterShip {
     }
 
     public void addItem(Item item) {
-        if (item.getStorageId() == HOLD_STORAGE_ID) {
+        if (item.getStorageId() == STORAGE_TYPE_HOLD.getStorageId()) {
             cargo.add(item);
-        } else if (item.getStorageId() == HULL_STORAGE_ID) {
+        } else if (item.getStorageId() == STORAGE_TYPE_HULL.getStorageId()) {
             addToHull(item);
             item.init();
         }
@@ -92,9 +93,9 @@ public class CharacterShip {
         var prevItemStorage = item.getStorageId();
         var prevSlot = item.getSlotId();
         item.updateStorage(slotId, storageId);
-        if (storageId == HULL_STORAGE_ID) {
+        if (storageId == STORAGE_TYPE_HULL.getStorageId()) {
             addToHull(item);
-        } else if (storageId == HOLD_STORAGE_ID && prevItemStorage == HULL_STORAGE_ID) {
+        } else if (storageId == STORAGE_TYPE_HOLD.getStorageId() && prevItemStorage == STORAGE_TYPE_HULL.getStorageId()) {
             removeFromHull(prevSlot);
         }
 

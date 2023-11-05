@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static marowak.dev.character.CharacterShip.HULL_STORAGE_ID;
+import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -60,7 +60,7 @@ public class CharacterShipService implements Calculable {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
-        if (item.getStorageId() == HULL_STORAGE_ID && item instanceof Hull) {
+        if (item.getStorageId() == STORAGE_TYPE_HULL.getStorageId() && item instanceof Hull) {
             SpaceShipBody shipBody = ship.createShipBody();
             worldService.createBody(shipBody);
         }
