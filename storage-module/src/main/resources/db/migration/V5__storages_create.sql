@@ -1,5 +1,5 @@
 create table if not exists storages
 (
-    storage_id serial primary key,
+    storage_id int primary key,
     dsc        text not null
 );
