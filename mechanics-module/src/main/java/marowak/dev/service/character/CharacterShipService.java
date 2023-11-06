@@ -4,6 +4,11 @@ import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.api.request.CharacterMotionRequest;
+import marowak.dev.api.request.CharacterShootingRequest;
+import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.response.CharacterView;
+import marowak.dev.api.response.InventoryView;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Hull;
@@ -11,15 +16,11 @@ import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
-import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterShootingRequest;
-import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.CharacterView;
-import marowak.dev.response.InventoryView;
 import marowak.dev.service.physic.Calculable;
 import marowak.dev.service.physic.WeaponService;
 import marowak.dev.service.physic.WorldService;
 import marowak.dev.service.socket.CharacterInformerSocketService;
+import marowak.dev.service.space_item.SpaceItemService;
 import org.dyn4j.dynamics.Body;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,7 +38,7 @@ public class CharacterShipService implements Calculable {
     private final WeaponService weaponService;
     private final WorldService worldService;
     private final CharacterInformerSocketService characterInformerSocketService;
-
+    private final SpaceItemService spaceItemService;
 
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 

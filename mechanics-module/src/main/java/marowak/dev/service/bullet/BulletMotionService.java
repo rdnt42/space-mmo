@@ -1,6 +1,6 @@
 package marowak.dev.service.bullet;
 
-import marowak.dev.request.CharacterShootingRequest;
+import marowak.dev.api.request.CharacterShootingRequest;
 import reactor.core.publisher.Mono;
 
 public interface BulletMotionService {

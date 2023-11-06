@@ -1,4 +1,4 @@
-package marowak.dev.response.item;
+package marowak.dev.api.response.item;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

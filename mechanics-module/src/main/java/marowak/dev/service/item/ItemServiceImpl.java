@@ -4,9 +4,10 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.response.InventoryView;
+import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.item.Item;
-import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.InventoryView;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.character.CharacterShipService;
 import message.*;
@@ -54,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName) {
         return characterShipService.updateItem(playerName, request)
-                .flatMap(item -> sendItemUpdate(item)
+                .flatMap(item -> sendItemUpdate(item.getView())
                         .doOnNext(c -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
                         .then(Mono.just(ItemUpdate.builder()
                                 .id(item.getId())
@@ -68,7 +69,8 @@ public class ItemServiceImpl implements ItemService {
         return characterShipService.getInventoryInfo(characterName);
     }
 
-    private Mono<Void> sendItemUpdate(Item item) {
+
+    private Mono<Void> sendItemUpdate(ItemView item) {
         ItemMessage message = ItemMessage.builder()
                 .key(ItemMessageKey.ITEMS_UPDATE)
                 .id(item.getId())
@@ -79,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         return itemClient.sendItems(message)
                 .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
                         message.getKey(), message.getCharacterName(), e.getMessage()))
-                .then(Mono.empty());
+                .then();
     }
 
 }

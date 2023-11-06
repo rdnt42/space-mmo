@@ -1,4 +1,4 @@
-package marowak.dev.request;
+package marowak.dev.api.request;
 
 import lombok.Builder;
 

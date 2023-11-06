@@ -3,7 +3,7 @@ package marowak.dev.dto.item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import marowak.dev.response.item.ItemView;
+import marowak.dev.api.response.item.ItemView;
 
 @Getter
 @NoArgsConstructor

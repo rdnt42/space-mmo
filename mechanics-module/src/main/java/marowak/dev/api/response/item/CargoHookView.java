@@ -1,4 +1,4 @@
-package marowak.dev.response.item;
+package marowak.dev.api.response.item;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,10 +7,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class WeaponView extends ItemView {
-    private int damage;
+public class CargoHookView extends ItemView {
+    private int loadCapacity;
     private int radius;
-    private int rate;
-    private int damageTypeId;
     private int equipmentTypeId;
 }

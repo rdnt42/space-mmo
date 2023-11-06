@@ -1,8 +1,8 @@
 package marowak.dev.service.item;
 
 import keys.ItemMessageKey;
-import marowak.dev.request.ItemUpdate;
-import marowak.dev.response.InventoryView;
+import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.response.InventoryView;
 import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
@@ -15,4 +15,5 @@ public interface ItemService {
     Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName);
 
     Mono<InventoryView> getInventoryItems(String playerName);
+
 }

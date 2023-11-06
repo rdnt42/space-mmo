@@ -3,9 +3,9 @@ package marowak.dev.service.physic;
 import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.api.response.BulletBodyInfo;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
-import marowak.dev.response.BulletBodyInfo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

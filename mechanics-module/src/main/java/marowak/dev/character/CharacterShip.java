@@ -3,6 +3,11 @@ package marowak.dev.character;
 
 import lombok.Getter;
 import lombok.Setter;
+import marowak.dev.api.request.CharacterMotionRequest;
+import marowak.dev.api.request.CharacterShootingRequest;
+import marowak.dev.api.response.CharacterView;
+import marowak.dev.api.response.InventoryView;
+import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.calculate.CalculateShipDamageResult;
 import marowak.dev.dto.item.Engine;
@@ -12,11 +17,6 @@ import marowak.dev.dto.item.Weapon;
 import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
-import marowak.dev.request.CharacterMotionRequest;
-import marowak.dev.request.CharacterShootingRequest;
-import marowak.dev.response.CharacterView;
-import marowak.dev.response.InventoryView;
-import marowak.dev.response.item.ItemView;
 import marowak.dev.service.physic.FactoryUtils;
 import org.dyn4j.dynamics.Body;
 
@@ -57,7 +57,7 @@ public class CharacterShip {
         this.startAngle = startAngle;
     }
 
-    private Point getCoord() {
+    public Point getCoords() {
         return hull.getCoords();
     }
 
@@ -139,7 +139,7 @@ public class CharacterShip {
 
     public CharacterView getView() {
         if (hull == null) return null;
-        Point coords = this.getCoord();
+        Point coords = this.getCoords();
 
         return CharacterView.builder()
                 .characterName(id)
@@ -179,11 +179,11 @@ public class CharacterShip {
 
     public void updateShipPosition(CharacterMotionRequest request) {
         hull.updatePosition(engine.getSpeed(), request.angle(), request.forceTypeId());
-        if (weapon1 != null) weapon1.updateCoords(getCoord(), getAngle());
-        if (weapon2 != null) weapon2.updateCoords(getCoord(), getAngle());
-        if (weapon3 != null) weapon3.updateCoords(getCoord(), getAngle());
-        if (weapon4 != null) weapon4.updateCoords(getCoord(), getAngle());
-        if (weapon5 != null) weapon5.updateCoords(getCoord(), getAngle());
+        if (weapon1 != null) weapon1.updateCoords(getCoords(), getAngle());
+        if (weapon2 != null) weapon2.updateCoords(getCoords(), getAngle());
+        if (weapon3 != null) weapon3.updateCoords(getCoords(), getAngle());
+        if (weapon4 != null) weapon4.updateCoords(getCoords(), getAngle());
+        if (weapon5 != null) weapon5.updateCoords(getCoords(), getAngle());
     }
 
     public List<BulletBody> useWeapons() {

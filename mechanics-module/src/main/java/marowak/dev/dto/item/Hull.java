@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import marowak.dev.api.response.item.HullView;
+import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.bullet.DamageCreator;
 import marowak.dev.dto.calculate.CalculateShipDamageResult;
 import marowak.dev.dto.world.SpaceShipBody;
-import marowak.dev.response.item.HullView;
-import marowak.dev.response.item.ItemView;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 

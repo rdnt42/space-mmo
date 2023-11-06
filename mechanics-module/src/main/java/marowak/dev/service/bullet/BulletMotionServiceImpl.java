@@ -2,7 +2,7 @@ package marowak.dev.service.bullet;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.request.CharacterShootingRequest;
+import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.service.character.CharacterShipService;
 import reactor.core.publisher.Mono;
 

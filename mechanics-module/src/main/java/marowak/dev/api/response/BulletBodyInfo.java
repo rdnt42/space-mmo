@@ -1,4 +1,4 @@
-package marowak.dev.response;
+package marowak.dev.api.response;
 
 import lombok.Builder;
 import marowak.dev.enums.BulletType;

@@ -2,7 +2,7 @@ package marowak.dev.service.objects;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.response.BulletBodyInfo;
+import marowak.dev.api.response.BulletBodyInfo;
 import marowak.dev.service.physic.WeaponService;
 import reactor.core.publisher.Flux;
 

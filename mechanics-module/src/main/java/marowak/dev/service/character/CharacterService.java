@@ -1,7 +1,7 @@
 package marowak.dev.service.character;
 
 import keys.CharacterMessageKey;
-import marowak.dev.request.CharacterMotionRequest;
+import marowak.dev.api.request.CharacterMotionRequest;
 import message.CharacterMessage;
 import reactor.core.publisher.Mono;
 
