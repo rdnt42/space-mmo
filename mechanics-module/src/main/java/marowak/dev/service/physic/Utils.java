@@ -22,6 +22,13 @@ public class Utils {
         return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
     }
 
+    public static boolean isInRange(Point base, Point target) {
+        double diffX = base.x() - target.x();
+        double diffY = base.y() - target.y();
+
+        return (diffX * diffX + diffY * diffY) <= DOUBLED_PLAYERS_IN_RANGE;
+    }
+
     public static final Function<BulletBody, BulletBodyInfo> bulletToBodyInfo = body ->
             BulletBodyInfo.builder()
                     .id(body.getId())

@@ -137,12 +137,21 @@ public class CharacterShipService implements Calculable {
     private void calculateDamage(CharacterShip ship) {
         var result = ship.calculateDamage();
         if (result != null && result.isDead()) {
-            log.info("Character '{}' was killed by '{}'", ship.getId(), result.killerId());
-            worldService.removeBodies(ship.destroy());
-            charactersMap.remove(ship.getId());
-            
-            characterInformerSocketService.sendExplosionToAll(ship.getId()).subscribe();
+            blowUpShip(ship, result.killerId());
         }
+    }
+
+    private void blowUpShip(CharacterShip ship, String killerId) {
+        log.info("Character '{}' was killed by '{}'", ship.getId(), killerId);
+        CharacterShip remove = charactersMap.remove(ship.getId());
+        Point coords = remove.getCoords();
+
+        worldService.removeBodies(ship.destroy());
+        for (Item item : ship.getItemsMap().values()) {
+            spaceItemService.tryDropItemToSpace(item, coords).subscribe();
+        }
+
+        characterInformerSocketService.sendExplosionToAll(ship.getId()).subscribe();
     }
 
 }
