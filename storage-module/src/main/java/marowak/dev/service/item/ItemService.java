@@ -10,4 +10,6 @@ public interface ItemService {
     Flux<ItemMessage> getForCharacter(String characterName);
 
     Mono<ItemMessage> updateItem(ItemMessage message);
+
+    Mono<ItemMessage> deleteItem(ItemMessage message);
 }

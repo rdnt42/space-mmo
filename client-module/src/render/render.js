@@ -482,3 +482,21 @@ function resizeHandler() {
     bgFirst.width = window.innerWidth;
     bgFirst.height = window.innerHeight;
 }
+
+// Items in space
+export function createSpaceItem(x, y, type) {
+    const texture = pixi.Texture.from(`./images/item_container.png`);
+    const sprite = new pixi.Sprite(texture);
+
+    sprite.anchor.set(0.5, 0.5);
+    // sprite.scale.set(cfg.scale);
+    sprite.zIndex = Sort.PLAYER - 1;
+    sprite.position.set(x, y);
+    app.stage.addChild(sprite);
+
+    return sprite;
+}
+
+export function renderSpaceItem(sprite, x, y) {
+    sprite.position.set(x, y);
+}

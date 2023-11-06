@@ -11,11 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.response.ObjectsInSpace;
 import marowak.dev.dto.SocketMessage;
 import marowak.dev.enums.MessageCommand;
 import marowak.dev.service.bullet.BulletMotionService;
-import marowak.dev.service.character.CharacterInfoService;
 import marowak.dev.service.character.CharacterService;
+import marowak.dev.service.character.ObjectInfoService;
 import marowak.dev.service.item.ItemService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
@@ -28,7 +29,7 @@ import java.util.function.Predicate;
 @Singleton
 public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final BulletMotionService bulletMotionService;
-    private final CharacterInfoService characterInfoService;
+    private final ObjectInfoService objectInfoService;
     private final ItemService itemService;
     private final CharacterService characterService;
     private final BodyService bodyService;
@@ -50,7 +51,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                                                  WebSocketSession session) {
         switch (request.command()) {
             case CMD_GET_MOTIONS -> {
-                return characterInfoService.getCharacterInfo(characterName)
+                return objectInfoService.getCharacter(characterName)
                         .doOnNext(c -> log.info("New character {} get characters info", characterName))
                         .map(info -> new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, info))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
@@ -64,9 +65,11 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             case CMD_UPDATE_MOTION -> {
                 CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
                 return characterService.updateCharacterPosition(value, characterName)
-                        .thenMany(characterInfoService.getCharactersInRangeInfo(characterName))
-                        .buffer(50)
-                        .map(infoList -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, infoList))
+                        .thenMany(objectInfoService.getCharactersInRange(characterName)
+                                .collectList())
+                        .zipWith(objectInfoService.getItemsInRange(characterName)
+                                .collectList(), ObjectsInSpace::new)
+                        .map(data -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, data))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {

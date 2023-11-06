@@ -3,6 +3,7 @@ import * as characterService from "../character-service.js";
 
 let ships = new Map();
 let bullets = new Map();
+let spaceItems = new Map();
 
 export function createCharacter(characterName, shipTypeId, x, y, angle, polygon) {
     let sprite = render.createCharacter(characterName, shipTypeId, x, y, angle, polygon);
@@ -72,5 +73,19 @@ export function blowUpCharacter(characterName) {
     let movement = characterService.getCharacter(characterName).movement;
     render.blowUpCharacter(sprite, movement.x, movement.y);
     removeCharacter(characterName);
+}
+
+export function createOrUpdateSpaceItem(id, x, y, type) {
+    let abs = characterService.getPlayerCharacter().movement;
+    let newX = getX(x, abs.x);
+    let newY = getY(y, abs.y);
+    let item = spaceItems.get(id);
+    if (item === undefined) {
+        let item = render.createSpaceItem(newX, newY, type);
+        spaceItems.set(id, item);
+    }
+
+    render.renderSpaceItem(item, newX, newY);
+    item.isUpdated = true;
 }
 

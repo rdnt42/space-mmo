@@ -15,6 +15,7 @@ public class ItemCommandService {
             case ITEMS_GET_ONE -> itemService.getForCharacter(message.getCharacterName());
             case ITEMS_GET_ALL -> itemService.getAllOnline();
             case ITEMS_UPDATE -> itemService.updateItem(message);
+            case ITEM_DELETE -> itemService.deleteItem(message);
         };
     }
 

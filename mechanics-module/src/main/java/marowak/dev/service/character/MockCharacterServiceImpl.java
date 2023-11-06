@@ -48,8 +48,8 @@ public class MockCharacterServiceImpl implements CharacterService {
     public Mono<Void> sendInitCharacter(CharacterMessageKey key, String characterName) {
         CharacterMotion char1 = CharacterMotion.builder()
                 .characterName("p1")
-                .x(-200)
-                .y(-200)
+                .x(-150)
+                .y(-150)
                 .speed(0)
                 .angle(0)
                 .build();
@@ -63,8 +63,8 @@ public class MockCharacterServiceImpl implements CharacterService {
 
         CharacterMotion char2 = CharacterMotion.builder()
                 .characterName("sd")
-                .x(200)
-                .y(200)
+                .x(150)
+                .y(150)
                 .speed(0)
                 .angle(0)
                 .build();

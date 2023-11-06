@@ -15,9 +15,9 @@ public class CharacterServiceConfig {
     public CharacterService getService(
             CharactersClient charactersClient,
             CharacterShipService characterShipService,
-            CharacterInfoService characterInfoService,
+            ObjectInfoService objectInfoService,
             ItemService itemService) {
-        return new CharacterServiceImpl(charactersClient, characterShipService, characterInfoService, itemService);
+        return new CharacterServiceImpl(charactersClient, characterShipService, objectInfoService, itemService);
     }
 
     @Bean

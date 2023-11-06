@@ -21,12 +21,12 @@ import java.util.function.Function;
 public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
     private final CharacterShipService characterShipService;
-    private final CharacterInfoService characterInfoService;
+    private final ObjectInfoService objectInfoService;
     private final ItemService itemService;
 
     @Override
     public Mono<Void> sendCharactersUpdate() {
-        return characterInfoService.getAllMotions()
+        return objectInfoService.getAllCharacters()
                 .map(infoToMessage)
                 .doOnError(e -> log.error("Send characters updating failed", e))
                 .flatMap(charactersClient::sendCharacters)

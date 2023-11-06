@@ -4,10 +4,10 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Item;
-import marowak.dev.dto.item.ItemInSpace;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.physic.Utils;
 import marowak.dev.service.probability.ProbabilityCalculationService;
@@ -27,10 +27,10 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     private final ProbabilityCalculationService probabilityCalculationService;
     private final ItemClient itemClient;
 
-    private final Map<Long, ItemInSpace> items = new ConcurrentHashMap<>();
+    private final Map<Long, ItemInSpaceView> items = new ConcurrentHashMap<>();
 
     @Override
-    public Flux<ItemInSpace> getItemsInRange(Point coords) {
+    public Flux<ItemInSpaceView> getItemsInRange(Point coords) {
         return Flux.fromStream(items.values().stream()
                 .filter(item -> Utils.isInRange(coords, item.coords())));
     }
@@ -53,11 +53,18 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 }).then();
     }
 
-    private Mono<ItemInSpace> addItemToSpace(Item item, Point coords) {
-        ItemInSpace itemInSpace = new ItemInSpace(item.getId(), coords, item.getTypeId(), item.getDsc());
-        items.put(item.getId(), itemInSpace);
+    private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
+        var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
+        var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
+        ItemInSpaceView itemInSpaceView =
+                new ItemInSpaceView(item.getId(), new Point(newX, newY), item.getTypeId(), item.getDsc());
+        items.put(item.getId(), itemInSpaceView);
 
-        return Mono.just(itemInSpace);
+        return Mono.just(itemInSpaceView);
+    }
+
+    private double getCoordInExplosionRadius(int min, int max) {
+        return Math.random() * (max + 1 - min) + min;
     }
 
     private Mono<Long> sendItemUpdate(ItemView item) {
