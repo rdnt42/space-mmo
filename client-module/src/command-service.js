@@ -1,8 +1,8 @@
 import * as initService from "./init-service.js";
 import * as characterService from "./character-service.js";
 import * as inventoryService from "./inventory-service.js";
-import * as spaceItemService from "./space-item-service.js";
-import * as weaponService from "./weapon-service.js";
+import * as spaceItemService from "./obj-service/space-item-service.js";
+import * as bulletService from "./obj-service/bullet-setvice.js";
 import {Commands} from "./const/MessageCommand.js";
 
 export function executeCommand(response) {
@@ -26,7 +26,7 @@ export function executeCommand(response) {
 
         case Commands.UpdateMotion:
             characterService.updateCharactersData(socketResponse.data.characters);
-            spaceItemService.updateSpaceItem(socketResponse.data.itemsInSpace);
+            spaceItemService.createOrUpdate(socketResponse.data.itemsInSpace);
             break;
 
         case Commands.LeavingPlayer:
@@ -38,7 +38,7 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateShooting:
-            weaponService.updateBulletData(socketResponse.data);
+            bulletService.createOrUpdate(socketResponse.data);
             break;
 
         case Commands.BlowUpCharacter:

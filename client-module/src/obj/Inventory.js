@@ -4,7 +4,7 @@ import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../message/CharacterMessage.js";
-import {inCargo, inHull, isWeapon} from "../itemUtils.js";
+import {inCargo, inHull, isWeapon} from "../item-utils.js";
 
 export class Inventory {
     isOpen = false;

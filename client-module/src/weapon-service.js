@@ -1,5 +1,3 @@
-import * as renderEngine from "./render/engine.js";
-
 let shotState = false;
 let isUpdated = false;
 
@@ -15,11 +13,5 @@ export function useWeapon() {
 export function stopWeapon() {
     shotState = false;
     isUpdated = false;
-}
-
-export function updateBulletData(bullets) {
-    for (const bullet of bullets) {
-        renderEngine.createOrUpdateBullet(bullet.id, bullet.x, bullet.y, bullet.angle, bullet.type);
-    }
 }
 

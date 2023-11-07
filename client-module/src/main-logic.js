@@ -6,6 +6,7 @@ import * as inventoryService from "./inventory-service.js";
 import * as weaponService from "./weapon-service.js";
 import {InteractiveState} from "./const/InteractiveState.js";
 import * as renderEngine from "./render/engine.js";
+import * as bulletService from "./obj-service/bullet-setvice.js";
 
 let state;
 let mouseCoords = {};
@@ -53,7 +54,17 @@ function sendShootingInfo() {
 }
 
 function clearUnusedObjects() {
-    renderEngine.clearUnusedObjects()
+    removeOrMarkObjects(bulletService.getObjectsMap());
+}
+
+function removeOrMarkObjects(map) {
+    map.forEach((obj, key, map) => {
+        if (obj.isUpdated === false) {
+            obj.destroyObj();
+            map.delete(key);
+        }
+        obj.isUpdated = false;
+    });
 }
 
 function getCharacterMotion(speed, maxSpeed, angle) {
