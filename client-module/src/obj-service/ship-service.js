@@ -1,4 +1,3 @@
-import {getRelativeX, getRelativeY} from "./obj-utils.js";
 import {Ship} from "../obj/Ship.js";
 
 let ships = new Map();
@@ -12,19 +11,16 @@ export function createOrUpdate(objs) {
 
 function createOrUpdateObj(obj) {
     const {characterName, shipTypeId, x, y, angle, speed, polygon} = obj;
-    let abs = getPlayerShip().movement;
-    let newX = getRelativeX(x, abs.x);
-    let newY = getRelativeY(y, abs.y);
-
     let ship = ships.get(characterName);
     if (ship === undefined) {
         ship = new Ship(characterName, x, y, angle, speed, shipTypeId, polygon);
         ships.set(ship.characterName, ship);
     } else {
-        ship.updateObj(newX, newY);
+        ship.updateObj(x, y, angle, speed);
     }
 
-    ship.renderObj();
+    const abs = getPlayerShip().movement;
+    ship.renderObj(abs.x, abs.y);
 }
 
 export function createPlayerShip(data) {
@@ -32,7 +28,8 @@ export function createPlayerShip(data) {
     const ship = new Ship(data.characterName, x, y, angle, speed, shipTypeId, polygon);
     characterName = ship.characterName;
     ships.set(ship.characterName, ship);
-    ship.renderObj();
+
+    ship.renderObj(x, y);
 }
 
 export function getPlayerShip() {

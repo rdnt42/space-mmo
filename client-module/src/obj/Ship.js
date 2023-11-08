@@ -1,4 +1,5 @@
 import * as renderService from "../render/render.js";
+import {getRelativeX, getRelativeY} from "../obj-service/obj-utils.js";
 
 export class Ship {
     texture;
@@ -9,25 +10,29 @@ export class Ship {
     constructor(characterName, x, y, angle, speed, typeId, polygon) {
         this.texture = renderService.createCharacter(characterName, typeId, x, y, angle, polygon);
         this.characterName = characterName;
+        this.movement = {
+            x: x,
+            y: y,
+        }
         this.updateObj(x, y, angle, speed);
     }
 
     updateObj(x, y, angle, speed) {
-        this.x = x;
-        this.y = y;
         this.movement = {
-            prevX: this.x,
-            prevY: this.y,
+            prevX: this.movement.x,
+            prevY: this.movement.y,
             x: x,
             y: y,
             angle: angle,
-            speed: speed
+            speed: speed,
         }
         this.isUpdated = true;
     }
 
-    renderObj() {
-        renderService.renderCharacter(this.texture, this.characterName, this.movement.x, this.movement.y, this.movement.angle);
+    renderObj(absX, absY) {
+        const relativeX = getRelativeX(this.movement.x, absX);
+        const relativeY = getRelativeY(this.movement.y, absY);
+        renderService.renderCharacter(this.texture, this.characterName, relativeX, relativeY, this.movement.angle);
     }
 
     destroyObj() {
@@ -47,6 +52,6 @@ export class Ship {
     }
 
     getRenderCoords() {
-        return render.getRenderCoords(this.texture);
+        return renderService.getRenderCoords(this.texture);
     }
 }

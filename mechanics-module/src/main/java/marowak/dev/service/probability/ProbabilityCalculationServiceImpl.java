@@ -12,6 +12,6 @@ public class ProbabilityCalculationServiceImpl implements ProbabilityCalculation
             return Mono.just(false);
         }
 
-        return Mono.just(Math.random() < 0.33);
+        return Mono.just(Math.random() < 0.6);
     }
 }

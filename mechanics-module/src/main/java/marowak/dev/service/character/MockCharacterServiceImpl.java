@@ -60,7 +60,6 @@ public class MockCharacterServiceImpl implements CharacterService {
                         .collectList()
                         .map(items -> character));
 
-
         CharacterMotion char2 = CharacterMotion.builder()
                 .characterName("sd")
                 .x(150)
