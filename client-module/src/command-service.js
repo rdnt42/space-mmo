@@ -1,7 +1,7 @@
 import * as initService from "./init-service.js";
-import * as characterService from "./character-service.js";
 import * as inventoryService from "./inventory-service.js";
 import * as spaceItemService from "./obj-service/space-item-service.js";
+import * as shipService from "./obj-service/ship-service.js";
 import * as bulletService from "./obj-service/bullet-setvice.js";
 import {Commands} from "./const/MessageCommand.js";
 
@@ -25,7 +25,7 @@ export function executeCommand(response) {
             break;
 
         case Commands.UpdateMotion:
-            characterService.updateCharactersData(socketResponse.data.characters);
+            shipService.createOrUpdate(socketResponse.data.characters);
             spaceItemService.createOrUpdate(socketResponse.data.itemsInSpace);
             break;
 
@@ -42,7 +42,7 @@ export function executeCommand(response) {
             break;
 
         case Commands.BlowUpCharacter:
-            characterService.characterExplosion(socketResponse.data);
+            shipService.shipExplosion(socketResponse.data);
             break;
 
         default:

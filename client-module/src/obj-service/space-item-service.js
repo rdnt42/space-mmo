@@ -1,6 +1,6 @@
-import * as characterService from "../character-service.js";
 import {SpaceItem} from "../obj/SpaceItem.js";
 import {getRelativeX, getRelativeY} from "./obj-utils.js";
+import * as shipService from "./ship-service.js";
 
 let spaceItems = new Map();
 
@@ -11,7 +11,7 @@ export function createOrUpdate(objs) {
 }
 
 function createOrUpdateObj(id, x, y, itemTypeId, dsc) {
-    let abs = characterService.getPlayerCharacter().movement;
+    let abs = shipService.getPlayerShip().movement;
     let newX = getRelativeX(x, abs.x);
     let newY = getRelativeY(y, abs.y);
 

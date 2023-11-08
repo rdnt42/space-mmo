@@ -1,4 +1,4 @@
-import * as renderEngine from "../render/engine.js";
+import * as shipService from "../obj-service/ship-service.js";
 
 export class Character {
     characterName;
@@ -10,7 +10,7 @@ export class Character {
 
     initCharacter(x, y, angle, speed, shipTypeId, polygon) {
         this.movement = new Movement(x, y, angle, speed);
-        renderEngine.createCharacter(this.characterName, shipTypeId, x, y, angle, polygon);
+        shipService.createCharacter(this.characterName, shipTypeId, x, y, angle, polygon);
     }
 
     updateCharacter(x, y, angle, speed) {
@@ -45,7 +45,7 @@ export class Character {
     }
 
     blowUp() {
-        renderEngine.blowUpCharacter(this.characterName);
+        renderEngine.blowUpShip(this.characterName);
     }
 }
 

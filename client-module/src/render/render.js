@@ -1,6 +1,6 @@
 import * as pixi from '../libs/pixi.min.js';
-import * as characterService from "../character-service.js";
 import * as inventoryService from "../inventory-service.js";
+import * as shipService from "../obj-service/ship-service.js";
 import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {shipsCfgMap} from "../cfg/ship-images-cfg.js";
 import {bulletsCfgMap} from "../cfg/bullets-images-cfg.js";
@@ -91,20 +91,20 @@ function createSpritesContainer() {
 }
 
 function updateLocationText(posInfoLabel) {
-    let playerCharacter = characterService.getPlayerCharacter();
-    posInfoLabel.text = playerCharacter.getLocation();
+    let mov = shipService.getPlayerShip().movement;
+    posInfoLabel.text = `X: ${Math.round(mov.x)}, Y: ${Math.round(mov.y)}, Speed: ${Math.round(mov.speed)}, Angle: ${mov.angle}`;
 }
 
 function updateBackground(bg, div) {
-    let playerCharacter = characterService.getPlayerCharacter();
-    let addX = parseFloat(playerCharacter.getDiffX() / div);
-    let addY = parseFloat(playerCharacter.getDiffY() / div);
+    let ship = shipService.getPlayerShip();
+    let addX = parseFloat(ship.getDiffX() / div);
+    let addY = parseFloat(ship.getDiffY() / div);
     bg.tilePosition.x -= addX;
     bg.tilePosition.y -= addY;
 }
 
 function updateExplosion() {
-    let movement = characterService.getPlayerCharacter().movement;
+    let movement = shipService.getPlayerShip().movement;
     for (let ship of blowUpCharacters.values()) {
         let x = getX(ship.x, movement.x);
         let y = getY(ship.y, movement.y);
@@ -117,7 +117,7 @@ export function changeStateInventory(state) {
 }
 
 /// Character
-export function renderCharacter(characterName, sprite, x, y, angle) {
+export function renderCharacter(sprite, characterName, x, y, angle) {
     sprite.position.set(x, y);
     sprite.angle = angle;
 
@@ -154,12 +154,12 @@ export function createCharacter(characterName, shipTypeId, x, y, angle, polygonA
         sprite.addChild(border);
     }
 
-    createCharacterLabel(characterName);
+    createShipLabel(characterName);
 
     return sprite;
 }
 
-function createCharacterLabel(characterName) {
+function createShipLabel(characterName) {
     let label = new pixi.Text(characterName, {
         fill: 0xffffff,
     });
@@ -169,7 +169,7 @@ function createCharacterLabel(characterName) {
     characterLabelsMap.set(characterName, label);
 }
 
-export function removeCharacter(characterName, sprite) {
+export function removeShip(characterName, sprite) {
     removeSprite(sprite);
 
     let label = characterLabelsMap.get(characterName);
@@ -196,7 +196,7 @@ function getY(currY, diffY) {
     return currY - diffY + window.innerHeight / 2;
 }
 
-export function blowUpCharacter(sprite, baseX, baseY, characterName) {
+export function blowUpShip(sprite, baseX, baseY, characterName) {
     let id = getRandomIntInclusive(1, 3);
     let textureArr = [];
     for (let i = 0; i <= 10; i++) {

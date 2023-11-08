@@ -9,7 +9,7 @@ export class Bullet {
 
     constructor(x, y, angle, type) {
         this.texture = renderService.createBullet(x, y, angle, type);
-        this.isUpdated = true;
+        this.updateObj(x, y, angle);
     }
 
     updateObj(x, y, angle) {

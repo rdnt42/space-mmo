@@ -1,12 +1,13 @@
 import * as keyboard from "./keyboard-service.js"
 import {Direction} from "./const/Direction.js";
-import * as characterService from "./character-service.js";
 import {FREQUENCY_TIME} from "./const/Common.js";
 import * as inventoryService from "./inventory-service.js";
 import * as weaponService from "./weapon-service.js";
 import {InteractiveState} from "./const/InteractiveState.js";
-import * as renderEngine from "./render/engine.js";
 import * as bulletService from "./obj-service/bullet-setvice.js";
+import * as shipService from "./obj-service/ship-service.js";
+import {CharacterMotionRequest, CharacterShootingRequest} from "./message/CharacterMessage.js";
+import * as socket from "./websocket-service.js";
 
 let state;
 let mouseCoords = {};
@@ -38,19 +39,22 @@ function worldTick() {
 }
 
 function sendMotionInfo() {
-    let character = characterService.getPlayerCharacter();
+    let ship = shipService.getPlayerShip();
 
     let engine = inventoryService.getEngine();
     if (engine !== null) {
-        let move = getCharacterMotion(character.movement.speed, engine.maxSpeed, character.movement.angle);
-        characterService.sendMotion(move.forceTypeId, move.angle, true);
+        let move = getCharacterMotion(ship.movement.speed, engine.maxSpeed, ship.movement.angle);
+        // TODO service for sending
+        const request = new CharacterMotionRequest(true, move.forceTypeId, move.angle);
+        socket.sendMessage(request);
     }
 }
 
 function sendShootingInfo() {
     // in client coordinates render from top left point, we need to invert it by 180 degrees
     let angle = getCharacterAngle(mouseCoords.x, mouseCoords.y) + 180;
-    characterService.sendShooting(weaponService.getShotState(), angle);
+    const request = new CharacterShootingRequest(weaponService.getShotState(), angle);
+    socket.sendMessage(request);
 }
 
 function clearUnusedObjects() {
@@ -109,8 +113,8 @@ function onMouseUp() {
 }
 
 function getCharacterAngle(x, y) {
-    let character = characterService.getPlayerCharacter();
-    let coords = renderEngine.getRenderCoords(character.characterName);
+    let ship = shipService.getPlayerShip();
+    let coords = ship.getRenderCoords();
 
     return Math.atan2(coords.y - y, coords.x - x) * (180 / Math.PI);
 }

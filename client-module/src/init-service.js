@@ -2,7 +2,10 @@ import * as main from "./main-logic.js";
 import * as inventoryService from "./inventory-service.js";
 import * as renderEngine from "./render/render.js";
 import * as keyboard from "./keyboard-service.js";
-import * as characterService from "./character-service.js";
+import * as shipService from "./obj-service/ship-service.js";
+import * as socket from "./websocket-service.js";
+import {PlayerEmptyRequest} from "./message/PlayerEmptyRequest.js";
+import {Commands} from "./const/MessageCommand.js";
 
 const timerInterval = 100;
 let timers = new Map();
@@ -14,8 +17,16 @@ const funcs = {
 export function startInitAll() {
     renderEngine.initRender();
 
-    initBefore(characterService.sendGetMotions, funcs.characters);
-    initBefore(characterService.sendGetInventory, funcs.inventory);
+    initBefore(sendGetMotions, funcs.characters);
+    initBefore(sendGetInventory, funcs.inventory);
+}
+
+function sendGetMotions() {
+    socket.sendMessage(new PlayerEmptyRequest(Commands.GetMotions));
+}
+
+function sendGetInventory() {
+    socket.sendMessage(new PlayerEmptyRequest(Commands.GetInventory));
 }
 
 function initBefore(func, funcName) {
@@ -53,8 +64,7 @@ export function tryInitMotions(data) {
     if (data == null || timers.get(funcs.characters) === undefined) return;
 
     stopTimer(funcs.characters);
-    characterService.initMyCharacter(data);
-    characterService.updateCharacterData(data);
+    shipService.createPlayerShip(data);
 
     removeTimer(funcs.characters);
 }

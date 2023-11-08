@@ -8,9 +8,9 @@ export class CharacterMotionRequest {
 }
 
 export class CharacterShootingRequest {
-    constructor(isShooting, angle, lastUpdateTime) {
+    constructor(isShooting, angle) {
         this.command = Commands.UpdateShooting;
-        this.data = {isShooting, angle, lastUpdateTime}
+        this.data = {isShooting, angle}
     }
 }
 
