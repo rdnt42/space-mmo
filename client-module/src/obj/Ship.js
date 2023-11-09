@@ -40,7 +40,8 @@ export class Ship {
     }
 
     blowUp() {
-        renderService.blowUpShip(this.characterName);
+        renderService.blowUpShip(this.texture, this.movement.x, this.movement.y, this.characterName);
+        this.destroyObj();
     }
 
     getDiffX() {
