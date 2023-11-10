@@ -17,8 +17,9 @@ const Sort = {
     EQUIPMENT: 110
 }
 const IS_DEBUG = true;
-let spritesContainer;
-let INVENTORY_CONTAINER;
+let globalSpritesContainer;
+let globalInventoryContainer;
+let globalInventory;
 
 let characterLabelsMap = new Map();
 let blowUpCharacters = new Map();
@@ -41,8 +42,8 @@ export function initRender() {
     bgFirst = createBackground(pixi.Texture.from("./images/background/bgFirstLevel.png"));
     app.stage.addChild(bgFirst);
 
-    spritesContainer = createSpritesContainer();
-    app.stage.addChild(spritesContainer);
+    globalSpritesContainer = createSpritesContainer();
+    app.stage.addChild(globalSpritesContainer);
 
     posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
@@ -113,7 +114,7 @@ function updateExplosion() {
 }
 
 export function changeStateInventory(state) {
-    INVENTORY_CONTAINER.visible = state;
+    globalInventoryContainer.visible = state;
 }
 
 /// Character
@@ -282,7 +283,8 @@ export function createInventory() {
     container.addChild(speedLabel);
     container.sortChildren();
 
-    INVENTORY_CONTAINER = container;
+    globalInventory = inventory;
+    globalInventoryContainer = container;
 }
 
 export function initCargoCell(id) {
@@ -293,7 +295,7 @@ export function initCargoCell(id) {
     sprite.height = 40;
     sprite.position.set(164 + id * (sprite.width + 5), 569);
     sprite.anchor.set(0, 0.5);
-    INVENTORY_CONTAINER.addChild(sprite);
+    globalInventoryContainer.addChild(sprite);
 
     return sprite;
 }
@@ -308,7 +310,7 @@ export function initEquipmentSlot(slotId) {
 
     const cfg = slotsCfgMap.get(slotId);
     sprite.position.set(cfg.x, cfg.y);
-    INVENTORY_CONTAINER.addChild(sprite);
+    globalInventoryContainer.addChild(sprite);
 
     return sprite;
 }
@@ -321,7 +323,7 @@ export function addClosedSlot(slotId) {
     sprite.height = 77;
     sprite.anchor.set(0.5, 0.5);
     sprite.position.set(cfg.x, cfg.y);
-    INVENTORY_CONTAINER.addChild(sprite);
+    globalInventoryContainer.addChild(sprite);
 }
 
 export function initItem(typeId, equipmentType) {
@@ -363,7 +365,7 @@ export function initItem(typeId, equipmentType) {
     sprite.anchor.set(0.5);
     sprite.visible = false;
 
-    INVENTORY_CONTAINER.addChild(sprite);
+    globalInventoryContainer.addChild(sprite);
 
     return sprite;
 }
@@ -440,7 +442,6 @@ export function renderBullet(sprite, x, y, angle) {
 
 function onDragMove(event) {
     if (dragTarget) {
-        this.scale.set(0.75);
         dragTarget.parent.toLocal(event.global, null, dragTarget.position);
     }
 }
@@ -450,12 +451,14 @@ let start;
 function onDragStart() {
     start = Date.now();
     dragTarget = this;
-
+    this.scale.set(0.75);
+    this.zIndex = Sort.EQUIPMENT + 1;
     app.stage.on('pointermove', onDragMove);
 }
 
 function onDragEnd() {
     if (dragTarget) {
+        this.zIndex = Sort.EQUIPMENT;
         app.stage.off('pointermove', onDragMove);
         if ((Date.now() - start) > 250) {
             inventoryService.dragEndCallback(dragTarget);
