@@ -51,3 +51,4 @@ export function updateItemSlot(updateItem) {
 export function changeInventoryState() {
     return inventory.changeState();
 }
+

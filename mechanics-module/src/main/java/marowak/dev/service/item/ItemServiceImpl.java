@@ -22,6 +22,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemClient itemClient;
     private final CharacterShipService characterShipService;
 
+
     @Override
     public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
         ItemMessage message = ItemMessage.builder()

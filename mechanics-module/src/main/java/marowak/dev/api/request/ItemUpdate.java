@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record ItemUpdate(
         long id,
-        int slotId,
+        Integer slotId,
         int storageId
 ) {
 }

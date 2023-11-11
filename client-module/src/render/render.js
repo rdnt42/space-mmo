@@ -404,6 +404,24 @@ export function hasHalfCollision(r1, r2) {
         r1Bounds.y < r2Bounds.y + r2Bounds.height * 0.5;
 }
 
+export function hasCollision(r1, r2) {
+    let r1Bounds = r1.getBounds();
+    let r2Bounds = r2.getBounds();
+
+    return r1Bounds.x + r1Bounds.width > r2Bounds.x &&
+        r1Bounds.x < r2Bounds.x + r2Bounds.width &&
+        r1Bounds.y + r1Bounds.height > r2Bounds.y &&
+        r1Bounds.y < r2Bounds.y + r2Bounds.height;
+}
+
+export function hasInventoryCollision(obj) {
+    return hasCollision(globalInventory, obj);
+}
+
+export function hasSpaceCollision(obj) {
+    return hasCollision(bgFirst, obj) || hasCollision(bgLast, obj);
+}
+
 /// Weapon
 export function createBullet(x, y, angle, type) {
     let textureArr = [];

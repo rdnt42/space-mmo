@@ -20,17 +20,3 @@ export class CharacterItemRequest {
         this.data = {id, slotId, storageId}
     }
 }
-
-export class CharacterResponse {
-    constructor(data) {
-        this.characterName = data.id;
-        this.x = data.x;
-        this.y = data.y;
-        this.angle = data.angle;
-        this.speed = data.speed;
-        this.shipTypeId = data.shipTypeId;
-        this.hp = data.hp;
-        this.evasion = data.evasion;
-        this.armor = data.armor;
-    }
-}

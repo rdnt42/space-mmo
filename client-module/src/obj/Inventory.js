@@ -5,6 +5,7 @@ import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
 import {CharacterItemRequest} from "../message/CharacterMessage.js";
 import {inCargo, inHull, isWeapon} from "../item-utils.js";
+import {SPACE_STORAGE_ID} from "../const/Common";
 
 export class Inventory {
     isOpen = false;
@@ -126,13 +127,19 @@ export class Inventory {
     }
 
     moveItem(item) {
-        let newSlot;
-        if ((newSlot = this.#getCollisionCell(item)) !== null ||
-            (newSlot = this.#getCollisionEquipmentSlot(item)) !== null) {
-            this.#swapSlots(item.slot, newSlot);
-        } else {
-            item.slot.center();
+        if (renderEngine.hasInventoryCollision(item.texture)) {
+            console.log(`item in inventory, id: ${item.id}`)
+            let newSlot;
+            if ((newSlot = this.#getCollisionCell(item)) !== null ||
+                (newSlot = this.#getCollisionEquipmentSlot(item)) !== null) {
+                this.#swapSlots(item.slot, newSlot);
+            } else {
+                item.slot.center();
+            }
+        } else if (renderEngine.hasSpaceCollision(item.texture)) {
+            this.#moveItemToSpace(item);
         }
+
     }
 
     #getCollisionCell(item) {
@@ -195,6 +202,11 @@ export class Inventory {
         if (item1 !== null) {
             this.#addToSlot(slot2, item1);
         }
+    }
+
+    #moveItemToSpace(item) {
+        console.log(`try move item to space, id: ${item.id}`);
+        socket.sendMessage(new CharacterItemRequest(item.id, null, SPACE_STORAGE_ID));
     }
 
     #validateSLotsSwap(slot1, slot2, eq1, eq2) {
