@@ -92,7 +92,7 @@ public class CharacterShipService implements Calculable {
         CharacterShip curr = charactersMap.get(characterName);
 
         return Flux.fromStream(charactersMap.values().stream())
-                .filter(other -> other.isInRange(curr))
+                .filter(curr::isInRange)
                 .mapNotNull(CharacterShip::getView);
     }
 

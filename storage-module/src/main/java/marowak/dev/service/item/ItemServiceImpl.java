@@ -18,7 +18,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemR2Repository itemR2Repository;
     private final HullR2Repository hullR2Repository;
     private final WeaponR2Repository weaponR2Repository;
-
     private final CargoHookR2Repository cargoHookR2Repository;
 
     // TODO generic
@@ -68,16 +67,34 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Mono<ItemMessage> updateItem(ItemMessage message) {
-        itemR2Repository.update(message.getId(), message.getSlotId(), message.getStorageId());
+        itemR2Repository.update(message.getId(), message.getSlotId(), message.getStorageId(), message.getCharacterName());
 
         return Mono.empty();
     }
 
     @Override
     public Mono<ItemMessage> deleteItem(ItemMessage message) {
-        return Mono.from(itemR2Repository.deleteById(message.getId()))
-                .map(id -> ItemMessage.builder()
-                        .id(id)
+        Long id = message.getId();
+        return Mono.from(itemR2Repository.findById(id))
+                .doOnNext(i -> log.info("Try to delete item with id: {}", i.id()))
+                .flatMap(item -> Mono.from(
+                                switch (item.itemTypeId()) {
+                                    case 1 -> Mono.from(engineR2Repository.deleteById(item.id()));
+                                    case 2 -> Mono.from(fuelTankR2Repository.deleteById(item.id()));
+                                    case 6 -> Mono.from(cargoHookR2Repository.deleteById(item.id()));
+                                    case 8 -> Mono.from(hullR2Repository.deleteById(item.id()));
+                                    case 9 -> Mono.from(weaponR2Repository.deleteById(item.id()));
+
+                                    default -> Mono.error(new IllegalStateException("Unexpected value: " + item.itemTypeId()));
+                                })
+
+                        .flatMap(itemId -> Mono.from(itemR2Repository.deleteById(id)))
+                )
+                .doOnError(e -> log.error("Error when deleting item with id: {}", id, e))
+                .doOnNext(i -> log.info("Item deleted with id: {}", id))
+                .map(itemId -> ItemMessage.builder()
+                        .key(ItemMessageKey.ITEM_DELETE)
+                        .id(itemId)
                         .build());
     }
 }

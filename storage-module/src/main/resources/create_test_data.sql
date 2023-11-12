@@ -2,7 +2,7 @@ insert into characters (character_name, account_name, experience, x, y, angle, i
 values ('p1', 'user1', 0, 0, 0, 0, false);
 
 insert into characters (character_name, account_name, experience, x, y, angle, is_online)
-values ('sd', 'user2', 0, 200, 200, 0, false);
+values ('sd', 'user2', 0, 200, 200, 0, true);
 
 -- P1
 insert into items (slot_id, storage_id, character_name, item_type_id, upgrade_level, cost, name_ru, dsc_ru)

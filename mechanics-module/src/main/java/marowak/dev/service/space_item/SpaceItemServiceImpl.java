@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static marowak.dev.enums.ItemType.ITEM_TYPE_HULL;
 import static marowak.dev.enums.StorageType.STORAGE_TYPE_SPACE;
 
 @Slf4j
@@ -37,15 +38,21 @@ public class SpaceItemServiceImpl implements SpaceItemService {
 
     @Override
     public Mono<Void> tryDropItemToSpace(Item item, Point coords) {
+        if (item.getTypeId() == ITEM_TYPE_HULL.getTypeId()) {
+            return sendItemDelete(item.getId())
+                    .doOnNext(itemId -> log.info("Item deleted, id: {}", itemId))
+                    .then();
+        }
+
         return probabilityCalculationService.isItemDropped(item.getTypeId())
                 .flatMap(isDropped -> {
                     if (Boolean.TRUE.equals(isDropped)) {
                         return addItemToSpace(item, coords)
-                                .doOnNext(spaceItem -> log.info("Item dropped to space, id: {}", spaceItem.id()))
                                 .flatMap(spaceItem -> {
                                     item.updateStorage(0, STORAGE_TYPE_SPACE.getStorageId());
                                     return sendItemUpdate(item.getView());
-                                });
+                                })
+                                .doOnNext(id -> log.info("Item dropped to space, id: {}", id));
                     } else {
                         return sendItemDelete(item.getId())
                                 .doOnNext(itemId -> log.info("Item deleted, id: {}", itemId));
@@ -71,6 +78,7 @@ public class SpaceItemServiceImpl implements SpaceItemService {
         ItemMessage message = ItemMessage.builder()
                 .key(ItemMessageKey.ITEMS_UPDATE)
                 .id(item.getId())
+                .characterName(null)
                 .slotId(item.getSlotId())
                 .storageId(item.getStorageId())
                 .build();

@@ -149,6 +149,9 @@ public class CharacterShip {
     }
 
     public boolean isInRange(CharacterShip other) {
+        if (other.getHull() == null) {
+            return false;
+        }
         return hull.isInRange(other.getHull());
     }
 
