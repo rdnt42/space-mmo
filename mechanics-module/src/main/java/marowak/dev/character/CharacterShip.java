@@ -38,7 +38,7 @@ public class CharacterShip {
     private Weapon weapon4;
     private Weapon weapon5;
 
-    private final List<Item> cargo = new ArrayList<>();
+    private final Item[] hold = new Item[30];
 
     // TODO refactor
     private final Point startCoords;
@@ -69,17 +69,6 @@ public class CharacterShip {
         return hull.getSpeed();
     }
 
-    public void addItem(Item item) {
-        if (item.getStorageId() == STORAGE_TYPE_HOLD.getStorageId()) {
-            cargo.add(item);
-        } else if (item.getStorageId() == STORAGE_TYPE_HULL.getStorageId()) {
-            addToHull(item);
-            item.init();
-        }
-
-        itemsMap.put(item.getId(), item);
-    }
-
     public SpaceShipBody createShipBody() {
         ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, hull.getEquipmentTypeId());
         SpaceShipBody body = FactoryUtils.createShip(request);
@@ -90,16 +79,23 @@ public class CharacterShip {
 
     public Item updateItem(long id, int slotId, int storageId) {
         Item item = this.itemsMap.get(id);
-        var prevItemStorage = item.getStorageId();
-        var prevSlot = item.getSlotId();
+        removeItem(item);
         item.updateStorage(slotId, storageId);
-        if (storageId == STORAGE_TYPE_HULL.getStorageId()) {
-            addToHull(item);
-        } else if (storageId == STORAGE_TYPE_HOLD.getStorageId() && prevItemStorage == STORAGE_TYPE_HULL.getStorageId()) {
-            removeFromHull(prevSlot);
-        }
+        addItem(item);
 
         return item;
+    }
+
+    public void addItem(Item item) {
+        int storageId = item.getStorageId();
+        if (STORAGE_TYPE_HOLD.equals(storageId)) {
+            addToHold(item);
+        } else if (STORAGE_TYPE_HULL.equals(storageId)) {
+            addToHull(item);
+            item.init();
+        }
+
+        itemsMap.put(item.getId(), item);
     }
 
     private void addToHull(Item item) {
@@ -120,6 +116,21 @@ public class CharacterShip {
         }
     }
 
+    private void addToHold(Item item) {
+        hold[item.getSlotId()] = item;
+    }
+
+    private void removeItem(Item item) {
+        int storageId = item.getStorageId();
+        if (STORAGE_TYPE_HULL.equals(storageId)) {
+            removeFromHull(item.getSlotId());
+        } else if (STORAGE_TYPE_HOLD.equals(storageId)) {
+            removeFromHold(item.getSlotId());
+        }
+
+        itemsMap.remove(item.getId());
+    }
+
     private void removeFromHull(int slotId) {
         switch (slotId) {
             case 1 -> engine = null;
@@ -131,6 +142,10 @@ public class CharacterShip {
             case 13 -> weapon5 = null;
             default -> throw new IllegalStateException();
         }
+    }
+
+    private void removeFromHold(int slotId) {
+        hold[slotId] = null;
     }
 
     public boolean isInRange(CharacterShip other) {
@@ -154,17 +169,9 @@ public class CharacterShip {
     }
 
     public InventoryView getInventoryView() {
-        // TODO #95
-        List<ItemView> items = cargo.stream()
+        List<ItemView> items = itemsMap.values().stream()
                 .map(Item::getView)
-                .collect(Collectors.toList());
-        items.add(hull == null ? null : hull.getView());
-        items.add(engine == null ? null : engine.getView());
-        items.add(weapon1 == null ? null : weapon1.getView());
-        items.add(weapon2 == null ? null : weapon2.getView());
-        items.add(weapon3 == null ? null : weapon3.getView());
-        items.add(weapon4 == null ? null : weapon4.getView());
-        items.add(weapon5 == null ? null : weapon5.getView());
+                .toList();
 
         return InventoryView.builder()
                 .items(items.stream().filter(Objects::nonNull).collect(Collectors.toList()))

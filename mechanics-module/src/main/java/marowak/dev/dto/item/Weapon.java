@@ -36,7 +36,7 @@ public class Weapon extends Item {
     @Override
     public void init() {
         shotFreq = 60_000 / rate;
-        if (getStorageId() != STORAGE_TYPE_HULL.getStorageId()) return;
+        if (!STORAGE_TYPE_HULL.equals(getStorageId())) return;
 
         var slotShift = switch (getSlotId()) {
             case 9 -> new Point(20, -20);

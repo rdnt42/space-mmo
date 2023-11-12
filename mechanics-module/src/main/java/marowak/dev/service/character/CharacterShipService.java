@@ -61,7 +61,7 @@ public class CharacterShipService implements Calculable {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
-        if (item.getStorageId() == STORAGE_TYPE_HULL.getStorageId() && item instanceof Hull) {
+        if (STORAGE_TYPE_HULL.equals(item.getStorageId()) && item instanceof Hull) {
             SpaceShipBody shipBody = ship.createShipBody();
             worldService.createBody(shipBody);
         }

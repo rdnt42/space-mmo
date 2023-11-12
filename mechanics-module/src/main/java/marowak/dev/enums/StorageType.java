@@ -11,4 +11,9 @@ public enum StorageType {
     STORAGE_TYPE_SPACE(3);
 
     private final int storageId;
+
+
+    public boolean equals(int storageId) {
+        return this.storageId == storageId;
+    }
 }
