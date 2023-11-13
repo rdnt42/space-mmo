@@ -45,7 +45,7 @@ public class CharacterServiceImpl implements CharacterService {
         return characterShipService.addCharacter(request)
                 .doOnNext(character -> log.info("Character init successful, key: {}, character name: {}", message.getKey(), character.getId()))
                 .doOnError(e -> log.error("Character init failed", e))
-                .then(itemService.sendGetItems(ItemMessageKey.ITEMS_GET_ONE, message.getCharacterName()))
+                .then(itemService.sendGetItems(ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER, message.getCharacterName()))
                 .then();
     }
 

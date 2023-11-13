@@ -17,31 +17,32 @@ public class ItemServiceImpl implements ItemService {
     private final FuelTankR2Repository fuelTankR2Repository;
     private final ItemR2Repository itemR2Repository;
     private final HullR2Repository hullR2Repository;
-    private final WeaponR2Repository weaponR2Repository;
+    private final WeaponR2TypeService weaponR2Repository;
     private final CargoHookR2Repository cargoHookR2Repository;
+
 
     // TODO generic
     @Override
     public Flux<ItemMessage> getAllOnline() {
         Flux<ItemMessage> engineFlux = Flux.from(engineR2Repository.findAll())
                 .flatMap(engine -> Flux.from(itemR2Repository.findById(engine.id()))
-                        .map(item -> BuilderHelper.engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_ALL)));
+                        .map(item -> BuilderHelper.engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_FOR_ALL_CHARACTERS)));
 
         Flux<ItemMessage> fuelTankFlux = Flux.from(fuelTankR2Repository.findAll())
                 .flatMap(fuelTank -> Flux.from(itemR2Repository.findById(fuelTank.id()))
-                        .map(item -> BuilderHelper.fuelTankToMessage.apply(fuelTank, item, ItemMessageKey.ITEMS_GET_ALL)));
+                        .map(item -> BuilderHelper.fuelTankToMessage.apply(fuelTank, item, ItemMessageKey.ITEMS_GET_FOR_ALL_CHARACTERS)));
 
         Flux<ItemMessage> cargoHookFlux = Flux.from(cargoHookR2Repository.findAll())
                 .flatMap(cargoHook -> Flux.from(itemR2Repository.findById(cargoHook.id()))
-                        .map(item -> BuilderHelper.cargoHookToMessage.apply(cargoHook, item, ItemMessageKey.ITEMS_GET_ALL)));
+                        .map(item -> BuilderHelper.cargoHookToMessage.apply(cargoHook, item, ItemMessageKey.ITEMS_GET_FOR_ALL_CHARACTERS)));
 
         Flux<ItemMessage> hullFlux = Flux.from(hullR2Repository.findAll())
                 .flatMap(hull -> Flux.from(itemR2Repository.findById(hull.id()))
-                        .map(item -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ALL)));
+                        .map(item -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_FOR_ALL_CHARACTERS)));
 
         Flux<ItemMessage> weaponFlux = Flux.from(weaponR2Repository.findAll())
                 .flatMap(weapon -> Flux.from(itemR2Repository.findById(weapon.id()))
-                        .map(item -> BuilderHelper.weaponToMessage.apply(weapon, item, ItemMessageKey.ITEMS_GET_ALL)));
+                        .map(item -> BuilderHelper.weaponToMessage.apply(weapon, item, ItemMessageKey.ITEMS_GET_FOR_ALL_CHARACTERS)));
 
         return Flux.concat(engineFlux, fuelTankFlux, cargoHookFlux, hullFlux, weaponFlux);
     }
@@ -51,18 +52,23 @@ public class ItemServiceImpl implements ItemService {
         return itemR2Repository.findByCharacterName(characterName)
                 .flatMap(item -> switch (item.itemTypeId()) {
                     case 1 -> Flux.from(engineR2Repository.findById(item.id()))
-                            .map(engine -> BuilderHelper.engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_ONE));
+                            .map(engine -> BuilderHelper.engineToMessage.apply(engine, item, ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER));
                     case 2 -> Flux.from(fuelTankR2Repository.findById(item.id()))
-                            .map(fuel -> BuilderHelper.fuelTankToMessage.apply(fuel, item, ItemMessageKey.ITEMS_GET_ONE));
+                            .map(fuel -> BuilderHelper.fuelTankToMessage.apply(fuel, item, ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER));
                     case 6 -> Flux.from(cargoHookR2Repository.findById(item.id()))
-                            .map(hook -> BuilderHelper.cargoHookToMessage.apply(hook, item, ItemMessageKey.ITEMS_GET_ONE));
+                            .map(hook -> BuilderHelper.cargoHookToMessage.apply(hook, item, ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER));
                     case 8 -> Flux.from(hullR2Repository.findById(item.id()))
-                            .map(hull -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ONE));
+                            .map(hull -> BuilderHelper.hullToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER));
                     case 9, 10, 11, 12, 13 -> Flux.from(weaponR2Repository.findById(item.id()))
-                            .map(hull -> BuilderHelper.weaponToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_ONE));
+                            .map(hull -> BuilderHelper.weaponToMessage.apply(hull, item, ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER));
 
                     default -> Flux.error(new IllegalStateException("Unexpected value: " + item.itemTypeId()));
                 });
+    }
+
+    @Override
+    public Flux<ItemMessage> getItemsInSpace() {
+        return Flux.empty();
     }
 
     @Override
@@ -85,13 +91,14 @@ public class ItemServiceImpl implements ItemService {
                                     case 8 -> Mono.from(hullR2Repository.deleteById(item.id()));
                                     case 9 -> Mono.from(weaponR2Repository.deleteById(item.id()));
 
-                                    default -> Mono.error(new IllegalStateException("Unexpected value: " + item.itemTypeId()));
+                                    default ->
+                                            Mono.error(new IllegalStateException("Unexpected value: " + item.itemTypeId()));
                                 })
 
                         .flatMap(itemId -> Mono.from(itemR2Repository.deleteById(id)))
                 )
                 .doOnError(e -> log.error("Error when deleting item with id: {}", id, e))
-                .doOnNext(i -> log.info("Item deleted with id: {}", id))
+                .doOnSuccess(i -> log.info("Item deleted with id: {}", id))
                 .map(itemId -> ItemMessage.builder()
                         .key(ItemMessageKey.ITEM_DELETE)
                         .id(itemId)

@@ -9,6 +9,8 @@ public interface ItemService {
 
     Flux<ItemMessage> getForCharacter(String characterName);
 
+    Flux<ItemMessage> getItemsInSpace();
+
     Mono<ItemMessage> updateItem(ItemMessage message);
 
     Mono<ItemMessage> deleteItem(ItemMessage message);

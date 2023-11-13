@@ -13,7 +13,8 @@ public class ItemCommandService {
 
     public Publisher<Void> executeCommand(ItemMessage message) {
         return switch (message.getKey()) {
-            case ITEMS_GET_ALL, ITEMS_GET_ONE -> itemService.updateInventoryFromStorage(message);
+            case ITEMS_GET_FOR_ALL_CHARACTERS, ITEMS_GET_FOR_ONE_CHARACTER ->
+                    itemService.updateInventoryFromStorage(message);
             default -> Mono.empty();
         };
     }

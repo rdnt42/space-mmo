@@ -3,18 +3,18 @@ package marowak.dev.init;
 import io.micronaut.context.event.StartupEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
 import jakarta.inject.Singleton;
-import keys.CharacterMessageKey;
+import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.service.character.CharacterService;
+import marowak.dev.service.item.ItemService;
 
 @RequiredArgsConstructor
 @Singleton
-public class CharacterInit {
-    private final CharacterService characterService;
+public class ItemInSpaceInit {
+    private final ItemService itemService;
 
     @EventListener
     public void initData(StartupEvent startupEvent) {
-        characterService.sendInitCharacter(CharacterMessageKey.CHARACTERS_GET_ALL, "")
+        itemService.sendGetItems(ItemMessageKey.ITEMS_GET_IN_SPACE, null)
                 .subscribe();
     }
 }

@@ -1,8 +1,9 @@
 package keys;
 
 public enum ItemMessageKey {
-    ITEMS_GET_ONE,
-    ITEMS_GET_ALL,
+    ITEMS_GET_FOR_ONE_CHARACTER,
+    ITEMS_GET_FOR_ALL_CHARACTERS,
+    ITEMS_GET_IN_SPACE,
     ITEMS_UPDATE,
     ITEM_DELETE
 }
