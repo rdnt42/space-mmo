@@ -17,7 +17,7 @@ public class ItemServiceImpl implements ItemService {
     private final FuelTankR2Repository fuelTankR2Repository;
     private final ItemR2Repository itemR2Repository;
     private final HullR2Repository hullR2Repository;
-    private final WeaponR2TypeService weaponR2Repository;
+    private final WeaponR2Repository weaponR2Repository;
     private final CargoHookR2Repository cargoHookR2Repository;
 
 
