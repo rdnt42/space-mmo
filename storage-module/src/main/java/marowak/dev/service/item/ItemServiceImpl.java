@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Flux<ItemMessage> getItemsInSpace() {
-        return itemMessageRepository.findAll()
+        return itemMessageRepository.findAllInSpace()
                 .map(message -> {
                     message.setKey(ItemMessageKey.ITEMS_GET_IN_SPACE);
                     return message;

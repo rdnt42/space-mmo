@@ -15,4 +15,6 @@ public interface ItemR2Repository extends ReactiveStreamsCrudRepository<Item, Lo
     void update(@Id long id, @NotNull Integer slotId, @NotNull Integer storageId, @Nullable String characterName);
 
     Flux<Item> findByCharacterName(@NotNull String characterName);
+
+    Flux<Item> findByStorageId(@NotNull int storageId);
 }

@@ -18,8 +18,8 @@ public class ItemMessageRepository {
     private final ItemTypeStorage<ItemMapper> mappers;
     private final ItemTypeStorage<ReactiveStreamsCrudRepository<?, Long>> repositories;
 
-    public Flux<ItemMessage> findAll() {
-        return Flux.from(itemR2Repository.findAll())
+    public Flux<ItemMessage> findAllInSpace() {
+        return Flux.from(itemR2Repository.findByStorageId(3))
                 .flatMap(item -> {
                     ItemType type = ItemType.from(item.itemTypeId());
                     var repository = repositories.getService(type);
