@@ -19,6 +19,7 @@ public class ItemServiceImpl implements ItemService {
     private final HullR2Repository hullR2Repository;
     private final WeaponR2Repository weaponR2Repository;
     private final CargoHookR2Repository cargoHookR2Repository;
+    private final ItemMessageRepository itemMessageRepository;
 
 
     // TODO generic
@@ -68,7 +69,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Flux<ItemMessage> getItemsInSpace() {
-        return Flux.empty();
+        return itemMessageRepository.findAll()
+                .map(message -> {
+                    message.setKey(ItemMessageKey.ITEMS_GET_IN_SPACE);
+                    return message;
+                });
     }
 
     @Override

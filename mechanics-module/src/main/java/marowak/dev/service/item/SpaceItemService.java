@@ -1,4 +1,4 @@
-package marowak.dev.service.space_item;
+package marowak.dev.service.item;
 
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;

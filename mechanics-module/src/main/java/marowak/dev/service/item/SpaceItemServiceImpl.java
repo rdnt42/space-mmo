@@ -1,4 +1,4 @@
-package marowak.dev.service.space_item;
+package marowak.dev.service.item;
 
 import jakarta.inject.Singleton;
 import keys.ItemMessageKey;

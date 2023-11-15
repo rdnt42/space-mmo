@@ -1,4 +1,4 @@
-package marowak.dev.repository;
+package marowak.dev.service.item.mark;
 
 import marowak.dev.enums.ItemType;
 

@@ -3,13 +3,14 @@ package marowak.dev.service.mapper;
 import jakarta.inject.Singleton;
 import marowak.dev.entity.Item;
 import marowak.dev.entity.Weapon;
+import marowak.dev.service.item.mark.WeaponItemService;
 import message.ItemMessage;
 import message.WeaponMessage;
 
 import java.util.function.BiFunction;
 
 @Singleton
-public class WeaponItemMapper implements ItemMapper<Weapon> {
+public class WeaponItemMapper implements ItemMapper<Weapon>, WeaponItemService {
 
     @Override
     public ItemMessage map(Item item, Weapon extension) {

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;
-import marowak.dev.service.space_item.SpaceItemService;
+import marowak.dev.service.item.SpaceItemService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

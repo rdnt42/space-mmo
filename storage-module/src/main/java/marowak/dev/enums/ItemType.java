@@ -17,4 +17,14 @@ public enum ItemType {
     ITEM_TYPE_WEAPON(9);
 
     private final int typeId;
+
+    public static ItemType from(int typeId) {
+        for (ItemType value : ItemType.values()) {
+            if (value.getTypeId() == typeId) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported item type" + typeId);
+    }
 }

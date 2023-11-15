@@ -1,14 +1,14 @@
 package marowak.dev.storage;
 
 import marowak.dev.enums.ItemType;
-import marowak.dev.repository.ItemTypeService;
+import marowak.dev.service.item.mark.ItemTypeService;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
 public class ItemTypeStorage<T> {
-    private final Map<ItemType, T> initServicesMap = new HashMap<>();
+    private final Map<ItemType, T> initServicesMap = new EnumMap<>(ItemType.class);
 
     public ItemTypeStorage(Set<T> initServices) {
         initServiceMap(initServices);
