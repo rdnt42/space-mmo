@@ -10,5 +10,7 @@ public interface SpaceItemService {
 
     Mono<Void> tryDropItemToSpace(Item item, Point coords);
 
+    Mono<ItemInSpaceView> addItem(Item item, Point coords);
+
     Flux<ItemInSpaceView> getItemsInRange(Point coords);
 }

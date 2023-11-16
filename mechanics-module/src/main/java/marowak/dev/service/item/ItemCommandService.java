@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 @Singleton
 public class ItemCommandService {
     private final ItemService itemService;
+    private final SpaceItemService spaceItemService;
 
     public Publisher<Void> executeCommand(ItemMessage message) {
         return switch (message.getKey()) {

@@ -60,6 +60,11 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 }).then();
     }
 
+    @Override
+    public Mono<ItemInSpaceView> addItem(Item item, Point coords) {
+        return null;
+    }
+
     private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
