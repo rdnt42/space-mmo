@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ItemService {
-    Flux<ItemMessage> getAllOnline();
+    Flux<ItemMessage> getOnline();
 
     Flux<ItemMessage> getForCharacter(String characterName);
 

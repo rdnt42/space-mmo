@@ -3,6 +3,7 @@ package marowak.dev.repository;
 import io.micronaut.data.repository.reactive.ReactiveStreamsCrudRepository;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import marowak.dev.entity.Item;
 import marowak.dev.enums.ItemType;
 import marowak.dev.service.mapper.ItemMapper;
 import marowak.dev.storage.ItemTypeStorage;
@@ -20,15 +21,27 @@ public class ItemMessageRepository {
 
     public Flux<ItemMessage> findAllInSpace() {
         return Flux.from(itemR2Repository.findByStorageId(3))
-                .flatMap(item -> {
-                    ItemType type = ItemType.from(item.itemTypeId());
-                    var repository = repositories.getService(type);
-                    return Mono.from(repository.findById(item.id()))
-                            .map(extension -> {
-                                var mapper = mappers.getService(type);
-                                return mapper.map(item, extension);
-                            });
+                .flatMap(this::findAndMapExtension);
+    }
 
+    public Flux<ItemMessage> findAll() {
+        return Flux.from(itemR2Repository.findAll())
+                .flatMap(this::findAndMapExtension);
+    }
+
+    public Flux<ItemMessage> findAllByCharacterName(String characterName) {
+        return Flux.from(itemR2Repository.findByCharacterName(characterName))
+                .flatMap(this::findAndMapExtension);
+    }
+
+    private Mono<ItemMessage> findAndMapExtension(Item item) {
+        ItemType type = ItemType.from(item.itemTypeId());
+        var repository = repositories.getService(type);
+        return Mono.from(repository.findById(item.id()))
+                .map(extension -> {
+                    var mapper = mappers.getService(type);
+                    return mapper.map(item, extension);
                 });
+
     }
 }
