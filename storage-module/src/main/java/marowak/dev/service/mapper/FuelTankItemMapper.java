@@ -18,16 +18,8 @@ public class FuelTankItemMapper implements ItemMapper<FuelTank>, FuelTankItemSer
     }
 
     public static final BiFunction<FuelTank, Item, ItemMessage> fuelTankToMessage =
-            (fuelTank, item) -> FuelTankMessage.builder()
-                    .id(fuelTank.id())
-                    .slotId(item.slotId())
-                    .storageId(item.storageId())
-                    .characterName(item.characterName())
-                    .typeId(item.itemTypeId())
-                    .upgradeLevel(item.upgradeLevel())
-                    .cost(item.cost())
-                    .name(item.nameRu())
-                    .dsc(item.dscRu())
+            (fuelTank, item) -> ((FuelTankMessage.FuelTankMessageBuilder<?, ?>)
+                    BuilderHelper.itemToBuilder.apply(item, FuelTankMessage.builder()))
                     .capacity(fuelTank.capacity())
                     .equipmentTypeId(fuelTank.fuelTankTypeId())
                     .build();

@@ -33,6 +33,12 @@ public record Item(
 
         String nameRu,
 
-        String dscRu
+        String dscRu,
+
+        @Nullable
+        Double x,
+
+        @Nullable
+        Double y
 ) {
 }

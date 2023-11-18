@@ -18,16 +18,8 @@ public class CargoHookItemMapper implements ItemMapper<CargoHook>, CargoHookItem
     }
 
     public static final BiFunction<CargoHook, Item, ItemMessage> cargoHookToMessage =
-            (cargoHook, item) -> CargoHookMessage.builder()
-                    .id(cargoHook.id())
-                    .slotId(item.slotId())
-                    .storageId(item.storageId())
-                    .characterName(item.characterName())
-                    .typeId(item.itemTypeId())
-                    .upgradeLevel(item.upgradeLevel())
-                    .cost(item.cost())
-                    .name(item.nameRu())
-                    .dsc(item.dscRu())
+            (cargoHook, item) -> ((CargoHookMessage.CargoHookMessageBuilder<?, ?>)
+                    BuilderHelper.itemToBuilder.apply(item, CargoHookMessage.builder()))
                     .loadCapacity(cargoHook.loadCapacity())
                     .radius(cargoHook.radius())
                     .equipmentTypeId(cargoHook.cargoHookTypeId())

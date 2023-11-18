@@ -18,16 +18,8 @@ public class HullItemMapper implements ItemMapper<Hull>, HullItemService {
     }
 
     public static final BiFunction<Hull, Item, ItemMessage> hullToMessage =
-            (hull, item) -> HullMessage.builder()
-                    .id(hull.id())
-                    .slotId(item.slotId())
-                    .storageId(item.storageId())
-                    .characterName(item.characterName())
-                    .typeId(item.itemTypeId())
-                    .upgradeLevel(item.upgradeLevel())
-                    .cost(item.cost())
-                    .name(item.nameRu())
-                    .dsc(item.dscRu())
+            (hull, item) -> ((HullMessage.HullMessageBuilder<?, ?>)
+                    BuilderHelper.itemToBuilder.apply(item, HullMessage.builder()))
                     .hp(hull.hp())
                     .evasion(hull.evasion())
                     .armor(hull.armor())

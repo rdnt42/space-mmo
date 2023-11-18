@@ -15,7 +15,8 @@ public class ItemCommandService {
             case ITEMS_GET_FOR_ONE_CHARACTER -> itemService.getForCharacter(message.getCharacterName());
             case ITEMS_GET_FOR_ALL_CHARACTERS -> itemService.getOnline();
             case ITEMS_GET_IN_SPACE -> itemService.getItemsInSpace();
-            case ITEMS_UPDATE -> itemService.updateItem(message);
+            case ITEM_UPDATE -> itemService.updateItem(message);
+            case ITEM_UPDATE_IN_SPACE -> itemService.updateSpaceItem(message);
             case ITEM_DELETE -> itemService.deleteItem(message);
         };
     }

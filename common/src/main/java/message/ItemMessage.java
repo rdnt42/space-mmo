@@ -43,4 +43,8 @@ public class ItemMessage {
     private String name;
 
     private String dsc;
+
+    private Double x;
+
+    private Double y;
 }

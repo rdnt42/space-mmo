@@ -18,16 +18,8 @@ public class EngineItemMapper implements ItemMapper<Engine>, EngineItemService {
     }
 
     public static final BiFunction<Engine, Item, ItemMessage> engineToMessage =
-            (engine, item) -> EngineMessage.builder()
-                    .id(engine.id())
-                    .slotId(item.slotId())
-                    .storageId(item.storageId())
-                    .characterName(item.characterName())
-                    .typeId(item.itemTypeId())
-                    .upgradeLevel(item.upgradeLevel())
-                    .cost(item.cost())
-                    .name(item.nameRu())
-                    .dsc(item.dscRu())
+            (engine, item) -> ((EngineMessage.EngineMessageBuilder<?, ?>)
+                    BuilderHelper.itemToBuilder.apply(item, EngineMessage.builder()))
                     .speed(engine.speed())
                     .jump(engine.jump())
                     .equipmentTypeId(engine.engineTypeId())

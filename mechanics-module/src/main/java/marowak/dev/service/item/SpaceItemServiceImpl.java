@@ -5,7 +5,6 @@ import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.item.ItemInSpaceView;
-import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Item;
 import marowak.dev.service.broker.ItemClient;
@@ -50,7 +49,7 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                         return addItemToSpace(item, coords)
                                 .flatMap(spaceItem -> {
                                     item.updateStorage(0, STORAGE_TYPE_SPACE.getStorageId());
-                                    return sendItemUpdate(item.getView());
+                                    return sendItemUpdate(spaceItem);
                                 })
                                 .doOnNext(id -> log.info("Item dropped to space, id: {}", id));
                     } else {
@@ -79,19 +78,18 @@ public class SpaceItemServiceImpl implements SpaceItemService {
         return Math.random() * (max + 1 - min) + min;
     }
 
-    private Mono<Long> sendItemUpdate(ItemView item) {
+    private Mono<Long> sendItemUpdate(ItemInSpaceView item) {
         ItemMessage message = ItemMessage.builder()
-                .key(ItemMessageKey.ITEMS_UPDATE)
-                .id(item.getId())
-                .characterName(null)
-                .slotId(item.getSlotId())
-                .storageId(item.getStorageId())
+                .key(ItemMessageKey.ITEM_UPDATE_IN_SPACE)
+                .id(item.id())
+                .x(item.coords().x())
+                .y(item.coords().y())
                 .build();
 
         return itemClient.sendItems(message)
                 .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
                         message.getKey(), message.getCharacterName(), e.getMessage()))
-                .then(Mono.just(item.getId()));
+                .then(Mono.just(item.id()));
     }
 
     private Mono<Long> sendItemDelete(long itemId) {

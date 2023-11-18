@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
 
     private Mono<Void> sendItemUpdate(ItemView item, String characterName) {
         ItemMessage message = ItemMessage.builder()
-                .key(ItemMessageKey.ITEMS_UPDATE)
+                .key(ItemMessageKey.ITEM_UPDATE)
                 .id(item.getId())
                 .characterName(characterName)
                 .slotId(item.getSlotId())
