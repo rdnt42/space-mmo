@@ -25,7 +25,3 @@ function createOrUpdateObj(id, x, y, itemTypeId, dsc) {
 
     item.renderObj();
 }
-
-export function createItemInSpace(item) {
-
-}

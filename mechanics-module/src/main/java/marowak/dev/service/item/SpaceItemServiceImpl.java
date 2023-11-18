@@ -60,8 +60,14 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     }
 
     @Override
-    public Mono<ItemInSpaceView> addItem(Item item, Point coords) {
-        return null;
+    public Mono<Void> initItem(ItemMessage message) {
+        var coords = new Point(message.getX(), message.getY());
+        ItemInSpaceView itemInSpaceView =
+                new ItemInSpaceView(message.getId(), coords, message.getTypeId(), message.getDsc());
+        items.put(message.getId(), itemInSpaceView);
+        log.info("Added item to space, id: {}, x: {}, y:{}", message.getId(), message.getX(), message.getY());
+
+        return Mono.empty();
     }
 
     private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {

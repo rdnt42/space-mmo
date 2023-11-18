@@ -16,7 +16,7 @@ public class ItemCommandService {
         return switch (message.getKey()) {
             case ITEMS_GET_FOR_ALL_CHARACTERS, ITEMS_GET_FOR_ONE_CHARACTER ->
                     itemService.updateInventoryFromStorage(message);
-            case ITEMS_GET_IN_SPACE -> Mono.empty();
+            case ITEMS_GET_IN_SPACE -> spaceItemService.initItem(message);
             default -> Mono.empty();
         };
     }
