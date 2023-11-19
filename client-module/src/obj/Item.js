@@ -42,4 +42,8 @@ export class Item {
         }
     }
 
+    showInfo() {
+        return "show item info";
+    }
+
 }

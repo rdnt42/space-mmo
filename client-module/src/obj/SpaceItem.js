@@ -30,4 +30,8 @@ export class SpaceItem {
     renderObj() {
         renderService.renderSpaceItem(this.texture, this.x, this.y);
     }
+
+    showInfo() {
+        console.log("show item in space info")
+    }
 }

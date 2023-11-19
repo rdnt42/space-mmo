@@ -1,6 +1,7 @@
 import * as pixi from '../libs/pixi.min.js';
 import * as inventoryService from "../inventory-service.js";
 import * as shipService from "../obj-service/ship-service.js";
+import * as eventService from "./render-event-service.js"
 import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {shipsCfgMap} from "../cfg/ship-images-cfg.js";
 import {bulletsCfgMap} from "../cfg/bullets-images-cfg.js";
@@ -41,6 +42,9 @@ export function initRender() {
 
     posInfoLabel = createPosInfoLabel();
     app.stage.addChild(posInfoLabel);
+
+    let itemInfo = eventService.initItemInfo();
+    app.stage.addChild(itemInfo);
 
     window.addEventListener('resize', resizeHandler);
 }
@@ -343,6 +347,7 @@ export function initItem(typeId, equipmentType) {
     const sprite = new pixi.Sprite(texture);
     sprite.eventMode = "static";
 
+    eventService.addShowEvents(sprite);
     sprite.buttonMode = true;
     sprite.cursor = 'pointer';
     sprite
@@ -506,6 +511,8 @@ export function createSpaceItem(x, y, type) {
     sprite.anchor.set(0.5, 0.5);
     sprite.zIndex = Sort.PLAYER - 1;
     sprite.position.set(x, y);
+    sprite.cursor = 'pointer';
+    eventService.addShowEvents(sprite);
     app.stage.addChild(sprite);
 
     return sprite;
