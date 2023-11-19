@@ -32,6 +32,6 @@ export class SpaceItem {
     }
 
     showInfo() {
-        console.log("show item in space info")
+        return this.dsc;
     }
 }

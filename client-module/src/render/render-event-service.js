@@ -10,15 +10,15 @@ export function initItemInfo() {
     const sprite = new pixi.Sprite(texture);
 
     const text = new pixi.Text("", {
-        fill: 0x000000,
-        fontSize: 20,
+        fill: 0xffffff,
+        fontSize: 16,
     });
-    text.anchor.set(0.5, 0.5);
     text.x = 50;
     text.y = 70;
 
     info.visible = false;
     info.zIndex = Sort.ITEM_INFO;
+    text.zIndex = sprite.zIndex + 1;
     info.addChild(sprite);
     info.addChild(text);
     infoText = text;
@@ -39,7 +39,6 @@ export function addShowEvents(sprite) {
 }
 
 function showInfo(sprite) {
-    console.log("show", sprite.textureParentObj)
     infoText.text = sprite.textureParentObj.showInfo();
     info.position.set(sprite.x, sprite.y);
     info.visible = true;

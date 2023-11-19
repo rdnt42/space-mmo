@@ -6,14 +6,15 @@ let spaceItems = new Map();
 
 export function createOrUpdate(objs) {
     for (const obj of objs) {
-        createOrUpdateObj(obj.id, obj.coords.x, obj.coords.y, obj.itemTypeId)
+        createOrUpdateObj(obj);
     }
 }
 
-function createOrUpdateObj(id, x, y, itemTypeId, dsc) {
+function createOrUpdateObj(obj) {
+    const {id, coords, itemTypeId, dsc} = obj;
     let abs = shipService.getPlayerShip().movement;
-    let newX = getRelativeX(x, abs.x);
-    let newY = getRelativeY(y, abs.y);
+    let newX = getRelativeX(coords.x, abs.x);
+    let newY = getRelativeY(coords.y, abs.y);
 
     let item = spaceItems.get(id);
     if (item === undefined) {

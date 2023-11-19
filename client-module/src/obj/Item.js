@@ -9,6 +9,7 @@ export class Item {
     equipmentTypeId;
     slotId;
     slot = null;
+    dsc;
 
     constructor(item) {
         this.id = item.id;
@@ -16,6 +17,7 @@ export class Item {
         this.equipmentTypeId = item.equipmentTypeId;
         this.slotId = item.slotId;
         this.storageId = item.storageId;
+        this.dsc = item.dsc;
         this.additionalFields(item);
     }
 
@@ -43,7 +45,7 @@ export class Item {
     }
 
     showInfo() {
-        return "show item info";
+        return this.dsc;
     }
 
 }
