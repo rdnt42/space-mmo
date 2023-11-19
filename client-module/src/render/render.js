@@ -5,17 +5,11 @@ import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {shipsCfgMap} from "../cfg/ship-images-cfg.js";
 import {bulletsCfgMap} from "../cfg/bullets-images-cfg.js";
 import {slotsCfgMap} from "../cfg/slot-cfg.js";
+import {Sort} from "../const/RenderSort.js";
 
 let app;
 let dragTarget = null;
 
-const Sort = {
-    BULLETS: 29,
-    OTHER_PLAYERS: 30,
-    PLAYER: 90,
-    INVENTORY: 100,
-    EQUIPMENT: 110
-}
 const IS_DEBUG = true;
 let globalSpritesContainer;
 let globalInventoryContainer;
@@ -330,19 +324,19 @@ export function initItem(typeId, equipmentType) {
     let url;
     switch (typeId) {
         case EquipmentTypeId.Engine:
-            url = `./images/engine${equipmentType}.png`;
+            url = `./images/items/engine${equipmentType}.png`;
             break;
         case EquipmentTypeId.FuelTank:
-            url = `./images/fuel_tank${equipmentType}.png`;
+            url = `./images/items/fuel_tank${equipmentType}.png`;
             break;
         case EquipmentTypeId.CargoHook:
-            url = `./images/cargo_hook${equipmentType}.png`;
+            url = `./images/items/cargo_hook${equipmentType}.png`;
             break;
         case EquipmentTypeId.Hull:
             url = `./images/ships/ship${equipmentType}/preview.png`;
             break;
         case EquipmentTypeId.Weapon1:
-            url = `./images/weapon${equipmentType}.png`;
+            url = `./images/items/weapon${equipmentType}.png`;
             break;
     }
     const texture = pixi.Texture.from(url);
@@ -506,11 +500,10 @@ function resizeHandler() {
 
 // Items in space
 export function createSpaceItem(x, y, type) {
-    const texture = pixi.Texture.from(`./images/item_container.png`);
+    const texture = pixi.Texture.from(`./images/items/item_container.png`);
     const sprite = new pixi.Sprite(texture);
 
     sprite.anchor.set(0.5, 0.5);
-    // sprite.scale.set(cfg.scale);
     sprite.zIndex = Sort.PLAYER - 1;
     sprite.position.set(x, y);
     app.stage.addChild(sprite);

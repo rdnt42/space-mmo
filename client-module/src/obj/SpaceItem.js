@@ -18,6 +18,7 @@ export class SpaceItem {
         this.x = x;
         this.y = y;
         this.texture = renderService.createSpaceItem(x, y, itemTypeId);
+        this.texture['textureParentObj'] = this;
     }
 
     updateObj(x, y) {
