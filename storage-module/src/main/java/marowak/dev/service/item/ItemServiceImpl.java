@@ -62,9 +62,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Mono<ItemMessage> deleteItem(ItemMessage message) {
         return itemMessageRepository.deleteById(message.getId())
-                .map(resMessage -> {
-                    resMessage.setKey(ItemMessageKey.ITEMS_GET_IN_SPACE);
-                    return resMessage;
-                });
+                .then(Mono.empty());
     }
 }

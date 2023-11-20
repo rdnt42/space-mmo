@@ -62,9 +62,14 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     @Override
     public Mono<Void> initItem(ItemMessage message) {
         var coords = new Point(message.getX(), message.getY());
-        ItemInSpaceView itemInSpaceView =
-                new ItemInSpaceView(message.getId(), coords, message.getTypeId(), message.getDsc());
-        items.put(message.getId(), itemInSpaceView);
+        var item = ItemInSpaceView.builder()
+                .id(message.getId())
+                .coords(coords)
+                .itemTypeId(message.getTypeId())
+                .name(message.getName())
+                .dsc(ItemDescriptorHelper.getDsc(message))
+                .build();
+        items.put(message.getId(), item);
         log.info("Added item to space, id: {}, x: {}, y:{}", message.getId(), message.getX(), message.getY());
 
         return Mono.empty();
@@ -73,11 +78,16 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
-        ItemInSpaceView itemInSpaceView =
-                new ItemInSpaceView(item.getId(), new Point(newX, newY), item.getTypeId(), item.getDsc());
-        items.put(item.getId(), itemInSpaceView);
+        var itemInSpace = ItemInSpaceView.builder()
+                .id(item.getId())
+                .coords(new Point(newX, newY))
+                .itemTypeId(item.getTypeId())
+                .name(item.getName())
+                .dsc(item.getDsc())
+                .build();
+        items.put(item.getId(), itemInSpace);
 
-        return Mono.just(itemInSpaceView);
+        return Mono.just(itemInSpace);
     }
 
     private double getCoordInExplosionRadius(int min, int max) {

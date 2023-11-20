@@ -5,18 +5,20 @@ export class SpaceItem {
 
     id;
     itemTypeId;
-    dsc;
     x;
     y;
+    name;
+    dsc;
 
     isUpdated;
 
-    constructor(id, x, y, itemTypeId, dsc) {
+    constructor(id, x, y, itemTypeId, dsc, name) {
         this.id = id;
         this.itemTypeId = itemTypeId;
-        this.dsc = dsc;
         this.x = x;
         this.y = y;
+        this.name = name;
+        this.dsc = dsc;
         this.texture = renderService.createSpaceItem(x, y, itemTypeId);
         this.texture['textureParentObj'] = this;
     }
@@ -31,7 +33,10 @@ export class SpaceItem {
         renderService.renderSpaceItem(this.texture, this.x, this.y);
     }
 
-    showInfo() {
-        return this.dsc;
+    getShowInfo() {
+        return {
+            name: this.name,
+            dsc: this.dsc,
+        };
     }
 }

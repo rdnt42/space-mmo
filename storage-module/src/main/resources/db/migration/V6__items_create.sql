@@ -9,6 +9,6 @@ create table if not exists items
     upgrade_level  smallint,
     cost           integer,
     name_ru        text    not null,
-    dsc_ru         text    not null,
+    dsc_ru         text,
     unique (character_name, slot_id)
 )

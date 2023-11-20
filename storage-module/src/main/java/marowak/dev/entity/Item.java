@@ -33,6 +33,7 @@ public record Item(
 
         String nameRu,
 
+        @Nullable
         String dscRu,
 
         @Nullable

@@ -2,26 +2,38 @@ import * as pixi from "../libs/pixi.min.js";
 import {Sort} from "../const/RenderSort.js";
 
 let info;
-let infoText;
+let nameInfoText;
+let dscInfoText;
 
 export function initItemInfo() {
     info = new pixi.Container();
     const texture = pixi.Texture.from("./images/items/item_info.png");
     const sprite = new pixi.Sprite(texture);
+    sprite.scale.set(1.5);
 
-    const text = new pixi.Text("", {
+    const name = new pixi.Text("", {
         fill: 0xffffff,
         fontSize: 16,
     });
-    text.x = 50;
-    text.y = 70;
+    name.x = 100;
+    name.y = 40;
+
+    const dsc = new pixi.Text("", {
+        fill: 0xffffff,
+        fontSize: 16,
+    });
+    dsc.x = 40;
+    dsc.y = 120;
 
     info.visible = false;
     info.zIndex = Sort.ITEM_INFO;
-    text.zIndex = sprite.zIndex + 1;
+    dsc.zIndex = sprite.zIndex + 1;
     info.addChild(sprite);
-    info.addChild(text);
-    infoText = text;
+    info.addChild(dsc);
+    info.addChild(name);
+
+    dscInfoText = dsc;
+    nameInfoText = name;
 
     return info;
 }
@@ -29,7 +41,7 @@ export function initItemInfo() {
 export function addShowEvents(sprite) {
     sprite.eventMode = "static";
     sprite.addEventListener("pointerover", () => {
-        if (sprite.textureParentObj && sprite.textureParentObj.showInfo) {
+        if (sprite.textureParentObj && sprite.textureParentObj.getShowInfo) {
             showInfo(sprite);
         }
     });
@@ -39,12 +51,15 @@ export function addShowEvents(sprite) {
 }
 
 function showInfo(sprite) {
-    infoText.text = sprite.textureParentObj.showInfo();
+    const showInfo = sprite.textureParentObj.getShowInfo();
+    nameInfoText.text = showInfo.name;
+    dscInfoText.text = showInfo.dsc;
     info.position.set(sprite.x, sprite.y);
     info.visible = true;
 }
 
 function hideInfo() {
-    info.text = "";
+    nameInfoText.text = "";
+    dscInfoText.text = "";
     info.visible = false;
 }

@@ -11,14 +11,14 @@ export function createOrUpdate(objs) {
 }
 
 function createOrUpdateObj(obj) {
-    const {id, coords, itemTypeId, dsc} = obj;
+    const {id, coords, itemTypeId, dsc, name} = obj;
     let abs = shipService.getPlayerShip().movement;
     let newX = getRelativeX(coords.x, abs.x);
     let newY = getRelativeY(coords.y, abs.y);
 
     let item = spaceItems.get(id);
     if (item === undefined) {
-        item = new SpaceItem(id, newX, newY, itemTypeId, dsc)
+        item = new SpaceItem(id, newX, newY, itemTypeId, dsc, name)
         spaceItems.set(item.id, item);
     } else {
         item.updateObj(newX, newY);

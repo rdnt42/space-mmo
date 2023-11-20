@@ -20,7 +20,7 @@ public class BuilderHelper {
                     .upgradeLevel(message.getUpgradeLevel())
                     .cost(message.getCost())
                     .name(message.getName())
-                    .dsc(message.getDsc());
+                    .dsc(ItemDescriptorHelper.getDsc(message));
 
     public static final Function<EngineMessage, Item> engineMessageToItem = message ->
             ((Engine.EngineBuilder<?, ?>) messageToItemBuilder.apply(message, Engine.builder()))
