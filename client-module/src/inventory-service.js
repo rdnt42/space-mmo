@@ -3,6 +3,7 @@ import {Item} from "./obj/Item.js";
 import {EquipmentTypeId} from "./const/EquipmentTypeId.js";
 import {EquipmentSlot} from "./obj/EquipmentSlot.js";
 import {CargoCell} from "./obj/CargoCell.js";
+import {SpaceItem} from "./obj/SpaceItem.js";
 
 let inventory;
 let itemsMap = new Map();
@@ -26,6 +27,12 @@ export function initInventory(data) {
 export function doubleClickCallback(texture) {
     if (texture.textureParentObj instanceof Item) {
         inventory.useItem(texture.textureParentObj);
+    }
+}
+
+export function clickCallback(texture) {
+    if (texture.textureParentObj instanceof SpaceItem) {
+        console.log('take item', texture.textureParentObj);
     }
 }
 

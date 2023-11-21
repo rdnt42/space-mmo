@@ -346,8 +346,8 @@ export function initItem(typeId, equipmentType) {
     const texture = pixi.Texture.from(url);
     const sprite = new pixi.Sprite(texture);
     sprite.eventMode = "static";
-
     eventService.addShowEvents(sprite);
+
     sprite.buttonMode = true;
     sprite.cursor = 'pointer';
     sprite
@@ -512,7 +512,9 @@ export function createSpaceItem(x, y, type) {
     sprite.zIndex = Sort.PLAYER - 1;
     sprite.position.set(x, y);
     sprite.cursor = 'pointer';
+    sprite.eventMode = "static";
     eventService.addShowEvents(sprite);
+    eventService.addTakeEvent(sprite);
     app.stage.addChild(sprite);
 
     return sprite;

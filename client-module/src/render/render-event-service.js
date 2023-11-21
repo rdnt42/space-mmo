@@ -1,4 +1,5 @@
 import * as pixi from "../libs/pixi.min.js";
+import * as inventoryService from "../inventory-service.js";
 import {Sort} from "../const/RenderSort.js";
 
 let info;
@@ -39,7 +40,6 @@ export function initItemInfo() {
 }
 
 export function addShowEvents(sprite) {
-    sprite.eventMode = "static";
     sprite.addEventListener("pointerover", () => {
         if (sprite.textureParentObj && sprite.textureParentObj.getShowInfo) {
             showInfo(sprite);
@@ -48,6 +48,10 @@ export function addShowEvents(sprite) {
     sprite.addEventListener("pointerout", () => {
         hideInfo();
     });
+}
+
+export function addTakeEvent(sprite) {
+    sprite.addEventListener("click", () => takeItem(sprite));
 }
 
 function showInfo(sprite) {
@@ -62,4 +66,8 @@ function hideInfo() {
     nameInfoText.text = "";
     dscInfoText.text = "";
     info.visible = false;
+}
+
+function takeItem(sprite) {
+    inventoryService.clickCallback(sprite);
 }
