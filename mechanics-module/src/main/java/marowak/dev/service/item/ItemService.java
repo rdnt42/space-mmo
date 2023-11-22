@@ -10,9 +10,9 @@ import reactor.core.publisher.Mono;
 public interface ItemService {
     Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName);
 
-    Mono<Void> updateInventoryFromStorage(ItemMessage message);
+    Mono<Void> addItemFromStorage(ItemMessage message);
 
-    Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String playerName);
+    Mono<ItemUpdate> updateItemFromClient(ItemUpdate request, String playerName);
 
     Mono<InventoryView> getInventoryItems(String playerName);
 

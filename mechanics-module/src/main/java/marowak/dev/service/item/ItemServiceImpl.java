@@ -8,11 +8,15 @@ import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.item.Item;
+import marowak.dev.enums.StorageType;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.character.CharacterShipService;
 import message.*;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -21,7 +25,9 @@ import reactor.core.publisher.Mono;
 public class ItemServiceImpl implements ItemService {
     private final ItemClient itemClient;
     private final CharacterShipService characterShipService;
+    private final SpaceItemService spaceItemService;
 
+    private final Map<Long, Item> itemMap = new HashMap<>();
 
     @Override
     public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
@@ -36,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<Void> updateInventoryFromStorage(ItemMessage message) {
+    public Mono<Void> addItemFromStorage(ItemMessage message) {
         Item item;
         switch (message) {
             case EngineMessage engine -> item = BuilderHelper.engineMessageToItem.apply(engine);
@@ -46,15 +52,25 @@ public class ItemServiceImpl implements ItemService {
             case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
+        itemMap.put(item.getId(), item);
 
-        return characterShipService.addItem(message.getCharacterName(), item)
-                .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
-                        message.getCharacterName(), item.getId()))
-                .then();
+        if (isItemInShip(item)) {
+            return characterShipService.addItem(message.getCharacterName(), item)
+                    .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
+                            message.getCharacterName(), item.getId()))
+                    .then();
+        } else if (isItemInSpace(item)) {
+            return spaceItemService.addItem(message)
+                    .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
+                            message.getCharacterName(), item.getId()))
+                    .then();
+        }
+
+        return Mono.empty();
     }
 
     @Override
-    public Mono<ItemUpdate> updateInventoryFromClient(ItemUpdate request, String characterName) {
+    public Mono<ItemUpdate> updateItemFromClient(ItemUpdate request, String characterName) {
         return characterShipService.updateItem(characterName, request)
                 .flatMap(item -> sendItemUpdate(item.getView(), characterName)
                         .doOnNext(c -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
@@ -85,4 +101,12 @@ public class ItemServiceImpl implements ItemService {
                 .then();
     }
 
+    private boolean isItemInShip(Item item) {
+        return (StorageType.STORAGE_TYPE_HULL.equals(item.getStorageId()) ||
+                StorageType.STORAGE_TYPE_HOLD.equals(item.getStorageId()));
+    }
+
+    private boolean isItemInSpace(Item item) {
+        return StorageType.STORAGE_TYPE_SPACE.equals(item.getStorageId());
+    }
 }
