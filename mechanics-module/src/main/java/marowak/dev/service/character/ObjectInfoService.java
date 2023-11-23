@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.CharacterView;
-import marowak.dev.api.response.item.ItemInSpaceView;
+import marowak.dev.api.response.item.ItemInSpace;
 import marowak.dev.dto.Point;
 import marowak.dev.service.item.SpaceItemService;
 import reactor.core.publisher.Flux;
@@ -25,7 +25,7 @@ public class ObjectInfoService {
         return characterShipService.getCharactersInRange(characterName);
     }
 
-    public Flux<ItemInSpaceView> getItemsInRange(String characterName) {
+    public Flux<ItemInSpace> getItemsInRange(String characterName) {
         return characterShipService.getCharacter(characterName)
                 .flatMapMany(character -> spaceItemService.getItemsInRange(new Point(character.x(), character.y())));
     }

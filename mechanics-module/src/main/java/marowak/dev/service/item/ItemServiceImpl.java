@@ -15,9 +15,6 @@ import message.*;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,8 +23,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemClient itemClient;
     private final CharacterShipService characterShipService;
     private final SpaceItemService spaceItemService;
-
-    private final Map<Long, Item> itemMap = new HashMap<>();
 
     @Override
     public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
@@ -52,18 +47,13 @@ public class ItemServiceImpl implements ItemService {
             case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
-        itemMap.put(item.getId(), item);
+        StorageType storageType = StorageType.from(item.getStorageId());
 
-        if (isItemInShip(item)) {
+        if (storageType.isShipStorage()) {
             return characterShipService.addItem(message.getCharacterName(), item)
-                    .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
-                            message.getCharacterName(), item.getId()))
                     .then();
-        } else if (isItemInSpace(item)) {
-            return spaceItemService.addItem(message)
-                    .doOnNext(itemUpdated -> log.info("Inventory update successful, character name: {}, item id: {}",
-                            message.getCharacterName(), item.getId()))
-                    .then();
+        } else if (storageType.isSpaceStorage()) {
+            return spaceItemService.addItem(item);
         }
 
         return Mono.empty();
@@ -101,12 +91,4 @@ public class ItemServiceImpl implements ItemService {
                 .then();
     }
 
-    private boolean isItemInShip(Item item) {
-        return (StorageType.STORAGE_TYPE_HULL.equals(item.getStorageId()) ||
-                StorageType.STORAGE_TYPE_HOLD.equals(item.getStorageId()));
-    }
-
-    private boolean isItemInSpace(Item item) {
-        return StorageType.STORAGE_TYPE_SPACE.equals(item.getStorageId());
-    }
 }

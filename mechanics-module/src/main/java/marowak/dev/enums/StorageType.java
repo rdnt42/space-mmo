@@ -16,4 +16,22 @@ public enum StorageType {
     public boolean equals(int storageId) {
         return this.storageId == storageId;
     }
+
+    public static StorageType from(int storageId) {
+        for (StorageType value : StorageType.values()) {
+            if (value.getStorageId() == storageId) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported storage type" + storageId);
+    }
+
+    public boolean isShipStorage() {
+        return this == STORAGE_TYPE_HULL || this == STORAGE_TYPE_HOLD;
+    }
+
+    public boolean isSpaceStorage() {
+        return this == STORAGE_TYPE_SPACE;
+    }
 }

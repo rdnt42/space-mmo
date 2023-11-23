@@ -4,11 +4,15 @@ import lombok.Builder;
 import marowak.dev.dto.Point;
 
 @Builder
-public record ItemInSpaceView(
+public record ItemInSpace(
         long id,
-        Point coords,
+        double x,
+        double y,
         int itemTypeId,
         String name,
         String dsc
 ) {
+    public Point coords() {
+        return new Point(x, y);
+    }
 }

@@ -74,7 +74,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
-                return itemService.updateInventoryFromClient(value, characterName)
+                return itemService.updateItemFromClient(value, characterName)
                         .map(item -> new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }

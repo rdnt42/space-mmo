@@ -1,9 +1,8 @@
 package marowak.dev.service.item;
 
-import marowak.dev.api.response.item.ItemInSpaceView;
+import marowak.dev.api.response.item.ItemInSpace;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Item;
-import message.ItemMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -11,7 +10,7 @@ public interface SpaceItemService {
 
     Mono<Void> tryDropItemToSpace(Item item, Point coords);
 
-    Mono<ItemInSpaceView> addItem(ItemMessage message);
+    Flux<ItemInSpace> getItemsInRange(Point coords);
 
-    Flux<ItemInSpaceView> getItemsInRange(Point coords);
+    Mono<Void> addItem(Item item);
 }

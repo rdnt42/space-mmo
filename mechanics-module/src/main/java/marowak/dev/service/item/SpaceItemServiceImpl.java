@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.response.item.ItemInSpaceView;
+import marowak.dev.api.response.item.ItemInSpace;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Item;
 import marowak.dev.service.broker.ItemClient;
@@ -27,10 +27,10 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     private final ProbabilityCalculationService probabilityCalculationService;
     private final ItemClient itemClient;
 
-    private final Map<Long, ItemInSpaceView> items = new ConcurrentHashMap<>();
+    private final Map<Long, ItemInSpace> items = new ConcurrentHashMap<>();
 
     @Override
-    public Flux<ItemInSpaceView> getItemsInRange(Point coords) {
+    public Flux<ItemInSpace> getItemsInRange(Point coords) {
         return Flux.fromStream(items.values().stream()
                 .filter(item -> Utils.isInRange(coords, item.coords())));
     }
@@ -59,28 +59,13 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 }).then();
     }
 
-    @Override
-    public Mono<ItemInSpaceView> addItem(ItemMessage message) {
-        var coords = new Point(message.getX(), message.getY());
-        var item = ItemInSpaceView.builder()
-                .id(message.getId())
-                .coords(coords)
-                .itemTypeId(message.getTypeId())
-                .name(message.getName())
-                .dsc(ItemDescriptorHelper.getDsc(message))
-                .build();
-        items.put(message.getId(), item);
-        log.info("Added item to space, id: {}, x: {}, y:{}", message.getId(), message.getX(), message.getY());
-
-        return Mono.just(item);
-    }
-
-    private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
+    private Mono<ItemInSpace> addItemToSpace(Item item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
-        var itemInSpace = ItemInSpaceView.builder()
+        var itemInSpace = ItemInSpace.builder()
                 .id(item.getId())
-                .coords(new Point(newX, newY))
+                .x(newX)
+                .y(newY)
                 .itemTypeId(item.getTypeId())
                 .name(item.getName())
                 .dsc(item.getDsc())
@@ -94,12 +79,12 @@ public class SpaceItemServiceImpl implements SpaceItemService {
         return Math.random() * (max + 1 - min) + min;
     }
 
-    private Mono<Long> sendItemUpdate(ItemInSpaceView item) {
+    private Mono<Long> sendItemUpdate(ItemInSpace item) {
         ItemMessage message = ItemMessage.builder()
                 .key(ItemMessageKey.ITEM_UPDATE_IN_SPACE)
                 .id(item.id())
-                .x(item.coords().x())
-                .y(item.coords().y())
+                .x(item.x())
+                .y(item.y())
                 .build();
 
         return itemClient.sendItems(message)
@@ -119,4 +104,20 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                         message.getKey(), message.getCharacterName(), e.getMessage()))
                 .then(Mono.just(itemId));
     }
+
+    public Mono<Void> addItem(Item item) {
+        var spaceItem = ItemInSpace.builder()
+                .id(item.getId())
+                .x(item.getX())
+                .y(item.getY())
+                .itemTypeId(item.getTypeId())
+                .name(item.getName())
+                .dsc(item.getDsc())
+                .build();
+        items.put(item.getId(), spaceItem);
+        log.info("Added item to space, id: {}, x: {}, y:{}", spaceItem.id(), spaceItem.x(), spaceItem.y());
+
+        return Mono.empty();
+    }
+
 }

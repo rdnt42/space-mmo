@@ -17,4 +17,4 @@ world:
   speed:
     limit: 1200
 
-mock-state-enabled: true
+mock-state-enabled: false

@@ -14,6 +14,8 @@ public class BuilderHelper {
     public static final BiFunction<ItemMessage, Item.ItemBuilder<?, ?>, Item.ItemBuilder<?, ?>> messageToItemBuilder =
             (message, baseBuilder) -> baseBuilder
                     .id(message.getId())
+                    .x(message.getX())
+                    .y(message.getY())
                     .slotId(message.getSlotId())
                     .storageId(message.getStorageId())
                     .typeId(message.getTypeId())

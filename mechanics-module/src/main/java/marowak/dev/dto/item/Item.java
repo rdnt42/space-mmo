@@ -10,6 +10,7 @@ import marowak.dev.api.response.item.ItemView;
 @SuperBuilder
 public class Item {
     private long id;
+    private String characterName;
     private int slotId;
     private int storageId;
     private int typeId;
@@ -17,6 +18,9 @@ public class Item {
     private Integer cost;
     private String name;
     private String dsc;
+
+    private Double x;
+    private Double y;
 
     public void init() {
         // base init method
