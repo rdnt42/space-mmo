@@ -6,7 +6,7 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.character.*;
-import marowak.dev.service.item.ItemService;
+import marowak.dev.service.item.CharacterItemService;
 
 @Factory
 public class CharacterServiceConfig {
@@ -16,8 +16,8 @@ public class CharacterServiceConfig {
             CharactersClient charactersClient,
             CharacterShipService characterShipService,
             ObjectInfoService objectInfoService,
-            ItemService itemService) {
-        return new CharacterServiceImpl(charactersClient, characterShipService, objectInfoService, itemService);
+            CharacterItemService characterItemService) {
+        return new CharacterServiceImpl(charactersClient, characterShipService, objectInfoService, characterItemService);
     }
 
     @Bean

@@ -5,16 +5,16 @@ import io.micronaut.runtime.event.annotation.EventListener;
 import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.service.item.ItemService;
+import marowak.dev.service.item.CharacterItemService;
 
 @RequiredArgsConstructor
 @Singleton
 public class ItemInSpaceInit {
-    private final ItemService itemService;
+    private final CharacterItemService characterItemService;
 
     @EventListener
     public void initData(StartupEvent startupEvent) {
-        itemService.sendGetItems(ItemMessageKey.ITEMS_GET_IN_SPACE, null)
+        characterItemService.sendGetItems(ItemMessageKey.ITEMS_GET_IN_SPACE, null)
                 .subscribe();
     }
 }

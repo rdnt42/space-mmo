@@ -1,4 +1,11 @@
 export const Commands = {
+    // SEND
+    GetCharacter: "CMD_GET_CHARACTER",
+
+    // RECEIVE
+    ReceiveCharacter: "CMD_RECEIVE_CHARACTER",
+
+
     InitCharacter: "CMD_INIT_CHARACTER",
     GetMotions: "CMD_GET_MOTIONS",
     GetInventory: "CMD_GET_INVENTORY",

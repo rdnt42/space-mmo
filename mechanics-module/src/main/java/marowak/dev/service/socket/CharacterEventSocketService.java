@@ -7,7 +7,8 @@ import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.dto.SocketMessage;
+import marowak.dev.dto.socket.ReceiveSocketMessage;
+import marowak.dev.dto.socket.SendSocketMessage;
 import org.reactivestreams.Publisher;
 
 @Slf4j
@@ -24,15 +25,15 @@ public class CharacterEventSocketService {
     }
 
     @OnMessage
-    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request,
-                                                 WebSocketSession session) {
+    public Publisher<SendSocketMessage<?>> onMessage(String characterName, ReceiveSocketMessage<?> request,
+                                                     WebSocketSession session) {
         debugLog("onMessage", characterName, session);
 
         return characterSocketService.onMessage(characterName, request, session);
     }
 
     @OnClose
-    public Publisher<SocketMessage<String>> onClose(String characterName, WebSocketSession session) {
+    public Publisher<SendSocketMessage<String>> onClose(String characterName, WebSocketSession session) {
         debugLog("onClose", characterName, session);
 
         return characterSocketService.onClose(characterName);

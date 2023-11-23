@@ -8,7 +8,6 @@ import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.item.Item;
-import marowak.dev.enums.StorageType;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.character.CharacterShipService;
 import message.*;
@@ -19,10 +18,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
-public class ItemServiceImpl implements ItemService {
+public class CharacterItemServiceImpl implements CharacterItemService {
     private final ItemClient itemClient;
     private final CharacterShipService characterShipService;
-    private final SpaceItemService spaceItemService;
 
     @Override
     public Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName) {
@@ -37,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<Void> addItemFromStorage(ItemMessage message) {
+    public Mono<Void> addItem(ItemMessage message) {
         Item item;
         switch (message) {
             case EngineMessage engine -> item = BuilderHelper.engineMessageToItem.apply(engine);
@@ -47,16 +45,9 @@ public class ItemServiceImpl implements ItemService {
             case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
         }
-        StorageType storageType = StorageType.from(item.getStorageId());
 
-        if (storageType.isShipStorage()) {
-            return characterShipService.addItem(message.getCharacterName(), item)
-                    .then();
-        } else if (storageType.isSpaceStorage()) {
-            return spaceItemService.addItem(item);
-        }
-
-        return Mono.empty();
+        return characterShipService.addItem(message.getCharacterName(), item)
+                .then();
     }
 
     @Override

@@ -36,6 +36,22 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     }
 
     @Override
+    public Mono<Void> addItem(ItemMessage item) {
+        var spaceItem = ItemInSpace.builder()
+                .id(item.getId())
+                .x(item.getX())
+                .y(item.getY())
+                .itemTypeId(item.getTypeId())
+                .name(item.getName())
+                .dsc(item.getDsc())
+                .build();
+        items.put(item.getId(), spaceItem);
+        log.info("Added item to space, id: {}, x: {}, y:{}", spaceItem.id(), spaceItem.x(), spaceItem.y());
+
+        return Mono.empty();
+    }
+
+    @Override
     public Mono<Void> tryDropItemToSpace(Item item, Point coords) {
         if (item.getTypeId() == ITEM_TYPE_HULL.getTypeId()) {
             return sendItemDelete(item.getId())
@@ -103,21 +119,6 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 .doOnError(e -> log.error("Send Item delete error, key{}, character: {}, error: {}",
                         message.getKey(), message.getCharacterName(), e.getMessage()))
                 .then(Mono.just(itemId));
-    }
-
-    public Mono<Void> addItem(Item item) {
-        var spaceItem = ItemInSpace.builder()
-                .id(item.getId())
-                .x(item.getX())
-                .y(item.getY())
-                .itemTypeId(item.getTypeId())
-                .name(item.getName())
-                .dsc(item.getDsc())
-                .build();
-        items.put(item.getId(), spaceItem);
-        log.info("Added item to space, id: {}, x: {}, y:{}", spaceItem.id(), spaceItem.x(), spaceItem.y());
-
-        return Mono.empty();
     }
 
 }

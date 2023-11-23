@@ -12,12 +12,14 @@ import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.ObjectsInSpace;
-import marowak.dev.dto.SocketMessage;
-import marowak.dev.enums.MessageCommand;
+import marowak.dev.dto.socket.ReceiveSocketMessage;
+import marowak.dev.dto.socket.SendSocketMessage;
+import marowak.dev.enums.SendCommandType;
 import marowak.dev.service.bullet.BulletMotionService;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.character.ObjectInfoService;
-import marowak.dev.service.item.ItemService;
+import marowak.dev.service.command.character.GetCharacterMessageCmd;
+import marowak.dev.service.item.CharacterItemService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -30,10 +32,12 @@ import java.util.function.Predicate;
 public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final BulletMotionService bulletMotionService;
     private final ObjectInfoService objectInfoService;
-    private final ItemService itemService;
+    private final CharacterItemService characterItemService;
     private final CharacterService characterService;
     private final BodyService bodyService;
     private final WebSocketBroadcaster broadcaster;
+
+    private final GetCharacterMessageCmd getCharacterMessageCmd;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -47,19 +51,17 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
 
     @SneakyThrows
     @Override
-    public Publisher<SocketMessage<?>> onMessage(String characterName, SocketMessage<?> request,
-                                                 WebSocketSession session) {
+    public Publisher<SendSocketMessage<?>> onMessage(String characterName, ReceiveSocketMessage<?> request,
+                                                     WebSocketSession session) {
         switch (request.command()) {
-            case CMD_GET_MOTIONS -> {
-                return objectInfoService.getCharacter(characterName)
-                        .doOnNext(c -> log.info("New character {} get characters info", characterName))
-                        .map(info -> new SocketMessage<>(MessageCommand.CMD_GET_MOTIONS, info))
+            case CMD_GET_CHARACTER -> {
+                return getCharacterMessageCmd.execute(characterName)
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
-                return itemService.getInventoryItems(characterName)
+                return characterItemService.getInventoryItems(characterName)
                         .doOnNext(c -> log.info("New character {} get inventory info", characterName))
-                        .map(item -> new SocketMessage<>(MessageCommand.CMD_GET_INVENTORY, item))
+                        .map(item -> new SendSocketMessage<>(SendCommandType.CMD_GET_INVENTORY, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_MOTION -> {
@@ -69,13 +71,13 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                                 .collectList())
                         .zipWith(objectInfoService.getItemsInRange(characterName)
                                 .collectList(), ObjectsInSpace::new)
-                        .map(data -> new SocketMessage<>(MessageCommand.CMD_UPDATE_MOTION, data))
+                        .map(data -> new SendSocketMessage<>(SendCommandType.CMD_UPDATE_MOTION, data))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
-                return itemService.updateItemFromClient(value, characterName)
-                        .map(item -> new SocketMessage<>(MessageCommand.CMD_UPDATE_INVENTORY_ITEM, item))
+                return characterItemService.updateItemFromClient(value, characterName)
+                        .map(item -> new SendSocketMessage<>(SendCommandType.CMD_UPDATE_INVENTORY_ITEM, item))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_SHOOTING -> {
@@ -83,7 +85,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                 return bulletMotionService.updateShooting(value, characterName)
                         .thenMany(bodyService.getBullets(characterName))
                         .buffer(200)
-                        .map(bullets -> new SocketMessage<>(MessageCommand.CMD_UPDATE_SHOOTING, bullets))
+                        .map(bullets -> new SendSocketMessage<>(SendCommandType.CMD_UPDATE_SHOOTING, bullets))
                         .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             default ->
@@ -92,10 +94,10 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     }
 
     @Override
-    public Publisher<SocketMessage<String>> onClose(String playerName) {
+    public Publisher<SendSocketMessage<String>> onClose(String playerName) {
         return characterService.sendCharacterState(playerName, false)
                 .then(characterService.leavingPlayer(playerName))
-                .then(Mono.just(new SocketMessage<>(MessageCommand.CMD_LEAVING_PLAYER, playerName)))
+                .then(Mono.just(new SendSocketMessage<>(SendCommandType.CMD_LEAVING_PLAYER, playerName)))
                 .doOnNext(message -> log.info("Player {} leaving", playerName))
                 .flatMapMany(broadcaster::broadcast);
     }

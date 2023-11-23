@@ -17,12 +17,12 @@ const funcs = {
 export function startInitAll() {
     renderEngine.initRender();
 
-    initBefore(sendGetMotions, funcs.characters);
+    initBefore(sendGetCharacter, funcs.characters);
     initBefore(sendGetInventory, funcs.inventory);
 }
 
-function sendGetMotions() {
-    socket.sendMessage(new PlayerEmptyRequest(Commands.GetMotions));
+function sendGetCharacter() {
+    socket.sendMessage(new PlayerEmptyRequest(Commands.GetCharacter));
 }
 
 function sendGetInventory() {

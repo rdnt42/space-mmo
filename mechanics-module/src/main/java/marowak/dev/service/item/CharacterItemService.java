@@ -7,10 +7,10 @@ import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
-public interface ItemService {
+public interface CharacterItemService {
     Mono<RecordMetadata> sendGetItems(ItemMessageKey key, String characterName);
 
-    Mono<Void> addItemFromStorage(ItemMessage message);
+    Mono<Void> addItem(ItemMessage message);
 
     Mono<ItemUpdate> updateItemFromClient(ItemUpdate request, String playerName);
 

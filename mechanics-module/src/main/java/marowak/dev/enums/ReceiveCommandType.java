@@ -1,7 +1,7 @@
 package marowak.dev.enums;
 
-public enum MessageCommand {
-    CMD_GET_MOTIONS,
+public enum ReceiveCommandType {
+    CMD_GET_CHARACTER,
     CMD_GET_INVENTORY,
     CMD_UPDATE_MOTION,
     CMD_LEAVING_PLAYER,
