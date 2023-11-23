@@ -63,8 +63,8 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     }
 
     @Override
-    public Mono<InventoryView> getInventoryItems(String characterName) {
-        return characterShipService.getInventoryInfo(characterName);
+    public Mono<InventoryView> getInventory(String characterName) {
+        return characterShipService.getInventory(characterName);
     }
 
     private Mono<Void> sendItemUpdate(ItemView item, String characterName) {

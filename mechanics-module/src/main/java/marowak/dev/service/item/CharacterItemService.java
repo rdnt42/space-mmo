@@ -14,6 +14,6 @@ public interface CharacterItemService {
 
     Mono<ItemUpdate> updateItemFromClient(ItemUpdate request, String playerName);
 
-    Mono<InventoryView> getInventoryItems(String playerName);
+    Mono<InventoryView> getInventory(String playerName);
 
 }

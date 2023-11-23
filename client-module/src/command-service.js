@@ -20,11 +20,11 @@ export function executeCommand(response) {
             initService.tryInitMotions(socketResponse.data);
             break;
 
-        case Commands.GetInventory:
+        case Commands.ReceiveInventory:
             initService.tryInitInventory(socketResponse.data);
             break;
 
-        case Commands.UpdateMotion:
+        case Commands.ReceiveSpaceObjects:
             shipService.createOrUpdate(socketResponse.data.characters);
             spaceItemService.createOrUpdate(socketResponse.data.itemsInSpace);
             break;

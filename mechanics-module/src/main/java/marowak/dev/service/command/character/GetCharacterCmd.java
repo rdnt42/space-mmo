@@ -6,20 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.dto.socket.SendSocketMessage;
 import marowak.dev.enums.SendCommandType;
-import marowak.dev.service.character.CharacterShipService;
+import marowak.dev.service.character.ObjectInfoService;
 import marowak.dev.service.command.CharacterCommand;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
-public class GetCharacterMessageCmd implements CharacterCommand<SendSocketMessage<CharacterView>> {
-    private final CharacterShipService characterShipService;
+public class GetCharacterCmd implements CharacterCommand<SendSocketMessage<CharacterView>> {
+    private final ObjectInfoService ObjectInfoService;
 
     @Override
     public Mono<SendSocketMessage<CharacterView>> execute(String characterName) {
-        return characterShipService.getCharacter(characterName)
+        return ObjectInfoService.getCharacter(characterName)
                 .map(info -> new SendSocketMessage<>(SendCommandType.CMD_RECEIVE_CHARACTER, info))
-                .doOnSuccess(c -> log.info("New character {} get characters info", characterName));
+                .doOnSuccess(c -> log.info("Get character info for character: {}", characterName));
     }
 }

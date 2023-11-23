@@ -83,12 +83,12 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Mono<Void> updateCharacterPosition(CharacterMotionRequest request, String characterName) {
+    public Mono<Void> updateCharacterMotion(CharacterMotionRequest request, String characterName) {
         if (!request.isUpdate()) {
             return Mono.empty();
         }
 
-        return characterShipService.updateShipPosition(request, characterName);
+        return characterShipService.updateShipMotion(request, characterName);
     }
 
     private final Function<CharacterView, CharacterMessage> infoToMessage = info -> CharacterMessage.builder()

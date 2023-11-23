@@ -16,5 +16,5 @@ public interface CharacterService {
 
     Mono<Void> sendInitCharacter(CharacterMessageKey key, String characterName);
 
-    Mono<Void> updateCharacterPosition(CharacterMotionRequest request, String characterName);
+    Mono<Void> updateCharacterMotion(CharacterMotionRequest request, String characterName);
 }

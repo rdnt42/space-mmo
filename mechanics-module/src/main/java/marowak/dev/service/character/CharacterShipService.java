@@ -96,7 +96,7 @@ public class CharacterShipService implements Calculable {
                 .mapNotNull(CharacterShip::getView);
     }
 
-    public Mono<InventoryView> getInventoryInfo(String characterName) {
+    public Mono<InventoryView> getInventory(String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
 
         return Mono.just(curr.getInventoryView());
@@ -109,7 +109,7 @@ public class CharacterShipService implements Calculable {
         return Mono.empty();
     }
 
-    public Mono<Void> updateShipPosition(CharacterMotionRequest request, String characterName) {
+    public Mono<Void> updateShipMotion(CharacterMotionRequest request, String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
         curr.updateShipPosition(request);
 

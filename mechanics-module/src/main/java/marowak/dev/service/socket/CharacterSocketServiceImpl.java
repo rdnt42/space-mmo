@@ -8,17 +8,18 @@ import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.api.request.ItemUpdate;
-import marowak.dev.api.response.ObjectsInSpace;
 import marowak.dev.dto.socket.ReceiveSocketMessage;
 import marowak.dev.dto.socket.SendSocketMessage;
 import marowak.dev.enums.SendCommandType;
 import marowak.dev.service.bullet.BulletMotionService;
 import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.character.ObjectInfoService;
-import marowak.dev.service.command.character.GetCharacterMessageCmd;
+import marowak.dev.service.command.character.GetCharacterCmd;
+import marowak.dev.service.command.character.GetInventoryCmd;
+import marowak.dev.service.command.character.GetObjectsInSpaceCmd;
+import marowak.dev.service.command.character.UpdateMotionCmd;
 import marowak.dev.service.item.CharacterItemService;
 import marowak.dev.service.objects.BodyService;
 import org.reactivestreams.Publisher;
@@ -37,7 +38,10 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final BodyService bodyService;
     private final WebSocketBroadcaster broadcaster;
 
-    private final GetCharacterMessageCmd getCharacterMessageCmd;
+    private final GetCharacterCmd getCharacterCmd;
+    private final GetInventoryCmd getInventoryCmd;
+    private final UpdateMotionCmd updateMotionCmd;
+    private final GetObjectsInSpaceCmd getObjectsInSpaceCmd;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -55,24 +59,17 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
                                                      WebSocketSession session) {
         switch (request.command()) {
             case CMD_GET_CHARACTER -> {
-                return getCharacterMessageCmd.execute(characterName)
+                return getCharacterCmd.execute(characterName)
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_INVENTORY -> {
-                return characterItemService.getInventoryItems(characterName)
-                        .doOnNext(c -> log.info("New character {} get inventory info", characterName))
-                        .map(item -> new SendSocketMessage<>(SendCommandType.CMD_GET_INVENTORY, item))
+                return getInventoryCmd.execute(characterName)
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_MOTION -> {
-                CharacterMotionRequest value = objectMapper.convertValue(request.data(), CharacterMotionRequest.class);
-                return characterService.updateCharacterPosition(value, characterName)
-                        .thenMany(objectInfoService.getCharactersInRange(characterName)
-                                .collectList())
-                        .zipWith(objectInfoService.getItemsInRange(characterName)
-                                .collectList(), ObjectsInSpace::new)
-                        .map(data -> new SendSocketMessage<>(SendCommandType.CMD_UPDATE_MOTION, data))
-                        .flatMap(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+                return updateMotionCmd.execute(request.data(), characterName)
+                        .then(getObjectsInSpaceCmd.execute(characterName))
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 ItemUpdate value = objectMapper.convertValue(request.data(), ItemUpdate.class);
