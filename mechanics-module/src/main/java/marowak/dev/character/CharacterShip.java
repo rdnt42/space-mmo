@@ -86,6 +86,10 @@ public class CharacterShip {
         return item;
     }
 
+    public Item getItem(long id) {
+        return this.itemsMap.get(id);
+    }
+
     public void addItem(Item item) {
         int storageId = item.getStorageId();
         if (STORAGE_TYPE_HOLD.equals(storageId)) {

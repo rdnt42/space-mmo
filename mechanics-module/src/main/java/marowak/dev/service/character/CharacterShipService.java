@@ -9,6 +9,7 @@ import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.api.response.InventoryView;
+import marowak.dev.api.response.item.ItemView;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Hull;
@@ -100,6 +101,13 @@ public class CharacterShipService implements Calculable {
         CharacterShip curr = charactersMap.get(characterName);
 
         return Mono.just(curr.getInventoryView());
+    }
+
+    public Mono<ItemView> getItem(String characterName, long itemId) {
+        CharacterShip curr = charactersMap.get(characterName);
+
+        return Mono.just(curr.getItem(itemId)
+                .getView());
     }
 
     public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {

@@ -14,11 +14,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Singleton
 public class GetCharacterCmd implements CharacterCommand<SendSocketMessage<CharacterView>> {
-    private final ObjectInfoService ObjectInfoService;
+    private final ObjectInfoService objectInfoService;
 
     @Override
     public Mono<SendSocketMessage<CharacterView>> execute(String characterName) {
-        return ObjectInfoService.getCharacter(characterName)
+        return objectInfoService.getCharacter(characterName)
                 .map(info -> new SendSocketMessage<>(SendCommandType.CMD_RECEIVE_CHARACTER, info))
                 .doOnSuccess(c -> log.info("Get character info for character: {}", characterName));
     }

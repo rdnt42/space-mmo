@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Singleton
-public class AddItemCmd implements CharacterRequestCommand<ItemMessage, Void> {
+public class AddCharacterItemCmd implements CharacterRequestCommand<ItemMessage, Void> {
     private final CharacterItemService characterItemService;
 
     @Override

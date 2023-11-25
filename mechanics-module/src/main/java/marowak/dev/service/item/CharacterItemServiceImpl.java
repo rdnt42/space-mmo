@@ -51,7 +51,7 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     }
 
     @Override
-    public Mono<ItemUpdate> updateItemFromClient(ItemUpdate request, String characterName) {
+    public Mono<ItemUpdate> updateItem(ItemUpdate request, String characterName) {
         return characterShipService.updateItem(characterName, request)
                 .flatMap(item -> sendItemUpdate(item.getView(), characterName)
                         .doOnNext(c -> log.info("Inventory updated from client id: {}, slot: {}", item.getId(), item.getSlotId()))
@@ -60,6 +60,11 @@ public class CharacterItemServiceImpl implements CharacterItemService {
                                 .slotId(item.getSlotId())
                                 .storageId(item.getStorageId())
                                 .build())));
+    }
+
+    @Override
+    public Mono<ItemView> getItem(String characterName, long itemId) {
+        return characterShipService.getItem(characterName, itemId);
     }
 
     @Override
