@@ -13,7 +13,7 @@ public class BulletMotionServiceImpl implements BulletMotionService {
     private final CharacterShipService characterShipService;
 
     @Override
-    public Mono<Void> updateShooting(CharacterShootingRequest request, String playerName) {
-        return characterShipService.updateShooting(request, playerName);
+    public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
+        return characterShipService.updateShooting(request, characterName);
     }
 }

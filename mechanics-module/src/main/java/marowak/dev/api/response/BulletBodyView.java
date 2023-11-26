@@ -4,7 +4,7 @@ import lombok.Builder;
 import marowak.dev.enums.BulletType;
 
 @Builder
-public record BulletBodyInfo(
+public record BulletBodyView(
         String id,
         String creatorId,
         BulletType type,

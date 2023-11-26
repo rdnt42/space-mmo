@@ -4,5 +4,5 @@ import marowak.dev.api.request.CharacterShootingRequest;
 import reactor.core.publisher.Mono;
 
 public interface BulletMotionService {
-    Mono<Void> updateShooting(CharacterShootingRequest request, String playerName);
+    Mono<Void> updateShooting(CharacterShootingRequest request, String characterName);
 }

@@ -4,7 +4,7 @@ import lombok.Builder;
 import marowak.dev.dto.Point;
 
 @Builder
-public record ItemInSpace(
+public record ItemInSpaceView(
         long id,
         double x,
         double y,

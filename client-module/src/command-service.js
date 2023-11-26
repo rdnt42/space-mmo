@@ -27,18 +27,19 @@ export function executeCommand(response) {
         case Commands.ReceiveSpaceObjects:
             shipService.createOrUpdate(socketResponse.data.characters);
             spaceItemService.createOrUpdate(socketResponse.data.itemsInSpace);
+            bulletService.createOrUpdate(socketResponse.data.bullets);
+
             break;
 
         case Commands.LeavingPlayer:
             console.log(`character ${socketResponse.data} disconnected`)
             break;
 
-        case Commands.UpdateInventoryItem:
+        case Commands.ReceiveUpdateInventoryItem:
             inventoryService.updateItemSlot(socketResponse.data);
             break;
 
-        case Commands.UpdateShooting:
-            bulletService.createOrUpdate(socketResponse.data);
+        case Commands.ReceiveWeaponInfo:
             break;
 
         case Commands.BlowUpCharacter:

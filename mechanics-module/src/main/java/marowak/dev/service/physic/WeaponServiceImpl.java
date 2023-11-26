@@ -3,7 +3,7 @@ package marowak.dev.service.physic;
 import io.micronaut.scheduling.annotation.Async;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.api.response.BulletBodyInfo;
+import marowak.dev.api.response.BulletBodyView;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
 import reactor.core.publisher.Flux;
@@ -15,7 +15,7 @@ public class WeaponServiceImpl implements WeaponService, Calculable {
     private final WorldService worldService;
 
     @Override
-    public Flux<BulletBodyInfo> getBulletsInRange(String characterName) {
+    public Flux<BulletBodyView> getBulletsInRange(String characterName) {
         return Mono.just(worldService.getBody(SpaceShipBody.class, characterName))
                 .map(ship -> ship.getTransform().getTranslation())
                 .flatMapMany(base -> Flux.fromStream(worldService.getBodies(BulletBody.class).stream())

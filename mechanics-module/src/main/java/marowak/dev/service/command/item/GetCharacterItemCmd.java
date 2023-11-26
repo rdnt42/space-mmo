@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Singleton
-public class GetCharacterItem implements CharacterRequestCommand<Long, SendSocketMessage<ItemView>> {
+public class GetCharacterItemCmd implements CharacterRequestCommand<Long, SendSocketMessage<ItemView>> {
     private final CharacterItemService characterItemService;
 
     @Override

@@ -10,16 +10,15 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Singleton
-public class UpdateCharacterItemCmd implements CharacterRequestCommand<Object, Void> {
+public class UpdateCharacterItemCmd implements CharacterRequestCommand<Object, ItemUpdate> {
     private final CharacterItemService characterItemService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Override
-    public Mono<Void> execute(Object request, String characterName) {
+    public Mono<ItemUpdate> execute(Object request, String characterName) {
         ItemUpdate value = objectMapper.convertValue(request, ItemUpdate.class);
 
-        return characterItemService.updateItem(value, characterName)
-                .then();
+        return characterItemService.updateItem(value, characterName);
     }
 }

@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.response.item.ItemInSpace;
+import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.item.Item;
 import marowak.dev.service.broker.ItemClient;
@@ -27,17 +27,17 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     private final ProbabilityCalculationService probabilityCalculationService;
     private final ItemClient itemClient;
 
-    private final Map<Long, ItemInSpace> items = new ConcurrentHashMap<>();
+    private final Map<Long, ItemInSpaceView> items = new ConcurrentHashMap<>();
 
     @Override
-    public Flux<ItemInSpace> getItemsInRange(Point coords) {
+    public Flux<ItemInSpaceView> getItemsInRange(Point coords) {
         return Flux.fromStream(items.values().stream()
                 .filter(item -> Utils.isInRange(coords, item.coords())));
     }
 
     @Override
     public Mono<Void> addItem(ItemMessage item) {
-        var spaceItem = ItemInSpace.builder()
+        var spaceItem = ItemInSpaceView.builder()
                 .id(item.getId())
                 .x(item.getX())
                 .y(item.getY())
@@ -75,10 +75,10 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 }).then();
     }
 
-    private Mono<ItemInSpace> addItemToSpace(Item item, Point coords) {
+    private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
-        var itemInSpace = ItemInSpace.builder()
+        var itemInSpace = ItemInSpaceView.builder()
                 .id(item.getId())
                 .x(newX)
                 .y(newY)
@@ -95,7 +95,7 @@ public class SpaceItemServiceImpl implements SpaceItemService {
         return Math.random() * (max + 1 - min) + min;
     }
 
-    private Mono<Long> sendItemUpdate(ItemInSpace item) {
+    private Mono<Long> sendItemUpdate(ItemInSpaceView item) {
         ItemMessage message = ItemMessage.builder()
                 .key(ItemMessageKey.ITEM_UPDATE_IN_SPACE)
                 .id(item.id())
