@@ -8,7 +8,7 @@ import marowak.dev.api.response.ObjectsInSpace;
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.socket.SendSocketMessage;
 import marowak.dev.enums.SendCommandType;
-import marowak.dev.service.character.ObjectInfoService;
+import marowak.dev.service.ObjectInfoService;
 import marowak.dev.service.command.CharacterCommand;
 import reactor.core.publisher.Mono;
 

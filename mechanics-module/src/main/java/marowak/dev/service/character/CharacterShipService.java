@@ -159,7 +159,8 @@ public class CharacterShipService implements Calculable {
             spaceItemService.tryDropItemToSpace(item, coords).subscribe();
         }
 
-        characterInformerSocketService.sendExplosionToAll(ship.getId()).subscribe();
+        characterInformerSocketService.sendExplosionToAll(ship.getId())
+                .subscribe();
     }
 
 }

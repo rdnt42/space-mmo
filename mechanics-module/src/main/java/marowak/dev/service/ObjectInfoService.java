@@ -1,4 +1,4 @@
-package marowak.dev.service.character;
+package marowak.dev.service;
 
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,7 @@ import marowak.dev.api.response.BulletBodyView;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;
+import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.item.SpaceItemService;
 import marowak.dev.service.physic.WeaponService;
 import reactor.core.publisher.Flux;

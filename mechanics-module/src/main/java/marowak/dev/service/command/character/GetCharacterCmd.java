@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.dto.socket.SendSocketMessage;
 import marowak.dev.enums.SendCommandType;
-import marowak.dev.service.character.ObjectInfoService;
+import marowak.dev.service.ObjectInfoService;
 import marowak.dev.service.command.CharacterCommand;
 import reactor.core.publisher.Mono;
 
