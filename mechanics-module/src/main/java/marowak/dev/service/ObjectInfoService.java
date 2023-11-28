@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.response.BulletBodyView;
 import marowak.dev.api.response.CharacterView;
 import marowak.dev.api.response.item.ItemInSpaceView;
+import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.item.SpaceItemService;
@@ -41,6 +42,10 @@ public class ObjectInfoService {
 
     public Flux<BulletBodyView> getBullets(String characterName) {
         return weaponService.getBulletsInRange(characterName);
+    }
+
+    public Mono<ItemView> getItem(String characterName, long itemId) {
+        return characterShipService.getItem(characterName, itemId);
     }
 
 }

@@ -1,11 +1,9 @@
-package marowak.dev.dto.item;
+package marowak.dev.character;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import marowak.dev.api.response.item.HullView;
-import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.bullet.DamageCreator;
 import marowak.dev.dto.calculate.CalculateShipDamageResult;
@@ -24,7 +22,7 @@ public class Hull extends Item {
     private int hp;
     private int evasion;
     private int armor;
-    private int equipmentTypeId;
+    private int hullType;
     private int config;
 
     @Setter
@@ -32,19 +30,6 @@ public class Hull extends Item {
 
     @Setter
     private int currHp;
-
-    @Override
-    public ItemView getView() {
-        HullView.HullViewBuilder<?, ?> builder = HullView.builder()
-                .hp(hp)
-                .evasion(evasion)
-                .armor(armor)
-                .equipmentTypeId(equipmentTypeId)
-                .config(config);
-
-        return super.getItemBuilder(builder)
-                .build();
-    }
 
     @Override
     public void init() {

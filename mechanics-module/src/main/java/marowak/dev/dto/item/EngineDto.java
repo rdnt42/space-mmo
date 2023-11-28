@@ -9,7 +9,7 @@ import marowak.dev.api.response.item.ItemView;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class Engine extends Item {
+public class EngineDto extends ItemDto {
     private int speed;
     private int jump;
     private int equipmentTypeId;

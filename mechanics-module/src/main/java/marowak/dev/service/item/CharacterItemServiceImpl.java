@@ -7,10 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
-import marowak.dev.dto.item.Item;
+import marowak.dev.character.Engine;
+import marowak.dev.character.Item;
+import marowak.dev.dto.item.*;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.character.CharacterShipService;
-import message.*;
+import message.ItemMessage;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
@@ -35,18 +37,18 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     }
 
     @Override
-    public Mono<Void> addItem(ItemMessage message) {
+    public Mono<Void> addItem(ItemDto dto) {
         Item item;
-        switch (message) {
-            case EngineMessage engine -> item = BuilderHelper.engineMessageToItem.apply(engine);
-            case FuelTankMessage fuelTank -> item = BuilderHelper.fuelTankMessageToItem.apply(fuelTank);
-            case CargoHookMessage cargoHook -> item = BuilderHelper.cargoHookMessageToItem.apply(cargoHook);
-            case HullMessage hull -> item = BuilderHelper.hullMessageToItem.apply(hull);
-            case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
-            default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
+        switch (dto) {
+            case EngineDto engine -> item = BuilderHelper.dtoToEngine.apply(engine);
+            case FuelTankDto fuelTank -> item = BuilderHelper.dtoToFuelTank.apply(fuelTank);
+            case CargoHookDto cargoHook -> item = BuilderHelper.dtoToCargoHook.apply(cargoHook);
+            case HullDto hull -> item = BuilderHelper.dtoToHull.apply(hull);
+            case WeaponDto weapon -> item = BuilderHelper.dtoToWeapon.apply(weapon);
+            default -> throw new IllegalStateException("Unknown Item type, key: " + dto.getTypeId());
         }
 
-        return characterShipService.addItem(message.getCharacterName(), item)
+        return characterShipService.addItem(dto.getCharacterName(), item)
                 .then();
     }
 
@@ -69,6 +71,8 @@ public class CharacterItemServiceImpl implements CharacterItemService {
 
     @Override
     public Mono<InventoryView> getInventory(String characterName) {
+        // TODO items
+
         return characterShipService.getInventory(characterName);
     }
 
@@ -85,6 +89,17 @@ public class CharacterItemServiceImpl implements CharacterItemService {
                 .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
                         message.getKey(), message.getCharacterName(), e.getMessage()))
                 .then();
+    }
+
+    private Item map(ItemDto itemDto) {
+        switch (itemDto) {
+            case EngineDto engine ->
+        }
+    }
+
+    private Engine map(EngineDto engine) {
+        return Engine.builder()
+                .build();
     }
 
 }

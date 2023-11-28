@@ -8,7 +8,7 @@ import marowak.dev.api.response.item.ItemView;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class Item {
+public class ItemDto {
     private long id;
     private String characterName;
     private int slotId;
@@ -18,13 +18,8 @@ public class Item {
     private Integer cost;
     private String name;
     private String dsc;
-
     private Double x;
     private Double y;
-
-    public void init() {
-        // base init method
-    }
 
     protected ItemView.ItemViewBuilder<?, ?> getItemBuilder(ItemView.ItemViewBuilder<?, ?> builder) {
         return builder
@@ -41,10 +36,5 @@ public class Item {
     public ItemView getView() {
         return getItemBuilder(ItemView.builder())
                 .build();
-    }
-
-    public void updateStorage(int slotId, int storageId) {
-        this.slotId = slotId;
-        this.storageId = storageId;
     }
 }

@@ -1,18 +1,14 @@
-package marowak.dev.dto.item;
+package marowak.dev.character;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.response.item.ItemView;
-import marowak.dev.api.response.item.WeaponView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.bullet.BulletCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.enums.BulletType;
 import marowak.dev.service.physic.FactoryUtils;
-
-import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
 
 
 @Slf4j
@@ -24,9 +20,7 @@ public class Weapon extends Item {
     private int radius;
     private int rate;
     private int damageTypeId;
-    private int equipmentTypeId;
-
-    // internal
+    private int slotId;
     private long lastShoot;
     private int shotFreq;
     private double shiftAngle;
@@ -36,9 +30,8 @@ public class Weapon extends Item {
     @Override
     public void init() {
         shotFreq = 60_000 / rate;
-        if (!STORAGE_TYPE_HULL.equals(getStorageId())) return;
 
-        var slotShift = switch (getSlotId()) {
+        var slotShift = switch (slotId) {
             case 9 -> new Point(20, -20);
             case 10 -> new Point(20, 20);
             case 11 -> new Point(-32, -32);
@@ -49,21 +42,8 @@ public class Weapon extends Item {
 
         shiftLength = Math.sqrt(slotShift.x() * slotShift.x() + slotShift.y() * slotShift.y());
         shiftAngle = Math.toDegrees(Math.atan(slotShift.y() / slotShift.x()));
-        if (getSlotId() >= 11) shiftAngle -= 180;
-        log.info("change weapon slot: {}, angle: {}, length: {}", getSlotId(), shiftAngle, shiftLength);
-    }
-
-    @Override
-    public ItemView getView() {
-        WeaponView.WeaponViewBuilder<?, ?> builder = WeaponView.builder()
-                .damage(damage)
-                .radius(radius)
-                .rate(rate)
-                .damageTypeId(damageTypeId)
-                .equipmentTypeId(equipmentTypeId);
-
-        return super.getItemBuilder(builder)
-                .build();
+        if (slotId >= 11) shiftAngle -= 180;
+        log.info("change weapon slot: {}, angle: {}, length: {}", slotId, shiftAngle, shiftLength);
     }
 
     public boolean isReadyForShoot() {
@@ -75,12 +55,6 @@ public class Weapon extends Item {
         var newX = shiftLength * Math.cos(angleInRadians);
         var newY = shiftLength * Math.sin(angleInRadians);
         coords = new Point(baseCoords.x() + newX, baseCoords.y() + newY);
-    }
-
-    @Override
-    public void updateStorage(int slotId, int storageId) {
-        super.updateStorage(slotId, storageId);
-        init();
     }
 
     public BulletBody makeShootRequest(String creatorId, double angle, Point impulse) {

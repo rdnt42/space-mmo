@@ -5,10 +5,10 @@ import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.character.CharacterShip;
-import marowak.dev.dto.item.Engine;
-import marowak.dev.dto.item.Hull;
-import marowak.dev.dto.item.Item;
-import marowak.dev.dto.item.Weapon;
+import marowak.dev.dto.item.EngineDto;
+import marowak.dev.dto.item.HullDto;
+import marowak.dev.dto.item.ItemDto;
+import marowak.dev.dto.item.WeaponDto;
 import marowak.dev.dto.motion.CharacterMotion;
 import message.CharacterMessage;
 import reactor.core.publisher.Flux;
@@ -87,10 +87,10 @@ public class MockCharacterServiceImpl implements CharacterService {
         return characterShipService.updateShipMotion(request, characterName);
     }
 
-    private List<Item> getMockItemsCharOne() {
+    private List<ItemDto> getMockItemsCharOne() {
         var dsc = "Описание";
-        List<Item> items = new ArrayList<>();
-        Item hull = Hull.builder()
+        List<ItemDto> items = new ArrayList<>();
+        ItemDto hull = HullDto.builder()
                 .id(1)
                 .slotId(8)
                 .storageId(1)
@@ -107,7 +107,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(hull);
 
-        Item engine = Engine.builder()
+        ItemDto engine = EngineDto.builder()
                 .id(2)
                 .slotId(1)
                 .storageId(1)
@@ -122,7 +122,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(engine);
 
-        Item weapon1 = Weapon.builder()
+        ItemDto weapon1 = WeaponDto.builder()
                 .id(3)
                 .slotId(9)
                 .storageId(1)
@@ -138,7 +138,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(weapon1);
 
-        Item weapon2 = Weapon.builder()
+        ItemDto weapon2 = WeaponDto.builder()
                 .id(4)
                 .slotId(10)
                 .storageId(1)
@@ -157,10 +157,10 @@ public class MockCharacterServiceImpl implements CharacterService {
         return items;
     }
 
-    private List<Item> getMockItemsCharTwo() {
+    private List<ItemDto> getMockItemsCharTwo() {
         var dsc = "Описание 2";
-        List<Item> items = new ArrayList<>();
-        Item hull = Hull.builder()
+        List<ItemDto> items = new ArrayList<>();
+        ItemDto hull = HullDto.builder()
                 .id(10)
                 .slotId(8)
                 .storageId(1)
@@ -177,7 +177,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(hull);
 
-        Item engine = Engine.builder()
+        ItemDto engine = EngineDto.builder()
                 .id(11)
                 .slotId(1)
                 .storageId(1)
@@ -192,7 +192,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(engine);
 
-        Item weapon1 = Weapon.builder()
+        ItemDto weapon1 = WeaponDto.builder()
                 .id(12)
                 .slotId(9)
                 .storageId(1)
@@ -208,7 +208,7 @@ public class MockCharacterServiceImpl implements CharacterService {
                 .build();
         items.add(weapon1);
 
-        Item weapon2 = Weapon.builder()
+        ItemDto weapon2 = WeaponDto.builder()
                 .id(13)
                 .slotId(10)
                 .storageId(1)

@@ -11,9 +11,9 @@ import marowak.dev.api.response.CharacterView;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
 import marowak.dev.character.CharacterShip;
+import marowak.dev.character.Hull;
+import marowak.dev.character.Item;
 import marowak.dev.dto.Point;
-import marowak.dev.dto.item.Hull;
-import marowak.dev.dto.item.Item;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
@@ -99,8 +99,10 @@ public class CharacterShipService implements Calculable {
 
     public Mono<InventoryView> getInventory(String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
+        List<Item> items = curr.getItems();
+        // TODO
 
-        return Mono.just(curr.getInventoryView());
+        return Mono.empty();
     }
 
     public Mono<ItemView> getItem(String characterName, long itemId) {

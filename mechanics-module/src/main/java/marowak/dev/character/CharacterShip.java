@@ -6,14 +6,8 @@ import lombok.Setter;
 import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.api.request.CharacterShootingRequest;
 import marowak.dev.api.response.CharacterView;
-import marowak.dev.api.response.InventoryView;
-import marowak.dev.api.response.item.ItemView;
 import marowak.dev.dto.Point;
 import marowak.dev.dto.calculate.CalculateShipDamageResult;
-import marowak.dev.dto.item.Engine;
-import marowak.dev.dto.item.Hull;
-import marowak.dev.dto.item.Item;
-import marowak.dev.dto.item.Weapon;
 import marowak.dev.dto.ship.ShipCreateRequest;
 import marowak.dev.dto.world.BulletBody;
 import marowak.dev.dto.world.SpaceShipBody;
@@ -21,7 +15,6 @@ import marowak.dev.service.physic.FactoryUtils;
 import org.dyn4j.dynamics.Body;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static marowak.dev.enums.StorageType.STORAGE_TYPE_HOLD;
 import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
@@ -70,7 +63,7 @@ public class CharacterShip {
     }
 
     public SpaceShipBody createShipBody() {
-        ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, hull.getEquipmentTypeId());
+        ShipCreateRequest request = new ShipCreateRequest(id, startCoords, startAngle, hull.getHullType());
         SpaceShipBody body = FactoryUtils.createShip(request);
         hull.setShipBody(body);
 
@@ -169,21 +162,15 @@ public class CharacterShip {
                 .y(coords.y())
                 .angle(getAngle())
                 .speed(getSpeed())
-                .shipTypeId(hull.getEquipmentTypeId())
+                .shipTypeId(hull.getHullType())
                 .hp(hull.getHp())
                 .polygon(hull.getPolygonCoords())
                 .build();
     }
 
-    public InventoryView getInventoryView() {
-        List<ItemView> items = itemsMap.values().stream()
-                .map(Item::getView)
-                .toList();
-
-        return InventoryView.builder()
-                .items(items.stream().filter(Objects::nonNull).collect(Collectors.toList()))
-                .config(hull == null ? 0 : hull.getConfig())
-                .build();
+    public List<Item> getItems() {
+        return itemsMap.values()
+                .stream().toList();
     }
 
     public void updateShootingState(CharacterShootingRequest request) {

@@ -9,7 +9,7 @@ import marowak.dev.api.response.item.ItemView;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class CargoHook extends Item {
+public class CargoHookDto extends ItemDto {
     private int loadCapacity;
     private int radius;
     private int equipmentTypeId;

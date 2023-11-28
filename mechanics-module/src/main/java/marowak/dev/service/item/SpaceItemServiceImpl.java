@@ -4,9 +4,10 @@ import jakarta.inject.Singleton;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;
-import marowak.dev.dto.item.Item;
+import marowak.dev.dto.item.ItemDto;
 import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.physic.Utils;
 import marowak.dev.service.probability.ProbabilityCalculationService;
@@ -52,7 +53,12 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     }
 
     @Override
-    public Mono<Void> tryDropItemToSpace(Item item, Point coords) {
+    public Mono<Void> removeItem(ItemUpdate request) {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> tryDropItemToSpace(ItemDto item, Point coords) {
         if (item.getTypeId() == ITEM_TYPE_HULL.getTypeId()) {
             return sendItemDelete(item.getId())
                     .doOnNext(itemId -> log.info("Item deleted, id: {}", itemId))
@@ -75,7 +81,7 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 }).then();
     }
 
-    private Mono<ItemInSpaceView> addItemToSpace(Item item, Point coords) {
+    private Mono<ItemInSpaceView> addItemToSpace(ItemDto item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);
         var itemInSpace = ItemInSpaceView.builder()
