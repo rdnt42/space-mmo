@@ -11,6 +11,7 @@ import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.service.ObjectInfoService;
 import marowak.dev.service.broker.CharactersClient;
 import marowak.dev.service.item.CharacterItemService;
+import marowak.dev.service.item.ItemStorage;
 import message.CharacterMessage;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +25,7 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharacterShipService characterShipService;
     private final ObjectInfoService objectInfoService;
     private final CharacterItemService characterItemService;
+    private final ItemStorage itemStorage;
 
     @Override
     public Mono<Void> sendCharactersUpdate() {
@@ -46,7 +48,7 @@ public class CharacterServiceImpl implements CharacterService {
         return characterShipService.addCharacter(request)
                 .doOnNext(character -> log.info("Character init successful, key: {}, character name: {}", message.getKey(), character.getId()))
                 .doOnError(e -> log.error("Character init failed", e))
-                .then(characterItemService.sendGetItems(ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER, message.getCharacterName()))
+                .then(itemStorage.sendGetItem(ItemMessageKey.ITEMS_GET_FOR_ONE_CHARACTER, message.getCharacterName()))
                 .then();
     }
 

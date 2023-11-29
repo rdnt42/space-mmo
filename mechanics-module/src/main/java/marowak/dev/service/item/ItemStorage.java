@@ -1,8 +1,9 @@
 package marowak.dev.service.item;
 
-import marowak.dev.api.request.ItemUpdate;
+import keys.ItemMessageKey;
 import marowak.dev.dto.item.ItemDto;
 import message.ItemMessage;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
 public interface ItemStorage {
@@ -10,7 +11,9 @@ public interface ItemStorage {
 
     Mono<ItemDto> getItem(long id);
 
-    Mono<ItemDto> updateItem(ItemUpdate update);
+    Mono<ItemDto> updateItem(ItemDto update);
 
     Mono<Long> deleteItem(long id);
+
+    Mono<RecordMetadata> sendGetItem(ItemMessageKey key, String characterName);
 }

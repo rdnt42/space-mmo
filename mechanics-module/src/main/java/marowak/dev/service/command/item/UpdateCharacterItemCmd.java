@@ -14,7 +14,6 @@ public class UpdateCharacterItemCmd implements CharacterRequestCommand<Object, I
     private final CharacterItemService characterItemService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     @Override
     public Mono<ItemUpdate> execute(Object request, String characterName) {
         ItemUpdate value = objectMapper.convertValue(request, ItemUpdate.class);

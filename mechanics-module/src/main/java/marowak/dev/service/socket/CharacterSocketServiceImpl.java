@@ -41,6 +41,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     @Override
     public Publisher<SendSocketMessage<?>> onMessage(String characterName, ReceiveSocketMessage<?> request,
                                                      WebSocketSession session) {
+        // TODO add common mapper for requests
         switch (request.command()) {
             case CMD_UPDATE_MOTION -> {
                 return updateMotionCmd.execute(request.data(), characterName)

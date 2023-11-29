@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
-
 @Slf4j
 @RequiredArgsConstructor
 @Singleton
@@ -40,7 +38,6 @@ public class CharacterShipService implements Calculable {
     private final WorldService worldService;
     private final CharacterInformerSocketService characterInformerSocketService;
     private final SpaceItemService spaceItemService;
-
     private final Map<String, CharacterShip> charactersMap = new ConcurrentHashMap<>();
 
     public Mono<CharacterShip> addCharacter(CharacterMotion motion) {
@@ -62,7 +59,7 @@ public class CharacterShipService implements Calculable {
         CharacterShip ship = charactersMap.get(characterName);
 
         ship.addItem(item);
-        if (STORAGE_TYPE_HULL.equals(item.getStorageId()) && item instanceof Hull) {
+        if (item instanceof Hull) {
             SpaceShipBody shipBody = ship.createShipBody();
             worldService.createBody(shipBody);
         }
@@ -71,7 +68,6 @@ public class CharacterShipService implements Calculable {
 
     public Mono<Item> updateItem(String characterName, ItemUpdate request) {
         CharacterShip ship = charactersMap.get(characterName);
-
         Item item = ship.updateItem(request.id(), request.slotId(), request.storageId());
 
         return Mono.just(item);
@@ -81,6 +77,10 @@ public class CharacterShipService implements Calculable {
         CharacterShip ship = charactersMap.get(characterName);
 
         return Mono.justOrEmpty(ship.getView());
+    }
+
+    public Mono<CharacterShip> getShip(String characterName) {
+        return Mono.just(charactersMap.get(characterName));
     }
 
     public Flux<CharacterView> getAllCharacters() {

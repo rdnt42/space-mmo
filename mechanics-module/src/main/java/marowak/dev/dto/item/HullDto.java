@@ -2,10 +2,12 @@ package marowak.dev.dto.item;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import marowak.dev.api.response.item.HullView;
 import marowak.dev.api.response.item.ItemView;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @SuperBuilder

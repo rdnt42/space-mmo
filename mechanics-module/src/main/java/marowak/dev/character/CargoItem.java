@@ -9,4 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CargoItem extends Item {
     private int slotId;
+
 }

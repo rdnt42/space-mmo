@@ -16,9 +16,6 @@ import org.dyn4j.dynamics.Body;
 
 import java.util.*;
 
-import static marowak.dev.enums.StorageType.STORAGE_TYPE_HOLD;
-import static marowak.dev.enums.StorageType.STORAGE_TYPE_HULL;
-
 
 @Getter
 public class CharacterShip {
@@ -31,7 +28,7 @@ public class CharacterShip {
     private Weapon weapon4;
     private Weapon weapon5;
 
-    private final Item[] hold = new Item[30];
+    private final CargoItem[] hold = new CargoItem[30];
 
     // TODO refactor
     private final Point startCoords;
@@ -70,13 +67,12 @@ public class CharacterShip {
         return body;
     }
 
-    public Item updateItem(long id, int slotId, int storageId) {
-        Item item = this.itemsMap.get(id);
-        removeItem(item);
-        item.updateStorage(slotId, storageId);
-        addItem(item);
+    public Item updateItem(Item updatedItem) {
+        Item itemToRemove = this.itemsMap.get(updatedItem.getId());
+        removeItem(itemToRemove);
+        addItem(updatedItem);
 
-        return item;
+        return updatedItem;
     }
 
     public Item getItem(long id) {
@@ -84,10 +80,9 @@ public class CharacterShip {
     }
 
     public void addItem(Item item) {
-        int storageId = item.getStorageId();
-        if (STORAGE_TYPE_HOLD.equals(storageId)) {
-            addToHold(item);
-        } else if (STORAGE_TYPE_HULL.equals(storageId)) {
+        if (item instanceof CargoItem) {
+            addToHold((CargoItem) item);
+        } else {
             addToHull(item);
             item.init();
         }
@@ -113,30 +108,31 @@ public class CharacterShip {
         }
     }
 
-    private void addToHold(Item item) {
+    private void addToHold(CargoItem item) {
         hold[item.getSlotId()] = item;
     }
 
-    private void removeItem(Item item) {
-        int storageId = item.getStorageId();
-        if (STORAGE_TYPE_HULL.equals(storageId)) {
-            removeFromHull(item.getSlotId());
-        } else if (STORAGE_TYPE_HOLD.equals(storageId)) {
-            removeFromHold(item.getSlotId());
+    public Item removeItem(Item item) {
+        if (item instanceof CargoItem) {
+            removeFromHold(((CargoItem) item).getSlotId());
+        } else {
+            removeFromHull(item);
         }
 
-        itemsMap.remove(item.getId());
+        return itemsMap.remove(item.getId());
     }
 
-    private void removeFromHull(int slotId) {
-        switch (slotId) {
-            case 1 -> engine = null;
-            case 8 -> hull = null;
-            case 9 -> weapon1 = null;
-            case 10 -> weapon2 = null;
-            case 11 -> weapon3 = null;
-            case 12 -> weapon4 = null;
-            case 13 -> weapon5 = null;
+    private void removeFromHull(Item item) {
+        switch (item) {
+            case Engine ignored -> engine = null;
+            case Hull ignored -> hull = null;
+            case Weapon w -> {
+                if (w.getSlotId() == 9) weapon1 = null;
+                else if (w.getSlotId() == 10) weapon2 = null;
+                else if (w.getSlotId() == 11) weapon3 = null;
+                else if (w.getSlotId() == 12) weapon4 = null;
+                else if (w.getSlotId() == 13) weapon5 = null;
+            }
             default -> throw new IllegalStateException();
         }
     }

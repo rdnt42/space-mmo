@@ -1,22 +1,26 @@
 package marowak.dev.service.item;
 
 import jakarta.inject.Singleton;
+import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
-import marowak.dev.api.request.ItemUpdate;
+import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.item.ItemDto;
-import marowak.dev.enums.StorageType;
+import marowak.dev.service.broker.ItemClient;
 import message.*;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @RequiredArgsConstructor
 @Singleton
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, ItemDto> itemsMap = new ConcurrentHashMap<>();
     private final CharacterItemService characterItemService;
+    private final ItemClient itemClient;
 
     @Override
     public Mono<ItemDto> addItem(ItemMessage message) {
@@ -28,14 +32,6 @@ public class ItemStorageImpl implements ItemStorage {
             case HullMessage hull -> item = BuilderHelper.hullMessageToItem.apply(hull);
             case WeaponMessage weapon -> item = BuilderHelper.weaponMessageToItem.apply(weapon);
             default -> throw new IllegalStateException("Unknown Item message, key: " + message.getKey());
-        }
-        // TODO
-        StorageType type = StorageType.from(item.getStorageId());
-        if (type.isSpaceStorage()) {
-
-        } else if (type.isShipStorage()) {
-            characterItemService.addItem(item)
-                    .subscribe();
         }
         itemsMap.put(item.getId(), item);
 
@@ -51,12 +47,44 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public Mono<ItemDto> updateItem(ItemUpdate update) {
-        return null;
+    public Mono<ItemDto> updateItem(ItemDto update) {
+        ItemDto dto = Optional.ofNullable(itemsMap.get(update.getId()))
+                .orElseThrow();
+
+        return sendItemUpdate(dto, dto.getCharacterName())
+                .then(Mono.just(dto));
     }
 
     @Override
     public Mono<Long> deleteItem(long id) {
         return null;
+    }
+
+    @Override
+    public Mono<RecordMetadata> sendGetItem(ItemMessageKey key, String characterName) {
+        ItemMessage message = ItemMessage.builder()
+                .key(key)
+                .characterName(characterName)
+                .build();
+
+        return itemClient.sendItems(message)
+                .doOnError(e -> log.error("Send getting Items init error, key{}, character: {}, error: {}", key, characterName, e.getMessage()))
+                .doOnSuccess(c -> log.info("Send getting Items init, key: {}, character: {}", key, characterName));
+        ;
+    }
+
+    private Mono<Void> sendItemUpdate(ItemDto item, String characterName) {
+        ItemMessage message = ItemMessage.builder()
+                .key(ItemMessageKey.ITEM_UPDATE)
+                .id(item.getId())
+                .characterName(characterName)
+                .slotId(item.getSlotId())
+                .storageId(item.getStorageId())
+                .build();
+
+        return itemClient.sendItems(message)
+                .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
+                        message.getKey(), message.getCharacterName(), e.getMessage()))
+                .then();
     }
 }
