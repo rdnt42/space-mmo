@@ -47,17 +47,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Mono<ItemMessage> updateItem(ItemMessage message) {
-        itemR2Repository.update(message.getId(), message.getSlotId(), message.getStorageId(), message.getCharacterName());
+        itemR2Repository.update(message.getId(), message.getSlotId(), message.getStorageId(), message.getCharacterName(),
+                message.getX(), message.getY());
 
         return Mono.empty();
     }
 
-    @Override
-    public Mono<ItemMessage> updateSpaceItem(ItemMessage message) {
-        itemR2Repository.updateSpaceItem(message.getId(), message.getX(), message.getY());
-
-        return Mono.empty();
-    }
 
     @Override
     public Mono<ItemMessage> deleteItem(ItemMessage message) {

@@ -8,7 +8,6 @@ import java.util.Collection;
 @Builder
 public record InventoryView(
         Collection<ItemView> items,
-        // TODO REMOVE
         int config
 ) {
 }

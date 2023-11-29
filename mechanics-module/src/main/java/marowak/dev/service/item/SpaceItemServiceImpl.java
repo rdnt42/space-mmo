@@ -1,14 +1,12 @@
 package marowak.dev.service.item;
 
 import jakarta.inject.Singleton;
-import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.item.ItemInSpaceView;
 import marowak.dev.dto.Point;
+import marowak.dev.dto.item.HullDto;
 import marowak.dev.dto.item.ItemDto;
-import marowak.dev.service.broker.ItemClient;
 import marowak.dev.service.physic.Utils;
 import marowak.dev.service.probability.ProbabilityCalculationService;
 import message.ItemMessage;
@@ -18,7 +16,6 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static marowak.dev.enums.ItemType.ITEM_TYPE_HULL;
 import static marowak.dev.enums.StorageType.STORAGE_TYPE_SPACE;
 
 @Slf4j
@@ -26,8 +23,7 @@ import static marowak.dev.enums.StorageType.STORAGE_TYPE_SPACE;
 @Singleton
 public class SpaceItemServiceImpl implements SpaceItemService {
     private final ProbabilityCalculationService probabilityCalculationService;
-    private final ItemClient itemClient;
-
+    private final ItemStorage itemStorage;
     private final Map<Long, ItemInSpaceView> items = new ConcurrentHashMap<>();
 
     @Override
@@ -53,32 +49,34 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     }
 
     @Override
-    public Mono<Void> removeItem(ItemUpdate request) {
-        return null;
-    }
-
-    @Override
-    public Mono<Void> tryDropItemToSpace(ItemDto item, Point coords) {
-        if (item.getTypeId() == ITEM_TYPE_HULL.getTypeId()) {
-            return sendItemDelete(item.getId())
-                    .doOnNext(itemId -> log.info("Item deleted, id: {}", itemId))
-                    .then();
-        }
-
-        return probabilityCalculationService.isItemDropped(item.getTypeId())
-                .flatMap(isDropped -> {
-                    if (Boolean.TRUE.equals(isDropped)) {
-                        return addItemToSpace(item, coords)
-                                .flatMap(spaceItem -> {
-                                    item.updateStorage(0, STORAGE_TYPE_SPACE.getStorageId());
-                                    return sendItemUpdate(spaceItem);
-                                })
-                                .doOnNext(id -> log.info("Item dropped to space, id: {}", id));
-                    } else {
-                        return sendItemDelete(item.getId())
-                                .doOnNext(itemId -> log.info("Item deleted, id: {}", itemId));
+    public Mono<Void> tryDropItemToSpace(long itemId, Point coords) {
+        return itemStorage.getItem(itemId)
+                .flatMap(item -> {
+                    if (item instanceof HullDto) {
+                        return itemStorage.deleteItem(itemId)
+                                .doOnSuccess(delId -> log.info("Item deleted, id: {}", delId))
+                                .then();
                     }
-                }).then();
+
+                    return probabilityCalculationService.isItemDropped(item.getTypeId())
+                            .flatMap(isDropped -> {
+                                if (Boolean.TRUE.equals(isDropped)) {
+                                    return addItemToSpace(item, coords)
+                                            .flatMap(spaceItem -> {
+                                                item.setStorageId(STORAGE_TYPE_SPACE.getStorageId());
+                                                item.setSlotId(0);
+                                                item.setCharacterName(null);
+                                                item.setX(spaceItem.x());
+                                                item.setY(spaceItem.y());
+                                                return itemStorage.updateItem(item);
+                                            })
+                                            .doOnNext(id -> log.info("Item dropped to space, id: {}", id));
+                                } else {
+                                    return itemStorage.deleteItem(item.getId())
+                                            .doOnNext(delId -> log.info("Item deleted, id: {}", delId));
+                                }
+                            }).then();
+                });
     }
 
     private Mono<ItemInSpaceView> addItemToSpace(ItemDto item, Point coords) {
@@ -99,32 +97,6 @@ public class SpaceItemServiceImpl implements SpaceItemService {
 
     private double getCoordInExplosionRadius(int min, int max) {
         return Math.random() * (max + 1 - min) + min;
-    }
-
-    private Mono<Long> sendItemUpdate(ItemInSpaceView item) {
-        ItemMessage message = ItemMessage.builder()
-                .key(ItemMessageKey.ITEM_UPDATE_IN_SPACE)
-                .id(item.id())
-                .x(item.x())
-                .y(item.y())
-                .build();
-
-        return itemClient.sendItems(message)
-                .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
-                        message.getKey(), message.getCharacterName(), e.getMessage()))
-                .then(Mono.just(item.id()));
-    }
-
-    private Mono<Long> sendItemDelete(long itemId) {
-        ItemMessage message = ItemMessage.builder()
-                .key(ItemMessageKey.ITEM_DELETE)
-                .id(itemId)
-                .build();
-
-        return itemClient.sendItems(message)
-                .doOnError(e -> log.error("Send Item delete error, key{}, character: {}, error: {}",
-                        message.getKey(), message.getCharacterName(), e.getMessage()))
-                .then(Mono.just(itemId));
     }
 
 }

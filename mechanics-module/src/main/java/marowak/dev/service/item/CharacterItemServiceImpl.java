@@ -1,7 +1,6 @@
 package marowak.dev.service.item;
 
 import jakarta.inject.Singleton;
-import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.ItemUpdate;
@@ -14,6 +13,9 @@ import marowak.dev.enums.StorageType;
 import marowak.dev.service.character.CharacterShipService;
 import message.ItemMessage;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -53,30 +55,20 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     }
 
     @Override
-    public Mono<ItemView> getItem(String characterName, long itemId) {
-        return characterShipService.getItem(characterName, itemId);
-    }
-
-    @Override
     public Mono<InventoryView> getInventory(String characterName) {
         // TODO items
+        return characterShipService.getShip(characterName)
+                .flatMap(ship -> {
+                    int config = ship.getHull().getConfig();
+                    List<ItemView> views = ship.getItems().stream()
+                            .map(i -> itemStorage.getItem(i.getId())
+                                    .map(ItemDto::getView))
+                            .map(Mono::blockOptional)
+                            .map(Optional::orElseThrow)
+                            .toList();
 
-        return characterShipService.getInventory(characterName);
-    }
-
-    private Mono<Void> sendItemUpdate(ItemView item, String characterName) {
-        ItemMessage message = ItemMessage.builder()
-                .key(ItemMessageKey.ITEM_UPDATE)
-                .id(item.getId())
-                .characterName(characterName)
-                .slotId(item.getSlotId())
-                .storageId(item.getStorageId())
-                .build();
-
-        return itemClient.sendItems(message)
-                .doOnError(e -> log.error("Send Items init error, key{}, character: {}, error: {}",
-                        message.getKey(), message.getCharacterName(), e.getMessage()))
-                .then();
+                    return Mono.just(new InventoryView(views, config));
+                });
     }
 
     private Item map(ItemDto dto) {

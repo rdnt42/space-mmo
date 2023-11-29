@@ -16,7 +16,7 @@ public class GetCharacterItemCmd implements CharacterRequestCommand<Long, SendSo
 
     @Override
     public Mono<SendSocketMessage<ItemView>> execute(Long request, String characterName) {
-        return objectInfoService.getItem(characterName, request)
+        return objectInfoService.getItem(request)
                 .map(info -> new SendSocketMessage<>(SendCommandType.CMD_RECEIVE_UPDATE_INVENTORY_ITEM, info));
     }
 }

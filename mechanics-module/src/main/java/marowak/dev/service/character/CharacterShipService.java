@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.CharacterMotionRequest;
 import marowak.dev.api.request.CharacterShootingRequest;
-import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.CharacterView;
-import marowak.dev.api.response.InventoryView;
-import marowak.dev.api.response.item.ItemView;
 import marowak.dev.character.CharacterShip;
 import marowak.dev.character.Hull;
 import marowak.dev.character.Item;
@@ -66,13 +63,6 @@ public class CharacterShipService implements Calculable {
         return Mono.just(item);
     }
 
-    public Mono<Item> updateItem(String characterName, ItemUpdate request) {
-        CharacterShip ship = charactersMap.get(characterName);
-        Item item = ship.updateItem(request.id(), request.slotId(), request.storageId());
-
-        return Mono.just(item);
-    }
-
     public Mono<CharacterView> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
 
@@ -97,20 +87,6 @@ public class CharacterShipService implements Calculable {
                 .mapNotNull(CharacterShip::getView);
     }
 
-    public Mono<InventoryView> getInventory(String characterName) {
-        CharacterShip curr = charactersMap.get(characterName);
-        List<Item> items = curr.getItems();
-        // TODO
-
-        return Mono.empty();
-    }
-
-    public Mono<ItemView> getItem(String characterName, long itemId) {
-        CharacterShip curr = charactersMap.get(characterName);
-
-        return Mono.just(curr.getItem(itemId)
-                .getView());
-    }
 
     public Mono<Void> updateShooting(CharacterShootingRequest request, String characterName) {
         CharacterShip curr = charactersMap.get(characterName);
@@ -158,7 +134,7 @@ public class CharacterShipService implements Calculable {
 
         worldService.removeBodies(ship.destroy());
         for (Item item : ship.getItemsMap().values()) {
-            spaceItemService.tryDropItemToSpace(item, coords).subscribe();
+            spaceItemService.tryDropItemToSpace(item.getId(), coords).subscribe();
         }
 
         characterInformerSocketService.sendExplosionToAll(ship.getId())

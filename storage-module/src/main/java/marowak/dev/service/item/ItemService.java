@@ -13,7 +13,5 @@ public interface ItemService {
 
     Mono<ItemMessage> updateItem(ItemMessage message);
 
-    Mono<ItemMessage> updateSpaceItem(ItemMessage message);
-
     Mono<ItemMessage> deleteItem(ItemMessage message);
 }

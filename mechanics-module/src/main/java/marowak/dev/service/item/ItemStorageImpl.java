@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, ItemDto> itemsMap = new ConcurrentHashMap<>();
-    private final CharacterItemService characterItemService;
     private final ItemClient itemClient;
 
     @Override
@@ -57,7 +56,8 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Mono<Long> deleteItem(long id) {
-        return null;
+        ItemDto removed = itemsMap.remove(id);
+        return sendDeleteItem(removed.getId());
     }
 
     @Override
@@ -70,7 +70,6 @@ public class ItemStorageImpl implements ItemStorage {
         return itemClient.sendItems(message)
                 .doOnError(e -> log.error("Send getting Items init error, key{}, character: {}, error: {}", key, characterName, e.getMessage()))
                 .doOnSuccess(c -> log.info("Send getting Items init, key: {}, character: {}", key, characterName));
-        ;
     }
 
     private Mono<Void> sendItemUpdate(ItemDto item, String characterName) {
@@ -87,4 +86,17 @@ public class ItemStorageImpl implements ItemStorage {
                         message.getKey(), message.getCharacterName(), e.getMessage()))
                 .then();
     }
+
+    private Mono<Long> sendDeleteItem(long itemId) {
+        ItemMessage message = ItemMessage.builder()
+                .key(ItemMessageKey.ITEM_DELETE)
+                .id(itemId)
+                .build();
+
+        return itemClient.sendItems(message)
+                .doOnError(e -> log.error("Send Item delete error, key{}, character: {}, error: {}",
+                        message.getKey(), message.getCharacterName(), e.getMessage()))
+                .then(Mono.just(itemId));
+    }
+
 }

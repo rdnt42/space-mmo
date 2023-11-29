@@ -2,7 +2,6 @@ package marowak.dev.repository;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.Query;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.r2dbc.annotation.R2dbcRepository;
 import io.micronaut.data.repository.reactive.ReactiveStreamsCrudRepository;
@@ -13,11 +12,8 @@ import javax.validation.constraints.NotNull;
 
 @R2dbcRepository(dialect = Dialect.POSTGRES)
 public interface ItemR2Repository extends ReactiveStreamsCrudRepository<Item, Long> {
-    void update(@Id long id, @NotNull Integer slotId, @NotNull Integer storageId, @Nullable String characterName);
-
-    @Query("UPDATE items SET slot_id = 0, storage_id = 3, character_name = null," +
-            "x = :x, y = :y where item_id = :id")
-    void updateSpaceItem(@Id long id, @Nullable Double x, @Nullable Double y);
+    void update(@Id long id, @NotNull Integer slotId, @NotNull Integer storageId, @Nullable String characterName,
+                @Nullable Double x, @Nullable Double y);
 
     Flux<Item> findByCharacterName(@NotNull String characterName);
 
