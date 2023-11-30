@@ -10,7 +10,6 @@ import marowak.dev.api.response.CharacterView;
 import marowak.dev.dto.motion.CharacterMotion;
 import marowak.dev.service.ObjectInfoService;
 import marowak.dev.service.broker.CharactersClient;
-import marowak.dev.service.item.CharacterItemService;
 import marowak.dev.service.item.ItemStorage;
 import message.CharacterMessage;
 import reactor.core.publisher.Mono;
@@ -24,7 +23,6 @@ public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
     private final CharacterShipService characterShipService;
     private final ObjectInfoService objectInfoService;
-    private final CharacterItemService characterItemService;
     private final ItemStorage itemStorage;
 
     @Override

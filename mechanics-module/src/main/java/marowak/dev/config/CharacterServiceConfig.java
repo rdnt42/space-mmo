@@ -10,7 +10,7 @@ import marowak.dev.service.character.CharacterService;
 import marowak.dev.service.character.CharacterServiceImpl;
 import marowak.dev.service.character.CharacterShipService;
 import marowak.dev.service.character.MockCharacterServiceImpl;
-import marowak.dev.service.item.CharacterItemService;
+import marowak.dev.service.item.ItemStorage;
 
 @Factory
 public class CharacterServiceConfig {
@@ -20,8 +20,8 @@ public class CharacterServiceConfig {
             CharactersClient charactersClient,
             CharacterShipService characterShipService,
             ObjectInfoService objectInfoService,
-            CharacterItemService characterItemService) {
-        return new CharacterServiceImpl(charactersClient, characterShipService, objectInfoService, characterItemService);
+            ItemStorage itemStorage) {
+        return new CharacterServiceImpl(charactersClient, characterShipService, objectInfoService, itemStorage);
     }
 
     @Bean

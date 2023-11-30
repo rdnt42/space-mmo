@@ -15,6 +15,7 @@ public class BuilderHelper {
     public static final BiFunction<ItemMessage, ItemDto.ItemDtoBuilder<?, ?>, ItemDto.ItemDtoBuilder<?, ?>> messageToItemBuilder =
             (message, baseBuilder) -> baseBuilder
                     .id(message.getId())
+                    .characterName(message.getCharacterName())
                     .x(message.getX())
                     .y(message.getY())
                     .slotId(message.getSlotId())
@@ -93,6 +94,7 @@ public class BuilderHelper {
     public static final Function<HullDto, Hull> dtoToHull = dto ->
             Hull.builder()
                     .id(dto.getId())
+                    .hullType(dto.getEquipmentTypeId())
                     .hp(dto.getHp())
                     .evasion(dto.getEvasion())
                     .armor(dto.getArmor())

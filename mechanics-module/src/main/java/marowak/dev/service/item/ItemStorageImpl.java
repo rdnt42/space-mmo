@@ -79,6 +79,8 @@ public class ItemStorageImpl implements ItemStorage {
                 .characterName(characterName)
                 .slotId(item.getSlotId())
                 .storageId(item.getStorageId())
+                .x(item.getX())
+                .y(item.getY())
                 .build();
 
         return itemClient.sendItems(message)

@@ -67,16 +67,12 @@ public class CharacterShip {
         return body;
     }
 
-    public Item updateItem(Item updatedItem) {
-        Item itemToRemove = this.itemsMap.get(updatedItem.getId());
+    public Item updateItem(Item updateItem) {
+        Item itemToRemove = this.itemsMap.get(updateItem.getId());
         removeItem(itemToRemove);
-        addItem(updatedItem);
+        addItem(updateItem);
 
-        return updatedItem;
-    }
-
-    public Item getItem(long id) {
-        return this.itemsMap.get(id);
+        return updateItem;
     }
 
     public void addItem(Item item) {
@@ -112,14 +108,14 @@ public class CharacterShip {
         hold[item.getSlotId()] = item;
     }
 
-    public Item removeItem(Item item) {
+    private void removeItem(Item item) {
         if (item instanceof CargoItem) {
             removeFromHold(((CargoItem) item).getSlotId());
         } else {
             removeFromHull(item);
         }
 
-        return itemsMap.remove(item.getId());
+        itemsMap.remove(item.getId());
     }
 
     private void removeFromHull(Item item) {

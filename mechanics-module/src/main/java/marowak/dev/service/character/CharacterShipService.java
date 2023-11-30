@@ -63,6 +63,11 @@ public class CharacterShipService implements Calculable {
         return Mono.just(item);
     }
 
+    public Mono<Item> updateItem(String characterName, Item updateItem) {
+        CharacterShip ship = charactersMap.get(characterName);
+        return Mono.just(ship.updateItem(updateItem));
+    }
+
     public Mono<CharacterView> getCharacter(String characterName) {
         CharacterShip ship = charactersMap.get(characterName);
 

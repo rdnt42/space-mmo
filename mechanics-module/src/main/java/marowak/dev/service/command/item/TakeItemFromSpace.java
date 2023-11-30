@@ -20,7 +20,7 @@ public class TakeItemFromSpace implements CharacterRequestCommand<Object, ItemUp
     public CorePublisher<ItemUpdate> execute(Object request, String characterName) {
         ItemUpdate value = objectMapper.convertValue(request, ItemUpdate.class);
 
-        spaceItemService.
+//        spaceItemService.
         return null;
     }
 }

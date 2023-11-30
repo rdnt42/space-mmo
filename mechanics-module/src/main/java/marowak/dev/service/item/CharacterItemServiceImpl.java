@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
-import marowak.dev.character.CargoItem;
 import marowak.dev.character.Item;
 import marowak.dev.dto.item.*;
 import marowak.dev.enums.StorageType;
@@ -30,11 +29,8 @@ public class CharacterItemServiceImpl implements CharacterItemService {
         return itemStorage.addItem(message)
                 .flatMap(dto -> {
                     Item item = map(dto);
-                    return characterShipService.getShip(dto.getCharacterName())
-                            .flatMap(ship -> {
-                                ship.addItem(item);
-                                return Mono.empty();
-                            });
+                    return characterShipService.addItem(dto.getCharacterName(), item)
+                            .then();
                 });
     }
 
@@ -46,8 +42,7 @@ public class CharacterItemServiceImpl implements CharacterItemService {
                     dto.setStorageId(request.storageId());
                     Item item = map(dto);
 
-                    return characterShipService.getShip(characterName)
-                            .map(ship -> ship.updateItem(item))
+                    return characterShipService.updateItem(characterName, item)
                             .then(itemStorage.updateItem(dto))
                             .then(Mono.just(new ItemUpdate(dto.getId(), dto.getSlotId(), dto.getStorageId())))
                             .doOnSuccess(u -> log.info("Inventory updated from client id: {}, slot: {}", u.id(), u.slotId()));
@@ -56,7 +51,6 @@ public class CharacterItemServiceImpl implements CharacterItemService {
 
     @Override
     public Mono<InventoryView> getInventory(String characterName) {
-        // TODO items
         return characterShipService.getShip(characterName)
                 .flatMap(ship -> {
                     int config = ship.getHull().getConfig();
@@ -83,10 +77,7 @@ public class CharacterItemServiceImpl implements CharacterItemService {
                 default -> throw new IllegalStateException("Unknown Item type, key: " + dto.getTypeId());
             }
         } else if (StorageType.STORAGE_TYPE_HOLD.equals(dto.getStorageId())) {
-            item = CargoItem.builder()
-                    .id(dto.getId())
-                    .slotId(dto.getSlotId())
-                    .build();
+            item = BuilderHelper.dtoToCargoItem.apply(dto);
         } else {
             throw new IllegalStateException("Unsupported storage id: " + dto.getStorageId());
         }
