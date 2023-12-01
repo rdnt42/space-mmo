@@ -79,6 +79,13 @@ public class SpaceItemServiceImpl implements SpaceItemService {
                 });
     }
 
+    @Override
+    public Mono<Long> removeItem(long itemId) {
+        ItemInSpaceView removed = items.remove(itemId);
+
+        return Mono.just(removed.id());
+    }
+
     private Mono<ItemInSpaceView> addItemToSpace(ItemDto item, Point coords) {
         var newX = coords.x() + getCoordInExplosionRadius(-120, 120);
         var newY = coords.x() + getCoordInExplosionRadius(-100, 100);

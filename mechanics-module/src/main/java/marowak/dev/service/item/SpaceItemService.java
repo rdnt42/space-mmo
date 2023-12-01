@@ -13,4 +13,6 @@ public interface SpaceItemService {
     Mono<Void> addItem(ItemMessage item);
 
     Mono<Void> tryDropItemToSpace(long itemId, Point coords);
+
+    Mono<Long> removeItem(long itemId);
 }
