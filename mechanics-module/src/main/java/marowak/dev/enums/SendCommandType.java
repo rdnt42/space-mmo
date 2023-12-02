@@ -8,4 +8,5 @@ public enum SendCommandType {
     CMD_RECEIVE_WEAPON_INFO,
     CMD_LEAVING_PLAYER,
     CMD_BLOW_UP_CHARACTER,
+    CMD_RECEIVE_ITEM,
 }

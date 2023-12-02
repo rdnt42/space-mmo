@@ -8,4 +8,5 @@ public enum ReceiveCommandType {
     CMD_UPDATE_INVENTORY_ITEM,
     CMD_UPDATE_SHOOTING,
     CMD_BLOW_UP_CHARACTER,
+    CMD_TAKE_ITEM_FROM_SPACE,
 }

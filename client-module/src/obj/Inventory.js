@@ -3,7 +3,7 @@ import {EquipmentTypeId} from "../const/EquipmentTypeId.js";
 import {EquipmentSlot} from "./EquipmentSlot.js";
 import * as renderEngine from "../render/render.js";
 import * as socket from "../websocket-service.js";
-import {CharacterItemRequest} from "../message/CharacterMessage.js";
+import {CharacterItemRequest, GetItemFromSpaceRequest} from "../message/CharacterMessage.js";
 import {inCargo, inHull, isWeapon} from "../item-utils.js";
 import {SPACE_STORAGE_ID} from "../const/Common.js";
 
@@ -229,5 +229,10 @@ export class Inventory {
         }
 
         return slot.getItem();
+    }
+
+    pickUpItem(item) {
+        console.log(`try to pick up an item from space, id: ${item.id}`);
+        socket.sendMessage(new GetItemFromSpaceRequest(item.id));
     }
 }

@@ -33,6 +33,10 @@ export class SpaceItem {
         renderService.renderSpaceItem(this.texture, this.x, this.y);
     }
 
+    destroyObj() {
+        renderService.removeSprite(this.texture);
+    }
+
     getShowInfo() {
         return {
             name: this.name,

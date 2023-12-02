@@ -11,6 +11,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,7 +41,7 @@ public class ItemStorageImpl implements ItemStorage {
     @Override
     public Mono<ItemDto> getItem(long id) {
         ItemDto dto = Optional.ofNullable(itemsMap.get(id))
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("No itme present with id " + id));
 
         return Mono.just(dto);
     }

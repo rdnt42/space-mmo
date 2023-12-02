@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.socket.ReceiveSocketMessage;
 import marowak.dev.dto.socket.SendSocketMessage;
 import marowak.dev.service.command.character.*;
-import marowak.dev.service.command.item.GetCharacterItemCmd;
+import marowak.dev.service.command.item.TakeItemFromSpaceCmd;
 import marowak.dev.service.command.item.UpdateCharacterItemCmd;
 import org.reactivestreams.Publisher;
 
@@ -26,11 +26,11 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     private final UpdateMotionCmd updateMotionCmd;
     private final GetObjectsInSpaceCmd getObjectsInSpaceCmd;
     private final UpdateCharacterItemCmd updateCharacterItemCmd;
-    private final GetCharacterItemCmd getCharacterItemCmd;
     private final UpdateShootingCmd updateShootingCmd;
     private final GetWeaponStateCmd getWeaponStateCmd;
     private final InitCharacterCmd initCharacterCmd;
     private final LeavingPlayerCmd leavingPlayerCmd;
+    private final TakeItemFromSpaceCmd takeItemFromSpaceCmd;
 
     @Override
     public void onOpen(String characterName) {
@@ -42,6 +42,7 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
     public Publisher<SendSocketMessage<?>> onMessage(String characterName, ReceiveSocketMessage<?> request,
                                                      WebSocketSession session) {
         // TODO add common mapper for requests
+        // create message as template
         switch (request.command()) {
             case CMD_UPDATE_MOTION -> {
                 return updateMotionCmd.execute(request.data(), characterName)
@@ -55,7 +56,6 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_UPDATE_INVENTORY_ITEM -> {
                 return updateCharacterItemCmd.execute(request.data(), characterName)
-                        .flatMap(itemUpdate -> getCharacterItemCmd.execute(itemUpdate.id(), characterName))
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             case CMD_GET_CHARACTER -> {
@@ -64,6 +64,10 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
             }
             case CMD_GET_INVENTORY -> {
                 return getInventoryCmd.execute(characterName)
+                        .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
+            }
+            case CMD_TAKE_ITEM_FROM_SPACE -> {
+                return takeItemFromSpaceCmd.execute(request.data(), characterName)
                         .flatMapMany(resp -> broadcaster.broadcast(resp, filterOtherPlayers(session, characterName)));
             }
             default ->

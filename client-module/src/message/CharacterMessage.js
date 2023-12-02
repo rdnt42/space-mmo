@@ -20,3 +20,10 @@ export class CharacterItemRequest {
         this.data = {id, slotId, storageId}
     }
 }
+
+export class GetItemFromSpaceRequest {
+    constructor(id) {
+        this.command = Commands.TakeItemFromSpace;
+        this.data = {id};
+    }
+}

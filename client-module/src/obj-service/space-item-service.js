@@ -26,3 +26,7 @@ function createOrUpdateObj(obj) {
 
     item.renderObj();
 }
+
+export function getObjectsMap() {
+    return spaceItems;
+}

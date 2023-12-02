@@ -3,7 +3,7 @@ package marowak.dev.service.item;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.request.ItemUpdateRequest;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
 import marowak.dev.character.CharacterShip;
@@ -52,7 +52,7 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     }
 
     @Override
-    public Mono<ItemUpdate> updateItem(ItemUpdate request, String characterName) {
+    public Mono<ItemUpdateRequest> updateItem(ItemUpdateRequest request, String characterName) {
         return itemStorage.getItem(request.id())
                 .flatMap(dto -> {
                     dto.setSlotId(request.slotId());
@@ -61,7 +61,7 @@ public class CharacterItemServiceImpl implements CharacterItemService {
 
                     return characterShipService.updateItem(characterName, item)
                             .then(itemStorage.updateItem(dto))
-                            .then(Mono.just(new ItemUpdate(dto.getId(), dto.getSlotId(), dto.getStorageId())))
+                            .then(Mono.just(new ItemUpdateRequest(dto.getId(), dto.getSlotId(), dto.getStorageId())))
                             .doOnSuccess(u -> log.info("Inventory updated from client id: {}, slot: {}", u.id(), u.slotId()));
                 });
     }

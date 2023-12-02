@@ -5,6 +5,7 @@ import * as inventoryService from "./inventory-service.js";
 import * as weaponService from "./weapon-service.js";
 import {InteractiveState} from "./const/InteractiveState.js";
 import * as bulletService from "./obj-service/bullet-setvice.js";
+import * as spaceItemService from "./obj-service/space-item-service.js";
 import * as shipService from "./obj-service/ship-service.js";
 import {CharacterMotionRequest, CharacterShootingRequest} from "./message/CharacterMessage.js";
 import * as socket from "./websocket-service.js";
@@ -59,6 +60,7 @@ function sendShootingInfo() {
 
 function clearUnusedObjects() {
     removeOrMarkObjects(bulletService.getObjectsMap());
+    removeOrMarkObjects(spaceItemService.getObjectsMap());
 }
 
 function removeOrMarkObjects(map) {

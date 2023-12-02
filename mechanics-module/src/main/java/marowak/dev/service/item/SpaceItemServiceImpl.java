@@ -9,7 +9,6 @@ import marowak.dev.dto.item.HullDto;
 import marowak.dev.dto.item.ItemDto;
 import marowak.dev.service.physic.Utils;
 import marowak.dev.service.probability.ProbabilityCalculationService;
-import message.ItemMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +32,7 @@ public class SpaceItemServiceImpl implements SpaceItemService {
     }
 
     @Override
-    public Mono<Void> addItem(ItemMessage item) {
+    public Mono<Void> addItem(ItemDto item) {
         var spaceItem = ItemInSpaceView.builder()
                 .id(item.getId())
                 .x(item.getX())

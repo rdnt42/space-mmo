@@ -1,6 +1,6 @@
 package marowak.dev.service.item;
 
-import marowak.dev.api.request.ItemUpdate;
+import marowak.dev.api.request.ItemUpdateRequest;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
 import message.ItemMessage;
@@ -11,7 +11,7 @@ public interface CharacterItemService {
 
     Mono<ItemView> addItemFromSpace(long itemId, String characterName);
 
-    Mono<ItemUpdate> updateItem(ItemUpdate request, String characterName);
+    Mono<ItemUpdateRequest> updateItem(ItemUpdateRequest request, String characterName);
 
     Mono<InventoryView> getInventory(String characterName);
 

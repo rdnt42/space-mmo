@@ -32,7 +32,7 @@ export function doubleClickCallback(texture) {
 
 export function clickCallback(texture) {
     if (texture.textureParentObj instanceof SpaceItem) {
-        console.log('take item', texture.textureParentObj);
+        inventory.pickUpItem(texture.textureParentObj);
     }
 }
 
@@ -52,6 +52,15 @@ export function updateItemSlot(updateItem) {
         inventory.updateCargo(item, updateItem.slotId);
     } else if (updateItem.storageId === EquipmentSlot.storageId) {
         inventory.updateEquipmentSlot(item, updateItem.slotId);
+    }
+}
+
+export function addItem(itemSrc) {
+    let item = new Item(itemSrc);
+    if (inventory.initAndAddItem(item)) {
+        itemsMap.set(item.id, item);
+    } else {
+        console.error(`Error when initAndAddItem item with id: ${item.id}`)
     }
 }
 

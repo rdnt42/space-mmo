@@ -46,6 +46,10 @@ export function executeCommand(response) {
             shipService.shipExplosion(socketResponse.data);
             break;
 
+        case Commands.ReceiveItem:
+            inventoryService.addItem(socketResponse.data);
+            break;
+
         default:
             console.error("Unexpected command: " + command);
     }
