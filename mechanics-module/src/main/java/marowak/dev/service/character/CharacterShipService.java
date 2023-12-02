@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -75,7 +76,10 @@ public class CharacterShipService implements Calculable {
     }
 
     public Mono<CharacterShip> getShip(String characterName) {
-        return Mono.just(charactersMap.get(characterName));
+        CharacterShip ship = Optional.ofNullable(charactersMap.get(characterName))
+                .orElseThrow();
+
+        return Mono.just(ship);
     }
 
     public Flux<CharacterView> getAllCharacters() {

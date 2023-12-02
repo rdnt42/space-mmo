@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import marowak.dev.api.request.ItemUpdate;
 import marowak.dev.api.response.InventoryView;
 import marowak.dev.api.response.item.ItemView;
+import marowak.dev.character.CharacterShip;
 import marowak.dev.character.Item;
 import marowak.dev.dto.item.*;
 import marowak.dev.enums.StorageType;
@@ -101,9 +102,12 @@ public class CharacterItemServiceImpl implements CharacterItemService {
         return item;
     }
 
+    // TODO I don't konow how to fix NPE warning
+    @SuppressWarnings("all")
     private int getFreeSlot(String characterName) {
-        // TODO
-        return 0;
+        return characterShipService.getShip(characterName)
+                .map(CharacterShip::getFreeSlot)
+                .block();
     }
 
 }

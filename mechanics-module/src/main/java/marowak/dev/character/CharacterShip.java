@@ -215,4 +215,14 @@ public class CharacterShip {
         return bodies;
     }
 
+    public int getFreeSlot() {
+        for (int i = 0; i < hold.length; i++) {
+            if (hold[i] == null) {
+                return i;
+            }
+        }
+
+        throw new IllegalStateException("Cannot find free slot int ship");
+    }
+
 }
