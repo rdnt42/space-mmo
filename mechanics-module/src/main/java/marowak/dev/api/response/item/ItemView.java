@@ -16,4 +16,9 @@ public class ItemView {
     private Integer cost;
     private String name;
     private String dsc;
+
+    // FIXME dirty hack for lombok
+    public static abstract class ItemViewBuilder<
+            C extends ItemView,
+            B extends ItemViewBuilder<C, B>> {}
 }

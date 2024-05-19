@@ -23,6 +23,11 @@ public class ItemDto {
     private Double x;
     private Double y;
 
+    // FIXME dirty hack for lombok
+    public static abstract class ItemDtoBuilder<
+            C extends ItemDto,
+            B extends ItemDto. ItemDtoBuilder<C, B>>{}
+
     protected ItemView.ItemViewBuilder<?, ?> getItemBuilder(ItemView.ItemViewBuilder<?, ?> builder) {
         return builder
                 .id(id)
