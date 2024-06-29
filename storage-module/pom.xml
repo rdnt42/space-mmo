@@ -31,7 +31,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>marovak.dev</groupId>
+            <groupId>marowak.dev</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
         </dependency>
@@ -68,6 +68,10 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
         </dependency>
 
         <dependency>
