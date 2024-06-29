@@ -4,19 +4,23 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>marowak.dev</groupId>
-    <artifactId>game-logic-module</artifactId>
+    <artifactId>mechanics-module</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>game-logic-module</name>
-    <description>game-logic-module</description>
+    <name>mechanics-module</name>
+    <description>game mechanics module</description>
 
+    <parent>
+        <groupId>io.micronaut.platform</groupId>
+        <artifactId>micronaut-parent</artifactId>
+        <version>4.5.0</version>
+    </parent>
     <properties>
         <packaging>jar</packaging>
         <jdk.version>21</jdk.version>
         <release.version>21</release.version>
-        <micronaut.version>4.2.0</micronaut.version>
-        <micronaut.data.version>3.9.6</micronaut.data.version>
+        <micronaut.version>4.5.0</micronaut.version>
         <micronaut.runtime>netty</micronaut.runtime>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
     </properties>
 
     <repositories>
@@ -44,24 +48,12 @@
             <version>3.10.4</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.micronaut</groupId>-->
-<!--            <artifactId>micronaut-http-client</artifactId>-->
-<!--            <version>${micronaut.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-http-server-netty</artifactId>
             <version>${micronaut.version}</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.micronaut</groupId>-->
-<!--            <artifactId>micronaut-jackson-databind</artifactId>-->
-<!--            <version>${micronaut.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -96,78 +88,135 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>src/main/resources/application.yml</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+            <plugins>
+                <plugin>
+                    <groupId>io.micronaut.maven</groupId>
+                    <artifactId>micronaut-maven-plugin</artifactId>
+                </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-
-                    <annotationProcessorPaths combine.self="override">
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>io.micronaut</groupId>
-                            <artifactId>micronaut-inject-java</artifactId>
-                            <version>${micronaut.version}</version>
-                        </path>
-                        <path>
-                            <groupId>io.micronaut.data</groupId>
-                            <artifactId>micronaut-data-processor</artifactId>
-                            <version>${micronaut.version}</version>
-                        </path>
-                        <path>
-                            <groupId>io.micronaut</groupId>
-                            <artifactId>micronaut-graal</artifactId>
-                            <version>${micronaut.version}</version>
-                        </path>
-                        <path>
-                            <groupId>io.micronaut</groupId>
-                            <artifactId>micronaut-http-validation</artifactId>
-                            <version>${micronaut.version}</version>
-                        </path>
-                        <path>
-                            <groupId>io.micronaut</groupId>
-                            <artifactId>micronaut-validation</artifactId>
-                            <version>${micronaut.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <compilerArgs>
-                        <arg>-Amicronaut.processing.group=marowak.dev</arg>
-                        <arg>-Amicronaut.processing.module=mechanics-module</arg>
-                    </compilerArgs>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <annotationProcessorPaths combine.self="override">
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut</groupId>
+                                <artifactId>micronaut-inject-java</artifactId>
+                                <version>${micronaut.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut.data</groupId>
+                                <artifactId>micronaut-data-processor</artifactId>
+                                <version>${micronaut.data.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut</groupId>
+                                <artifactId>micronaut-graal</artifactId>
+                                <version>${micronaut.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut</groupId>
+                                <artifactId>micronaut-http-validation</artifactId>
+                                <version>${micronaut.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut</groupId>
+                                <artifactId>micronaut-validation</artifactId>
+                                <version>${micronaut.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.micronaut.security</groupId>
+                                <artifactId>micronaut-security-annotations</artifactId>
+                                <version>${micronaut.security.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                        <compilerArgs>
+                            <arg>-Amicronaut.processing.group=marowak.dev</arg>
+                            <arg>-Amicronaut.processing.module=storage-module</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <!--    <build>-->
+    <!--        <finalName>${project.artifactId}</finalName>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.codehaus.mojo</groupId>-->
+    <!--                <artifactId>properties-maven-plugin</artifactId>-->
+    <!--                <version>1.0.0</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <phase>initialize</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>read-project-properties</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <files>-->
+    <!--                                <file>src/main/resources/application.yml</file>-->
+    <!--                            </files>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+    <!--                <configuration>-->
+
+    <!--                    <annotationProcessorPaths combine.self="override">-->
+    <!--                        <path>-->
+    <!--                            <groupId>org.projectlombok</groupId>-->
+    <!--                            <artifactId>lombok</artifactId>-->
+    <!--                            <version>${lombok.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.micronaut</groupId>-->
+    <!--                            <artifactId>micronaut-inject-java</artifactId>-->
+    <!--                            <version>${micronaut.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.micronaut.data</groupId>-->
+    <!--                            <artifactId>micronaut-data-processor</artifactId>-->
+    <!--                            <version>${micronaut.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.micronaut</groupId>-->
+    <!--                            <artifactId>micronaut-graal</artifactId>-->
+    <!--                            <version>${micronaut.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.micronaut</groupId>-->
+    <!--                            <artifactId>micronaut-http-validation</artifactId>-->
+    <!--                            <version>${micronaut.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.micronaut</groupId>-->
+    <!--                            <artifactId>micronaut-validation</artifactId>-->
+    <!--                            <version>${micronaut.version}</version>-->
+    <!--                        </path>-->
+    <!--                    </annotationProcessorPaths>-->
+    <!--                    <compilerArgs>-->
+    <!--                        <arg>-Amicronaut.processing.group=marowak.dev</arg>-->
+    <!--                        <arg>-Amicronaut.processing.module=mechanics-module</arg>-->
+    <!--                    </compilerArgs>-->
+    <!--                    <source>${jdk.version}</source>-->
+    <!--                    <target>${jdk.version}</target>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 
 </project>
