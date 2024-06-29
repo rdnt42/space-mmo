@@ -1,10 +1,11 @@
 package marowak.dev.entity;
 
+import jakarta.validation.constraints.NotNull;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "engine_types")
