@@ -1,6 +1,5 @@
 package marowak.dev.service.character;
 
-import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import lombok.RequiredArgsConstructor;
 import marowak.dev.api.request.CharacterMotionRequest;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Singleton
 public class MockCharacterServiceImpl implements CharacterService {
 
     private final CharacterShipService characterShipService;

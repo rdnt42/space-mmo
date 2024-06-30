@@ -141,7 +141,7 @@
                             <path>
                                 <groupId>io.micronaut</groupId>
                                 <artifactId>micronaut-validation</artifactId>
-                                <version>${micronaut.version}</version>
+                                <version>${validation.version}</version>
                             </path>
                             <path>
                                 <groupId>io.micronaut.security</groupId>

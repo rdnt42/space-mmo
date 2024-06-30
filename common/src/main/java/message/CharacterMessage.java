@@ -1,11 +1,13 @@
 package message;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import keys.CharacterMessageKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JsonSerialize
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

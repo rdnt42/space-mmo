@@ -1,6 +1,5 @@
 package marowak.dev.service.character;
 
-import jakarta.inject.Singleton;
 import keys.CharacterMessageKey;
 import keys.ItemMessageKey;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor
-@Singleton
 public class CharacterServiceImpl implements CharacterService {
     private final CharactersClient charactersClient;
     private final CharacterShipService characterShipService;
