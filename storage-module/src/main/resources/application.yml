@@ -36,7 +36,6 @@ datasources:
     password: 'manager'
     driverClassName: 'org.postgresql.Driver'
 
-
 kafka:
   bootstrap:
     servers: localhost:9092

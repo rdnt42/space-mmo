@@ -29,11 +29,9 @@ public record Character(
         double y,
 
         @NotNull
-        int angle,
+        short angle,
 
         @Column(name = "is_online")
         boolean online
-
-        ) {
-
+) {
 }

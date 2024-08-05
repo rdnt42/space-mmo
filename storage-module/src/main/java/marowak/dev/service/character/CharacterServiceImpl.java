@@ -25,7 +25,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .characterName(message.getCharacterName())
                 .x(message.getX())
                 .y(message.getY())
-                .angle(message.getAngle())
+                .angle((short) message.getAngle())
                 .online(false)
                 .build();
 
