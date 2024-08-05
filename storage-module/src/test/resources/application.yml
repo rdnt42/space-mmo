@@ -1,0 +1,11 @@
+flyway:
+  enabled: false
+datasource:
+  url: jdbc:postgresql://localhost:5432/space_mmo_storage
+  driver-class-name: org.postgresql.Driver
+  username: user
+  password: password
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
