@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static keys.CharacterMessageKey.CHARACTER_CREATE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @Testcontainers
@@ -45,8 +45,7 @@ class CharacterListenerTest extends IntegrationTest {
         producer.produce(message);
         await().atMost(5, SECONDS).until(() -> consumer.consumed != null);
 
-        assertEquals(message.getAccountName(), consumer.consumed.getAccountName());
-        assertEquals(message.getCharacterName(), consumer.consumed.getCharacterName());
+        assertTrue(isEntityExists("characters", "character_name", message.getCharacterName()));
     }
 
 

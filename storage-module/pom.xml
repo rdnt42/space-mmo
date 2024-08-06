@@ -124,6 +124,12 @@
             <version>1.20.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>10.17.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
