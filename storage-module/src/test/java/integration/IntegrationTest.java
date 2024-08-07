@@ -9,10 +9,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -45,11 +49,10 @@ public abstract class IntegrationTest implements TestPropertyProvider {
 
         var url = postgres.getJdbcUrl();
 
-        Flyway flyway = Flyway
-                .configure()
+        Flyway.configure()
                 .dataSource(url, user, pass)
-                .load();
-        flyway.migrate();
+                .load()
+                .migrate();
 
         dataSource.setUser(user);
         dataSource.setPassword(pass);
@@ -62,54 +65,52 @@ public abstract class IntegrationTest implements TestPropertyProvider {
         return Collections.singletonMap("kafka.bootstrap.servers", kafka.getBootstrapServers());
     }
 
-    protected ResultSet performQuery(String sql) throws SQLException {
-        Statement statement = dataSource.getConnection().createStatement();
-        statement.execute(sql);
-        ResultSet resultSet = statement.getResultSet();
-
-        resultSet.next();
-
-        return resultSet;
+    public <T, U> boolean isEntityExists(Class<T> tClass, U expectedId) {
+        return countRowsInTable(getTableName(tClass), getIdColumnName(tClass), expectedId) > 0;
     }
 
-    public boolean isEntityExists(String table, String idName, String idValue) {
-        return countRowsInTable(table, idName, idValue) > 0;
-    }
+    public <V> int countRowsInTable(String table, String idName, V idValue) {
+        String sql = "select count(*) from " + table + " where " + idName + "=?";
 
-    public int countRowsInTable(String table, String idName, String idValue) {
-        StringBuilder sb = new StringBuilder()
-                .append("select count(*) from ")
-                .append(table)
-                .append(" where ")
-                .append(idName)
-                .append("=?");
-
-        String sql = sb.toString();
-
-
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(
-                    sb.toString(),
-                    ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            statement.setString(1, idValue
-            );
+        try (PreparedStatement statement = dataSource.getConnection().prepareStatement(
+                sql,
+                ResultSet.TYPE_SCROLL_SENSITIVE,
+                ResultSet.CONCUR_UPDATABLE);
+        ) {
+            setParam(statement, 1, idValue);
             ResultSet rs = statement.executeQuery();
 
             return rs.last() ? rs.getRow() : 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private <T> String getTableName(Class<T> tableClass) {
+        return tableClass.getAnnotation(Table.class)
+                .name();
+    }
 
-//        try (
-//                Connection connection = dataSource.getConnection();
-//                Statement stmt = connection.createStatement();
-//                ResultSet rs = stmt.executeQuery(sql);
-//        ) {
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+    private <T> String getIdColumnName(Class<T> tableClass) {
+        Field idFiled = Arrays.stream(tableClass.getDeclaredFields())
+                .filter((field -> field.isAnnotationPresent(Id.class)))
+                .findFirst()
+                .orElseThrow();
+
+        if (idFiled.isAnnotationPresent(Column.class)) {
+            return idFiled.getName();
+        } else {
+            return idFiled.getName()
+                    .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+                    .replaceAll("([a-z])([A-Z])", "$1_$2");
+        }
+    }
+
+    private <V> void setParam(PreparedStatement statement, int paramIndex, V value) throws SQLException {
+        if (value instanceof String str) {
+            statement.setString(paramIndex, str);
+        } else if (value instanceof Long l) {
+            statement.setLong(paramIndex, l);
+        }
     }
 }

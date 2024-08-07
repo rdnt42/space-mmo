@@ -7,6 +7,7 @@ import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import marowak.dev.entity.Character;
 import message.CharacterMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,8 +46,7 @@ class CharacterListenerTest extends IntegrationTest {
         producer.produce(message);
         await().atMost(5, SECONDS).until(() -> consumer.consumed != null);
 
-        assertTrue(isEntityExists("characters", "character_name", message.getCharacterName()));
+        assertTrue(isEntityExists(Character.class, message.getCharacterName()));
     }
-
 
 }
