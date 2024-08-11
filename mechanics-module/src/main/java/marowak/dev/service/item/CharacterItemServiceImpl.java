@@ -12,10 +12,8 @@ import marowak.dev.dto.item.*;
 import marowak.dev.enums.StorageType;
 import marowak.dev.service.character.CharacterShipService;
 import message.ItemMessage;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -71,14 +69,12 @@ public class CharacterItemServiceImpl implements CharacterItemService {
         return characterShipService.getShip(characterName)
                 .flatMap(ship -> {
                     int config = ship.getHull().getConfig();
-                    List<ItemView> views = ship.getItems().stream()
-                            .map(i -> itemStorage.getItem(i.getId())
-                                    .map(ItemDto::getView))
-                            .map(Mono::blockOptional)
-                            .map(Optional::orElseThrow)
-                            .toList();
+                    Flux<ItemView> itemViewFlux = Flux.fromIterable(ship.getItems())
+                            .flatMap(i -> itemStorage.getItem(i.getId())
+                                    .map(ItemDto::getView));
 
-                    return Mono.just(new InventoryView(views, config));
+                    return itemViewFlux.collectList()
+                            .map(views -> new InventoryView(views, config));
                 });
     }
 

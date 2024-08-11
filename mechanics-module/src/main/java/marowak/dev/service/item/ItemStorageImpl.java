@@ -41,7 +41,7 @@ public class ItemStorageImpl implements ItemStorage {
     @Override
     public Mono<ItemDto> getItem(long id) {
         ItemDto dto = Optional.ofNullable(itemsMap.get(id))
-                .orElseThrow(() -> new NoSuchElementException("No itme present with id " + id));
+                .orElseThrow(() -> new NoSuchElementException("No item present with id " + id));
 
         return Mono.just(dto);
     }
