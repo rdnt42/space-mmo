@@ -9,11 +9,6 @@ netty:
     allocator:
       max-order: 3
 
-flyway:
-  datasources:
-    jdbc:
-      enabled: true
-
 jpa:
   default:
     entity-scan:
@@ -35,6 +30,15 @@ datasources:
     username: 'manager'
     password: 'manager'
     driverClassName: 'org.postgresql.Driver'
+
+flyway:
+  datasources:
+    jdbc:
+      enabled: true
+      locations: classpath:db/migration
+      username: 'manager'
+      password: 'manager'
+      url: 'jdbc:postgresql://localhost:5432/space_mmo_storage'
 
 kafka:
   bootstrap:

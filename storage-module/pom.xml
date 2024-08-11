@@ -41,10 +41,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.micronaut.data</groupId>
-            <artifactId>micronaut-data-hibernate-jpa</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.micronaut.kafka</groupId>
             <artifactId>micronaut-kafka</artifactId>
             <scope>compile</scope>
@@ -87,6 +83,14 @@
             <artifactId>micronaut-jackson-databind</artifactId>
             <version>4.5.4</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.flyway</groupId>
+            <artifactId>micronaut-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
         <dependency>
@@ -132,13 +136,6 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>r2dbc</artifactId>
             <version>1.20.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.17.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
