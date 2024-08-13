@@ -1,7 +1,6 @@
 package integration.character;
 
 import fixtures.CharacterFixture;
-import fixtures.Fixture;
 import integration.config.IntegrationTest;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
@@ -13,6 +12,7 @@ import message.CharacterMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import static fixtures.CharacterMessageFixture.aCharacterMessage;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static keys.CharacterMessageKey.CHARACTERS_GET_ONE;
 import static keys.CharacterMessageKey.CHARACTER_CREATE;
@@ -41,7 +41,7 @@ class CharacterListenerTest extends IntegrationTest {
 
     @Test
     void create_character(CharacterProducer producer, CharacterAnswerConsumer answer) {
-        CharacterMessage message = Fixture.aCharacterMessage()
+        CharacterMessage message = aCharacterMessage()
                 .key(CHARACTER_CREATE)
                 .build();
         producer.produce(message);
@@ -56,7 +56,7 @@ class CharacterListenerTest extends IntegrationTest {
         Character character = CharacterFixture.aCharacter().build();
         repository.saveEntity(character);
 
-        CharacterMessage message = Fixture.aCharacterMessage()
+        CharacterMessage message = aCharacterMessage()
                 .key(CHARACTERS_GET_ONE)
                 .characterName(character.characterName())
                 .build();

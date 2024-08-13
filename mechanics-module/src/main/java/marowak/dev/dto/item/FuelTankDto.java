@@ -17,7 +17,7 @@ public class FuelTankDto extends ItemDto {
 
     @Override
     public ItemView getView() {
-        FuelTankView.FuelTankViewBuilder<?, ?> builder = FuelTankView.builder()
+        FuelTankView.Builder builder = FuelTankView.builder()
                 .capacity(capacity)
                 .equipmentTypeId(equipmentTypeId);
 

@@ -1,11 +1,11 @@
 package message;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import fixtures.Fixture;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static fixtures.CharacterMessageFixture.aCharacterMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CharacterMessageTest {
@@ -13,7 +13,7 @@ class CharacterMessageTest {
     @Test
     void serialize_CharacterMessage_to_bytes() throws IOException {
         JsonMapper jsonMapper = new JsonMapper();
-        CharacterMessage expectedMessage = Fixture.aCharacterMessage().build();
+        CharacterMessage expectedMessage = aCharacterMessage().build();
 
         byte[] bytes = jsonMapper.writeValueAsBytes(expectedMessage);
         CharacterMessage result = jsonMapper.readValue(bytes, CharacterMessage.class);

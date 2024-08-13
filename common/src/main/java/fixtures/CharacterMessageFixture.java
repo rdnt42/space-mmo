@@ -6,8 +6,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
 
-public class Fixture {
-    private Fixture() {
+public class CharacterMessageFixture {
+    private CharacterMessageFixture() {
     }
 
     private static final Random random = new Random();

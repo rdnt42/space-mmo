@@ -20,7 +20,7 @@ public class WeaponDto extends ItemDto {
 
     @Override
     public ItemView getView() {
-        WeaponView.WeaponViewBuilder<?, ?> builder = WeaponView.builder()
+        WeaponView.Builder builder = WeaponView.builder()
                 .damage(damage)
                 .radius(radius)
                 .rate(rate)

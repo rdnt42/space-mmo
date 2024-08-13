@@ -10,7 +10,7 @@ import marowak.dev.api.response.item.ItemView;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-public class ItemDto {
+public abstract class ItemDto {
     private long id;
     private String characterName;
     private int slotId;
@@ -23,12 +23,7 @@ public class ItemDto {
     private Double x;
     private Double y;
 
-    // FIXME dirty hack for lombok
-    public static abstract class ItemDtoBuilder<
-            C extends ItemDto,
-            B extends ItemDto. ItemDtoBuilder<C, B>>{}
-
-    protected ItemView.ItemViewBuilder<?, ?> getItemBuilder(ItemView.ItemViewBuilder<?, ?> builder) {
+    public ItemView.Builder getItemBuilder(ItemView.Builder builder) {
         return builder
                 .id(id)
                 .slotId(slotId)
@@ -40,8 +35,5 @@ public class ItemDto {
                 .dsc(dsc);
     }
 
-    public ItemView getView() {
-        return getItemBuilder(ItemView.builder())
-                .build();
-    }
+    public abstract ItemView getView();
 }

@@ -20,7 +20,7 @@ public class HullDto extends ItemDto {
 
     @Override
     public ItemView getView() {
-        HullView.HullViewBuilder<?, ?> builder = HullView.builder()
+        HullView.Builder builder = HullView.builder()
                 .hp(hp)
                 .evasion(evasion)
                 .armor(armor)

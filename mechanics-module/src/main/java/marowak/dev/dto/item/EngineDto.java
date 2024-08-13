@@ -18,7 +18,7 @@ public class EngineDto extends ItemDto {
 
     @Override
     public ItemView getView() {
-        EngineView.EngineViewBuilder<?, ?> builder = EngineView.builder()
+        EngineView.Builder builder = EngineView.builder()
                 .speed(speed)
                 .jump(jump)
                 .equipmentTypeId(equipmentTypeId);

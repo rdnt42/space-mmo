@@ -18,7 +18,7 @@ public class CargoHookDto extends ItemDto {
 
     @Override
     public ItemView getView() {
-        CargoHookView.CargoHookViewBuilder<?, ?> builder = CargoHookView.builder()
+        CargoHookView.Builder builder = CargoHookView.builder()
                 .loadCapacity(loadCapacity)
                 .radius(radius)
                 .equipmentTypeId(equipmentTypeId);
