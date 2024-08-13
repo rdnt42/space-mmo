@@ -117,12 +117,12 @@ public class CharacterShipService implements Calculable {
         List<CharacterShip> ships = charactersMap.values().stream()
                 .toList();
         for (CharacterShip ship : ships) {
-            calculateSHooting(ship);
+            calculateShooting(ship);
             calculateDamage(ship);
         }
     }
 
-    private void calculateSHooting(CharacterShip ship) {
+    private void calculateShooting(CharacterShip ship) {
         List<BulletBody> bulletBodies = ship.useWeapons();
         if (bulletBodies.isEmpty()) return;
 

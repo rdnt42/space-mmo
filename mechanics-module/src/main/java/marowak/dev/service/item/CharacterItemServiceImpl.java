@@ -36,17 +36,18 @@ public class CharacterItemServiceImpl implements CharacterItemService {
     @Override
     public Mono<ItemView> addItemFromSpace(long itemId, String characterName) {
         return itemStorage.getItem(itemId)
-                .flatMap(dto -> {
-                    dto.setCharacterName(characterName);
-                    dto.setStorageId(StorageType.STORAGE_TYPE_HOLD.getStorageId());
-                    dto.setSlotId(getFreeSlot(characterName));
+                .flatMap(dto -> getFreeSlot(characterName)
+                        .flatMap(slotId -> {
+                            dto.setCharacterName(characterName);
+                            dto.setStorageId(StorageType.STORAGE_TYPE_HOLD.getStorageId());
+                            dto.setSlotId(slotId);
 
-                    Item item = map(dto);
-                    return characterShipService.addItem(characterName, item)
-                            .then(itemStorage.updateItem(dto))
-                            .doOnSuccess(i -> log.info("Character: {} got item: {} from space", i.getCharacterName(), i.getId()))
-                            .then(Mono.just(dto.getView()));
-                });
+                            Item item = map(dto);
+                            return characterShipService.addItem(characterName, item)
+                                    .then(itemStorage.updateItem(dto))
+                                    .doOnSuccess(i -> log.info("Character: {} got item: {} from space", i.getCharacterName(), i.getId()))
+                                    .then(Mono.just(dto.getView()));
+                        }));
     }
 
     @Override
@@ -98,12 +99,9 @@ public class CharacterItemServiceImpl implements CharacterItemService {
         return item;
     }
 
-    // TODO I don't konow how to fix NPE warning
-    @SuppressWarnings("all")
-    private int getFreeSlot(String characterName) {
+    private Mono<Integer> getFreeSlot(String characterName) {
         return characterShipService.getShip(characterName)
-                .map(CharacterShip::getFreeSlot)
-                .block();
+                .map(CharacterShip::getFreeSlot);
     }
 
 }

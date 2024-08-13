@@ -16,9 +16,13 @@ public class WorldScheduler {
     private final WorldService worldService;
     private final List<Calculable> services;
 
+    private final Object lock = new Object();
+
     @Scheduled(fixedRate = "16ms")
     public void updateWorld() {
-        worldService.updateWorld();
-        services.forEach(Calculable::calculate);
+        synchronized (lock) {
+            worldService.updateWorld();
+            services.forEach(Calculable::calculate);
+        }
     }
 }
