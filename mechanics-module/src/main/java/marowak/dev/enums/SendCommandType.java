@@ -9,4 +9,5 @@ public enum SendCommandType {
     CMD_LEAVING_PLAYER,
     CMD_BLOW_UP_CHARACTER,
     CMD_RECEIVE_ITEM,
+    CMD_ERROR,
 }

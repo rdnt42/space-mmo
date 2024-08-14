@@ -4,14 +4,15 @@ import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketSession;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import marowak.dev.dto.socket.ReceiveSocketMessage;
 import marowak.dev.dto.socket.SendSocketMessage;
+import marowak.dev.enums.SendCommandType;
 import marowak.dev.service.command.character.*;
 import marowak.dev.service.command.item.TakeItemFromSpaceCmd;
 import marowak.dev.service.command.item.UpdateCharacterItemCmd;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 import java.util.function.Predicate;
 
@@ -37,9 +38,18 @@ public class CharacterSocketServiceImpl implements CharacterSocketService {
         initCharacterCmd.execute(characterName).subscribe();
     }
 
-    @SneakyThrows
     @Override
     public Publisher<SendSocketMessage<?>> onMessage(String characterName, ReceiveSocketMessage<?> request,
+                                                     WebSocketSession session) {
+        try {
+            return tryOnMessage(characterName, request, session);
+        } catch (Exception e) {
+            log.error("Got unexpected error", e);
+            return Mono.just(new SendSocketMessage<>(SendCommandType.CMD_ERROR, null));
+        }
+    }
+
+    public Publisher<SendSocketMessage<?>> tryOnMessage(String characterName, ReceiveSocketMessage<?> request,
                                                      WebSocketSession session) {
         // TODO add common mapper for requests
         // create message as template
