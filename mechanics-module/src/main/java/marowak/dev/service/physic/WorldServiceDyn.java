@@ -15,11 +15,11 @@ import org.dyn4j.world.BroadphaseCollisionDataFilter;
 import org.dyn4j.world.PhysicsWorld;
 import org.dyn4j.world.World;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,8 +34,7 @@ public class WorldServiceDyn implements WorldService {
     private final Map<String, SpaceShipBody> ships = new ConcurrentHashMap<>();
     private final Map<String, IdentifiablePhysicalBody> bullets = new ConcurrentHashMap<>();
 
-    // TODO copy list and delete elements after removing
-    private final List<Body> bodiesForRemove = new ArrayList<>();
+    private final ConcurrentLinkedDeque<Body> bodiesForRemove = new ConcurrentLinkedDeque<>();
 
     @PostConstruct
     private void init() {
@@ -56,11 +55,18 @@ public class WorldServiceDyn implements WorldService {
     }
 
     @Override
-    public void updateWorld() {
+    public synchronized void updateWorld() {
         try {
             world.step(1);
-            bodiesForRemove.forEach(body -> world.removeBody(body));
+
+            List<Body> needToRemove = bodiesForRemove.stream().toList();
             bodiesForRemove.clear();
+            for (Body body : needToRemove) {
+                boolean removed = world.removeBody(body);
+                if (!removed) {
+                    bodiesForRemove.addFirst(body);
+                }
+            }
         } catch (Exception e) {
             log.error("Error when try to update world", e);
         }

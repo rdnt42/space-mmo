@@ -52,30 +52,33 @@ public class SpaceItemServiceImpl implements SpaceItemService {
         return itemStorage.getItem(itemId)
                 .flatMap(item -> {
                     if (item instanceof HullDto) {
-                        return itemStorage.deleteItem(itemId)
-                                .doOnSuccess(delId -> log.info("Item deleted, id: {}", delId))
-                                .then();
+                        return deleteItem(itemId);
                     }
 
                     return probabilityCalculationService.isItemDropped(item.getTypeId())
-                            .flatMap(isDropped -> {
-                                if (Boolean.TRUE.equals(isDropped)) {
-                                    return addItemToSpace(item, coords)
-                                            .flatMap(spaceItem -> {
-                                                item.setStorageId(STORAGE_TYPE_SPACE.getStorageId());
-                                                item.setSlotId(0);
-                                                item.setCharacterName(null);
-                                                item.setX(spaceItem.x());
-                                                item.setY(spaceItem.y());
-                                                return itemStorage.updateItem(item);
-                                            })
-                                            .doOnNext(id -> log.info("Item dropped to space, id: {}", id));
-                                } else {
-                                    return itemStorage.deleteItem(item.getId())
-                                            .doOnNext(delId -> log.info("Item deleted, id: {}", delId));
-                                }
-                            }).then();
+                            .flatMap(isDropped -> Boolean.TRUE.equals(isDropped) ? dropItem(item, coords) : deleteItem(itemId));
                 });
+    }
+
+    private Mono<Void> deleteItem(Long itemId) {
+        return itemStorage.deleteItem(itemId)
+                .doOnSuccess(delId -> log.info("Item deleted, id: {}", delId))
+                .then();
+    }
+
+    private Mono<Void> dropItem(ItemDto item, Point coords) {
+        return addItemToSpace(item, coords)
+                .flatMap(spaceItem -> {
+                    item.setStorageId(STORAGE_TYPE_SPACE.getStorageId());
+                    item.setSlotId(0);
+                    item.setCharacterName(null);
+                    item.setX(spaceItem.x());
+                    item.setY(spaceItem.y());
+
+                    return itemStorage.updateItem(item);
+                })
+                .doOnNext(droppedItem -> log.info("Item dropped to space, id: {}", droppedItem.getId()))
+                .then();
     }
 
     @Override
