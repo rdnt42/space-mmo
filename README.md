@@ -1,4 +1,6 @@
 ## Space MMO Project
+### Total time spent on the project
+[![wakatime](https://wakatime.com/badge/user/df48eb2c-43c1-4c0d-b103-9ebc123e14f4/project/6898facf-c4ba-459b-8486-9d62b97ae7a4.svg)](https://wakatime.com/badge/user/df48eb2c-43c1-4c0d-b103-9ebc123e14f4/project/6898facf-c4ba-459b-8486-9d62b97ae7a4)
 
 ### Game environment
 
