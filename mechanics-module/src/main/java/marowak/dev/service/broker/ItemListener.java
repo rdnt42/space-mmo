@@ -19,7 +19,7 @@ public class ItemListener {
     @Topic(TOPIC_NAME)
     public void receive(Flux<ItemMessage> items) {
         items
-                .doOnError(e -> log.error("Topic {} receive error: ", TOPIC_NAME, e))
+                .doOnError(e -> log.error("Topic {} receive error", TOPIC_NAME, e))
                 .doOnNext(message -> log.debug("Topic {} receive message: {}, key: {}", TOPIC_NAME, message.getCharacterName(), message.getKey()))
                 .flatMap(itemCommandService::executeCommand)
                 .subscribe();

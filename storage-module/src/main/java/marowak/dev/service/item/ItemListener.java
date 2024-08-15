@@ -21,7 +21,7 @@ public class ItemListener {
     @SendTo("items-answer")
     public Publisher<ItemMessage> receive(Flux<ItemMessage> messages) {
         return messages
-                .doOnError(e -> log.error("Topic {} receive error: {}", TOPIC_NAME, e))
+                .doOnError(e -> log.error("Topic {} receive error", TOPIC_NAME, e))
                 .doOnNext(item -> log.info("Topic {} receive key: {}, characterName: {}, item id: {}",
                         TOPIC_NAME, item.getKey(), item.getCharacterName(), item.getId()))
                 .flatMap(itemCommandService::executeCommand);

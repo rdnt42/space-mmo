@@ -29,4 +29,8 @@ public class CharacterMessageFixture {
                 .online(random.nextBoolean());
     }
 
+    public static String aString() {
+        return RandomStringUtils.randomAlphanumeric(24);
+    }
+
 }

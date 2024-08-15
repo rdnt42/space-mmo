@@ -20,7 +20,7 @@ public class CharacterListener {
     @SendTo("characters-answer")
     public Publisher<CharacterMessage> receive(Flux<CharacterMessage> messages) {
         return messages
-                .doOnError(e -> log.error("Topic {} receive error: {}", TOPIC_NAME, e))
+                .doOnError(e -> log.error("Topic {} receive error", TOPIC_NAME, e))
                 .doOnNext(message -> log.info("Topic {} receive key: {}, character name: {}",
                         TOPIC_NAME, message.getKey(), message.getCharacterName()))
                 .flatMap(characterCommandService::executeCommand);
