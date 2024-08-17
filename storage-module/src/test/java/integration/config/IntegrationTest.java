@@ -21,6 +21,7 @@ public abstract class IntegrationTest implements TestPropertyProvider {
         dbSetup.start(properties);
         kafkaSetup.start(properties);
 
+        properties.put("flyway.datasources.jdbc.enabled", "false");
         Flyway.configure()
                 .dataSource(dbSetup.dataSource)
                 .load()

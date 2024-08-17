@@ -50,10 +50,10 @@ public class DbContainerSetup {
                 "r2dbc.datasources.default.username", user,
                 "r2dbc.datasources.default.password", pass,
                 "r2dbc.datasources.default.driverClassName", "org.postgresql.Driver",
-                "datasources.default.url", postgres.getJdbcUrl(),
-                "datasources.default.username", user,
-                "datasources.default.password", pass,
-                "datasources.default.driverClassName", "org.postgresql.Driver"
+                "datasources.jdbc.url", postgres.getJdbcUrl(),
+                "datasources.jdbc.username", user,
+                "datasources.jdbc.password", pass,
+                "datasources.jdbc.driverClassName", "org.postgresql.Driver"
         );
     }
 }
