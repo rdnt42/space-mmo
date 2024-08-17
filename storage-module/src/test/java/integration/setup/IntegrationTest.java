@@ -1,4 +1,4 @@
-package integration.config;
+package integration.setup;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.support.TestPropertyProvider;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class IntegrationTest implements TestPropertyProvider {
-    private static final Map<String, String> properties = new HashMap<>();
+    protected static final Map<String, String> properties = new HashMap<>();
     private static final DbContainerSetup dbSetup;
     private static final KafkaContainerSetup kafkaSetup;
 

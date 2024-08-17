@@ -1,4 +1,4 @@
-package integration.config;
+package integration.setup;
 
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -25,7 +25,8 @@ public class KafkaContainerSetup {
 
     public Map<String, String> getProperties() {
         return Map.of(
-                "kafka.bootstrap.servers", kafka.getBootstrapServers()
+                "kafka.bootstrap.servers", kafka.getBootstrapServers(),
+                "bootstrap.servers", kafka.getBootstrapServers()
         );
     }
 }

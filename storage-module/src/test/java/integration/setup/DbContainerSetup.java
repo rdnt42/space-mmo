@@ -1,4 +1,4 @@
-package integration.config;
+package integration.setup;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;

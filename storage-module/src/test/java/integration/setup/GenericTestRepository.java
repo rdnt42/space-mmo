@@ -1,4 +1,4 @@
-package integration.config;
+package integration.setup;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
