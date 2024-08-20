@@ -9,7 +9,7 @@ public class BuilderHelper {
     private BuilderHelper() {
     }
 
-    public static final BiFunction<Item, ItemMessage.ItemMessageBuilder<?, ?>, ItemMessage.ItemMessageBuilder<?, ?>> itemToBuilder =
+    public static final BiFunction<Item, ItemMessage.Builder, ItemMessage.Builder> itemToBuilder =
             (item, baseBuilder) -> baseBuilder
                     .id(item.id())
                     .slotId(item.slotId())

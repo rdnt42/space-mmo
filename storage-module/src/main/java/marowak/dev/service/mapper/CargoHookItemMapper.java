@@ -18,7 +18,7 @@ public class CargoHookItemMapper implements ItemMapper<CargoHook>, CargoHookItem
     }
 
     public static final BiFunction<CargoHook, Item, ItemMessage> cargoHookToMessage =
-            (cargoHook, item) -> ((CargoHookMessage.CargoHookMessageBuilder<?, ?>)
+            (cargoHook, item) -> ((CargoHookMessage.Builder)
                     BuilderHelper.itemToBuilder.apply(item, CargoHookMessage.builder()))
                     .loadCapacity(cargoHook.loadCapacity())
                     .radius(cargoHook.radius())

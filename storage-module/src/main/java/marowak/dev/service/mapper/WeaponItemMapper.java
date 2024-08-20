@@ -18,7 +18,7 @@ public class WeaponItemMapper implements ItemMapper<Weapon>, WeaponItemService {
     }
 
     public static final BiFunction<Weapon, Item, ItemMessage> weaponToMessage =
-            (weapon, item) -> ((WeaponMessage.WeaponMessageBuilder<?, ?>)
+            (weapon, item) -> ((WeaponMessage.Builder)
                     BuilderHelper.itemToBuilder.apply(item, WeaponMessage.builder()))
                     .damage(weapon.damage())
                     .radius(weapon.radius())

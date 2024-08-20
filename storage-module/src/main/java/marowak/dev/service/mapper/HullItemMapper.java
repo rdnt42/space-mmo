@@ -18,7 +18,7 @@ public class HullItemMapper implements ItemMapper<Hull>, HullItemService {
     }
 
     public static final BiFunction<Hull, Item, ItemMessage> hullToMessage =
-            (hull, item) -> ((HullMessage.HullMessageBuilder<?, ?>)
+            (hull, item) -> ((HullMessage.Builder)
                     BuilderHelper.itemToBuilder.apply(item, HullMessage.builder()))
                     .hp(hull.hp())
                     .evasion(hull.evasion())

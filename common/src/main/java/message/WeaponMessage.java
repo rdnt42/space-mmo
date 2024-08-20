@@ -1,20 +1,62 @@
 package message;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Getter
-@NoArgsConstructor
-@SuperBuilder
 public class WeaponMessage extends ItemMessage {
-    private int damage;
+    private final int damage;
+    private final int radius;
+    private final int rate;
+    private final int damageTypeId;
+    private final int equipmentTypeId;
 
-    private int radius;
+    public WeaponMessage(Builder builder) {
+        super(builder);
+        this.damage = builder.damage;
+        this.radius = builder.radius;
+        this.rate = builder.rate;
+        this.damageTypeId = builder.damageTypeId;
+        this.equipmentTypeId = builder.equipmentTypeId;
+    }
 
-    private int rate;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    private int damageTypeId;
+    public static class Builder extends ItemMessage.Builder {
+        private int damage;
+        private int radius;
+        private int rate;
+        private int damageTypeId;
+        private int equipmentTypeId;
 
-    private int equipmentTypeId;
+        public WeaponMessage build() {
+            return new WeaponMessage(this);
+        }
+
+        public Builder damage(int damage) {
+            this.damage = damage;
+            return this;
+        }
+
+        public Builder radius(int radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder rate(int rate) {
+            this.rate = rate;
+            return this;
+        }
+
+        public Builder damageTypeId(int damageTypeId) {
+            this.damageTypeId = damageTypeId;
+            return this;
+        }
+
+        public Builder equipmentTypeId(int equipmentTypeId) {
+            this.equipmentTypeId = equipmentTypeId;
+            return this;
+        }
+    }
 }

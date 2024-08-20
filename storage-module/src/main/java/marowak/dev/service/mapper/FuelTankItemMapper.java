@@ -18,7 +18,7 @@ public class FuelTankItemMapper implements ItemMapper<FuelTank>, FuelTankItemSer
     }
 
     public static final BiFunction<FuelTank, Item, ItemMessage> fuelTankToMessage =
-            (fuelTank, item) -> ((FuelTankMessage.FuelTankMessageBuilder<?, ?>)
+            (fuelTank, item) -> ((FuelTankMessage.Builder)
                     BuilderHelper.itemToBuilder.apply(item, FuelTankMessage.builder()))
                     .capacity(fuelTank.capacity())
                     .equipmentTypeId(fuelTank.fuelTankTypeId())

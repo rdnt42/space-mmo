@@ -1,16 +1,46 @@
 package message;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Getter
-@NoArgsConstructor
-@SuperBuilder
 public class CargoHookMessage extends ItemMessage {
-    private int loadCapacity;
+    private final int loadCapacity;
+    private final int radius;
+    private final int equipmentTypeId;
 
-    private int radius;
+    public CargoHookMessage(Builder builder) {
+        super(builder);
+        this.loadCapacity = builder.loadCapacity;
+        this.radius = builder.radius;
+        this.equipmentTypeId = builder.equipmentTypeId;
+    }
 
-    private int equipmentTypeId;
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder extends ItemMessage.Builder {
+        private int loadCapacity;
+        private int radius;
+        private int equipmentTypeId;
+
+        public CargoHookMessage build() {
+            return new CargoHookMessage(this);
+        }
+
+        public Builder loadCapacity(int loadCapacity) {
+            this.loadCapacity = loadCapacity;
+            return this;
+        }
+
+        public Builder radius(int radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public Builder equipmentTypeId(int equipmentTypeId) {
+            this.equipmentTypeId = equipmentTypeId;
+            return this;
+        }
+    }
 }

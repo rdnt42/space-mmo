@@ -18,7 +18,7 @@ public class EngineItemMapper implements ItemMapper<Engine>, EngineItemService {
     }
 
     public static final BiFunction<Engine, Item, ItemMessage> engineToMessage =
-            (engine, item) -> ((EngineMessage.EngineMessageBuilder<?, ?>)
+            (engine, item) -> ((EngineMessage.Builder)
                     BuilderHelper.itemToBuilder.apply(item, EngineMessage.builder()))
                     .speed(engine.speed())
                     .jump(engine.jump())
