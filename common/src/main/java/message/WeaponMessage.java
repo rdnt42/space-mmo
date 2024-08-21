@@ -23,6 +23,19 @@ public class WeaponMessage extends ItemMessage {
         return new Builder();
     }
 
+    @Override
+    public Builder copy() {
+        Builder builder = new Builder()
+                .damage(damage)
+                .radius(radius)
+                .rate(rate)
+                .damageTypeId(damageTypeId)
+                .equipmentTypeId(equipmentTypeId);
+        setDataFromParent(builder);
+
+        return builder;
+    }
+
     public static class Builder extends ItemMessage.Builder {
         private int damage;
         private int radius;

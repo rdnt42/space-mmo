@@ -52,6 +52,38 @@ public class ItemMessage {
         return new Builder();
     }
 
+    public Builder copy() {
+        return new Builder()
+                .key(key)
+                .id(id)
+                .slotId(slotId)
+                .storageId(storageId)
+                .characterName(characterName)
+                .typeId(typeId)
+                .upgradeLevel(upgradeLevel)
+                .cost(cost)
+                .name(name)
+                .dsc(dsc)
+                .x(x)
+                .y(y);
+    }
+
+    protected void setDataFromParent(Builder builder) {
+        builder
+                .key(key)
+                .id(id)
+                .slotId(slotId)
+                .storageId(storageId)
+                .characterName(characterName)
+                .typeId(typeId)
+                .upgradeLevel(upgradeLevel)
+                .cost(cost)
+                .name(name)
+                .dsc(dsc)
+                .x(x)
+                .y(y);
+    }
+
     public static class Builder {
         private ItemMessageKey key;
         private Long id;
