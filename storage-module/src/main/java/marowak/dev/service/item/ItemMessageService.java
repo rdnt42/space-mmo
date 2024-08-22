@@ -61,15 +61,16 @@ public class ItemMessageService {
         ItemType type = ItemType.from(item.itemTypeId());
         var repository = repositories.getService(type);
         return Mono.from(repository.findById(item.id()))
-                .map(extension -> {
-                    var mapper = mappers.getService(type);
-                    return mapper.map(item, extension);
-                });
+                .map(extension -> mappers.getService(type)
+                        .map(item, extension)
+                );
     }
 
     private Mono<ItemMessage> copyWithKey(ItemMessage message, ItemMessageKey key) {
-        return Mono.just(message.copy()
-                .key(key)
-                .build());
+        return Mono.just(
+                message.copy()
+                        .key(key)
+                        .build()
+        );
     }
 }
