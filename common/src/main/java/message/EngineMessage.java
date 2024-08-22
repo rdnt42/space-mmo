@@ -19,11 +19,23 @@ public class EngineMessage extends ItemMessage {
         return new Builder();
     }
 
+    @Override
+    public Builder copy() {
+        Builder builder = new Builder()
+                .speed(speed)
+                .jump(jump)
+                .equipmentTypeId(equipmentTypeId);
+        setDataFromParent(builder);
+
+        return builder;
+    }
+
     public static class Builder extends ItemMessage.Builder {
         private int speed;
         private int jump;
         private int equipmentTypeId;
 
+        @Override
         public EngineMessage build() {
             return new EngineMessage(this);
         }

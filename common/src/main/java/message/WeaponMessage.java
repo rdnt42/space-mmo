@@ -43,6 +43,7 @@ public class WeaponMessage extends ItemMessage {
         private int damageTypeId;
         private int equipmentTypeId;
 
+        @Override
         public WeaponMessage build() {
             return new WeaponMessage(this);
         }

@@ -14,7 +14,7 @@ import java.util.List;
 
 import static fixtures.CharacterFixture.aCharacter;
 import static fixtures.CharacterMessageFixture.aCharacterMessage;
-import static fixtures.CharacterMessageFixture.aString;
+import static fixtures.CommonFixture.aString;
 import static keys.CharacterMessageKey.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

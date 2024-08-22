@@ -5,13 +5,9 @@ import lombok.Getter;
 @Getter
 public class HullMessage extends ItemMessage {
     private final int hp;
-
     private final int evasion;
-
     private final int armor;
-
     private final int equipmentTypeId;
-
     private final int config;
 
     public HullMessage(Builder builder) {
@@ -25,6 +21,19 @@ public class HullMessage extends ItemMessage {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public Builder copy() {
+        Builder builder = new Builder()
+                .hp(hp)
+                .evasion(evasion)
+                .armor(armor)
+                .equipmentTypeId(equipmentTypeId)
+                .config(config);
+        setDataFromParent(builder);
+
+        return builder;
     }
 
     public static class Builder extends ItemMessage.Builder {

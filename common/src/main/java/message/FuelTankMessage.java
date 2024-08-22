@@ -17,10 +17,21 @@ public class FuelTankMessage extends ItemMessage {
         return new Builder();
     }
 
+    @Override
+    public Builder copy() {
+        Builder builder = new Builder()
+                .capacity(capacity)
+                .equipmentTypeId(equipmentTypeId);
+        setDataFromParent(builder);
+
+        return builder;
+    }
+
     public static class Builder extends ItemMessage.Builder {
         private int capacity;
         private int equipmentTypeId;
 
+        @Override
         public FuelTankMessage build() {
             return new FuelTankMessage(this);
         }

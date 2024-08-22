@@ -19,11 +19,23 @@ public class CargoHookMessage extends ItemMessage {
         return new Builder();
     }
 
+    @Override
+    public Builder copy() {
+        Builder builder = new Builder()
+                .loadCapacity(loadCapacity)
+                .radius(radius)
+                .equipmentTypeId(equipmentTypeId);
+        setDataFromParent(builder);
+
+        return builder;
+    }
+
     public static class Builder extends ItemMessage.Builder {
         private int loadCapacity;
         private int radius;
         private int equipmentTypeId;
 
+        @Override
         public CargoHookMessage build() {
             return new CargoHookMessage(this);
         }
