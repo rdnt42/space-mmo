@@ -18,4 +18,8 @@ public class CommonFixture {
     public static String aString() {
         return RandomStringUtils.randomAlphanumeric(24);
     }
+
+    public static String aString(int count) {
+        return RandomStringUtils.randomAlphanumeric(count);
+    }
 }

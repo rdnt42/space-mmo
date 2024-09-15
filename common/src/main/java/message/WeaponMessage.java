@@ -1,7 +1,9 @@
 package message;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(force = true)
 @Getter
 public class WeaponMessage extends ItemMessage {
     private final int damage;

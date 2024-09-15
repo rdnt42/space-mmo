@@ -1,7 +1,9 @@
 package message;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(force = true)
 @Getter
 public class FuelTankMessage extends ItemMessage {
     private final int capacity;

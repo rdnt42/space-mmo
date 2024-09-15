@@ -1,11 +1,9 @@
 package message;
 
 import keys.CharacterMessageKey;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Getter
 public class CharacterMessage {

@@ -27,7 +27,7 @@ public record Item(
         @Column(name = "item_type_id")
         int itemTypeId,
 
-        Integer upgradeLevel,
+        Short upgradeLevel,
 
         Integer cost,
 

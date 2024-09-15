@@ -15,13 +15,13 @@ public record Weapon(
         @Column(name = "item_id")
         Long id,
 
-        int damage,
+        short damage,
 
-        int radius,
+        short radius,
 
-        int rate,
+        short rate,
 
-        int damageTypeId,
+        short damageTypeId,
 
         int weaponTypeId
 ) {

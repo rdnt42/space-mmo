@@ -8,9 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +31,30 @@ public class GenericTestRepository {
                 ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_UPDATABLE
         );
+    }
+
+    public void initScript(String path) {
+        URL resourceUrl = getClass().getClassLoader().getResource(path);
+        if (resourceUrl == null) {
+            throw new IllegalArgumentException("File not found: " + path);
+        }
+
+        String sql;
+        try {
+            Path filePath = Paths.get(resourceUrl.toURI());
+            sql = Files.readString(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        try (
+                Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement()
+        ) {
+            statement.execute(sql);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public <V> int countRowsInTable(String table, String idName, V idValue) {

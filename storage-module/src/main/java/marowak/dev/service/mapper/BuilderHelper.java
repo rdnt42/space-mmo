@@ -16,7 +16,7 @@ public class BuilderHelper {
                     .storageId(item.storageId())
                     .characterName(item.characterName())
                     .typeId(item.itemTypeId())
-                    .upgradeLevel(item.upgradeLevel())
+                    .upgradeLevel(Integer.valueOf(item.upgradeLevel()))
                     .cost(item.cost())
                     .name(item.nameRu())
                     .dsc(item.dscRu())
