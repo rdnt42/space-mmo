@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import keys.ItemMessageKey;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = WeaponMessage.class, name = "weapon"),
 })
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 @Getter
 public class ItemMessage {
     private final ItemMessageKey key;
